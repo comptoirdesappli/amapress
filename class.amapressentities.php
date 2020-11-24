@@ -2430,9 +2430,17 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							),
 							'options'  => array(),
 							'tabs'     => array(
-								__( 'Emails - Envoi des quantités à livrer', 'amapress' )                => array(
-									'id'      => 'amp_tab_recall_quantites_distrib',
+								__( 'Emails - Envoi des quantités à livrer (1)', 'amapress' )            => array(
+									'id'      => 'amp_tab_recall_quantites_distrib1',
 									'options' => amapress_contrat_quantites_recall_options(),
+								),
+								__( 'Emails - Envoi des quantités à livrer (2)', 'amapress' )            => array(
+									'id'      => 'amp_tab_recall_quantites_distrib2',
+									'options' => amapress_contrat_quantites_recall_options( '2' ),
+								),
+								__( 'Emails - Envoi des quantités à livrer (3)', 'amapress' )            => array(
+									'id'      => 'amp_tab_recall_quantites_distrib3',
+									'options' => amapress_contrat_quantites_recall_options( '3' ),
 								),
 								__( 'Emails - Contrats à renouveler', 'amapress' )                       => array(
 									'id'      => 'amp_tab_recall_contrat_renew',

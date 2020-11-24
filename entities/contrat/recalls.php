@@ -58,7 +58,8 @@ function amapress_get_contrats_cron( $type ) {
 	return $ret;
 }
 
-add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
+function amapress_recall_contrat_quantites( $args, $num = '' ) {
+
 	$dist = AmapressDistribution::getBy( $args['id'] );
 
 	if ( null == $dist ) {
@@ -76,9 +77,9 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 		return $c->getModel()->getProducteurId();
 	} );
 
-	$disabled_for_producteurs = Amapress::get_array( Amapress::getOption( 'distribution-quantites-recall-excl-producteurs' ) );
-	$send_to_producteurs      = Amapress::get_array( Amapress::getOption( 'distribution-quantites-recall-send-producteurs' ) );
-	$send_referents           = Amapress::getOption( 'distribution-quantites-recall-send-referents' );
+	$disabled_for_producteurs = Amapress::get_array( Amapress::getOption( 'distribution-quantites' . $num . '-recall-excl-producteurs' ) );
+	$send_to_producteurs      = Amapress::get_array( Amapress::getOption( 'distribution-quantites' . $num . '-recall-send-producteurs' ) );
+	$send_referents           = Amapress::getOption( 'distribution-quantites' . $num . '-recall-send-referents' );
 
 	$sent_mails = false;
 	foreach ( $contrats_by_producteurs as $producteur_id => $contrats ) {
@@ -95,7 +96,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 			continue;
 		}
 		$send_to_producteur    = in_array( $producteur_id, $send_to_producteurs );
-		$show_price_modulables = Amapress::getOption( 'distribution-quantites-recall-price-mod', 0 );
+		$show_price_modulables = Amapress::getOption( 'distribution-quantites' . $num . '-recall-price-mod', 0 );
 
 		/** @var AmapressContrat_instance $contrat */
 		foreach ( $contrats as $contrat ) {
@@ -215,10 +216,10 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 
 			$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $referent_ids ),
 				implode( ' et ', $send_title ) . $producteur->getTitle(), 'referents' );
-			$subject      = Amapress::getOption( 'distribution-quantites-recall-mail-subject' );
-			$content      = Amapress::getOption( 'distribution-quantites-recall-mail-content' );
+			$subject      = Amapress::getOption( 'distribution-quantites' . $num . '-recall-mail-subject' );
+			$content      = Amapress::getOption( 'distribution-quantites' . $num . '-recall-mail-content' );
 			if ( $contrat->isPanierVariable() ) {
-				$content_modulable = Amapress::getOption( 'distribution-quantites-modulable-recall-mail-content' );
+				$content_modulable = Amapress::getOption( 'distribution-quantites' . $num . '-modulable-recall-mail-content' );
 				if ( ! empty( trim( strip_tags( $content_modulable ) ) ) ) {
 					$content = $content_modulable;
 				}
@@ -229,7 +230,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 			}
 
 			$attachments = [];
-			foreach ( Amapress::get_array( Amapress::getOption( 'distribution-quantites-recall-xlsx' ) ) as $excel_name ) {
+			foreach ( Amapress::get_array( Amapress::getOption( 'distribution-quantites' . $num . '-recall-xlsx' ) ) as $excel_name ) {
 				if ( 'adherents_columns' == $excel_name ) {
 					$xl            = amapress_get_contrat_column_quantite( $contrat->ID, $dist->getDate() );
 					$attachments[] = Amapress::createXLSXFromPHPExcelAsMailAttachment( $xl['xl'], $xl['filename'] );
@@ -245,7 +246,7 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 				$subject,
 				$content,
 				'', $target_users, $dist, $attachments,
-				amapress_get_recall_cc_from_option( 'distribution-quantites-recall-cc' ) );
+				amapress_get_recall_cc_from_option( 'distribution-quantites' . $num . '-recall-cc' ) );
 			echo '<p>' . sprintf( __( 'Email de rappel des quantités aux producteurs envoyé : %s', 'amapress' ), esc_html( $producteur->getTitle() ) ) . '</p>';
 			$sent_mails = true;
 		}
@@ -254,7 +255,16 @@ add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
 	if ( ! $sent_mails ) {
 		echo '<p>' . __( 'Pas de quantités à rappeler à cette distribution', 'amapress' ) . '</p>';
 	}
+}
 
+add_action( 'amapress_recall_contrat_quantites', function ( $args ) {
+	amapress_recall_contrat_quantites( $args );
+} );
+add_action( 'amapress_recall_contrat_quantites2', function ( $args ) {
+	amapress_recall_contrat_quantites( $args, '2' );
+} );
+add_action( 'amapress_recall_contrat_quantites3', function ( $args ) {
+	amapress_recall_contrat_quantites( $args, '3' );
 } );
 
 add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) {
@@ -700,51 +710,51 @@ add_action( 'amapress_recall_contrat_recap_cloture', function ( $args ) {
 	echo '<p>' . sprintf( __( 'Email de rappel récapitulatif des inscriptions envoyé : %s', 'amapress' ), esc_html( $producteur->getTitle() ) ) . '</p>';
 } );
 
-function amapress_contrat_quantites_recall_options() {
+function amapress_contrat_quantites_recall_options( $num = '' ) {
 	return array(
 		array(
-			'id'                  => 'distribution-quantites-recall-1',
+			'id'                  => 'distribution-quantites' . $num . '-recall-1',
 			'name'                => __( 'Rappel 1', 'amapress' ),
 			'desc'                => __( 'Quantités à livrer', 'amapress' ),
 			'type'                => 'event-scheduler',
-			'hook_name'           => 'amapress_recall_contrat_quantites',
+			'hook_name'           => 'amapress_recall_contrat_quantites' . $num,
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
 			},
 		),
 		array(
-			'id'                  => 'distribution-quantites-recall-2',
+			'id'                  => 'distribution-quantites' . $num . '-recall-2',
 			'name'                => __( 'Rappel 2', 'amapress' ),
 			'desc'                => __( 'Quantités à livrer', 'amapress' ),
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
 			'type'                => 'event-scheduler',
-			'hook_name'           => 'amapress_recall_contrat_quantites',
+			'hook_name'           => 'amapress_recall_contrat_quantites' . $num,
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
 			},
 		),
 		array(
-			'id'                  => 'distribution-quantites-recall-3',
+			'id'                  => 'distribution-quantites' . $num . '-recall-3',
 			'name'                => __( 'Rappel 3', 'amapress' ),
 			'desc'                => __( 'Quantités à livrer', 'amapress' ),
 			'show_resend_links'   => false,
 			'show_test_links'     => false,
 			'type'                => 'event-scheduler',
-			'hook_name'           => 'amapress_recall_contrat_quantites',
+			'hook_name'           => 'amapress_recall_contrat_quantites' . $num,
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_next_distributions_cron();
 			},
 		),
 		array(
-			'id'       => 'distribution-quantites-recall-mail-subject',
+			'id'       => 'distribution-quantites' . $num . '-recall-mail-subject',
 			'name'     => __( 'Sujet de l\'email', 'amapress' ),
 			'type'     => 'text',
 			'sanitize' => false,
 			'default'  => __( 'Quantités de la semaine pour %%producteur_nom%% (%%producteur_contrats%%) - %%post:title%%', 'amapress' ),
 		),
 		array(
-			'id'      => 'distribution-quantites-recall-mail-content',
+			'id'      => 'distribution-quantites' . $num . '-recall-mail-content',
 			'name'    => __( 'Contenu de l\'email', 'amapress' ),
 			'type'    => 'editor',
 			'default' => wpautop( __( "Bonjour,\nVous trouverez ci-dessous (et à l'adresse suivante: %%lien_contrats_quantites%%) les quantités de la semaine pour %%lien_distribution_titre%%:\n%%producteur_paniers_quantites%%\n\n%%nom_site%%", 'amapress' ) ),
@@ -769,7 +779,7 @@ function amapress_contrat_quantites_recall_options() {
 			},
 		),
 		array(
-			'id'      => 'distribution-quantites-modulable-recall-mail-content',
+			'id'      => 'distribution-quantites' . $num . '-modulable-recall-mail-content',
 			'name'    => __( 'Contenu de l\'email - Paniers modulables', 'amapress' ),
 			'type'    => 'editor',
 			'default' => wpautop( __( "Bonjour,\nVous trouverez ci-dessous (et à l'adresse suivante: %%lien_contrats_quantites%%) les quantités de la semaine pour %%lien_distribution_titre%%:\n%%producteur_paniers_quantites%%\n\nDétails par amapien:\n%%producteur_paniers_quantites_amapiens%%\n\n%%nom_site%%", 'amapress' ) ),
@@ -794,13 +804,13 @@ function amapress_contrat_quantites_recall_options() {
 			},
 		),
 		array(
-			'id'   => 'distribution-quantites-recall-price-mod',
+			'id'   => 'distribution-quantites' . $num . '-recall-price-mod',
 			'name' => __( 'Montants paniers modulables', 'amapress' ),
 			'desc' => __( 'Afficher les montants pour les paniers modulables', 'amapress' ),
 			'type' => 'checkbox',
 		),
 		array(
-			'id'      => 'distribution-quantites-recall-xlsx',
+			'id'      => 'distribution-quantites' . $num . '-recall-xlsx',
 			'name'    => __( 'Attacher les excels suivants', 'amapress' ),
 			'type'    => 'multi-check',
 			'options' => [
@@ -813,7 +823,7 @@ function amapress_contrat_quantites_recall_options() {
 			'default' => 'all',
 		),
 		array(
-			'id'           => 'distribution-quantites-recall-cc',
+			'id'           => 'distribution-quantites' . $num . '-recall-cc',
 			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',
 			'autocomplete' => true,
@@ -822,7 +832,7 @@ function amapress_contrat_quantites_recall_options() {
 			'desc'         => __( 'Emails en copie', 'amapress' ),
 		),
 		array(
-			'id'           => 'distribution-quantites-recall-cc-groups',
+			'id'           => 'distribution-quantites' . $num . '-recall-cc-groups',
 			'name'         => __( 'Groupes Cc', 'amapress' ),
 			'type'         => 'select',
 			'options'      => 'amapress_get_collectif_target_queries',
@@ -832,14 +842,14 @@ function amapress_contrat_quantites_recall_options() {
 			'desc'         => __( 'Groupe(s) en copie', 'amapress' ),
 		),
 		array(
-			'id'      => 'distribution-quantites-recall-send-referents',
+			'id'      => 'distribution-quantites' . $num . '-recall-send-referents',
 			'name'    => __( 'Envoi aux référents', 'amapress' ),
 			'type'    => 'checkbox',
 			'desc'    => __( 'Envoyer les quantités à livrer aux référents', 'amapress' ),
 			'default' => 1,
 		),
 		array(
-			'id'        => 'distribution-quantites-recall-excl-producteurs',
+			'id'        => 'distribution-quantites' . $num . '-recall-excl-producteurs',
 			'type'      => 'multicheck-posts',
 			'name'      => __( 'Producteurs exclus', 'amapress' ),
 			'post_type' => AmapressProducteur::INTERNAL_POST_TYPE,
@@ -848,7 +858,7 @@ function amapress_contrat_quantites_recall_options() {
 			'order'     => 'ASC',
 		),
 		array(
-			'id'        => 'distribution-quantites-recall-send-producteurs',
+			'id'        => 'distribution-quantites' . $num . '-recall-send-producteurs',
 			'type'      => 'multicheck-posts',
 			'name'      => __( 'Envoi Producteurs', 'amapress' ),
 			'post_type' => AmapressProducteur::INTERNAL_POST_TYPE,
