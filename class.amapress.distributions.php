@@ -168,21 +168,31 @@ class AmapressDistributions {
 		$key        = "isCurrentUserResponsableBetween-$start_date-$end_date-$user_id";
 		$post_count = wp_cache_get( $key );
 		if ( false === $post_count ) {
-			$post_count = get_posts_count( array(
-				'post_type'      => AmapressDistribution::INTERNAL_POST_TYPE,
-				'posts_per_page' => - 1,
-				'orderby'        => 'none',
-				'meta_query'     => array(
-					'relation' => 'AND',
-					array(
-						'key'     => 'amapress_distribution_date',
-						'value'   => array( Amapress::start_of_day( $start_date ), Amapress::end_of_day( $end_date ) ),
-						'compare' => 'BETWEEN',
-						'type'    => 'NUMERIC',
+			$post_count = 0;
+			foreach (
+				get_posts( array(
+					'post_type'      => AmapressDistribution::INTERNAL_POST_TYPE,
+					'posts_per_page' => - 1,
+					'orderby'        => 'none',
+					'meta_query'     => array(
+						array(
+							'key'     => 'amapress_distribution_date',
+							'value'   => array(
+								Amapress::start_of_day( $start_date ),
+								Amapress::end_of_day( $end_date )
+							),
+							'compare' => 'BETWEEN',
+							'type'    => 'NUMERIC',
+						),
 					),
-					amapress_prepare_like_in_array( 'amapress_distribution_responsables', $user_id ),
-				),
-			) );
+				) ) as $post
+			) {
+				$dist = AmapressDistribution::getBy( $post );
+				if ( in_array( $user_id, $dist->getResponsablesIds() ) ) {
+					$post_count ++;
+					break;
+				}
+			}
 			wp_cache_set( $key, $post_count );
 		}
 
