@@ -426,7 +426,9 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		$adhs = AmapressAdhesion_paiement::getAllActiveByUserId( $date );
 		if ( empty( $adhs[ $user_id ] ) ) {
 			$user_ids = AmapressContrats::get_related_users( $user_id,
-				true, null, null, true, false );
+				true, null, null, true, false,
+				! Amapress::toBool( Amapress::getOption( 'coadh_self_adh' ) )
+			);
 			foreach ( $user_ids as $rel_user_id ) {
 				if ( ! empty( $adhs[ $rel_user_id ] ) ) {
 					$adhs[ $user_id ] = $adhs[ $rel_user_id ];

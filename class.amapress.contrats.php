@@ -1177,7 +1177,8 @@ class AmapressContrats {
 		$user_id, $allow_not_logged = false,
 		$date = null, $contrat_id = null,
 		$include_cofoyers = true,
-		$include_coadhs = 'auto'
+		$include_coadhs = 'auto',
+		$include_principal = true
 	) {
 		if ( ! $allow_not_logged && ! amapress_is_user_logged_in() ) {
 			return [];
@@ -1217,7 +1218,9 @@ class AmapressContrats {
 						$res[] = $user->getCoFoyer3Id();
 					}
 				}
-				$res = array_merge( $res, $user->getPrincipalUserIds() );
+				if ( $include_principal ) {
+					$res = array_merge( $res, $user->getPrincipalUserIds() );
+				}
 			}
 
 			if ( false !== $include_coadhs ) {

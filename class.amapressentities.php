@@ -2522,6 +2522,12 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'desc'    => __( 'L\'amapien peut choisir les contrats sur lesquels il souhaite un co-adhérent', 'amapress' ),
 										),
 										array(
+											'id'      => 'coadh_self_adh',
+											'name'    => __( 'Les co-adhérents doivent avoir une adhésion séparée', 'amapress' ),
+											'type'    => 'checkbox',
+											'default' => true,
+										),
+										array(
 											'id'      => 'check_adh_rcv',
 											'name'    => __( 'L\'adhésion doit avoir été validée avant de pouvoir s\'inscrire aux contrats', 'amapress' ),
 											'type'    => 'checkbox',
