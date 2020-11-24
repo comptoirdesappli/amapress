@@ -90,13 +90,6 @@ function amapress_register_entities_panier( $entities ) {
 				'group'          => __( '2/ Contenu', 'amapress' ),
 				'col_def_hidden' => true,
 			),
-//			'produits'         => array(
-//				'name'   => __( 'Panier', 'amapress' ),
-//				'type'   => 'custom',
-//				'custom' => array( __('AmapressPaniers', 'amapress'), "panierTable" ),
-//				'save'   => array( __('AmapressPaniers', 'amapress'), 'savePanierTable' ),
-//				'desc'   => __('Produits', 'amapress'),
-//			),
 			'status'            => array(
 				'name'          => __( 'Statut', 'amapress' ),
 				'type'          => 'select',
