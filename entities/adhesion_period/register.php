@@ -61,36 +61,37 @@ function amapress_register_entities_adhesion_period( $entities ) {
 		),
 		'fields'           => array(
 			'date_debut'   => array(
-				'name'         => __( 'Date de début', 'amapress' ),
+				'name'         => __( 'Début*', 'amapress' ),
 				'type'         => 'date',
 				'required'     => true,
-				'group'        => __( '1/ Informations', 'amapress' ),
-				'desc'         => __( 'Date à laquelle démarre la période', 'amapress' ),
+				'group'        => __( '1/ Informations générales', 'amapress' ),
+				'desc'         => __( 'Date à laquelle démarre la Période d\'adhésions', 'amapress' ),
 				'csv_required' => true,
 			),
 			'date_fin'     => array(
-				'name'         => __( 'Date de fin', 'amapress' ),
+				'name'         => __( 'Fin*', 'amapress' ),
 				'type'         => 'date',
 				'required'     => true,
-				'group'        => __( '1/ Informations', 'amapress' ),
-				'desc'         => __( 'Date à laquelle finit la période', 'amapress' ),
+				'group'        => __( '1/ Informations générales', 'amapress' ),
+				'desc'         => __( 'Date à laquelle se termine la Période d\'adhésions', 'amapress' ),
 				'csv_required' => true,
 			),
 			'name'         => array(
-				'name'  => __( 'Nom de la période', 'amapress' ),
+				'name'  => __( 'Nom', 'amapress' ),
 				'type'  => 'text',
-				'group' => __( 'Pré-inscription en ligne', 'amapress' ),
-				'desc'  => __( '(Facultatif) Nom de la saison (par exemple, saison 15)', 'amapress' ),
+				'group' => __( '1/ Informations générales', 'amapress' ),
+				'desc'  => __( 'Nom de la Période d\'adhésion (Exemple : Saison 15)', 'amapress' ),
 			),
 			'hla_form_url' => array(
-				'name'  => __( 'Formulaire HelloAsso', 'amapress' ),
+				'name'  => __( 'Formulaire d\'adhésion HelloAsso', 'amapress' ),
 				'type'  => 'text',
 				'group' => __( 'Pré-inscription en ligne', 'amapress' ),
-				'desc'  => __( '(Facultatif) Url du formulaire HelloAsso correspondant. <br/>Doit être de la forme :<code>https://www.helloasso.com/associations/<em>nom-amap</em>/adhesions/<em><strong>nom-formulaire</strong></em></code>', 'amapress' )
+				'desc'  => __( 'Url de du formulaire d\'adhésion à récupérer dans l\'interface d\'administration HelloAsso &gt; NomdeMaCampagne &gt; Administrer &gt; Diffusion
+<br/>De la forme :<br/><code>https://www.helloasso.com/associations/<em>nom-amap</em>/adhesions/<em><strong>nom-formulaire</strong></em></code>', 'amapress' )
 				           . '<br/>' . Amapress::makeLink(
 						admin_url( 'admin.php?page=amapress_gest_adhesions_conf_opt_page&tab=amp_helloasso_config' ),
-						__( 'Voir l\'intégration HelloAsso', 'amapress' )
-					),
+						__( 'Intégration HelloAsso', 'amapress' )
+					) . '<br/>' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/helloasso' ),
 			),
 			'online_desc'  => array(
 				'name'  => __( 'Contenu bulletin', 'amapress' ),

@@ -3609,73 +3609,74 @@ Vous maintenant vous connecter au site et effectuer vos inscriptions aux contrat
 										array(
 											'type' => 'note',
 											'desc' => function ( $o ) {
-												return sprintf( __( 'Pour intégrer HelloAsso à Amapress, connectez vous au backoffice HelloAsso, et définissez l\'url dans Mon Compte&gt;Intégration/API, section Notifications, Mon URL de callback avec la valeur : <code>%s</code>', 'amapress' ),
-														admin_url( 'admin-post.php?action=helloasso&key=' . amapress_sha_secret( 'helloasso' ) ) )
-												       . '<br/>' . sprintf( __( 'Vous devez crééer un formulaire d\'adhésion HelloAsso par <a href="%s">période d\'adhésion</a> et renseigner l\'url du formulaire dans la période d\'adhésion correspondante', 'amapress' ),
-														admin_url( 'edit.php?post_type=amps_adh_per&amapress_date=active' ) );
+												return '<p>' . sprintf( __( 'Pour intégrer HelloAsso à Amapress, consultez %s.', 'amapress' ), Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/helloasso', 'Adhésion : paiement en ligne' ) ) . '</p>' .
+												       '<p>' . esc_html__( 'Voici votre url de callback à définir dans l’interface d’administration HelloAsso&gt;Mon Compte&gt;Intégration/API, section Notifications, Mon URL de callback :', 'amapress' ) .
+												       sprintf( '<br/><code>%s</code>', admin_url( 'admin-post.php?action=helloasso&key=' . amapress_sha_secret( 'helloasso' ) ) ) . '</p>' .
+												       '<p>' . sprintf( __( 'Configurez une <a href="%s">"Période d’adhésion"</a> correspondant à votre Campagne d’adhésion HelloAsso.', 'amapress' ),
+														admin_url( 'edit.php?post_type=amps_adh_per&amapress_date=active' ) ) . '</p>';
 											}
 										),
 										array(
 											'id'      => 'helloasso-auto-confirm',
-											'name'    => __( 'Adhésion confirmée', 'amapress' ),
+											'name'    => __( 'Confirmation automatique', 'amapress' ),
 											'type'    => 'checkbox',
-											'desc'    => __( 'Confirmer les adhésions HelloAsso automatiquement', 'amapress' ),
+											'desc'    => __( 'Confirmer automatiquement les adhésions HelloAsso effectuées', 'amapress' ),
 											'default' => true,
 										),
 										array(
 											'id'      => 'helloasso-send-confirm',
-											'name'    => __( 'Envoyer confirmation d\'adhésion', 'amapress' ),
+											'name'    => __( 'Notifications d\'adhésion', 'amapress' ),
 											'type'    => 'checkbox',
-											'desc'    => __( 'Envoyer les confirmations d\'adhésions aux amapiens', 'amapress' ),
+											'desc'    => __( 'Envoyer un email de confirmation à chaque amapien pour son adhésion', 'amapress' ),
 											'default' => false,
 										),
 										array(
 											'id'      => 'helloasso-notif-tresoriers',
-											'name'    => __( 'Nofications trésoriers', 'amapress' ),
+											'name'    => __( 'Notifications trésorier', 'amapress' ),
 											'type'    => 'checkbox',
-											'desc'    => __( 'Envoyer les notifications d\'adhésions aux trésoriers', 'amapress' ),
+											'desc'    => __( 'Envoyer un email au trésorier pour chaque nouvelle adhésion', 'amapress' ),
 											'default' => true,
 										),
 										array(
 											'id'   => 'helloasso-notif-others',
-											'name' => __( 'Nofications autres', 'amapress' ),
+											'name' => __( 'Autres destinataires', 'amapress' ),
 											'type' => 'text',
-											'desc' => __( 'Emails des personnes à notifier en supplément', 'amapress' ),
+											'desc' => __( 'Emails des destinataires supplémentaires qui recevront une notification pour chaque nouvelle adhésion', 'amapress' ),
 										),
 										array(
 											'type' => 'save',
 										),
 										array(
 											'type' => 'heading',
-											'name' => __( 'Noms des champs additionels HelloAsso', 'amapress' ),
+											'name' => __( 'Concordance des champs prédéfinis HelloAsso', 'amapress' ),
 										),
 										array(
 											'id'      => 'helloasso-email-field-name',
-											'name'    => __( 'Champs Email', 'amapress' ),
+											'name'    => __( 'Champ Email', 'amapress' ),
 											'type'    => 'text',
 											'default' => __( 'Email', 'amapress' ),
 										),
 										array(
 											'id'      => 'helloasso-phone-field-name',
-											'name'    => __( 'Champs Téléphone', 'amapress' ),
+											'name'    => __( 'Champ Numéro de téléphone', 'amapress' ),
 											'type'    => 'text',
 											'default' => __( 'Numéro de téléphone', 'amapress' ),
 										),
 										array(
 											'id'      => 'helloasso-address-field-name',
-											'name'    => __( 'Champs Adresse', 'amapress' ),
+											'name'    => __( 'Champ Adresse', 'amapress' ),
 											'type'    => 'text',
 											'default' => __( 'Adresse', 'amapress' ),
 										),
 										array(
 											'id'      => 'helloasso-zipcode-field-name',
-											'name'    => __( 'Champs Code postal', 'amapress' ),
+											'name'    => __( 'Champ Code postal', 'amapress' ),
 											'type'    => 'text',
 											'default' => __( 'Code Postal', 'amapress' ),
 										),
 										array(
 											'id'      => 'helloasso-city-field-name',
-											'name'    => __( 'Champs Ville', 'amapress' ),
+											'name'    => __( 'Champ Ville', 'amapress' ),
 											'type'    => 'text',
 											'default' => __( 'Ville', 'amapress' ),
 										),
