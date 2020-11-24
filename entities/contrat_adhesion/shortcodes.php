@@ -2748,6 +2748,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				} );
 			}
 			if ( ! empty( $user_subscribable_contrats ) ) {
+				if ( Amapress::hasPartialCoAdhesion() && $amapien->isCoAdherent() ) {
+					echo '<p>' . __( 'Vous êtes co-adhérent. Vous pouvez inscrire uniquement en votre nom propre. L\'adhérent principal doit effectuer vos inscriptions communes.', 'amapress' ) . '</p>';
+				}
 				if ( ! $use_contrat_term ) {
 					echo '<p>' . __( 'Commandes disponibles :', 'amapress' ) . '</p>';
 				} else {
