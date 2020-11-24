@@ -1005,8 +1005,8 @@ class AmapressContrats {
 	/**
 	 * @return AmapressAmapien_paiement[]
 	 */
-	public static function get_all_paiements( $contrat_instance_id, $contrat_quantite = null, $lieu_id = null ) {
-		$key = "amapress_get_all_paiements_{$contrat_instance_id}_{$contrat_quantite}_{$lieu_id}";
+	public static function get_all_paiements( $contrat_instance_id, $lieu_id = null ) {
+		$key = "amapress_get_all_paiements_{$contrat_instance_id}_{$lieu_id}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			$query = array(
@@ -1022,20 +1022,6 @@ class AmapressContrats {
 					),
 				)
 			);
-			if ( ! empty( $contrat_quantite ) ) {
-				$query['meta_query'][] = array(
-					array(
-						'relation' => 'OR',
-						array(
-							'key'     => 'amapress_adhesion_contrat_quantite',
-							'value'   => $contrat_quantite,
-							'compare' => '=',
-							'type'    => 'NUMERIC',
-						),
-						amapress_prepare_like_in_array( 'amapress_adhesion_contrat_quantite', $contrat_quantite ),
-					)
-				);
-			}
 			if ( ! empty( $lieu_id ) ) {
 				$query['meta_query'][] = array(
 					'key'     => 'amapress_adhesion_lieu',

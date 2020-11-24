@@ -2560,7 +2560,7 @@ function amapress_get_paiement_table_by_dates(
 		$lieu_title = '<h1>' . esc_html( $lieu->getTitle() ) . '</h1>';
 	}
 	$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
-	$paiements        = AmapressContrats::get_all_paiements( $contrat_instance_id, null, $lieu_id );
+	$paiements        = AmapressContrats::get_all_paiements( $contrat_instance_id, $lieu_id );
 	$user_ids         = array_map( function ( $p ) {
 		/** @var AmapressAmapien_paiement $p */
 		return $p->getAdhesion()->getAdherentId();
