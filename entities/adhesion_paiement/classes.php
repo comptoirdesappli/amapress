@@ -267,6 +267,53 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		return $ret;
 	}
 
+	public static function getAllActiveAndFutureByUserId( $date = null ) {
+		$key = "amapress_AmapressAdhesionPaiement_getAllActiveAndFutureByUserId_{$date}";
+		$res = wp_cache_get( $key );
+		if ( false === $res ) {
+			$period    = AmapressAdhesionPeriod::getCurrent( $date );
+			$period_id = $period ? $period->ID : 0;
+			$res       = array_group_by( array_map(
+				function ( $p ) {
+					return new AmapressAdhesion_paiement( $p );
+				},
+				get_posts(
+					array(
+						'post_type'      => AmapressAdhesion_paiement::INTERNAL_POST_TYPE,
+						'posts_per_page' => - 1,
+						'meta_query'     => array(
+							array(
+								'relation' => 'OR',
+								array(
+									'key'     => 'amapress_adhesion_paiement_period',
+									'value'   => $period_id,
+									'compare' => '=',
+								),
+								array(
+									'key'     => 'amapress_adhesion_paiement_date',
+									'compare' => '>=',
+									'value'   => ( $period ? $period->getDate_debut() : Amapress::start_of_day( amapress_time() ) ),
+								),
+							),
+						),
+					)
+				) ),
+				function ( $p ) use ( $period ) {
+					/** @var AmapressAdhesion_paiement $p */
+//					if ( $period && ! $p->getPeriodId() ) {
+//						update_post_meta( $p->ID, 'amapress_adhesion_paiement_period', $period->ID );
+//					}
+
+					return $p->getUserId();
+				}
+			);
+			wp_cache_set( $key, $res );
+		}
+
+		return $res;
+	}
+
+
 	public static function getAllActiveByUserId( $date = null ) {
 		$key = "amapress_AmapressAdhesionPaiement_getAllActiveByUserId_{$date}";
 		$res = wp_cache_get( $key );

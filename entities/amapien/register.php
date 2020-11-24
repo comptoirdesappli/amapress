@@ -386,7 +386,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_column'              => true,
 				'col_def_hidden'           => true,
 				'related_posts_count_func' => function ( $user_id ) {
-					$adhesions = AmapressAdhesion_paiement::getAllActiveByUserId();
+					$adhesions = AmapressAdhesion_paiement::getAllActiveAndFutureByUserId();
 					if ( isset( $adhesions[ $user_id ] ) ) {
 						return count( $adhesions[ $user_id ] );
 					}
