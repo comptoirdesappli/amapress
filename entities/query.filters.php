@@ -2098,7 +2098,8 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
                                                    FROM $wpdb->postmeta as amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
                                                    INNER JOIN $wpdb->postmeta as amps_pm_status ON amps_pm_status.post_id = amps_pmach.post_id
-                                                   WHERE amps_pmach.meta_key='amapress_adhesion_paiement_user'
+                                                   INNER JOIN $wpdb->posts as amps_post_status ON amps_post_status.ID = amps_pmach.post_id
+                                                   WHERE amps_post_status.post_status = 'publish' AND amps_pmach.meta_key='amapress_adhesion_paiement_user' 
                                                    AND amps_pmach.meta_value IS NOT NULL
                                                    AND ( ( amps_pm_status.meta_key = 'amapress_adhesion_paiement_status' AND amps_pm_status.meta_value = 'not_received' ) )
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_date'
@@ -2108,7 +2109,8 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
                                                    FROM $wpdb->postmeta as amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
                                                    INNER JOIN $wpdb->postmeta as amps_pm_status ON amps_pm_status.post_id = amps_pmach.post_id
-                                                   WHERE amps_pmach.meta_key='amapress_adhesion_paiement_user'
+                                                   INNER JOIN $wpdb->posts as amps_post_status ON amps_post_status.ID = amps_pmach.post_id
+                                                   WHERE amps_post_status.post_status = 'publish' AND amps_pmach.meta_key='amapress_adhesion_paiement_user' 
                                                    AND amps_pmach.meta_value IS NOT NULL
                                                    AND ( ( amps_pm_status.meta_key = 'amapress_adhesion_paiement_status' AND amps_pm_status.meta_value = 'not_received' ) )
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_period'
@@ -2132,7 +2134,8 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
                                                    FROM $wpdb->postmeta as amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
                                                    INNER JOIN $wpdb->postmeta as amps_pm_status ON amps_pm_status.post_id = amps_pmach.post_id
-                                                   WHERE amps_pmach.meta_key='amapress_adhesion_paiement_user'
+                                                   INNER JOIN $wpdb->posts as amps_post_status ON amps_post_status.ID = amps_pmach.post_id
+                                                   WHERE amps_post_status.post_status = 'publish' AND amps_pmach.meta_key='amapress_adhesion_paiement_user' 
                                                    AND amps_pmach.meta_value IS NOT NULL
                                                    AND ( ( amps_pm_status.meta_key = 'amapress_adhesion_paiement_status' AND amps_pm_status.meta_value != 'not_received' ) )
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_date'
@@ -2142,7 +2145,8 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
                                                    FROM $wpdb->postmeta as amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
                                                    INNER JOIN $wpdb->postmeta as amps_pm_status ON amps_pm_status.post_id = amps_pmach.post_id
-                                                   WHERE amps_pmach.meta_key='amapress_adhesion_paiement_user'
+                                                   INNER JOIN $wpdb->posts as amps_post_status ON amps_post_status.ID = amps_pmach.post_id
+                                                   WHERE amps_post_status.post_status = 'publish' AND amps_pmach.meta_key='amapress_adhesion_paiement_user' 
                                                    AND amps_pmach.meta_value IS NOT NULL
                                                    AND ( ( amps_pm_status.meta_key = 'amapress_adhesion_paiement_status' AND amps_pm_status.meta_value != 'not_received' ) )
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_period'
@@ -2165,7 +2169,8 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 				$where .= $wpdb->prepare( " AND $wpdb->users.ID IN (SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta as amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
-                                                   WHERE amps_pmach.meta_key='amapress_adhesion_paiement_user'
+                                                   INNER JOIN $wpdb->posts as amps_post_status ON amps_post_status.ID = amps_pmach.post_id
+                                                   WHERE amps_post_status.post_status = 'publish' AND amps_pmach.meta_key='amapress_adhesion_paiement_user' 
                                                    AND amps_pmach.meta_value IS NOT NULL
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_date'
                                                    AND amps_pm_contrat.meta_value BETWEEN %d AND %d)", intval( $min_date ), intval( $max_date ) );
@@ -2173,7 +2178,8 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 				$where .= $wpdb->prepare( " AND $wpdb->users.ID IN (SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta as amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
-                                                   WHERE amps_pmach.meta_key='amapress_adhesion_paiement_user'
+                                                   INNER JOIN $wpdb->posts as amps_post_status ON amps_post_status.ID = amps_pmach.post_id
+                                                   WHERE amps_post_status.post_status = 'publish' AND amps_pmach.meta_key='amapress_adhesion_paiement_user' 
                                                    AND amps_pmach.meta_value IS NOT NULL
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_period'
                                                    AND amps_pm_contrat.meta_value = %d)", $period->ID );
