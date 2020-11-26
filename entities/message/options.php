@@ -103,6 +103,10 @@ function amapress_replace_mail_user_placeholder( $user, $subopt, $fmt ) {
 
 			return '<div class="user-photo">' . $img . '</div>';
 		default:
+			if ( empty( $subopt ) ) {
+				return $user->getDisplayName();
+			}
+
 			return $user->getProperty( $subopt );
 	}
 }
