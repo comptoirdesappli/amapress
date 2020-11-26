@@ -41,10 +41,10 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 //                'csv_required' => true,
 //            ),
 			'date'          => array(
-				'name'         => __( 'Date de remise', 'amapress' ),
+				'name'         => __( 'Date de paiement', 'amapress' ),
 				'type'         => 'date',
 				'required'     => true,
-				'desc'         => __( 'Date de remise du règlement au producteur', 'amapress' ),
+				'desc'         => __( 'Indiquez la date prévisionnelle d\'encaissement du chèque par le producteur', 'amapress' ),
 //                'import_key' => true,
 				'csv_required' => true,
 				'searchable'   => true,

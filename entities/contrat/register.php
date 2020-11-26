@@ -1820,6 +1820,105 @@ jQuery(function($) {
 //						),
 
 			// 6/6 - reglements
+			'liste_dates_paiements' => array(
+				'name'             => __( 'Calendrier des paiements', 'amapress' ),
+				'type'             => 'multidate',
+				'readonly'         => 'amapress_is_contrat_instance_readonly',
+				'required'         => true,
+				'group'            => __( '6/6 - Règlements', 'amapress' ),
+				'show_column'      => false,
+				'show_dates_count' => true,
+				'show_dates_list'  => true,
+				'desc'             => function ( $option ) {
+					$ret = __( 'Indiquez les dates indicatives d’encaissement des chèques communiquées par le producteur pour les règlements en plusieurs fois', 'amapress' );
+					if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
+						$ret .= '<br/><a id="amapress_recopy_dates_deliv_to_paiements" class="button button-secondary">' . __( 'Toutes les dates de distribution', 'amapress' ) . '</a>';
+						$ret .= '<a id="amapress_first_deliv_dates_paiements" class="button button-secondary">' . __( 'Première distribution de chaque mois', 'amapress' ) . '</a>';
+						$ret .= '<a id="amapress_last_deliv_dates_paiements" class="button button-secondary">' . __( 'Dernière distribution de chaque mois', 'amapress' ) . '</a>';
+						$ret .= '<br/><a id="amapress_first_dates_paiements" class="button button-secondary">' . __( 'Premier jour de chaque mois', 'amapress' ) . '</a>';
+						$ret .= '<a id="amapress_last_dates_paiements" class="button button-secondary">' . __( 'Dernier jour de chaque mois', 'amapress' ) . '</a>';
+						$ret .= '<br/><a id="amapress_reset_dates_paiements" class="button button-secondary">' . __( 'Supprimer toutes les dates', 'amapress' ) . '</a>';
+						$ret .= '<script type="application/javascript">jQuery(function($) {
+    var $source = $("#amapress_contrat_instance_liste_dates-cal");
+    var $dest = $("#amapress_contrat_instance_liste_dates_paiements-cal");
+    var getDatesByMonth = function() {
+              var groupBy = function(xs, keyer) {
+          return xs.reduce(function(rv, x) {
+            var key = keyer(x);
+            (rv[key] = rv[key] || []).push(x);
+            return rv;
+          }, {});
+        };
+        return groupBy(
+            $("#amapress_contrat_instance_liste_dates-cal").multiDatesPicker("getDates"),
+            function(d) {
+                var dt = $.datepicker.parseDate("' . TitanFrameworkOptionMultiDate::$default_jquery_date_format . '",d);
+                return dt.getMonth() + "-" + dt.getFullYear();
+            }
+            );  
+    };
+    $("#amapress_recopy_dates_deliv_to_paiements").click(function() {
+        $dest.multiDatesPicker("resetDates");
+        $dest.multiDatesPicker(
+            "value",
+            $source.multiDatesPicker("value")
+        );
+        $dest.multiDatesPicker("refresh");
+    });
+    $("#amapress_first_deliv_dates_paiements").click(function() {
+        var by_months = getDatesByMonth();
+        var by_month_dates = [];
+        for (var k in by_months) {
+            by_month_dates.push(by_months[k][0]);
+        }
+        $dest.multiDatesPicker("resetDates");
+        $dest.multiDatesPicker("addDates", by_month_dates);
+        $dest.multiDatesPicker("refresh");
+    });
+    $("#amapress_last_deliv_dates_paiements").click(function() {
+        var by_months = getDatesByMonth();
+        var by_month_dates = [];
+        for (var k in by_months) {
+            by_month_dates.push(by_months[k][by_months[k].length - 1]);
+        }
+        $dest.multiDatesPicker("resetDates");
+        $dest.multiDatesPicker("addDates", by_month_dates);
+        $dest.multiDatesPicker("refresh");
+    });
+    $("#amapress_first_dates_paiements").click(function() {
+        var by_months = getDatesByMonth();
+        var by_month_dates = [];
+        for (var k in by_months) {
+            var d = $.datepicker.parseDate("dd/mm/yy", by_months[k][0]);
+            d.setDate(1);
+            by_month_dates.push(d);
+        }
+        $dest.multiDatesPicker("resetDates");
+        $dest.multiDatesPicker("addDates", by_month_dates);
+        $dest.multiDatesPicker("refresh");
+    });
+    $("#amapress_last_dates_paiements").click(function() {
+        var by_months = getDatesByMonth();
+        var by_month_dates = [];
+        for (var k in by_months) {
+            var d = $.datepicker.parseDate("dd/mm/yy", by_months[k][0]);
+            d.setDate(0);
+            by_month_dates.push(d);
+        }
+        $dest.multiDatesPicker("resetDates");
+        $dest.multiDatesPicker("addDates", by_month_dates);
+        $dest.multiDatesPicker("refresh");
+    });
+    $("#amapress_reset_dates_paiements").click(function() {
+        $dest.multiDatesPicker("resetDates");
+        $dest.multiDatesPicker("refresh");
+    });
+});</script>';
+					}
+
+					return $ret;
+				},
+			),
 			'paiements'             => array(
 				'name'              => __( 'Nombre de chèques', 'amapress' ),
 				'type'              => 'multicheck',
@@ -2079,105 +2178,6 @@ jQuery(function($) {
 				'group'       => __( '6/6 - Règlements', 'amapress' ),
 				'show_column' => false,
 				'desc'        => __( 'Indiquer l’ordre des chèques si différent du nom du producteur', 'amapress' ),
-			),
-			'liste_dates_paiements' => array(
-				'name'             => __( 'Calendrier des remises de chèques', 'amapress' ),
-				'type'             => 'multidate',
-				'readonly'         => 'amapress_is_contrat_instance_readonly',
-				'required'         => true,
-				'group'            => __( '6/6 - Règlements', 'amapress' ),
-				'show_column'      => false,
-				'show_dates_count' => true,
-				'show_dates_list'  => true,
-				'desc'             => function ( $option ) {
-					$ret = __( 'Sélectionner les dates auxquelles le producteur souhaite recevoir les règlements', 'amapress' );
-					if ( ! amapress_is_contrat_instance_readonly( $option ) ) {
-						$ret .= '<br/><a id="amapress_recopy_dates_deliv_to_paiements" class="button button-secondary">' . __( 'Toutes les dates de distribution', 'amapress' ) . '</a>';
-						$ret .= '<a id="amapress_first_deliv_dates_paiements" class="button button-secondary">' . __( 'Première distribution de chaque mois', 'amapress' ) . '</a>';
-						$ret .= '<a id="amapress_last_deliv_dates_paiements" class="button button-secondary">' . __( 'Dernière distribution de chaque mois', 'amapress' ) . '</a>';
-						$ret .= '<br/><a id="amapress_first_dates_paiements" class="button button-secondary">' . __( 'Premier jour de chaque mois', 'amapress' ) . '</a>';
-						$ret .= '<a id="amapress_last_dates_paiements" class="button button-secondary">' . __( 'Dernier jour de chaque mois', 'amapress' ) . '</a>';
-						$ret .= '<br/><a id="amapress_reset_dates_paiements" class="button button-secondary">' . __( 'Supprimer toutes les dates', 'amapress' ) . '</a>';
-						$ret .= '<script type="application/javascript">jQuery(function($) {
-    var $source = $("#amapress_contrat_instance_liste_dates-cal");
-    var $dest = $("#amapress_contrat_instance_liste_dates_paiements-cal");
-    var getDatesByMonth = function() {
-              var groupBy = function(xs, keyer) {
-          return xs.reduce(function(rv, x) {
-            var key = keyer(x);
-            (rv[key] = rv[key] || []).push(x);
-            return rv;
-          }, {});
-        };
-        return groupBy(
-            $("#amapress_contrat_instance_liste_dates-cal").multiDatesPicker("getDates"),
-            function(d) {
-                var dt = $.datepicker.parseDate("' . TitanFrameworkOptionMultiDate::$default_jquery_date_format . '",d);
-                return dt.getMonth() + "-" + dt.getFullYear();
-            }
-            );  
-    };
-    $("#amapress_recopy_dates_deliv_to_paiements").click(function() {
-        $dest.multiDatesPicker("resetDates");
-        $dest.multiDatesPicker(
-            "value",
-            $source.multiDatesPicker("value")
-        );
-        $dest.multiDatesPicker("refresh");
-    });
-    $("#amapress_first_deliv_dates_paiements").click(function() {
-        var by_months = getDatesByMonth();
-        var by_month_dates = [];
-        for (var k in by_months) {
-            by_month_dates.push(by_months[k][0]);
-        }
-        $dest.multiDatesPicker("resetDates");
-        $dest.multiDatesPicker("addDates", by_month_dates);
-        $dest.multiDatesPicker("refresh");
-    });
-    $("#amapress_last_deliv_dates_paiements").click(function() {
-        var by_months = getDatesByMonth();
-        var by_month_dates = [];
-        for (var k in by_months) {
-            by_month_dates.push(by_months[k][by_months[k].length - 1]);
-        }
-        $dest.multiDatesPicker("resetDates");
-        $dest.multiDatesPicker("addDates", by_month_dates);
-        $dest.multiDatesPicker("refresh");
-    });
-    $("#amapress_first_dates_paiements").click(function() {
-        var by_months = getDatesByMonth();
-        var by_month_dates = [];
-        for (var k in by_months) {
-            var d = $.datepicker.parseDate("dd/mm/yy", by_months[k][0]);
-            d.setDate(1);
-            by_month_dates.push(d);
-        }
-        $dest.multiDatesPicker("resetDates");
-        $dest.multiDatesPicker("addDates", by_month_dates);
-        $dest.multiDatesPicker("refresh");
-    });
-    $("#amapress_last_dates_paiements").click(function() {
-        var by_months = getDatesByMonth();
-        var by_month_dates = [];
-        for (var k in by_months) {
-            var d = $.datepicker.parseDate("dd/mm/yy", by_months[k][0]);
-            d.setDate(0);
-            by_month_dates.push(d);
-        }
-        $dest.multiDatesPicker("resetDates");
-        $dest.multiDatesPicker("addDates", by_month_dates);
-        $dest.multiDatesPicker("refresh");
-    });
-    $("#amapress_reset_dates_paiements").click(function() {
-        $dest.multiDatesPicker("resetDates");
-        $dest.multiDatesPicker("refresh");
-    });
-});</script>';
-					}
-
-					return $ret;
-				},
 			),
 			'min_cheque_amount'     => array(
 				'name'        => __( 'Montant minimum', 'amapress' ),
