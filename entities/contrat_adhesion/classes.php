@@ -484,7 +484,7 @@ class AmapressAdhesion extends TitanEntity {
 				'desc' => __( 'Prénom Nom co-adhérent', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					$coadh = $adh->getAdherent2();
-					if ( ! $coadh ) {
+					if ( ! $coadh && ! Amapress::hasPartialCoAdhesion() ) {
 						$coadh = $adh->getAdherent()->getFirstCoAdherent();
 						if ( ! $coadh ) {
 							return '';
@@ -498,7 +498,7 @@ class AmapressAdhesion extends TitanEntity {
 				'desc' => __( 'Pseudo co-adhérent', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					$coadh = $adh->getAdherent2();
-					if ( ! $coadh ) {
+					if ( ! $coadh && ! Amapress::hasPartialCoAdhesion() ) {
 						$coadh = $adh->getAdherent()->getFirstCoAdherent();
 						if ( ! $coadh ) {
 							return '';
@@ -512,7 +512,7 @@ class AmapressAdhesion extends TitanEntity {
 				'desc' => __( 'Nom public co-adhérent', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					$coadh = $adh->getAdherent2();
-					if ( ! $coadh ) {
+					if ( ! $coadh && ! Amapress::hasPartialCoAdhesion() ) {
 						$coadh = $adh->getAdherent()->getFirstCoAdherent();
 						if ( ! $coadh ) {
 							return '';
@@ -526,7 +526,7 @@ class AmapressAdhesion extends TitanEntity {
 				'desc' => __( 'Nom co-adhérent', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					$coadh = $adh->getAdherent2();
-					if ( ! $coadh ) {
+					if ( ! $coadh && ! Amapress::hasPartialCoAdhesion() ) {
 						$coadh = $adh->getAdherent()->getFirstCoAdherent();
 						if ( ! $coadh ) {
 							return '';
@@ -540,7 +540,7 @@ class AmapressAdhesion extends TitanEntity {
 				'desc' => __( 'Prénom co-adhérent', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					$coadh = $adh->getAdherent2();
-					if ( ! $coadh ) {
+					if ( ! $coadh && ! Amapress::hasPartialCoAdhesion() ) {
 						$coadh = $adh->getAdherent()->getFirstCoAdherent();
 						if ( ! $coadh ) {
 							return '';
@@ -554,7 +554,7 @@ class AmapressAdhesion extends TitanEntity {
 				'desc' => __( 'Adresse co-adhérent', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					$coadh = $adh->getAdherent2();
-					if ( ! $coadh ) {
+					if ( ! $coadh && ! Amapress::hasPartialCoAdhesion() ) {
 						$coadh = $adh->getAdherent()->getFirstCoAdherent();
 						if ( ! $coadh ) {
 							return '';
@@ -568,7 +568,7 @@ class AmapressAdhesion extends TitanEntity {
 				'desc' => __( 'Téléphone co-adhérent', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					$coadh = $adh->getAdherent2();
-					if ( ! $coadh ) {
+					if ( ! $coadh && ! Amapress::hasPartialCoAdhesion() ) {
 						$coadh = $adh->getAdherent()->getFirstCoAdherent();
 						if ( ! $coadh ) {
 							return '';
@@ -582,7 +582,7 @@ class AmapressAdhesion extends TitanEntity {
 				'desc' => __( 'Email co-adhérent', 'amapress' ),
 				'func' => function ( AmapressAdhesion $adh ) {
 					$coadh = $adh->getAdherent2();
-					if ( ! $coadh ) {
+					if ( ! $coadh && ! Amapress::hasPartialCoAdhesion() ) {
 						$coadh = $adh->getAdherent()->getFirstCoAdherent();
 						if ( ! $coadh ) {
 							return '';
