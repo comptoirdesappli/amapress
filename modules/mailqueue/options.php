@@ -62,7 +62,9 @@ jQuery(function($) {
 						'type'    => 'number',
 						'min'     => 30,
 						'unit'    => __( 'secondes', 'amapress' ),
-						'desc'    => __( 'Intervalle d\'exécution de la file d\'envoi des emails sortants', 'amapress' ),
+						'desc'    => __( 'Intervalle d\'exécution de la file d\'envoi des emails sortants', 'amapress' ) .
+						             __( '<br/>Cet intervalle sert également à cadencer l\'envoi dans les files d\'attentes des Emails groupés (avec SMTP externe) : ', 'amapress' ) .
+						             Amapress::makeLink( admin_url( 'edit.php?post_type=amps_mlgrp' ), __( ' Tableau de bord>Emails groupés>Comptes', 'amapress' ), true, true ),
 						'default' => AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL,
 					),
 					array(

@@ -238,7 +238,9 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'name'        => __( 'Emails par heure', 'amapress' ),
 				'group'       => __( 'Serveur sortant', 'amapress' ),
 				'type'        => 'number',
-				'desc'        => __( 'Nombre maximum d\'envoi de mail par heure autorisé', 'amapress' ),
+				'desc'        => __( 'Nombre maximum d\'envoi de mail par heure autorisé', 'amapress' ) .
+				                 __( '<br/>L\'intervalle d\'envoi est celui configuré pour la file d\'attente globale : ', 'amapress' ) .
+				                 Amapress::makeLink( admin_url( 'options-general.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_options' ), __( 'Tableau de bord>Réglages>File d\'attente & SMTP, onglet Options de la file des emails sortants ', 'amapress' ) ),
 				'max'         => 10000,
 				'show_column' => false,
 			),
