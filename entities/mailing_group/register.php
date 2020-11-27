@@ -414,25 +414,31 @@ function amapress_get_mailing_group_archive_list( $mailing_group_id, $type ) {
 	}
 	$columns = array(
 		array(
-			'title' => __( 'Date', 'amapress' ),
-			'data'  => array(
+			'title'              => __( 'Date', 'amapress' ),
+			'data'               => array(
 				'_'    => 'date',
 				'sort' => 'date_sort',
-			)
+			),
+			'responsivePriority' => 1,
+			'className'          => 'min-tablet',
 		),
 		array(
-			'title' => __( 'De', 'amapress' ),
-			'data'  => array(
+			'title'              => __( 'De', 'amapress' ),
+			'data'               => array(
 				'_'    => 'from',
 				'sort' => 'from',
-			)
+			),
+			'responsivePriority' => 1,
+			'className'          => 'min-tablet',
 		),
 		array(
-			'title' => __( 'Subject', 'amapress' ),
-			'data'  => array(
+			'title'              => __( 'Subject', 'amapress' ),
+			'data'               => array(
 				'_'    => 'subject',
 				'sort' => 'subject',
-			)
+			),
+			'responsivePriority' => 1,
+			'className'          => 'min-tablet',
 		),
 		array(
 			'title' => __( 'Type', 'amapress' ),
@@ -449,11 +455,12 @@ function amapress_get_mailing_group_archive_list( $mailing_group_id, $type ) {
 			)
 		),
 		array(
-			'title' => __( 'Contenu', 'amapress' ),
-			'data'  => array(
+			'title'     => __( 'Contenu', 'amapress' ),
+			'data'      => array(
 				'_'    => 'content',
 				'sort' => 'content',
-			)
+			),
+			'className' => 'none',
 		),
 		array(
 			'title' => '',
@@ -485,7 +492,8 @@ function amapress_get_mailing_group_archive_list( $mailing_group_id, $type ) {
 
 	return amapress_get_datatable( $type . '-mails', $columns, $data,
 		array(
-			'aaSorting' => [ [ 0, 'desc' ] ]
+			'aaSorting' => [ [ 0, 'desc' ] ],
+			'nowrap'    => false,
 		) );
 }
 
