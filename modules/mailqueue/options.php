@@ -254,23 +254,30 @@ function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] 
 	//compact('to', 'subject', 'message', 'headers', 'attachments', 'time', 'errors')
 	$columns   = array();
 	$columns[] = array(
-		'title' => __( 'Date', 'amapress' ),
-		'data'  => array(
+		'title'              => __( 'Date', 'amapress' ),
+		'data'               => array(
 			'_'    => 'time.display',
 			'sort' => 'time.val',
 		),
+		'responsivePriority' => 1,
+		'className'          => 'min-tablet',
 	);
 	$columns[] = array(
-		'title' => __( 'To', 'amapress' ),
-		'data'  => 'to',
+		'title'              => __( 'To', 'amapress' ),
+		'data'               => 'to',
+		'responsivePriority' => 1,
+		'className'          => 'min-tablet',
 	);
 	$columns[] = array(
-		'title' => __( 'Sujet', 'amapress' ),
-		'data'  => 'subject',
+		'title'              => __( 'Sujet', 'amapress' ),
+		'data'               => 'subject',
+		'responsivePriority' => 1,
+		'className'          => 'min-tablet',
 	);
 	$columns[] = array(
-		'title' => __( 'Message', 'amapress' ),
-		'data'  => 'message',
+		'title'     => __( 'Message', 'amapress' ),
+		'data'      => 'message',
+		'className' => 'none',
 	);
 	if ( 'errored' == $type ) {
 		$columns[] = array(
@@ -283,8 +290,9 @@ function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] 
 		);
 	}
 	$columns[] = array(
-		'title' => __( 'Headers', 'amapress' ),
-		'data'  => 'headers',
+		'title'     => __( 'Headers', 'amapress' ),
+		'data'      => 'headers',
+		'className' => 'none',
 	);
 //        array(
 //            'title' => '',
@@ -294,10 +302,20 @@ function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] 
 	$emails = AmapressSMTPMailingQueue::loadDataFromFiles( $mlgrp_id, true, $type );
 	$data   = array();
 	foreach ( $emails as $email ) {
-		$headers = implode( '<br/>', array_map( function ( $h ) {
+		$raw_headers = is_array( $email['headers'] ) ? $email['headers'] : [];
+		$headers     = implode( '<br/>', array_map( function ( $h ) {
 			return esc_html( $h );
-		}, is_array( $email['headers'] ) ? $email['headers'] : [] ) );
-		$msg     = $email['message'];
+		}, $raw_headers ) );
+		$cc          = '';
+		$bcc         = '';
+		foreach ( $raw_headers as $raw_header ) {
+			if ( 0 === strpos( $raw_header, 'Cc:' ) ) {
+				$cc = $raw_header;
+			} elseif ( 0 === strpos( $raw_header, 'Bcc:' ) ) {
+				$bcc = $raw_header;
+			}
+		}
+		$msg = $email['message'];
 		if ( is_array( $msg ) ) {
 			if ( isset( $msg['text'] ) ) {
 				$msg = $msg['text'];
@@ -352,7 +370,9 @@ function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] 
 				             . $link_delete_msg
 				             . ( 'errored' == $email['type'] ? $link_retry_msg : '' ),
 			),
-			'to'            => esc_html( str_replace( ',', ', ', $email['to'] ) ),
+			'to'            => esc_html( str_replace( ',', ', ', $email['to'] ) )
+			                   . ( ! empty( $cc ) ? '<br/>' . $cc : '' )
+			                   . ( ! empty( $bcc ) ? '<br/>' . $bcc : '' ),
 			'subject'       => esc_html( $email['subject'] ),
 //			'message' => '<div style="word-break: break-all">' . wpautop( $email['message'] ) . '</div>',
 			'message'       => $msg,
