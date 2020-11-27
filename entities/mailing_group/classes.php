@@ -531,8 +531,8 @@ class AmapressMailingGroup extends TitanEntity {
 								[ 'date' => amapress_time(), 'eml_file' => $eml_file, 'clean_from' => $cleaned_from ] );
 
 							$msg = $this->loadMessage( 'accepted', $msg_id );
-							if ( ! $this->sendMailByParamName( 'mailinggroup-distrib-sender', $msg, $msg['from'] ) ) {
-								$this->logError( 'fetchMails - sendMailByParamName - waiting-sender failed' );
+							if ( ! $this->sendMailByParamName( 'mailinggroup-distrib-sender-auto', $msg, $msg['from'] ) ) {
+								$this->logError( 'fetchMails - sendMailByParamName - auto-sender failed' );
 							}
 							$res = $this->sendMailFromMsgId( 'accepted', $msg_id );
 							if ( ! $res ) {

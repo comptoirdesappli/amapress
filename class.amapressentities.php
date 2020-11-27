@@ -407,7 +407,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									},
 								),
 								array(
-									'name' => __( 'Email de notification de distribution d\'un email à l\'émetteur', 'amapress' ),
+									'name' => __( 'Email de notification de distribution d\'un email à l\'émetteur (avec modération)', 'amapress' ),
 									'type' => 'heading',
 								),
 								array(
@@ -422,6 +422,29 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'name'    => __( 'Contenu de l\'email', 'amapress' ),
 									'type'    => 'editor',
 									'default' => wpautop( __( "Bonjour,\n\nVotre email pour la liste %%liste_nom%% a été accepté et distribué par %%moderated_by%%, modérateur de la liste.\n\n(L'objet de votre email : %%msg_subject%%)\n\n%%nom_site%%", 'amapress' ) ),
+									'desc'    => function ( $option ) {
+										return AmapressMailingGroup::getPlaceholdersHelp();
+									},
+								),
+								array(
+									'type' => 'save',
+								),
+								array(
+									'name' => __( 'Email de notification de distribution d\'un email à l\'émetteur (sans modération)', 'amapress' ),
+									'type' => 'heading',
+								),
+								array(
+									'id'       => 'mailinggroup-distrib-sender-auto-mail-subject',
+									'name'     => __( 'Sujet de l\'email', 'amapress' ),
+									'sanitize' => false,
+									'type'     => 'text',
+									'default'  => __( 'Diffusion automatique de votre email à %%liste_nom%%', 'amapress' ),
+								),
+								array(
+									'id'      => 'mailinggroup-distrib-sender-auto-mail-content',
+									'name'    => __( 'Contenu de l\'email', 'amapress' ),
+									'type'    => 'editor',
+									'default' => wpautop( __( "Bonjour,\n\nVotre email pour la liste %%liste_nom%% a été accepté et distribué automatiquement.\n\n(L'objet de votre email : %%msg_subject%%)\n\n%%nom_site%%", 'amapress' ) ),
 									'desc'    => function ( $option ) {
 										return AmapressMailingGroup::getPlaceholdersHelp();
 									},
