@@ -1759,6 +1759,9 @@ add_filter( 'admin_footer_text', function ( $content ) {
 	if ( empty( $subtitle ) ) {
 		$subtitle = get_admin_page_title();
 	}
+	if ( ! empty( $subtitle ) ) {
+		$subtitle = strip_tags( do_shortcode( $subtitle ) );
+	}
 
 	$content .= ' | <strong>' .
 	            Amapress::makeLink( '#', __( 'Tableau de bord>', 'amapress' ) . $title
