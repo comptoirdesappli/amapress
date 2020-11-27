@@ -712,9 +712,9 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 	$state['05_config'][] = amapress_get_check_state(
 		$use_mail_queue ? 'success' : 'warning',
 		__( 'Configuration de la file d\'envoi des emails sortants', 'amapress' ),
-		__( '<p>La plupart des hébergeurs ont une limite d\'envoi des emails sortants par heure. Actuellement le site est configuré pour envoyer au maximum ' . $nb_mails . ' emails par heure.
+		sprintf( __( '<p>La plupart des hébergeurs ont une limite d\'envoi des emails sortants par heure. Actuellement le site est configuré pour envoyer au maximum %s emails par heure.
 <br/>Par défaut, Amapress met les mails dans une file d\'attente avant de les envoyer pour éviter les blocages et rejets de l\'hébergeur. 
-<br />Un autre bénéfice est le réessaie d\'envoi en cas d\'erreur temporaire et le logs des emails envoyés par le site pour traçage des activités (pour une durée configurable).</p>', 'amapress' ),
+<br />Un autre bénéfice est le réessaie d\'envoi en cas d\'erreur temporaire et le logs des emails envoyés par le site pour traçage des activités (pour une durée configurable).</p>', 'amapress' ), $nb_mails ),
 		admin_url( 'options-general.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_options' )
 	);
 
