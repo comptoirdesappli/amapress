@@ -416,7 +416,7 @@ WHERE tt.taxonomy = %s", AmapressUser::AMAPIEN_GROUP ) );
 		if ( empty( $tel ) ) {
 			return [];
 		}
-		$tel     = preg_replace( '/\+33/', '0', $tel );
+		$tel     = preg_replace( '/\+33\s*(?:\(\s*0\s*\)|0)?/', '0', $tel );
 		$tel     = preg_replace( '/\D+/', '', $tel );
 		$matches = array();
 		$ret     = array();
