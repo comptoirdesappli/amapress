@@ -2143,7 +2143,7 @@ class AmapressAdhesion extends TitanEntity {
 
 	/** @return float */
 	public function getTotalAmount( $include_don = null ) {
-		if ( ! $this->getContrat_instanceId() ) {
+		if ( ! $this->getContrat_instance() ) {
 			return 0;
 		}
 		$dates = $this->getRemainingDates();
