@@ -2184,6 +2184,57 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_period'
                                                    AND amps_pm_contrat.meta_value = %d)", $period->ID );
 			}
+		} elseif ( $amapress_adhesion == 'ok_co' ) {
+			$all_user_ids     = get_users(
+				array(
+					'fields'            => 'ids',
+					'amapress_adhesion' => 'ok',
+				)
+			);
+			$all_user_ids_sql = amapress_prepare_in_sql( $all_user_ids );
+			foreach (
+				amapress_get_col_cached(
+					"SELECT DISTINCT $wpdb->usermeta.meta_value
+FROM $wpdb->usermeta
+WHERE  $wpdb->usermeta.meta_key IN (" .
+					( Amapress::hasPartialCoAdhesion() ? '' : "'amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3'," ) .
+					" 'amapress_user_co-foyer-1', 'amapress_user_co-foyer-2', 'amapress_user_co-foyer-3')
+AND $wpdb->usermeta.user_id IN ($all_user_ids_sql)" ) as $user_id
+			) {
+				$user_ids[] = intval( $user_id );
+			}
+			$all_user_ids = amapress_prepare_in_sql( array_merge( $all_user_ids, $user_ids ) );
+			$where        .= " AND $wpdb->users.ID IN ($all_user_ids)";
+		} elseif ( $amapress_adhesion == 'all_co' ) {
+			$all_user_ids     = get_users(
+				array(
+					'fields'            => 'ids',
+					'amapress_adhesion' => 'all',
+				)
+			);
+			$all_user_ids_sql = amapress_prepare_in_sql( $all_user_ids );
+			foreach (
+				amapress_get_col_cached(
+					"SELECT DISTINCT $wpdb->usermeta.meta_value
+FROM $wpdb->usermeta
+WHERE  $wpdb->usermeta.meta_key IN (" .
+					( Amapress::hasPartialCoAdhesion() ? '' : "'amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3'," ) .
+					" 'amapress_user_co-foyer-1', 'amapress_user_co-foyer-2', 'amapress_user_co-foyer-3')
+AND $wpdb->usermeta.user_id IN ($all_user_ids_sql)" ) as $user_id
+			) {
+				$user_ids[] = intval( $user_id );
+			}
+			$all_user_ids = amapress_prepare_in_sql( array_merge( $all_user_ids, $user_ids ) );
+			$where        .= " AND $wpdb->users.ID IN ($all_user_ids)";
+		} elseif ( $amapress_adhesion == 'none' ) {
+			$all_user_ids = get_users(
+				array(
+					'fields'            => 'ids',
+					'amapress_adhesion' => 'all_co',
+				)
+			);
+			$all_user_ids = amapress_prepare_in_sql( $all_user_ids );
+			$where        .= " AND $wpdb->users.ID NOT IN ($all_user_ids)";
 		}
 	}
 	$uqi->query_where .= $where;
