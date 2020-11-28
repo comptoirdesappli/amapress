@@ -384,7 +384,7 @@ function amapress_prepare_message_target( $query_string, $title, $target_type, $
 	if ( isset( $s[3] ) ) {
 		$opt['post_date_query_field'] = $s[3];
 	}
-	$opt['target_name']      = $title;
+	$opt['target_name']      = str_replace( ',', ';', $title );
 	$opt['with_coadherents'] = $with_coadherents;
 
 	return $opt;
