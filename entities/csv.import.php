@@ -978,6 +978,9 @@ add_filter( 'amapress_import_contrat_quantite_check_resolved_post_data_before_up
 		if ( isset( $postmeta['amapress_contrat_quantite_contrat_instance'] ) ) {
 			$post_id = $postmeta['amapress_contrat_quantite_contrat_instance'];
 			$contrat = AmapressContrat_instance::getBy( $post_id, true );
+			if ( ! $contrat ) {
+				return new WP_Error( 'contrat_not_found', sprintf( __( 'Le contrat %s n\'existe pas', 'amapress' ), $contrat->getTitle() ) );
+			}
 			if ( $contrat->isArchived() ) {
 				return new WP_Error( 'contrat_archived', sprintf( __( 'Le contrat %s est archivé !', 'amapress' ), $contrat->getTitle() ) );
 			}
