@@ -98,9 +98,10 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 	$raw_js_options = $options['raw_js_options'];
 	unset( $options['raw_js_options'] );
 
-	$nowrap      = $options['nowrap'] ? 'nowrap' : '';
-	$cellborder  = $options['cell-border'] ? 'cell-border' : '';
-	$table_style = "table-layout:{$options['table-layout']}";
+	$nowrap        = $options['nowrap'] ? 'nowrap' : '';
+	$cellborder    = $options['cell-border'] ? 'cell-border' : '';
+	$other_classes = ! empty( $options['other-classes'] ) ? $options['other-classes'] : '';
+	$table_style   = "table-layout:{$options['table-layout']}";
 
 	if ( ! empty( $options['empty_desc'] ) ) {
 		if ( empty( $options["language"] ) ) {
@@ -178,7 +179,7 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 
 	$ret = '';
 //    $ret  = "<div class='table-responsive'>"; class='display responsive nowrap'
-	$ret .= "<table id='$id' class='display $nowrap $cellborder' style='margin:0;$table_style' width='100%' cellspacing='0'>$table_content</table>";
+	$ret .= "<table id='$id' class='display $nowrap $cellborder $other_classes' style='margin:0;$table_style' width='100%' cellspacing='0'>$table_content</table>";
 //    $ret .= "</div>\n";
 	if ( ! $options['no_script'] ) {
 		$json = wp_json_encode( $options );
