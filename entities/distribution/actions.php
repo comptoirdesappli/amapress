@@ -111,6 +111,19 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		return false;
 	} );
 
+	if ( isset( $_GET['multi_liste'] ) ) {
+		$months = isset( $_GET['months'] ) ? intval( $_GET['months'] ) : 1;
+		if ( $months < 1 ) {
+			$months = 1;
+		}
+
+		return getMultiListeEmargement(
+			$dist->getDate(),
+			Amapress::add_a_month( $dist->getDate(), $months ),
+			$dist->getLieu()
+		);
+	}
+
 	$date             = $dist->getDate();
 	$dist_contrat_ids = $dist->getContratIds();
 	$active_contrats  = AmapressContrats::get_active_contrat_instances( null, $date, false, false );
@@ -537,6 +550,7 @@ line-height: 1.1;
 		}
 		echo '<a href="' . esc_attr( $pdf_url ) . '" class="btn btn-default btn-print">' . __( 'Imprimer en PDF', 'amapress' ) . '</a>';
 		echo '<a href="' . esc_attr( $dist->getPermalink() ) . '" class="btn btn-default">' . __( 'Revenir à la distribution', 'amapress' ) . '</a>';
+		echo '<a href="' . esc_attr( add_query_arg( 'multi_liste', 'T' ) ) . '" class="btn btn-default">' . __( 'Passer au mode multi-dates', 'amapress' ) . '</a>';
 
 		echo '<br/>';
 		if ( current_user_can( 'edit_distribution' ) ) {
@@ -931,3 +945,246 @@ add_action( 'wp_ajax_distrib_inscrire_slot', function () {
 	}
 	die();
 } );
+
+function getMultiListeEmargement( $start_date, $end_date, $lieu ) {
+	$dists = AmapressDistribution::get_distributions( $start_date, $end_date, 'ASC' );
+	$dists = array_filter( $dists, function ( $d ) use ( $lieu ) {
+		return $d->getLieuId() == $lieu->ID;
+	} );
+
+	$all_adhs = [];
+	foreach ( $dists as $dist ) {
+		foreach ( AmapressContrats::get_active_adhesions( null, null, $dist->getLieuId(), $dist->getDate() ) as $adh ) {
+			$all_adhs[ $adh->ID ] = $adh;
+		}
+	}
+
+	$show_address = Amapress::getOption( 'liste-emargement-show-address' );
+	if ( isset( $_GET['show_address'] ) ) {
+		$show_address = Amapress::toBool( $_GET['show_address'] );
+	}
+	$show_emails = Amapress::getOption( 'liste-emargement-show-mail' );
+	if ( isset( $_GET['show_email'] ) ) {
+		$show_emails = Amapress::toBool( $_GET['show_email'] );
+	}
+	$show_phone = Amapress::getOption( 'liste-emargement-show-phone' );
+	if ( isset( $_GET['show_phone'] ) ) {
+		$show_phone = Amapress::toBool( $_GET['show_phone'] );
+	}
+
+	$merge   = [ 0, 1 ];
+	$columns = array(
+		array(
+			'title' => __( 'Nom', 'amapress' ),
+			'data'  => array(
+				'_'    => 'last_name',
+				'sort' => 'last_name',
+			)
+		),
+		array(
+			'title' => __( 'Prénom', 'amapress' ),
+			'data'  => array(
+				'_'    => 'first_name',
+				'sort' => 'first_name',
+			)
+		),
+
+	);
+	if ( $show_address ) {
+		$columns[] = array(
+			'title' => __( 'Adresse', 'amapress' ),
+			'data'  => array(
+				'_'    => 'adresse_full',
+				'sort' => 'adresse_ville',
+			)
+		);
+		$merge[]   = count( $merge );
+	}
+	if ( $show_emails ) {
+		$columns[] = array(
+			'title' => __( 'Email', 'amapress' ),
+			'data'  => array(
+				'_'    => 'email',
+				'sort' => 'email',
+			)
+		);
+		$merge[]   = count( $merge );
+	}
+	if ( $show_phone ) {
+		$columns[] = array(
+			'title' => __( 'Téléphone', 'amapress' ),
+			'data'  => array(
+				'_'    => 'tel',
+				'sort' => 'tel',
+			)
+		);
+		$merge[]   = count( $merge );
+	}
+	$columns[] = array(
+		'title' => __( 'Contrat', 'amapress' ),
+		'data'  => array(
+			'_'    => 'contrat',
+			'sort' => 'contrat',
+		)
+	);
+	foreach ( $dists as $dist ) {
+		$columns[] = array(
+			'title' => date_i18n( 'd/m/Y', $dist->getDate() ),
+			'data'  => 'dist_' . $dist->getDate(),
+		);
+	}
+
+	$allow_partial_coadh = Amapress::hasPartialCoAdhesion();
+	$adhesions           = array_group_by(
+		array_values( $all_adhs ),
+		function ( $adh ) use ( $allow_partial_coadh, $start_date ) {
+			/** @var AmapressAdhesion $adh */
+			if ( ! $adh->getAdherentId() ) {
+				return '';
+			}
+			$user = $adh->getAdherent()->getUser();
+			if ( $allow_partial_coadh ) {
+				$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID, false, $start_date, $adh->getContrat_instanceId() ) );
+			} else {
+				$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID, false, $start_date ) );
+			}
+
+			return implode( '_', $user_ids );
+		} );
+
+	$data = [];
+	/** @var AmapressAdhesion[] $adhs */
+	foreach ( $adhesions as $user_ids => $adhs ) {
+		$user_ids = explode( '_', $user_ids );
+		$users    = array_map( function ( $user_id ) {
+			return amapress_get_user_by_id_or_archived( intval( $user_id ) );
+		}, $user_ids );
+
+		foreach ( $adhs as $adhesion ) {
+
+			$line = array();
+
+			$line['first_name'] = implode( ' / ', array_map( function ( $user ) {
+				return $user->first_name;
+			}, $users ) );
+			$line['last_name']  = implode( ' / ', array_map( function ( $user ) use ( $for_pdf ) {
+				$val = ! empty( $user->last_name ) ? $user->last_name : $user->display_name;
+				if ( ! $for_pdf && current_user_can( 'edit_users' ) ) {
+					$val = Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $user->ID ), $val, true, true );
+				}
+				$adh = AmapressUser::getBy( $user );
+				if ( ! empty( $adh->getAdditionalCoAdherents() ) ) {
+					$val .= ' / ' . esc_html( $adh->getAdditionalCoAdherents() );
+				}
+
+				return $val;
+			}, $users ) );
+
+			if ( $show_phone ) {
+				$phones = array_unique( array_map( function ( $user ) use ( $for_pdf ) {
+					$adh = AmapressUser::getBy( $user );
+
+					return $adh->getTelTo( true, false, $for_pdf ) . ( ! empty( $adh->getAdditionalCoAdherentsInfos() ) ? '<br/>' . esc_html( $adh->getAdditionalCoAdherentsInfos() ) : '' );
+				}, $users ) );
+				$phones = array_filter( $phones, function ( $s ) {
+					return ! empty( trim( $s ) );
+				} );
+				if ( $for_pdf && ! empty( $phones ) ) {
+					$phones = [ array_shift( $phones ) ];
+				}
+				$line['tel'] = implode( '<br/>', $phones );
+			}
+			if ( $show_emails ) {
+				$line['email'] = implode( '<br/>', array_map( function ( $user ) {
+					$adh = AmapressUser::getBy( $user );
+
+					return implode( ',', $adh->getAllEmails() );
+				}, $users ) );
+			}
+			if ( $show_address ) {
+				$line['adresse_full'] = implode( '<br/>', array_map( function ( $user ) {
+					$adh = AmapressUser::getBy( $user );
+
+					return $adh->getAdresse();
+				}, $users ) );
+
+				$line['adresse_ville'] = implode( '<br/>', array_map( function ( $user ) {
+					$adh = AmapressUser::getBy( $user );
+
+					return $adh->getVille();
+				}, $users ) );
+			}
+			$line['contrat'] = $adhesion->getContrat_instance()->getModelTitleWithSubName();
+
+			foreach ( $dists as $dist ) {
+				$quant = $adhesion->getContrat_quantites_Codes_AsString( $dist->getDate() );
+				if ( $adhesion->getContrat_instance()->isPanierVariable() && ! empty( $quant ) ) {
+					$quant = 'Var.';
+				}
+
+				$line[ 'dist_' . $dist->getDate() ] = $quant;
+			}
+
+			$data[] = $line;
+		}
+	}
+
+	ob_start();
+	echo '<style type="text/css">
+a {
+	color: black !important;
+	text-decoration: none;
+}
+table, td, th { 
+	border: 1px solid black; 
+	border-collapse: collapse; 
+	padding: 2px; 
+}
+.odd { 
+	background-color: #EEEEEE; 
+}
+@media print {
+	.emarge-multi-actions {
+		display: none;
+	}
+}
+</style>';
+
+	usort( $data, function ( $a, $b ) {
+		$ret = strcmp( $a['last_name'], $b['last_name'] );
+		if ( 0 == $ret ) {
+			$ret = strcmp( $a['first_name'], $b['first_name'] );
+		}
+		if ( 0 == $ret ) {
+			$ret = strcmp( $a['contrat'], $b['contrat'] );
+		}
+
+		return $ret;
+	} );
+
+	echo '<h2>' . sprintf( 'Liste d\'émargement du %s au %s - %s',
+			date_i18n( 'd/m/Y', $start_date ), date_i18n( 'd/m/Y', $end_date ), $lieu->getTitle()
+		) . '</h2>';
+
+	echo '<div class="emarge-multi-actions">';
+	echo Amapress::makeButtonLink( add_query_arg( 'months', '1' ), __( 'Pour un mois', 'amapress' ) );
+	echo Amapress::makeButtonLink( add_query_arg( 'months', '2' ), __( 'Pour deux mois', 'amapress' ) );
+	echo Amapress::makeButtonLink( add_query_arg( 'months', '3' ), __( 'Pour trois mois', 'amapress' ) );
+	echo Amapress::makeButtonLink( add_query_arg( 'months', '6' ), __( 'Pour six mois', 'amapress' ) );
+	echo '</div>';
+
+	amapress_echo_datatable( 'liste-emargement', $columns, $data,
+		array(
+			'paging'        => false,
+			'searching'     => false,
+			'nowrap'        => false,
+			'responsive'    => false,
+			'rowsGroup'     => $merge,
+			'init_as_html'  => true,
+			'other-classes' => 'compact',
+			'aaSorting'     => [ [ 0, 'asc' ] ]
+		)
+	);
+
+	return ob_get_clean();
+}
