@@ -258,7 +258,7 @@ function amapress_register_entities_adhesion( $entities ) {
 					return $adh->getAdherent()->getUser()->last_name;
 				}
 			),
-			'adherent_email'    => array(
+			'adherent_email'   => array(
 				'csv_import'    => false,
 				'csv_export'    => true,
 				'hidden'        => true,
@@ -277,14 +277,15 @@ function amapress_register_entities_adhesion( $entities ) {
 					return $adh->getAdherent()->getUser()->user_email;
 				}
 			),
-			'adherent_address'  => array(
-				'csv_import' => false,
-				'csv_export' => true,
-				'hidden'     => true,
-				'group'      => __( '1/ Informations', 'amapress' ),
-				'name'       => __( 'Adresse', 'amapress' ),
-				'type'       => 'custom',
-				'column'     => function ( $post_id ) {
+			'adherent_address' => array(
+				'csv_import'     => false,
+				'csv_export'     => true,
+				'hidden'         => true,
+				'group'          => __( '1/ Informations', 'amapress' ),
+				'name'           => __( 'Adresse', 'amapress' ),
+				'type'           => 'custom',
+				'col_def_hidden' => true,
+				'column'         => function ( $post_id ) {
 					$adh = AmapressAdhesion::getBy( $post_id );
 					if ( ! $adh->getAdherentId() ) {
 						return '';
@@ -293,7 +294,24 @@ function amapress_register_entities_adhesion( $entities ) {
 					return $adh->getAdherent()->getFormattedAdresse();
 				}
 			),
-			'status'            => array(
+			'adherent_phone'   => array(
+				'csv_import'     => false,
+				'csv_export'     => true,
+				'col_def_hidden' => true,
+				'hidden'         => true,
+				'group'          => __( '1/ Informations', 'amapress' ),
+				'name'           => __( 'Téléphone', 'amapress' ),
+				'type'           => 'custom',
+				'column'         => function ( $post_id ) {
+					$adh = AmapressAdhesion::getBy( $post_id );
+					if ( ! $adh->getAdherentId() ) {
+						return '';
+					}
+
+					return $adh->getAdherent()->getTelTo( true );
+				}
+			),
+			'status'           => array(
 				'name'     => __( 'Statut', 'amapress' ),
 				'type'     => 'select',
 				'group'    => __( 'Infos', 'amapress' ),
