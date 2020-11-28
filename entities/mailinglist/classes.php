@@ -603,10 +603,13 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 	}
 
 	public static function parseSelect( $html_content, $select_name, &$options ) {
+		$options = array();
 		preg_match( '%\<select\s+name\="' . $select_name . '".+?\<\/select\>%s', $html_content, $m );
+		if ( empty( $m[0] ) ) {
+			return null;
+		}
 		$options_matches = array();
 		preg_match_all( '%\<option\s+value\="(?<value>[^"]+)"(?<selected>\s+selected\="selected")?[^\>]*\>(?<text>[^\<]+)\<\/option\>%s', $m[0], $options_matches, PREG_SET_ORDER );
-		$options  = array();
 		$selected = null;
 		foreach ( $options_matches as $opt ) {
 			if ( ! empty( $opt['selected'] ) ) {
