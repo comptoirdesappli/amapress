@@ -247,7 +247,9 @@ function amapress_get_mailinglist_queries() {
 	$ret['all=T']                                    = __( 'Tous les utilisateurs enregistrés', 'amapress' );
 	$ret["amapress_role=never_logged"]               = __( "Amapiens jamais connectés", 'amapress' );
 	$ret["amapress_adhesion=ok"]                     = __( "Amapiens avec adhésion", 'amapress' );
-	$ret["amapress_adhesion=nok"]                    = __( "Amapiens sans adhésion", 'amapress' );
+	$ret["amapress_adhesion=ok_co"]                  = __( "Amapiens avec adhésion (et co-adhérents/membres du foyer)", 'amapress' );
+	$ret["amapress_adhesion=nok"]                    = __( "Amapiens avec adhésion non réglée", 'amapress' );
+	$ret["amapress_adhesion=none"]                   = __( "Amapiens sans adhésion", 'amapress' );
 	$ret["amapress_contrat=no&amapress_adhesion=ok"] = __( "Amapiens avec adhésion sans contrat", 'amapress' );
 	$ret["amapress_contrat=no"]                      = __( "Amapiens sans contrat", 'amapress' );
 	$ret["amapress_contrat=active"]                  = __( "Amapiens avec contrat", 'amapress' );
