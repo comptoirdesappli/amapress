@@ -486,9 +486,9 @@ class AmapressAdhesion extends TitanEntity {
 					$coadh = $adh->getAdherent2();
 					if ( ! $coadh && ! Amapress::hasPartialCoAdhesion() ) {
 						$coadh = $adh->getAdherent()->getFirstCoAdherent();
-						if ( ! $coadh ) {
-							return '';
-						}
+					}
+					if ( ! $coadh ) {
+						return '';
 					}
 
 					return $coadh->getDisplayName();
@@ -500,9 +500,9 @@ class AmapressAdhesion extends TitanEntity {
 					$coadh = $adh->getAdherent2();
 					if ( ! $coadh && ! Amapress::hasPartialCoAdhesion() ) {
 						$coadh = $adh->getAdherent()->getFirstCoAdherent();
-						if ( ! $coadh ) {
-							return '';
-						}
+					}
+					if ( ! $coadh ) {
+						return '';
 					}
 
 					return $coadh->getUser()->nickname;
@@ -514,9 +514,9 @@ class AmapressAdhesion extends TitanEntity {
 					$coadh = $adh->getAdherent2();
 					if ( ! $coadh && ! Amapress::hasPartialCoAdhesion() ) {
 						$coadh = $adh->getAdherent()->getFirstCoAdherent();
-						if ( ! $coadh ) {
-							return '';
-						}
+					}
+					if ( ! $coadh ) {
+						return '';
 					}
 
 					return $coadh->getUser()->display_name;
@@ -528,9 +528,9 @@ class AmapressAdhesion extends TitanEntity {
 					$coadh = $adh->getAdherent2();
 					if ( ! $coadh && ! Amapress::hasPartialCoAdhesion() ) {
 						$coadh = $adh->getAdherent()->getFirstCoAdherent();
-						if ( ! $coadh ) {
-							return '';
-						}
+					}
+					if ( ! $coadh ) {
+						return '';
 					}
 
 					return $coadh->getUser()->last_name;
@@ -542,9 +542,9 @@ class AmapressAdhesion extends TitanEntity {
 					$coadh = $adh->getAdherent2();
 					if ( ! $coadh && ! Amapress::hasPartialCoAdhesion() ) {
 						$coadh = $adh->getAdherent()->getFirstCoAdherent();
-						if ( ! $coadh ) {
-							return '';
-						}
+					}
+					if ( ! $coadh ) {
+						return '';
 					}
 
 					return $coadh->getUser()->first_name;
@@ -556,9 +556,9 @@ class AmapressAdhesion extends TitanEntity {
 					$coadh = $adh->getAdherent2();
 					if ( ! $coadh && ! Amapress::hasPartialCoAdhesion() ) {
 						$coadh = $adh->getAdherent()->getFirstCoAdherent();
-						if ( ! $coadh ) {
-							return '';
-						}
+					}
+					if ( ! $coadh ) {
+						return '';
 					}
 
 					return $coadh->getFormattedAdresse();
@@ -570,9 +570,9 @@ class AmapressAdhesion extends TitanEntity {
 					$coadh = $adh->getAdherent2();
 					if ( ! $coadh && ! Amapress::hasPartialCoAdhesion() ) {
 						$coadh = $adh->getAdherent()->getFirstCoAdherent();
-						if ( ! $coadh ) {
-							return '';
-						}
+					}
+					if ( ! $coadh ) {
+						return '';
 					}
 
 					return $coadh->getTelephone();
@@ -584,9 +584,9 @@ class AmapressAdhesion extends TitanEntity {
 					$coadh = $adh->getAdherent2();
 					if ( ! $coadh && ! Amapress::hasPartialCoAdhesion() ) {
 						$coadh = $adh->getAdherent()->getFirstCoAdherent();
-						if ( ! $coadh ) {
-							return '';
-						}
+					}
+					if ( ! $coadh ) {
+						return '';
 					}
 
 					return $coadh->getEmail();
