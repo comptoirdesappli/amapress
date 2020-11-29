@@ -1067,9 +1067,9 @@ function getMultiListeEmargement( $start_date, $end_date, $lieu ) {
 			$line['first_name'] = implode( ' / ', array_map( function ( $user ) {
 				return $user->first_name;
 			}, $users ) );
-			$line['last_name']  = implode( ' / ', array_map( function ( $user ) use ( $for_pdf ) {
+			$line['last_name']  = implode( ' / ', array_map( function ( $user ) {
 				$val = ! empty( $user->last_name ) ? $user->last_name : $user->display_name;
-				if ( ! $for_pdf && current_user_can( 'edit_users' ) ) {
+				if ( current_user_can( 'edit_users' ) ) {
 					$val = Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $user->ID ), $val, true, true );
 				}
 				$adh = AmapressUser::getBy( $user );
@@ -1081,17 +1081,14 @@ function getMultiListeEmargement( $start_date, $end_date, $lieu ) {
 			}, $users ) );
 
 			if ( $show_phone ) {
-				$phones = array_unique( array_map( function ( $user ) use ( $for_pdf ) {
+				$phones      = array_unique( array_map( function ( $user ) {
 					$adh = AmapressUser::getBy( $user );
 
-					return $adh->getTelTo( true, false, $for_pdf ) . ( ! empty( $adh->getAdditionalCoAdherentsInfos() ) ? '<br/>' . esc_html( $adh->getAdditionalCoAdherentsInfos() ) : '' );
+					return $adh->getTelTo( true, false ) . ( ! empty( $adh->getAdditionalCoAdherentsInfos() ) ? '<br/>' . esc_html( $adh->getAdditionalCoAdherentsInfos() ) : '' );
 				}, $users ) );
-				$phones = array_filter( $phones, function ( $s ) {
+				$phones      = array_filter( $phones, function ( $s ) {
 					return ! empty( trim( $s ) );
 				} );
-				if ( $for_pdf && ! empty( $phones ) ) {
-					$phones = [ array_shift( $phones ) ];
-				}
 				$line['tel'] = implode( '<br/>', $phones );
 			}
 			if ( $show_emails ) {
