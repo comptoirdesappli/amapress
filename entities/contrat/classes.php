@@ -767,7 +767,7 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getDateFactor( $dist_date, $quantite_id = null ) {
-		$key         = "AmapressCI_getDateFactor_{$dist_date}_{$quantite_id}";
+		$key         = "AmapressCI_getDateFactor_{$this->ID}_{$dist_date}_{$quantite_id}";
 		$date_factor = wp_cache_get( $key );
 		if ( false === $date_factor ) {
 			$date_factor = 1;
