@@ -87,7 +87,7 @@ class AmapressContrat extends TitanEntity {
 			return [];
 		}
 
-		$key = "AmapressContrat_getReferentsIds_{$lieu_id}_{$for_lieu_only}_{$for_contrat_only}";
+		$key = "AmapressContrat_getReferentsIds_{$this->ID}_{$lieu_id}_{$for_lieu_only}_{$for_contrat_only}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			if ( ! $for_contrat_only ) {

@@ -139,7 +139,7 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 
 	/** @return int[] */
 	public function getReferentsIds( $lieu_id = null, $for_lieu_only = false ) {
-		$key = "AmapressProd_getReferentsIds_{$lieu_id}_{$for_lieu_only}";
+		$key = "AmapressProd_getReferentsIds_{$this->ID}_{$lieu_id}_{$for_lieu_only}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			$res = array_filter( $for_lieu_only ? [
