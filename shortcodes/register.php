@@ -1160,8 +1160,9 @@ function amapress_register_shortcodes() {
 
 		$atts = shortcode_atts(
 			[
-				'distribution_link' => 'true',
-				'emargement_link'   => 'true'
+				'distribution_link'   => 'true',
+				'emargement_link'     => 'true',
+				'emargement_pdf_link' => 'true',
 			], $atts
 		);
 
@@ -1176,7 +1177,12 @@ function amapress_register_shortcodes() {
 					Amapress::makeLink( $next_distrib->getPermalink(), __( 'cette semaine', 'amapress' ) ) :
 					__( 'cette semaine', 'amapress' ) ) . '(' . date_i18n( 'd/m/Y', $next_distrib->getDate() ) . ')';
 			if ( Amapress::toBool( $atts['emargement_link'] ) ) {
-				$ret .= '<br/>' . Amapress::makeLink( $next_distrib->getListeEmargementHref(), __( 'Liste d\'émargement', 'amapress' ) );
+				$ret .= '<br/>' . Amapress::makeLink( $next_distrib->getListeEmargementHref(), __( 'Liste d\'émargement', 'amapress' ) )
+				        . '(' . date_i18n( 'd/m/Y', $next_distrib->getDate() ) . ')';
+			}
+			if ( Amapress::toBool( $atts['emargement_pdf_link'] ) ) {
+				$ret .= '<br/>' . Amapress::makeLink( $next_distrib->getListeEmargementHref() . '/pdf', __( 'Liste d\'émargement en PDF', 'amapress' ) )
+				        . '(' . date_i18n( 'd/m/Y', $next_distrib->getDate() ) . ')';
 			}
 			$ret .= '</p></div>';
 		} elseif ( AmapressDistributions::isCurrentUserResponsableNextWeek() ) {
@@ -1190,7 +1196,12 @@ function amapress_register_shortcodes() {
 					Amapress::makeLink( $next_distrib->getPermalink(), __( 'la semaine prochaine', 'amapress' ) ) :
 					__( 'la semaine prochaine', 'amapress' ) ) . '(' . date_i18n( 'd/m/Y', $next_distrib->getDate() ) . ')';
 			if ( Amapress::toBool( $atts['emargement_link'] ) ) {
-				$ret .= '<br/>' . Amapress::makeLink( $next_distrib->getListeEmargementHref(), __( 'Liste d\'émargement', 'amapress' ) );
+				$ret .= '<br/>' . Amapress::makeLink( $next_distrib->getListeEmargementHref(), __( 'Liste d\'émargement', 'amapress' ) )
+				        . '(' . date_i18n( 'd/m/Y', $next_distrib->getDate() ) . ')';
+			}
+			if ( Amapress::toBool( $atts['emargement_pdf_link'] ) ) {
+				$ret .= '<br/>' . Amapress::makeLink( $next_distrib->getListeEmargementHref() . '/pdf', __( 'Liste d\'émargement en PDF', 'amapress' ) )
+				        . '(' . date_i18n( 'd/m/Y', $next_distrib->getDate() ) . ')';
 			}
 			$ret .= '</p></div>';
 		}
@@ -1200,8 +1211,9 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => __( 'Afficher un message "Vous êtes responsable de distribution cette semaine/la semaine prochaine"', 'amapress' ),
 			'args' => [
-				'distribution_link' => __( '(Par défaut true) affiche un lien vers la distribution.', 'amapress' ),
-				'emargement_link'   => __( '(Par défaut true) affiche un lien vers la liste d\'émargement.', 'amapress' ),
+				'distribution_link'   => __( '(Par défaut true) affiche un lien vers la distribution.', 'amapress' ),
+				'emargement_link'     => __( '(Par défaut true) affiche un lien vers la liste d\'émargement.', 'amapress' ),
+				'emargement_pdf_link' => __( '(Par défaut false) affiche un lien vers la liste d\'émargement en PDF.', 'amapress' ),
 			]
 		] );
 
