@@ -56,6 +56,10 @@ define( 'AMAPRESS_VERSION', '0.96.168' );
 define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL', 60 );
 define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_LIMIT', 4 );
 
+if ( ! defined( 'AMAPRESS_MAX_LOG_FILESIZE' ) ) {
+	define( 'AMAPRESS_MAX_LOG_FILESIZE', 10 );
+}
+
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {
@@ -1554,6 +1558,17 @@ add_action( 'admin_init', function () {
 		if ( Amapress::getOption( 'test_mail_mode' ) || defined( 'AMAPRESS_TEST_MAIL_MODE' ) ) {
 			amapress_add_admin_notice( sprintf( __( 'Le site est en <a target="_blank" href="%s">mode de test mail</a>. Tous les emails envoyés par le site seront redirigés vers %s', 'amapress' ), admin_url( 'options-general.php?page=amapress_options_page&tab=amp_tests_config' ), Amapress::getOption( 'test_mail_target' ) ),
 				'info', false, false );
+		}
+
+		$error_log = ini_get( 'error_log' );
+		if ( ! empty( $error_log ) && file_exists( $error_log ) ) {
+			$log_size_in_mb = filesize( $error_log ) / ( 1024 * 1024 );
+			if ( $log_size_in_mb > AMAPRESS_MAX_LOG_FILESIZE ) {
+				amapress_add_admin_notice( sprintf(
+					__( 'Le fichier de log des erreurs PHP du site (%s) fait plus de %d Mo (%.2f Mo). Pensez le vider en cliquant sur le bouton "Clear log" dans le widget "PHP Error log"', 'amapress' ),
+					$error_log, AMAPRESS_MAX_LOG_FILESIZE, $log_size_in_mb ),
+					'warning', false, false );
+			}
 		}
 
 		if ( ! defined( 'DISABLE_WP_CRON' ) ) {
