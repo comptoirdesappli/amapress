@@ -327,6 +327,20 @@ function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] 
 			$msg = esc_html( $msg );
 		}
 
+		$link_delete_msg = '';
+
+		if ( 'errored' == $type || 'waiting' == $type ) {
+			$href            = add_query_arg(
+				array(
+					'action'   => 'amapress_mailgroup_edit_msg',
+					'type'     => $type,
+					'mlgrp_id' => $mlgrp_id,
+					'msg_file' => $email['basename'],
+				),
+				admin_url( 'admin.php' )
+			);
+			$link_delete_msg .= '<br/><a href="' . esc_attr( $href ) . '">' . __( 'Editer les entêtes', 'amapress' ) . '</a>';
+		}
 		$href            = add_query_arg(
 			array(
 				'action'   => 'amapress_delete_queue_msg',
@@ -336,7 +350,7 @@ function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] 
 			),
 			admin_url( 'admin.php' )
 		);
-		$link_delete_msg = '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous la suppression de cet email ?', 'amapress' ) ) . '\')">' . __( 'Supprimer', 'amapress' ) . '</a>';
+		$link_delete_msg .= '<br/><a href="' . esc_attr( $href ) . '" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous la suppression de cet email ?', 'amapress' ) ) . '\')">' . __( 'Supprimer', 'amapress' ) . '</a>';
 
 		if ( isset( $email['message'] ) && is_array( $email['message'] ) && isset( $email['message']['ml_grp_msg_id'] ) ) {
 			$href            = add_query_arg(
@@ -492,4 +506,70 @@ function amapress_test_mail_config() {
 		echo '<p>' . __( 'Des erreurs se sont produites pendant l\'envoi de l\'email de test (Le transcript SMTP se trouve au dessus) :', 'amapress' ) . '</p>';
 		echo implode( '<br/>', $errors );
 	}
+}
+
+add_action( 'admin_action_amapress_mailgroup_edit_msg', 'admin_action_amapress_mailgroup_edit_msg' );
+function admin_action_amapress_mailgroup_edit_msg() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( __( 'Accès non autorisé', 'amapress' ) );
+	}
+
+	$mlgrp_id = isset( $_REQUEST['mlgrp_id'] ) ? $_REQUEST['mlgrp_id'] : '';
+	$type     = $_REQUEST['type'];
+	if ( 'logged' == $type ) {
+		wp_die( 'Cannot edit an already sent mail !' );
+	}
+	$msg_file = $_REQUEST['msg_file'];
+	$msg      = AmapressSMTPMailingQueue::loadMessage( $type, $mlgrp_id, $msg_file );
+	if ( null == $msg ) {
+		wp_die( __( 'Message not found', 'amapress' ) );
+	}
+
+	if ( isset( $_POST['save'] ) ) {
+		if ( isset( $_POST['to'] ) ) {
+			$msg['to'] = wp_unslash( $_POST['to'] );
+		}
+		if ( isset( $_POST['headers'] ) ) {
+			$msg['headers'] = explode( "\n", wp_unslash( $_POST['headers'] ) );
+		}
+		$msg['retries_count'] = 0;
+		if ( ! AmapressSMTPMailingQueue::saveMessage( $mlgrp_id, $type, $msg_file, $msg ) ) {
+			wp_die( 'Error while saving !' );
+		}
+		$redir = '';
+		switch ( $type ) {
+			case 'waiting':
+				if ( ! empty( $mlgrp_id ) ) {
+					$redir = admin_url( "admin.php?page=mailinggroup_mailqueue&tab=mailgrp-mailqueue-tab-$mlgrp_id" );
+				} else {
+					$redir = admin_url( 'options-general.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_waiting_mails' );
+				}
+			case 'errored':
+				if ( ! empty( $mlgrp_id ) ) {
+					$redir = admin_url( "admin.php?page=mailinggroup_mailerrors&tab=mailgrp-mailerrors-tab-$mlgrp_id" );
+				} else {
+					$redir = admin_url( 'options-general.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_errored_mails' );
+				}
+		}
+		wp_redirect_and_exit( $redir );
+	} else {
+		echo '<style>p {margin: 0; padding: 0}</style>';
+		echo '<form action="' . esc_attr( admin_url( 'admin.php' ) ) . '" method="post">';
+		echo '<input type="hidden" name="action" value="amapress_mailgroup_edit_msg" />';
+		echo '<input type="hidden" name="mlgrp_id" value="' . esc_attr( $mlgrp_id ) . '" />';
+		echo '<input type="hidden" name="msg_file" value="' . esc_attr( $msg_file ) . '" />';
+		echo '<input type="hidden" name="type" value="' . esc_attr( $type ) . '" />';
+		echo '<p><label for="to">To: </label><br/><input type="text" style="width:25em;font-family:monospace" name="to" id="to" value="' . esc_html( $msg['to'] ) . '" /></p>';
+		echo '<p><label for="headers">Headers: </label><br/><textarea cols="50" rows="18" name="headers" id="headers">' . esc_textarea( is_array( $msg['headers'] ) ? implode( "\n", $msg['headers'] ) : $msg['headers'] ) . '</textarea></p>';
+		//
+		echo '<p>Date: ' . esc_html( ! empty( $m['time'] ) ? date_i18n( 'd/m/Y H:i:s', $m['time'] ) : '' ) . '</p>';
+		echo '<p>Errors: ' . esc_html( empty( $msg['errors'] ) ? '' : implode( ' ; ', $msg['errors'] ) ) . '</p>';
+		echo '<p>Retries: ' . esc_html( empty( $msg['retries_count'] ) ? '0' : count( $msg['retries_count'] ) ) . '</p>';
+		echo '<p>Attachments: ' . esc_html( empty( $msg['attachments'] ) ? '0' : count( $msg['attachments'] ) ) . '</p>';
+		echo '<p>Subject: ' . esc_html( $msg['subject'] ) . '</p>';
+		echo '<p>Content: <pre>' . ( ! empty( $msg['message']['text'] ) ? esc_html( $msg['message']['text'] ) : wp_kses_post( $msg['message']['text'] ) ) . '</pre></p>';
+		echo '<p><input type="submit" name="save" value="Enregistrer"></p>';
+		echo '</form>';
+	}
+	exit();
 }

@@ -38,6 +38,27 @@ class AmapressSMTPMailingQueue {
 		}
 	}
 
+	private static function saveMessageFile( $fileName, array $data ) {
+		$handle = @fopen( $fileName, "w" );
+		if ( $handle ) {
+			if ( ! defined( 'JSON_INVALID_UTF8_IGNORE' ) ) {
+				foreach ( $data as $k => $v ) {
+					if ( is_string( $v ) ) {
+						$data[ $k ] = iconv( 'UTF-8', 'UTF-8//IGNORE', $v );
+					}
+				}
+				fwrite( $handle, json_encode( $data ) );
+			} else {
+				fwrite( $handle, json_encode( $data, JSON_INVALID_UTF8_IGNORE ) );
+			}
+			fclose( $handle );
+
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	/**
 	 * (Re)sets wp_cron, e.g. on activation and interval update.
 	 */
@@ -192,23 +213,8 @@ class AmapressSMTPMailingQueue {
 		if ( ! empty( $invalidEmails ) ) {
 			$data['invalid_to'] = implode( ',', $invalidEmails );
 		}
-		$handle = @fopen( $fileName, "w" );
-		if ( ! $handle ) {
-			return false;
-		}
-		if ( ! defined( 'JSON_INVALID_UTF8_IGNORE' ) ) {
-			foreach ( $data as $k => $v ) {
-				if ( is_string( $v ) ) {
-					$data[ $k ] = iconv( 'UTF-8', 'UTF-8//IGNORE', $v );
-				}
-			}
-			fwrite( $handle, json_encode( $data ) );
-		} else {
-			fwrite( $handle, json_encode( $data, JSON_INVALID_UTF8_IGNORE ) );
-		}
-		fclose( $handle );
 
-		return true;
+		return self::saveMessageFile( $fileName, $data );
 	}
 
 	public static function getErroredMailsCount( $mlgrp_id = '' ) {
@@ -292,6 +298,28 @@ class AmapressSMTPMailingQueue {
 		}
 
 		return $emails;
+	}
+
+	public static function saveMessage( $mlgrp_id, $type, $msg_file, $msg ) {
+		$filename = self::getUploadDir( $mlgrp_id, $type ) . $msg_file;
+
+		return self::saveMessageFile( $filename, $msg );
+	}
+
+	public static function loadMessage( $type, $mlgrp_id, $msg_file ) {
+		$filename = self::getUploadDir( $mlgrp_id, $type ) . $msg_file;
+		if ( ! file_exists( $filename ) ) {
+			return null;
+		}
+
+		$ret = json_decode( file_get_contents( $filename ), true );
+		if ( empty( $ret ) ) {
+			return null;
+		}
+		$ret['type']     = $type;
+		$ret['basename'] = basename( $filename );
+
+		return $ret;
 	}
 
 	/**
