@@ -234,7 +234,7 @@ function amapress_admin_bar_new_entities_and_sitename( WP_Admin_Bar $admin_bar )
 		'icon'       => 'dashicons-before dashicons-store',
 		'title'      => __( 'Distributions', 'amapress' ),
 		'capability' => 'edit_distribution',
-		'href'       => admin_url( 'admin.php?page=mapress_gestion_distrib_page' ),
+		'href'       => admin_url( 'admin.php?page=amapress_gestion_distrib_page' ),
 	];
 	$site_name_items[] = [
 		'id'         => 'amps_admm-gest-events',
