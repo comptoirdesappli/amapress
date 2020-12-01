@@ -635,6 +635,43 @@ function amapress_global_init() {
 		}
 	} );
 
+	if ( ! wp_next_scheduled( 'amps_update_archivables' ) ) {
+		wp_schedule_event( time(), 'weekly', 'amps_update_archivables' );
+	}
+
+	add_action( 'amps_update_archivables', function () {
+		$archivables_contrats = array_filter( AmapressContrat_instance::getAll(),
+			function ( $c ) {
+				return $c->canBeArchived();
+			} );
+		$archivables_periods  = array_filter( AmapressAdhesionPeriod::getAll(),
+			function ( $p ) {
+				return $p->canBeArchived();
+			} );
+		$archivables_users    = get_users_count( 'amapress_role=archivable' );
+		$subject              = __( '[Archivage] Des éléments sont archivables', 'amapress' );
+		$message              = sprintf(
+			__( "Bonjour,\n\nDes éléments sont archivables :\n- <a href='%s'>%d contrat(s)</a> : %s\n- <a href='%s'>%d période(s) d'adhésion</a> : %s\n- <a href='%s'>%d comptes utilisateur</a>\n\nArchiver ces éléments permettra de nettoyer le site des anciens amapiens et de leurs informations.", 'amapress' ),
+			admin_url( 'admin.php?page=contrats_archives' ),
+			count( $archivables_contrats ),
+			implode( ', ', array_map( function ( $c ) {
+				return $c->getTitle();
+			}, $archivables_contrats ) ),
+			admin_url( 'admin.php?page=adh_period_archives' ),
+			count( $archivables_periods ),
+			implode( ', ', array_map( function ( $c ) {
+				return $c->getTitle();
+			}, $archivables_periods ) ),
+			count( $archivables_users ),
+			admin_url( 'users.php?amapress_role=archivable' )
+		);
+		if ( ! empty( $message ) ) {
+			amapress_wp_mail( get_option( 'admin_email' ),
+				$subject,
+				wpautop( $message ) );
+		}
+	} );
+
 	do_action( 'amapress_init' );
 
 //    $users = get_users(
