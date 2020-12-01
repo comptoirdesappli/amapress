@@ -826,6 +826,11 @@ line-height: 1.1;
 
 add_action( 'amapress_do_query_action_distribution_liste-emargement-pdf', function () {
 	$dist = AmapressDistribution::getBy( get_the_ID() );
+	if ( ! AmapressDistributions::isCurrentUserResponsable( $dist->ID )
+	     && ! amapress_can_access_admin()
+	) {
+		wp_die( __( 'Accès non autorisé', 'amapress' ) );
+	}
 	Amapress::sendPdfFromHtml(
 		'<div style="font-size: ' . Amapress::getOption( 'liste-emargement-print-font-size', 8 ) . 'pt">' .
 		getListeEmargement( $dist->ID, isset( $_GET['all'] ), true ) .
@@ -835,6 +840,11 @@ add_action( 'amapress_do_query_action_distribution_liste-emargement-pdf', functi
 } );
 add_action( 'amapress_do_query_action_distribution_liste-emargement-excel', function () {
 	$dist = AmapressDistribution::getBy( get_the_ID() );
+	if ( ! AmapressDistributions::isCurrentUserResponsable( $dist->ID )
+	     && ! amapress_can_access_admin()
+	) {
+		wp_die( __( 'Accès non autorisé', 'amapress' ) );
+	}
 	Amapress::sendXLSXFromHtml(
 		'<div style="font-size: ' . Amapress::getOption( 'liste-emargement-print-font-size', 8 ) . 'pt">' .
 		getListeEmargement( $dist->ID, isset( $_GET['all'] ), true ) .
