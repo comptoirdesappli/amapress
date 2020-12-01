@@ -1177,12 +1177,24 @@ function amapress_filter_posts( WP_Query $query ) {
 					)
 				) );
 			} else if ( $pt == AmapressAdhesion_paiement::POST_TYPE ) {
+				$period_ids = get_posts( array(
+					'fields'         => 'ids',
+					'posts_per_page' => - 1,
+					'post_type'      => AmapressAdhesionPeriod::INTERNAL_POST_TYPE,
+					'amapress_date'  => 'future',
+				) );
 				amapress_add_meta_query( $query, array(
 					array(
+						'relation' => 'OR',
 						array(
 							'key'     => 'amapress_adhesion_paiement_date',
 							'value'   => Amapress::start_of_day( amapress_time() ),
 							'compare' => '>=',
+						),
+						array(
+							'key'     => 'amapress_adhesion_paiement_period',
+							'value'   => amapress_prepare_in( $period_ids ),
+							'compare' => 'IN',
 						),
 					)
 				) );
