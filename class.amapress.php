@@ -598,7 +598,7 @@ class Amapress {
 
 
 	public static function start_of_week( $date ) {
-		return self::start_of_day( strtotime( 'Last Monday', $date ) );
+		return self::start_of_day( strtotime( 'Monday this week', $date ) );
 	}
 
 	public static function end_of_week( $date ) {
