@@ -560,7 +560,7 @@ class AmapressMailingGroup extends TitanEntity {
 				}
 			}
 		} catch ( Exception $ex ) {
-			//error_log( __('Erreur IMAP/POP3 (', 'amapress') . $this->getName() . '): ' . $ex->getMessage() );
+			$this->logError( sprintf( __( 'Erreur IMAP/POP3 (%s): %s', 'amapress' ), $this->getName(), $ex->getMessage() ) );
 
 			return false;
 		} finally {
