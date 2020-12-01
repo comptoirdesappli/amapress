@@ -964,7 +964,7 @@ function getMultiListeEmargement( $start_date, $end_date, $lieu ) {
 
 	$all_adhs = [];
 	foreach ( $dists as $dist ) {
-		foreach ( AmapressContrats::get_active_adhesions( null, null, $dist->getLieuId(), $dist->getDate() ) as $adh ) {
+		foreach ( AmapressContrats::get_active_adhesions( null, null, $dist->getLieuId(), $dist->getDate(), true, false ) as $adh ) {
 			$all_adhs[ $adh->ID ] = $adh;
 		}
 	}
@@ -1124,9 +1124,12 @@ function getMultiListeEmargement( $start_date, $end_date, $lieu ) {
 			$line['contrat'] = $adhesion->getContrat_instance()->getModelTitleWithSubName();
 
 			foreach ( $dists as $dist ) {
-				$quant = $adhesion->getContrat_quantites_Codes_AsString( $dist->getDate() );
-				if ( $adhesion->getContrat_instance()->isPanierVariable() && ! empty( $quant ) ) {
-					$quant = 'Var.';
+				$quant = '';
+				if ( in_array( $dist->getDate(), $adhesion->getContrat_instance()->getListe_dates() ) ) {
+					$quant = $adhesion->getContrat_quantites_Codes_AsString( $dist->getDate() );
+					if ( $adhesion->getContrat_instance()->isPanierVariable() && ! empty( $quant ) ) {
+						$quant = 'Var.';
+					}
 				}
 
 				$line[ 'dist_' . $dist->getDate() ] = $quant;
