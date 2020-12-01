@@ -433,8 +433,11 @@ class AmapressMailingGroup extends TitanEntity {
 //				$to           = array_filter( $mail->to, function ( $addr ) {
 //					return false === strpos( $addr, $this->getName() );
 //				} );
-				$to           = $this->getName(); //implode( ', ', $to );
-				$content      = ! empty( $mail->textHtml ) ? $mail->textHtml : $mail->textPlain;
+				$to      = $this->getName(); //implode( ', ', $to );
+				$content = ! empty( $mail->textHtml ) ? $mail->textHtml : $mail->textPlain;
+				if ( empty( $content ) ) {
+					$content = __( 'Mail vide', 'amapress' );
+				}
 				$raw_headers  = $mailbox->getMailHeader( $mail_id );
 				$is_from_list = false;
 				if ( $raw_headers ) {
@@ -470,7 +473,11 @@ class AmapressMailingGroup extends TitanEntity {
 						'text'        => $mail->textPlain,
 						'html'        => $mail->textHtml,
 						'attachments' => [],
-					]; //$this->getRawMailBody( $mailbox, $mail_id );
+					];
+					if ( empty( $body['text'] ) && empty( $body['html'] ) ) {
+						$body['text'] = __( 'Mail vide', 'amapress' );
+						$body['html'] = __( 'Mail vide', 'amapress' );
+					}
 
 					foreach ( $mail->getAttachments() as $attachment ) {
 						$body['attachments'][] = [
