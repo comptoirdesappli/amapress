@@ -60,7 +60,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 //            'exp_csv' => true,
 		),
 		'fields'           => array(
-			'date_debut'   => array(
+			'date_debut'       => array(
 				'name'         => __( 'Début*', 'amapress' ),
 				'type'         => 'date',
 				'required'     => true,
@@ -68,7 +68,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'         => __( 'Date à laquelle démarre la Période d\'adhésions', 'amapress' ),
 				'csv_required' => true,
 			),
-			'date_fin'     => array(
+			'date_fin'         => array(
 				'name'         => __( 'Fin*', 'amapress' ),
 				'type'         => 'date',
 				'required'     => true,
@@ -76,13 +76,13 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'desc'         => __( 'Date à laquelle se termine la Période d\'adhésions', 'amapress' ),
 				'csv_required' => true,
 			),
-			'name'         => array(
+			'name'             => array(
 				'name'  => __( 'Nom', 'amapress' ),
 				'type'  => 'text',
 				'group' => __( '1/ Informations générales', 'amapress' ),
 				'desc'  => __( 'Nom de la Période d\'adhésion (Exemple : Saison 15)', 'amapress' ),
 			),
-			'hla_form_url' => array(
+			'hla_form_url'     => array(
 				'name'  => __( 'Formulaire d\'adhésion HelloAsso', 'amapress' ),
 				'type'  => 'text',
 				'group' => __( 'Pré-inscription en ligne', 'amapress' ),
@@ -93,13 +93,13 @@ function amapress_register_entities_adhesion_period( $entities ) {
 						__( 'Intégration HelloAsso', 'amapress' )
 					) . '<br/>' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/helloasso' ),
 			),
-			'online_desc'  => array(
+			'online_desc'      => array(
 				'name'  => __( 'Contenu bulletin', 'amapress' ),
 				'type'  => 'editor',
 				'group' => __( 'Pré-inscription en ligne', 'amapress' ),
 				'desc'  => __( 'Contenu à afficher lors de l\'adhésion en ligne', 'amapress' ),
 			),
-			'word_model'   => array(
+			'word_model'       => array(
 				'name'            => __( 'Bulletin personnalisé', 'amapress' ),
 				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
@@ -114,7 +114,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 <p>Vous pouvez télécharger <a target="_blank" href="%s">ici</a> un modèle DOCX générique utilisable comme bulletin d\'adhésion. Vous aurez à personnaliser le logo de votre AMAP et les élements de l\'adhésion (don, panier solidaire, règlement, explications...).</p>', 'amapress' ), admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_placeholders' ), esc_attr( Amapress::getBulletinGenericUrl() ) );
 				},
 			),
-			'mnt_reseau'  => array(
+			'mnt_reseau'       => array(
 				'name'     => __( 'Montant adhésion au réseau', 'amapress' ),
 				'type'     => 'number',
 				'required' => true,
@@ -138,7 +138,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'group'    => __( 'Pré-inscription en ligne', 'amapress' ),
 				'desc'     => __( 'Montant adhésion au réseau pour les intermittents (indiquer -1 pour autoriser un montant libre)', 'amapress' ),
 			),
-			'mnt_amap_inter' => array(
+			'mnt_amap_inter'   => array(
 				'name'     => __( 'Intermittents - Montant adhésion AMAP', 'amapress' ),
 				'type'     => 'number',
 				'required' => true,
@@ -146,7 +146,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'group'    => __( 'Pré-inscription en ligne', 'amapress' ),
 				'desc'     => __( 'Montant adhésion AMAP pour les intermittents (indiquer -1 pour autoriser un montant libre)', 'amapress' ),
 			),
-			'allow_chq'      => array(
+			'allow_chq'        => array(
 				'name'        => __( 'Chèque', 'amapress' ),
 				'type'        => 'checkbox',
 				'group'       => __( 'Règlements', 'amapress' ),
@@ -155,7 +155,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'show_column' => false,
 				'desc'        => __( 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement en chèque', 'amapress' ),
 			),
-			'allow_cash'     => array(
+			'allow_cash'       => array(
 				'name'        => __( 'Espèces', 'amapress' ),
 				'type'        => 'checkbox',
 				'group'       => __( 'Règlements', 'amapress' ),
@@ -164,7 +164,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'show_column' => false,
 				'desc'        => __( 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement en espèce', 'amapress' ),
 			),
-			'allow_bktrfr'   => array(
+			'allow_bktrfr'     => array(
 				'name'        => __( 'Virement', 'amapress' ),
 				'type'        => 'checkbox',
 				'group'       => __( 'Règlements', 'amapress' ),
@@ -173,7 +173,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'show_column' => false,
 				'desc'        => __( 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement par virement', 'amapress' ),
 			),
-			'allow_locmon'   => array(
+			'allow_locmon'     => array(
 				'name'        => __( 'Monnaie locale', 'amapress' ),
 				'type'        => 'checkbox',
 				'group'       => __( 'Règlements', 'amapress' ),
@@ -182,13 +182,13 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'show_column' => false,
 				'desc'        => __( 'Active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien de signaler un règlement en monnaie locale', 'amapress' ),
 			),
-			'pmt_info'       => array(
+			'pmt_info'         => array(
 				'name'  => __( 'Info règlements', 'amapress' ),
 				'type'  => 'editor',
 				'group' => __( 'Pré-inscription en ligne', 'amapress' ),
 				'desc'  => __( 'Informations relatives aux règlements (ordres des chèques, virement) à afficher lors de l\'adhésion en ligne', 'amapress' ),
 			),
-			'pmt_user_input' => array(
+			'pmt_user_input'   => array(
 				'name'        => __( 'Libellé règlements', 'amapress' ),
 				'type'        => 'checkbox',
 				'group'       => __( 'Règlements', 'amapress' ),
@@ -197,7 +197,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'show_column' => false,
 				'desc'        => __( 'Permettre aux amapiens de renseigner les numéros des chèques dans l’assistant d\'adhésion en ligne', 'amapress' ),
 			),
-			'custom_check1'  => array(
+			'custom_check1'    => array(
 				'name'           => AMAPRESS_ADHESION_PERIOD_CHECK1,
 				'type'           => 'editor',
 				'show_column'    => true,
@@ -205,7 +205,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'group'          => __( 'Questions personnalisées', 'amapress' ),
 				'desc'           => __( 'Intitulé de la checkbox personnalisée ', 'amapress' ) . AMAPRESS_ADHESION_PERIOD_CHECK1,
 			),
-			'custom_check2'  => array(
+			'custom_check2'    => array(
 				'name'           => AMAPRESS_ADHESION_PERIOD_CHECK2,
 				'type'           => 'editor',
 				'show_column'    => true,
@@ -213,7 +213,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'group'          => __( 'Questions personnalisées', 'amapress' ),
 				'desc'           => sprintf( __( 'Intitulé de la checkbox personnalisée %s', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK2 ),
 			),
-			'custom_check3'  => array(
+			'custom_check3'    => array(
 				'name'           => AMAPRESS_ADHESION_PERIOD_CHECK3,
 				'type'           => 'editor',
 				'show_column'    => true,
@@ -272,7 +272,8 @@ function amapress_adhesion_period_archivables_view() {
 		);
 	}
 
-	return amapress_get_datatable( 'adh_period-archivables-table', $columns, $data );
+	return '<p class="description">' . sprintf( __( 'Les périodes d\'adhésion ci-dessous sont terminées depuis au moins %d mois.', 'amapress' ), Amapress::getOption( 'archive_months', 3 ) ) . '</p>'
+	       . amapress_get_datatable( 'adh_period-archivables-table', $columns, $data );
 }
 
 add_action( 'admin_post_archive_adh_period', function () {
