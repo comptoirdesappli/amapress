@@ -686,7 +686,7 @@ class AmapressMailingGroup extends TitanEntity {
 		if ( false === $res ) {
 			$res = array_map( function ( $email ) {
 				return strtolower( $email );
-			}, $wpdb->get_col( Amapress_MailingList::getSqlQuery( $queries ) ) );
+			}, $wpdb->get_col( Amapress_MailingList::getSqlQuery( $queries, [] ) ) );
 		}
 
 		return $res;

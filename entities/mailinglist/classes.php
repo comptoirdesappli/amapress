@@ -87,7 +87,30 @@ class Amapress_MailingListConfiguration extends TitanEntity {
 			}
 		}
 
+		$excl_user_ids = [];
+		foreach ( $this->getExcludeMembersQueries() as $user_query ) {
+			if ( is_array( $user_query ) ) {
+				$user_query['fields'] = 'id';
+			} else {
+				$user_query .= '&fields=id';
+			}
+			foreach ( get_users( $user_query ) as $user_id ) {
+				$excl_user_ids[] = intval( $user_id );
+			}
+		}
+		$ids = array_diff( $ids, $excl_user_ids );
+
 		return array_unique( $ids );
+	}
+
+	public function getExcludeMembersQueries() {
+		$ret   = $this->getCustomAsArray( 'amapress_mailinglist_excl_queries' );
+		$users = $this->getCustomAsIntArray( 'amapress_mailinglist_excl_other_users' );
+		if ( ! empty( $users ) && count( $users ) > 0 ) {
+			$ret[] = array( 'include' => $users );
+		}
+
+		return $ret;
 	}
 
 	public function getModeratorsQueries() {
@@ -275,7 +298,7 @@ abstract class Amapress_MailingList {
 		);
 	}
 
-	public static function getSqlQuery( $queries ) {
+	public static function getSqlUnionQuery( $queries ) {
 		global $wpdb;
 
 		if ( empty( $queries ) || count( $queries ) == 0 ) {
@@ -312,6 +335,24 @@ abstract class Amapress_MailingList {
 		}, $queries );
 
 		return implode( ' UNION ', array_merge( $sql_queries, $sql_queries2 ) );
+	}
+
+	public static function getSqlQuery( $queries, $exclude_queries ) {
+		if ( empty( $queries ) ) {
+			global $wpdb;
+
+			return "SELECT user_email as email
+                    FROM {$wpdb->users} WHERE 1=0";
+		}
+
+		$include_sql_query = self::getSqlUnionQuery( $queries );
+		if ( empty( $exclude_queries ) ) {
+			return $include_sql_query;
+		}
+
+		$exclude_sql_query = self::getSqlUnionQuery( $exclude_queries );
+
+		return "($include_sql_query) EXCEPT ALL ($exclude_sql_query)";
 	}
 
 	public function getName() {

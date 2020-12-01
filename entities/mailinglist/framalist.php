@@ -22,7 +22,7 @@ class Amapress_Framalist_MailingList extends Amapress_Sympa_MailingList {
 
 		$sympa_emails = $this->getSympaMembersEmails();
 		global $wpdb;
-		$sql_query = Amapress_MailingList::getSqlQuery( $members_queries );
+		$sql_query = Amapress_MailingList::getSqlQuery( $members_queries, $config->getExcludeMembersQueries() );
 		if ( empty( $sql_query ) ) {
 			return;
 		}
@@ -55,7 +55,7 @@ class Amapress_Framalist_MailingList extends Amapress_Sympa_MailingList {
 
 		$sympa_emails = $this->getSympaMembersEmails();
 		global $wpdb;
-		$sql_query = Amapress_MailingList::getSqlQuery( $members_queries );
+		$sql_query = Amapress_MailingList::getSqlQuery( $members_queries, $config->getExcludeMembersQueries() );
 		if ( empty( $sql_query ) ) {
 			return 'manual';
 		}

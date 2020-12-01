@@ -31,7 +31,7 @@ class Amapress_OVH_MailingList extends Amapress_MailingList {
 
 		$sympa_emails = $this->getSystem()->getMLMembersEmails( $this->getName() );
 		global $wpdb;
-		$sql_query = Amapress_MailingList::getSqlQuery( $members_queries );
+		$sql_query = Amapress_MailingList::getSqlQuery( $members_queries, $config->getExcludeMembersQueries() );
 		if ( empty( $sql_query ) ) {
 			return;
 		}
@@ -60,7 +60,7 @@ class Amapress_OVH_MailingList extends Amapress_MailingList {
 
 		$sympa_emails = $this->getSystem()->getMLMembersEmails( $this->getName() );
 		global $wpdb;
-		$sql_query = Amapress_MailingList::getSqlQuery( $members_queries );
+		$sql_query = Amapress_MailingList::getSqlQuery( $members_queries, $config->getExcludeMembersQueries() );
 		if ( empty( $sql_query ) ) {
 			return 'manual';
 		}

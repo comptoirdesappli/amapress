@@ -39,7 +39,7 @@ class Amapress_Ouvaton_MailingList extends Amapress_Sympa_MailingList {
 			return;
 		}
 
-		$new_query = Amapress_MailingList::getSqlQuery( $members_queries );
+		$new_query = Amapress_MailingList::getSqlQuery( $members_queries, $config->getExcludeMembersQueries() );
 		$this->getSystem()->setSqlDataSource( $new_query, $this->getName() );
 	}
 
@@ -72,7 +72,7 @@ class Amapress_Ouvaton_MailingList extends Amapress_Sympa_MailingList {
 		global $wpdb;
 		$sql_query = isset( $this->info['query'] ) ? $this->info['query'] : '';
 		if ( ! empty( $sql_query ) ) {
-			$new_query = Amapress_MailingList::getSqlQuery( $members_queries );
+			$new_query = Amapress_MailingList::getSqlQuery( $members_queries, $config->getExcludeMembersQueries() );
 			if ( empty( $new_query ) ) {
 				return 'manual';
 			}
