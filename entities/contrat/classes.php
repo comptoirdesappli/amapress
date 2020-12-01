@@ -775,6 +775,8 @@ class AmapressContrat_instance extends TitanEntity {
 				$quantite = AmapressContrat_quantite::getBy( $quantite_id );
 				if ( $quantite ) {
 					if ( ! $quantite->isInDistributionDates( $dist_date ) ) {
+						wp_cache_set( $key, 0 );
+
 						return 0;
 					}
 				}
