@@ -662,7 +662,7 @@ function amapress_global_init() {
 			implode( ', ', array_map( function ( $c ) {
 				return $c->getTitle();
 			}, $archivables_periods ) ),
-			count( $archivables_users ),
+			$archivables_users,
 			admin_url( 'users.php?amapress_role=archivable' )
 		);
 		if ( ! empty( $message ) ) {
