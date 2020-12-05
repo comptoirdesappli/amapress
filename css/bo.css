@@ -306,3 +306,12 @@
     min-width: auto;
 !important;
 }
+
+.smart-word-break {
+    word-break: break-word !important;
+    -webkit-hyphens: auto !important;
+    -moz-hyphens: auto !important;
+    -ms-hyphens: auto !important;
+    -o-hyphens: auto !important;
+    hyphens: auto !important;
+}

@@ -385,8 +385,8 @@ function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] 
 				             . ( 'errored' == $email['type'] ? $link_retry_msg : '' ),
 			),
 			'to'            => esc_html( str_replace( ',', ', ', $email['to'] ) )
-			                   . ( ! empty( $cc ) ? '<br/>' . $cc : '' )
-			                   . ( ! empty( $bcc ) ? '<br/>' . $bcc : '' ),
+			                   . ( ! empty( $cc ) ? '<br/>' . str_replace( ',', ', ', $cc ) : '' )
+			                   . ( ! empty( $bcc ) ? '<br/>' . str_replace( ',', ', ', $bcc ) : '' ),
 			'subject'       => esc_html( $email['subject'] ),
 //			'message' => '<div style="word-break: break-all">' . wpautop( $email['message'] ) . '</div>',
 			'message'       => $msg,
