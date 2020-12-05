@@ -179,13 +179,18 @@ class AmapressSMTPMailingQueue {
 	 *
 	 * @return bool
 	 */
-	public static function storeMail( $mlgrp_id, $type, $to, $subject, $message, $headers = '', $attachments = array(), $time = null, $errors = null, $retries_count = 0 ) {
+	public static function storeMail(
+		$mlgrp_id, $type, $to, $subject, $message,
+		$headers = '', $attachments = array(), $time = null, $errors = null, $retries_count = 0,
+		$ctime = 0
+	) {
 		require_once AMAPRESS__PLUGIN_DIR . 'modules/mailqueue/AmapressSMTPMailingQueueOriginal.php';
 		AmapressSMTPMailingQueueOriginal::EnsurePHPMailerInit();
 		global $phpmailer;
 
-		$time = $time ?: amapress_time();
-		$data = compact( 'to', 'subject', 'message', 'headers', 'attachments', 'time', 'errors', 'retries_count' );
+		$ctime = empty( $ctime ) ? amapress_time() : $ctime;
+		$time  = $time ?: amapress_time();
+		$data  = compact( 'to', 'subject', 'message', 'headers', 'attachments', 'time', 'errors', 'retries_count', 'ctime' );
 
 		if ( ! is_array( $to ) ) {
 			$to = explode( ',', $to );
@@ -390,10 +395,17 @@ class AmapressSMTPMailingQueue {
 		if ( ! empty( $errors ) ) {
 			@error_log( __( 'Email send Error : ', 'amapress' ) . implode( ' ; ', $errors ) );
 			if ( $store_errors ) {
-				self::storeMail( $mlgrp_id, 'errored', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'], null, $errors, isset( $data['retries_count'] ) ? intval( $data['retries_count'] ) + 1 : 1 );
+				self::storeMail( $mlgrp_id, 'errored', $data['to'],
+					$data['subject'], $data['message'], $data['headers'], $data['attachments'],
+					null, $errors,
+					isset( $data['retries_count'] ) ? intval( $data['retries_count'] ) + 1 : 1,
+					isset( $data['ctime'] ) ? $data['ctime'] : 0 );
 			}
 		} else {
-			self::storeMail( $mlgrp_id, 'logged', $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'] );
+			self::storeMail( $mlgrp_id, 'logged', $data['to'],
+				$data['subject'], $data['message'], $data['headers'], $data['attachments'],
+				null, null, 0,
+				isset( $data['ctime'] ) ? $data['ctime'] : 0 );
 		}
 
 		return $errors;

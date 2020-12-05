@@ -381,6 +381,7 @@ function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] 
 			'time'          => array(
 				'val'     => $email['time'],
 				'display' => date_i18n( 'd/m/Y H:i', intval( $email['time'] ) )
+				             . ( ! empty( $email['ctime'] ) ? '<br/>' . sprintf( __( '(créé le %s)', 'amapress' ), date_i18n( 'd/m/Y H:i', intval( $email['ctime'] ) ) ) : '' )
 				             . $link_delete_msg
 				             . ( 'errored' == $email['type'] ? $link_retry_msg : '' ),
 			),
