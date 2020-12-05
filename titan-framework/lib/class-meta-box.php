@@ -340,7 +340,7 @@ class TitanFrameworkMetaBox {
 				if ( ! empty( $likes ) ) {
 					global $wpdb;
 					$where = preg_replace(
-						'/\(\s*' . $wpdb->posts . '.post_title\s+LIKE\s*(\'(?:[^\']|(?<=\\\\)+\')\')\s*\)/',
+						'/\(\s*' . $wpdb->posts . '\.post_title\s+LIKE\s*(\'(?:[^\']|(?<=\\\\)\')+\')\s*\)/',
 						'(' . $wpdb->posts . '.post_title LIKE $1) OR (' . implode( ' OR ', $likes ) . ')', $where );
 				}
 			}
