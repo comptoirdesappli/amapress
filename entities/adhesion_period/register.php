@@ -203,7 +203,8 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 				'group'          => __( 'Questions personnalisées', 'amapress' ),
-				'desc'           => __( 'Intitulé de la checkbox personnalisée ', 'amapress' ) . AMAPRESS_ADHESION_PERIOD_CHECK1,
+				'desc'           => sprintf( __( 'Intitulé de la checkbox personnalisée %s', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK1 ) .
+				                    ( current_user_can( 'manage_options' ) ? '<br/>Pour personnaliser le label de cette checkbox, ajouter un <code>define(\'AMAPRESS_ADHESION_PERIOD_CHECK1\',\'<em>label</em>\')</code> dans votre <code>wp-config.php</code>' : '' ),
 			),
 			'custom_check2'    => array(
 				'name'           => AMAPRESS_ADHESION_PERIOD_CHECK2,
@@ -211,7 +212,8 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 				'group'          => __( 'Questions personnalisées', 'amapress' ),
-				'desc'           => sprintf( __( 'Intitulé de la checkbox personnalisée %s', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK2 ),
+				'desc'           => sprintf( __( 'Intitulé de la checkbox personnalisée %s', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK2 ) .
+				                    ( current_user_can( 'manage_options' ) ? '<br/>Pour personnaliser le label de cette checkbox, ajouter un <code>define(\'AMAPRESS_ADHESION_PERIOD_CHECK2\',\'<em>label</em>\')</code> dans votre <code>wp-config.php</code>' : '' ),
 			),
 			'custom_check3'    => array(
 				'name'           => AMAPRESS_ADHESION_PERIOD_CHECK3,
@@ -219,7 +221,8 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 				'group'          => __( 'Questions personnalisées', 'amapress' ),
-				'desc'           => sprintf( __( 'Intitulé de la checkbox personnalisée %s', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK3 ),
+				'desc'           => sprintf( __( 'Intitulé de la checkbox personnalisée %s', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK3 ) .
+				                    ( current_user_can( 'manage_options' ) ? '<br/>Pour personnaliser le label de cette checkbox, ajouter un <code>define(\'AMAPRESS_ADHESION_PERIOD_CHECK3\',\'<em>label</em>\')</code> dans votre <code>wp-config.php</code>' : '' ),
 			),
 		),
 	);
