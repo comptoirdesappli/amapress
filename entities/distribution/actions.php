@@ -183,7 +183,12 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		$show_comment = Amapress::toBool( $_GET['show_comment'] );
 	}
 
-	$columns = array(
+	$show_sums = Amapress::getOption( 'liste-emargement-show-sums', true );
+	if ( isset( $_GET['show_sums'] ) ) {
+		$show_sums = Amapress::toBool( $_GET['show_sums'] );
+	}
+
+	$columns             = array(
 //		array(
 //			'title' => __('Passage', 'amapress'),
 //			'data'  => 'check',
@@ -289,6 +294,9 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 	$query['lieu_id']             = $dist_lieu_id;
 	$query['date']                = $date;
 	$paniers                      = AmapressPaniers::getPanierIntermittents( $query );
+
+	$total_quants        = [];
+	$total_quants_totals = [];
 
 	$users_ids_paniers_intermittents = array_map( function ( $p ) {
 		/** @var AmapressIntermittence_panier $p */
@@ -406,6 +414,25 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 			if ( AmapressAdhesion::TO_CONFIRM == $adh->getStatus() ) {
 				$to_confirm = true;
 			}
+
+			$contrat_total_quants = 0;
+			$contrat_instance_id  = $adh->getContrat_instanceId();
+			if ( empty( $total_quants[ $contrat_instance_id ] ) ) {
+				$total_quants[ $contrat_instance_id ] = [];
+			}
+			if ( empty( $total_quants_totals[ $contrat_instance_id ] ) ) {
+				$total_quants_totals[ $contrat_instance_id ] = 0;
+			}
+			foreach ( $adh->getContrat_quantites( $dist->getDate() ) as $q ) {
+				if ( empty( $total_quants[ $contrat_instance_id ][ $q->getCode() ] ) ) {
+					$total_quants[ $contrat_instance_id ][ $q->getCode() ] = 0;
+				}
+
+				$total_quants[ $contrat_instance_id ][ $q->getCode() ] += $q->getFactor();
+				$contrat_total_quants                                  += $q->getQuantite();
+			}
+
+			$total_quants_totals[ $contrat_instance_id ] += $contrat_total_quants;
 		}
 		foreach ( $all_contrat_instances as $contrat ) {
 			if ( ! isset( $line[ 'contrat_' . $contrat->ID ] ) ) {
@@ -604,6 +631,24 @@ line-height: 1.1;
 					Amapress::DATATABLES_EXPORT_EXCEL
 				) : array()
 		);
+		if ( $show_sums ) {
+			foreach ( $all_contrat_instances as $contrat ) {
+				if ( empty( $total_quants[ $contrat->ID ] ) ) {
+					continue;
+				}
+
+				$tit = esc_html( $contrat->getModelTitle() );
+				if ( ! in_array( $contrat->ID, $dist_contrat_ids ) ) {
+					$tit = '<span class="not-this-dist">' . $tit . '</span>';
+				}
+
+				echo '<p style="margin: 0;padding: 0">' . $tit . ' : ' .
+				     implode( ', ', array_map( function ( $code, $quant ) {
+					     return sprintf( '<strong>%.1f</strong> x <em>%s</em>', $quant, $code );
+				     }, array_keys( $total_quants[ $contrat->ID ] ), array_values( $total_quants[ $contrat->ID ] ) ) )
+				     . sprintf( __( ' ; En tout : %.1f parts', 'amapress' ), $total_quants_totals[ $contrat->ID ] ) . '</p>';
+			}
+		}
 	}
 
 	$had_paniers_variables = false;

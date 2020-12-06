@@ -1196,6 +1196,12 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'default' => true,
 										),
 										array(
+											'id'      => 'liste-emargement-show-sums',
+											'name'    => __( 'Afficher le résumé des quantités de produits livrés', 'amapress' ),
+											'type'    => 'checkbox',
+											'default' => true,
+										),
+										array(
 											'id'      => 'liste-emargement-print-font-size',
 											'name'    => __( 'Taille d\'impression', 'amapress' ),
 											'desc'    => __( 'Taille (en pt) d\'impression de la liste d\'émargement', 'amapress' ),
