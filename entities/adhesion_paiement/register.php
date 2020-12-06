@@ -349,6 +349,60 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 					'>1' => '%s règlements ont été marqués comme reçus avec succès',
 				),
 			),
+			'amp_adh_pmt_check_1'   => array(
+				'label'    => sprintf( __( 'Cocher %s', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK1 ),
+				'messages' => array(
+					'<0' => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'0'  => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'1'  => sprintf( __( '%s coché avec succès', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK1 ),
+					'>1' => sprintf( __( '%s coché avec succès', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK1 ),
+				),
+			),
+			'amp_adh_pmt_uncheck_1' => array(
+				'label'    => sprintf( __( 'Décocher %s', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK1 ),
+				'messages' => array(
+					'<0' => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'0'  => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'1'  => sprintf( __( '%s décoché avec succès', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK1 ),
+					'>1' => sprintf( __( '%s décoché avec succès', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK1 ),
+				),
+			),
+			'amp_adh_pmt_check_2'   => array(
+				'label'    => sprintf( __( 'Cocher %s', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK2 ),
+				'messages' => array(
+					'<0' => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'0'  => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'1'  => sprintf( __( '%s coché avec succès', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK2 ),
+					'>1' => sprintf( __( '%s coché avec succès', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK2 ),
+				),
+			),
+			'amp_adh_pmt_uncheck_2' => array(
+				'label'    => sprintf( __( 'Décocher %s', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK2 ),
+				'messages' => array(
+					'<0' => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'0'  => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'1'  => sprintf( __( '%s décoché avec succès', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK2 ),
+					'>1' => sprintf( __( '%s décoché avec succès', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK2 ),
+				),
+			),
+			'amp_adh_pmt_check_3'   => array(
+				'label'    => sprintf( __( 'Cocher %s', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK3 ),
+				'messages' => array(
+					'<0' => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'0'  => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'1'  => sprintf( __( '%s coché avec succès', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK3 ),
+					'>1' => sprintf( __( '%s coché avec succès', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK3 ),
+				),
+			),
+			'amp_adh_pmt_uncheck_3' => array(
+				'label'    => sprintf( __( 'Décocher %s', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK3 ),
+				'messages' => array(
+					'<0' => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'0'  => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'1'  => sprintf( __( '%s décoché avec succès', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK3 ),
+					'>1' => sprintf( __( '%s décoché avec succès', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK3 ),
+				),
+			),
 		),
 	);
 

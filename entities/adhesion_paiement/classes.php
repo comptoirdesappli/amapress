@@ -76,6 +76,10 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		$this->setCustom( 'amapress_adhesion_paiement_status', $status );
 	}
 
+	public function setCustomCheck( $num, $value ) {
+		$this->setCustom( 'amapress_adhesion_paiement_custom_check' . $num, $value );
+	}
+
 	/** @return string */
 	public function getMainPaiementType() {
 		return $this->getCustom( 'amapress_adhesion_paiement_pmt_type', 'chq' );

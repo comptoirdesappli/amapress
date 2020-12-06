@@ -14,6 +14,34 @@ function amapress_bulk_action_amp_adh_pmt_mark_recv( $sendback, $post_ids ) {
 	return amapress_add_bulk_count( $sendback, count( $post_ids ) );
 }
 
+function amapress_bulk_action_amp_adh_pmt_check_uncheck( $sendback, $post_ids, $num, $value ) {
+	foreach ( $post_ids as $post_id ) {
+		$adh = AmapressAdhesion_paiement::getBy( $post_id, true );
+		$adh->setCustomCheck( $num, $value );
+	}
+
+	return amapress_add_bulk_count( $sendback, count( $post_ids ) );
+}
+
+add_filter( 'amapress_bulk_action_amp_adh_pmt_check_1', function ( $sendback, $post_ids ) {
+	return amapress_bulk_action_amp_adh_pmt_check_uncheck( $sendback, $post_ids, 1, 1 );
+}, 10, 2 );
+add_filter( 'amapress_bulk_action_amp_adh_pmt_uncheck_1', function ( $sendback, $post_ids ) {
+	return amapress_bulk_action_amp_adh_pmt_check_uncheck( $sendback, $post_ids, 1, 0 );
+}, 10, 2 );
+add_filter( 'amapress_bulk_action_amp_adh_pmt_check_2', function ( $sendback, $post_ids ) {
+	return amapress_bulk_action_amp_adh_pmt_check_uncheck( $sendback, $post_ids, 2, 1 );
+}, 10, 2 );
+add_filter( 'amapress_bulk_action_amp_adh_pmt_uncheck_2', function ( $sendback, $post_ids ) {
+	return amapress_bulk_action_amp_adh_pmt_check_uncheck( $sendback, $post_ids, 2, 0 );
+}, 10, 2 );
+add_filter( 'amapress_bulk_action_amp_adh_pmt_check_3', function ( $sendback, $post_ids ) {
+	return amapress_bulk_action_amp_adh_pmt_check_uncheck( $sendback, $post_ids, 3, 1 );
+}, 10, 2 );
+add_filter( 'amapress_bulk_action_amp_adh_pmt_uncheck_3', function ( $sendback, $post_ids ) {
+	return amapress_bulk_action_amp_adh_pmt_check_uncheck( $sendback, $post_ids, 3, 0 );
+}, 10, 2 );
+
 add_action( 'amapress_row_action_adhesion_paiement_mark_rcv', 'amapress_row_action_adhesion_paiement_mark_rcv' );
 function amapress_row_action_adhesion_paiement_mark_rcv( $post_id ) {
 	$adh = AmapressAdhesion_paiement::getBy( $post_id, true );
