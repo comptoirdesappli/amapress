@@ -68,6 +68,10 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		return $this->getCustom( 'amapress_adhesion_paiement_date' );
 	}
 
+	public function getCustomCheck( $num ) {
+		return $this->getCustom( 'amapress_adhesion_paiement_custom_check' . $num );
+	}
+
 	public function setStatus( $status ) {
 		$this->setCustom( 'amapress_adhesion_paiement_status', $status );
 	}
@@ -986,7 +990,25 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					return $lieu->getFormattedAdresse();
 				}
 			];
-			self::$properties         = $ret;
+			$ret['custom_check1'] = [
+				'desc' => sprintf( __( 'Valeur de "%s"', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK1 ),
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getCustomCheck( 1 ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' );
+				}
+			];
+			$ret['custom_check2'] = [
+				'desc' => sprintf( __( 'Valeur de "%s"', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK2 ),
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getCustomCheck( 2 ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' );
+				}
+			];
+			$ret['custom_check3'] = [
+				'desc' => sprintf( __( 'Valeur de "%s"', 'amapress' ), AMAPRESS_ADHESION_PERIOD_CHECK3 ),
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getCustomCheck( 3 ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' );
+				}
+			];
+			self::$properties = $ret;
 		}
 
 		return self::$properties;
