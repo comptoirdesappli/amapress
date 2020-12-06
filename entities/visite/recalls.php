@@ -31,7 +31,7 @@ add_action( 'amapress_recall_visite_inscription', function ( $args ) {
 
 /** @return array */
 function amapress_get_next_visites_cron() {
-	$weeks          = 2;
+	$weeks          = 6;
 	$date           = amapress_time();
 	$next_week_date = Amapress::add_a_week( amapress_time(), $weeks - 1 );
 	$next_visites   = AmapressVisite::get_visites(

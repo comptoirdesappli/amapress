@@ -24,7 +24,7 @@ add_action( 'amapress_recall_assemblee_generale_inscription', function ( $args )
 
 /** @return array */
 function amapress_get_next_assemblee_generales_cron() {
-	$weeks          = 2;
+	$weeks          = 6;
 	$date           = amapress_time();
 	$next_week_date = Amapress::add_a_week( amapress_time(), $weeks - 1 );
 	$next_events    = AmapressAssemblee_generale::get_next_assemblees(

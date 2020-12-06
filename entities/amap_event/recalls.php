@@ -30,7 +30,7 @@ add_action( 'amapress_recall_amap_event_inscription', function ( $args ) {
 
 /** @return array */
 function amapress_get_next_amap_events_cron() {
-	$weeks          = 2;
+	$weeks          = 6;
 	$date           = amapress_time();
 	$next_week_date = Amapress::add_a_week( amapress_time(), $weeks - 1 );
 	$next_events    = AmapressAmap_event::get_next_amap_events(
@@ -40,7 +40,8 @@ function amapress_get_next_amap_events_cron() {
 
 	$ret = [];
 	foreach ( $next_events as $amap_event ) {
-		$ret[] = [ 'id'    => $amap_event->getID(),
+		$ret[] = [
+			'id'           => $amap_event->getID(),
 		           'time'  => $amap_event->getStartDateAndHour(),
 		           'title' => $amap_event->getTitle()
 		];
