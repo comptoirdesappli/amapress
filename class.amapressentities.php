@@ -3667,6 +3667,13 @@ Vous maintenant vous connecter au site et effectuer vos inscriptions aux contrat
 											'default' => true,
 										),
 										array(
+											'id'      => 'helloasso-upd-exist',
+											'name'    => __( 'Mise à jour', 'amapress' ),
+											'type'    => 'checkbox',
+											'desc'    => __( 'Mettre à jour les informations des comptes utilisateurs existants (nom/prénom/adresse/téléphone...)', 'amapress' ),
+											'default' => false,
+										),
+										array(
 											'id'      => 'helloasso-send-confirm',
 											'name'    => __( 'Notifications d\'adhésion', 'amapress' ),
 											'type'    => 'checkbox',

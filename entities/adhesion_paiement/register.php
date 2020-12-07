@@ -710,14 +710,21 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 							}
 						}
 
-						$user_id = amapress_create_user_if_not_exists(
-							$default_email,
-							$default_firstName,
-							$default_lastName,
-							sprintf( __( '%s, %s %s', 'amapress' ), $default_address, $default_zipCode, $default_city ),
-							$default_phone,
-							'both'
-						);
+						$user_id = null;
+						$user    = get_user_by( 'email', $default_email );
+						if ( $user ) {
+							$user_id = $user->ID;
+						}
+						if ( ! $user_id || Amapress::getOption( 'helloasso-upd-exist' ) ) {
+							$user_id = amapress_create_user_if_not_exists(
+								$default_email,
+								$default_firstName,
+								$default_lastName,
+								sprintf( __( '%s, %s %s', 'amapress' ), $default_address, $default_zipCode, $default_city ),
+								$default_phone,
+								'both'
+							);
+						}
 
 						delete_user_meta( $user_id, 'pw_user_status' );
 						delete_transient( 'new_user_approve_user_statuses' );
