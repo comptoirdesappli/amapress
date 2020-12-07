@@ -691,6 +691,9 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 							$default_firstName = $item->user->firstName;
 							$default_lastName  = $item->user->lastName;
 						}
+						if ( isset( $item->amount ) ) {
+							$total = $item->amount;
+						}
 						if ( isset( $item->customFields ) && is_array( $item->customFields ) ) {
 							foreach ( $item->customFields as $custom_field ) {
 								if ( 0 === strcasecmp( Amapress::getOption( 'helloasso-email-field-name' ), $custom_field->name ) ) {
