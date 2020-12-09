@@ -496,6 +496,13 @@ function amapress_get_state() {
 		admin_url( 'options-general.php' )
 	);
 
+	$state['05_config'][] = amapress_get_check_state(
+		'info',
+		__( 'Délai de suppression automatique des éléments dans les corbeilles', 'amapress' ),
+		sprintf( __( 'Actuellement %d jour(s). Pour changer la valeur, ajouter <code>define(\'EMPTY_TRASH_DAYS\', <em>valeur_en_jour</em>);</code> dans votre <code>wp-config.php</code>.', 'amapress' ), esc_html( EMPTY_TRASH_DAYS ) ),
+		''
+	);
+
 	$blog_desc            = get_bloginfo( 'description' );
 	$state['05_config'][] = amapress_get_check_state(
 		empty( $blog_desc ) ? 'warning' : 'success',
