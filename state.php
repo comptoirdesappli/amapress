@@ -1495,72 +1495,82 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 			'href'  => $amapien_les_paniers_edit_href,
 			'categ' => __( '5/ Espace intermittents', 'amapress' ),
 		],
-		'intermittent-paniers'          => [
+		'intermittent-paniers'           => [
 			'desc'  => __( 'Ajouter le shortcode %s à la page Mes paniers échangés pour afficher "Les paniers que j\'ai réservé"', 'amapress' ),
 			'href'  => $amapien_mes_paniers_edit_href,
 			'categ' => __( '5/ Espace intermittents', 'amapress' ),
 		],
-		'amapiens-map'                  => [
+		'amapiens-map'                   => [
 			'desc'  => __( 'Ajouter une page avec le shortcode %s pour afficher la carte des amapiens', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '3/ Info utiles', 'amapress' ),
 		],
-		'amapiens-role-list'            => [
+		'amapiens-role-list'             => [
 			'desc'  => __( 'Ajouter une page avec le shortcode %s pour afficher la liste des membres du collectif', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '3/ Info utiles', 'amapress' ),
 		],
-		'agenda-url'                    => [
-			'desc'  => __( 'Ajouter le shortcode %s à la page Mes infos pour permettre aux amapiens d\'ajouter leur calendrier à leur agenda', 'amapress' ),
+		'agenda-url'                     => [
+			'desc'  => __( 'Ajouter le shortcode %s (ou [agenda-url-button]) à la page Mes infos pour permettre aux amapiens d\'ajouter leur calendrier à leur agenda', 'amapress' ),
 			'href'  => $amapien_mes_infos_edit_href,
 			'categ' => __( '4/ Profil amapien', 'amapress' ),
 		],
-		'nous-contacter'                => [
+		'amapress-amapien-agenda-viewer' => [
+			'desc'  => __( 'Ajouter le shortcode %s à une page pour permettre aux amapiens de voir leur calendrier de livraisons/évènements de l\'amap', 'amapress' ),
+			'href'  => $new_page_href,
+			'categ' => __( '3/ Info utiles', 'amapress' ),
+		],
+		'nous-contacter'                 => [
 			'desc'  => __( 'Ajouter une page Contact avec le shortcode %s', 'amapress' ),
 			'href'  => $new_page_href,
 			'categ' => __( '1/ Site public', 'amapress' ),
 		],
-		'front_next_events'             => [
+		'front_next_events'              => [
 			'desc'  => __( 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier', 'amapress' ),
 			'href'  => $front_page_edit_href,
 			'categ' => __( '2/ Page Accueil - Infos utiles', 'amapress' ),
 		],
-		'front_produits'                => [
+		'front_produits'                 => [
 			'desc'  => __( 'Ajouter le shortcode %s à la page d\'Accueil pour afficher les contrats', 'amapress' ),
 			'href'  => $front_page_edit_href,
 			'categ' => __( '2/ Page Accueil - Infos utiles', 'amapress' ),
 		],
-		'front_nous_trouver'            => [
+		'front_nous_trouver'             => [
 			'desc'  => __( 'Ajouter le shortcode %s à la page d\'Accueil pour afficher la carte des lieux de distribution', 'amapress' ),
 			'href'  => $front_page_edit_href,
 			'categ' => __( '2/ Page Accueil - Infos utiles', 'amapress' ),
 		],
-		'front_default_grid'            => [
+		'front_default_grid'             => [
 			'desc'  => __( 'Ajouter le shortcode %s à la page d\'Accueil pour afficher le calendrier, les contrats et la carte des lieux de distribution', 'amapress' ),
 			'href'  => $front_page_edit_href,
 			'categ' => __( '2/ Page Accueil - Infos utiles', 'amapress' ),
 		],
-		'inscription-en-ligne'          => [
+		'inscription-en-ligne'           => [
 			'desc'  => __( 'Ajouter le shortcode %s sur une page pour permettre aux amapiens de s\'inscrire en ligne aux contrats', 'amapress' ),
 			'href'  => $new_page_href,
 			'categ' => __( '6/ Inscriptions en ligne', 'amapress' ),
 		],
-		'listes-diffusions'             => [
+		'amapien-details-paiements'      => [
+			'desc'  => __( 'Ajouter le shortcode %s sur une page pour permettre aux amapiens de suivre les règlements attendus et reçus', 'amapress' ),
+			'href'  => $new_page_href,
+			'categ' => __( '6/ Inscriptions en ligne', 'amapress' ),
+		],
+		'listes-diffusions'              => [
 			'desc'  => __( 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens ou au collectif de connaitre les listes de diffusions configurées de votre AMAP', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '3/ Info utiles', 'amapress' ),
 		],
-		'inscription-visite'            => [
+		'inscription-visite'             => [
 			'desc'  => __( 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens de s\'inscrires aux visites aux producteurs', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '8/ Inscriptions', 'amapress' ),
 		],
-		'amapress-latest-posts'         => [
+		'amapress-latest-posts'          => [
 			'desc'  => __( 'Ajouter le shortcode %s sur une page pour permettre d\'afficher une liste des derniers articles publiés sur le site', 'amapress' ),
 			'href'  => $new_page_href,
 			'categ' => __( '3/ Info utiles', 'amapress' ),
 		],
-		'producteur-map'                => [
+		'producteur-map'                 => [
 			'desc'  => __( 'Ajouter le shortcode %s sur une page pour permettre d\'afficher la carte des producteurs', 'amapress' ),
 			'href'  => $new_page_href,
 			'categ' => __( '3/ Info utiles', 'amapress' ),
