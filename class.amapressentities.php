@@ -2599,6 +2599,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'default' => false,
 										),
 										array(
+											'id'      => 'mob_phone_req',
+											'name'    => __( 'Numéro de portable', 'amapress' ),
+											'type'    => 'checkbox',
+											'default' => false,
+											'desc'    => __( 'Rendre le numéro de téléphone mobile obligatoire', 'amapress' ),
+										),
+										array(
 											'id'      => 'before_close_hours',
 											'name'    => __( 'Clôture des inscriptions', 'amapress' ),
 											'type'    => 'number',

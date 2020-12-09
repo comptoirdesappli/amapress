@@ -22,7 +22,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
 			'show_cofoyers_address' => 'false',
 			'show_adherents_infos'  => 'true',
 			'allow_remove_cofoyers' => 'true',
-			'mob_phone_required'    => 'false',
+			'mob_phone_required'    => Amapress::getOption( 'mob_phone_req' ) ? 'true' : 'false',
 			'address_required'      => 'false',
 			'allow_trombi_decline'  => 'true',
 		], $atts
@@ -181,7 +181,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
         </div>
         <div class="form-group">
             <label for="amapress_user_ville">
-				<?php _e( 'Ville', 'amapress' ) ?><br/>
+			    <?php _e( 'Ville', 'amapress' ) ?><br/>
             </label>
             <input class="form-control <?php echo $address_required ? 'required' : ''; ?>" type="text"
                    name="amapress_user_ville" id="amapress_user_ville"
