@@ -1097,38 +1097,47 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 								),
 								__( 'Emails - Responsables de distribution - Rappel', 'amapress' )             => array(
 									'id'      => 'amp_tab_recall_resp_distrib',
+									'desc'    => 'Rappels aux responsables de distribution inscrits avant chaque distribution (avec possibilité d)',
 									'options' => amapress_distribution_responsable_recall_options(),
 								),
 								__( 'Emails - Responsables de distribution - Rappel 2', 'amapress' )           => array(
 									'id'      => 'amp_tab_recall_resp_distrib2',
+									'desc'    => 'Rappels aux responsables de distribution inscrits avant chaque distribution',
 									'options' => amapress_distribution_responsable_recall2_options(),
 								),
 								__( 'Emails - Gardiens de paniers - Rappel', 'amapress' )                      => array(
 									'id'      => 'amp_tab_recall_gardien_paniers',
+									'desc'    => 'Rappels individuels aux gardiens de paniers des paniers qu\'ils gardent à chaque distribution',
 									'options' => amapress_distribution_gardiens_recall_options(),
 								),
 								__( 'Emails - Vérification de distribution - Rappel', 'amapress' )             => array(
 									'id'      => 'amp_tab_recall_verif_distrib',
+									'desc'    => 'Envoi de la liste d\'émargement aux membres du collectif pour vérification et éventuels reports de livraisons avant envoi aux responsables de distribution',
 									'options' => amapress_distribution_verify_recall_options(),
 								),
 								__( 'Emails - A tous les amapiens à la distribution - Rappel', 'amapress' )    => array(
 									'id'      => 'amp_tab_recall_all_amapiens',
+									'desc'    => 'Rappel collectif (avec tous les contrats livrés) ou individuel (avec le détails des livraisons pour chaque amapien) envoyé avant chaque distribution aux amapiens concernés',
 									'options' => amapress_distribution_all_amapiens_recall_options(),
 								),
 								__( 'Emails - Envoi liste émargement Excel/PDF', 'amapress' )                  => array(
 									'id'      => 'amp_tab_recall_emarg',
+									'desc'    => 'Envoi de la lite d\'émargement à des membres du collectif avant chaque distribution',
 									'options' => amapress_distribution_emargement_recall_options(),
 								),
 								__( 'Emails - Responsable(s) manquant(s) - Rappel', 'amapress' )               => array(
 									'id'      => 'amp_tab_recall_miss_resps',
+									'desc'    => 'Rappels aux amapiens avant chaque distribution de s\'inscrire en tant que responsable de distribution s\'il n\'y a pas encore assez d\'inscriptions',
 									'options' => amapress_distribution_missing_responsables_recall_options(),
 								),
 								__( 'Emails - Distribution - Modification livraisons - Rappel', 'amapress' )   => array(
 									'id'      => 'amp_tab_recall_modif_distrib',
+									'desc'    => 'Rappel envoyé aux amapiens avant chaque distribution lorsqu\'un ou plusieurs contrats ont été annulés ou changés de date',
 									'options' => amapress_distribution_changes_recall_options(),
 								),
 								__( 'Emails - Inscription aux créneaux de distribution - Rappel', 'amapress' ) => array(
 									'id'      => 'amp_tab_recall_slot_inscr',
+									'desc'    => 'Rappels aux amapiens de la nécessité de leur inscriptions aux créneaux de distribution',
 									'options' => amapress_distribution_slots_inscr_recall_options(),
 								),
 							),
@@ -1875,26 +1884,32 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 								),
 								__( 'Emails - Visite - Inscription - Rappel', 'amapress' )                           => array(
 									'id'      => 'amp_tab_recall_visite_inscr',
+									'desc'    => 'Rappel de leur participation aux amapiens inscrits à une visite à la ferme',
 									'options' => amapress_visite_inscription_recall_options(),
 								),
 								__( 'Emails - Visite - Inscription possible - Rappel', 'amapress' )                  => array(
 									'id'      => 'amp_tab_recall_visite_avail',
+									'desc'    => 'Rappel aux amapiens qu\'une visite à la ferme aura bientôt lieu',
 									'options' => amapress_visite_available_recall_options(),
 								),
 								__( 'Emails - Evènement AMAP - Inscription - Rappel', 'amapress' )                   => array(
 									'id'      => 'amp_tab_recall_amap_event_inscr',
+									'desc'    => 'Rappel de leur participation aux amapiens inscrits à un évènement AMAP',
 									'options' => amapress_amap_event_inscription_recall_options(),
 								),
 								__( 'Emails - Evènement AMAP - Inscription possible - Rappel', 'amapress' )          => array(
 									'id'      => 'amp_tab_recall_amap_event_avail',
+									'desc'    => 'Rappel aux amapiens qu\'un évènement AMAP aura bientôt lieu',
 									'options' => amapress_amap_event_available_recall_options(),
 								),
 								__( 'Emails - Assemblée générale AMAP - Inscription - Rappel', 'amapress' )          => array(
 									'id'      => 'amp_tab_recall_ag_inscr',
+									'desc'    => 'Rappel de leur participation aux amapiens inscrits à une Assemblée générale',
 									'options' => amapress_assemblee_generale_inscription_recall_options(),
 								),
 								__( 'Emails - Assemblée générale AMAP - Inscription possible - Rappel', 'amapress' ) => array(
 									'id'      => 'amp_tab_recall_ag_avail',
+									'desc'    => 'Rappel aux amapiens qu\'une Assemblée générale aura bientôt lieu',
 									'options' => amapress_assemblee_generale_available_recall_options(),
 								),
 							),
@@ -2461,42 +2476,52 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 							'tabs'     => array(
 								__( 'Emails - Envoi des quantités à livrer (1)', 'amapress' )            => array(
 									'id'      => 'amp_tab_recall_quantites_distrib1',
+									'desc'    => 'Rappel envoyés aux producteurs et/ou aux référents des quantités à livrer avant chauqe distribution',
 									'options' => amapress_contrat_quantites_recall_options(),
 								),
 								__( 'Emails - Envoi des quantités à livrer (2)', 'amapress' )            => array(
 									'id'      => 'amp_tab_recall_quantites_distrib2',
+									'desc'    => 'Rappel envoyés aux producteurs et/ou aux référents des quantités à livrer avant chauqe distribution',
 									'options' => amapress_contrat_quantites_recall_options( '2' ),
 								),
 								__( 'Emails - Envoi des quantités à livrer (3)', 'amapress' )            => array(
 									'id'      => 'amp_tab_recall_quantites_distrib3',
+									'desc'    => 'Rappel envoyés aux producteurs et/ou aux référents des quantités à livrer avant chauqe distribution',
 									'options' => amapress_contrat_quantites_recall_options( '3' ),
 								),
 								__( 'Emails - Contrats à renouveler', 'amapress' )                       => array(
 									'id'      => 'amp_tab_recall_contrat_renew',
+									'desc'    => 'Rappels de contrats à renouveller envoyés aux référents producteur',
 									'options' => amapress_contrat_renew_recall_options(),
 								),
 								__( 'Emails - Contrats ouverts ou bientôt ouverts', 'amapress' )         => array(
 									'id'      => 'amp_tab_recall_contrat_open',
+									'desc'    => 'Rappels envoyés aux amapiens avant (ou après) l\'ouverture des inscriptions aux contrats',
 									'options' => amapress_contrat_open_recall_options(),
 								),
 								__( 'Emails - Contrats bientôt fermés', 'amapress' )                     => array(
 									'id'      => 'amp_tab_recall_contrat_close',
+									'desc'    => 'Rappels envoyés aux amapiens avant la clôture des inscriptions aux contrats',
 									'options' => amapress_contrat_close_recall_options(),
 								),
 								__( 'Emails - Récapitulatif à la clôture des inscriptions', 'amapress' ) => array(
 									'id'      => 'amp_tab_recall_contrat_recap_close',
+									'desc'    => 'Rappels envoyés à la clôture des inscriptions aux référents et/ou aux producteurs avec différentes possibilités d\'excel des quantités à livrer tout au long du contrat',
 									'options' => amapress_contrat_recap_cloture_recall_options(),
 								),
 								__( 'Emails - Inscriptions à valider', 'amapress' )                      => array(
 									'id'      => 'amp_tab_inscr_validate_distrib',
+									'desc'    => 'Rappel envoyé aux référents producteur avant chaque distribution pour signaler que des Inscriptions restent à valider',
 									'options' => amapress_inscriptions_to_validate_recall_options(),
 								),
 								__( 'Emails - Envoi liste des règlements', 'amapress' )                  => array(
 									'id'      => 'amp_tab_recall_liste_cheques',
+									'desc'    => 'Rappel envoyé aux référents producteur avant chaque distribution avec la liste des chèques à remettre',
 									'options' => amapress_contrat_paiements_recall_options(),
 								),
 								__( 'Emails - Envoi rappel remise règlements', 'amapress' )              => array(
 									'id'      => 'amp_tab_recall_awaiting_cheques',
+									'desc'    => 'Email envoyé à l\'amapien via l\'action Envoyer rappel sur les règlements Inscriptions non encore reçus',
 									'options' => array(
 										array(
 											'id'       => 'paiement-awaiting-mail-subject',
