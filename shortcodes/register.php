@@ -136,8 +136,8 @@ function amapress_register_shortcodes() {
 				'produits'    => __( 'Filtre de produits', 'amapress' ),
 				'cat'         => __( 'Filtre de catégories', 'amapress' ),
 				'cat__not_in' => __( 'Inverse filtre de catégories', 'amapress' ),
-				'if_empty'    => '(Par défaut “Pas encore de recette”) Texte à afficher quand il n\’y a pas de recettes à afficher',
-				'size'        => '(Par défaut “thumbnail”) Taille de l\’aperçu',
+				'if_empty'    => __( '(Par défaut “Pas encore de recette”) Texte à afficher quand il n\’y a pas de recettes à afficher', 'amapress' ),
+				'size'        => __( '(Par défaut “thumbnail”) Taille de l\’aperçu', 'amapress' ),
 				'searchbox'   => __( '(Par défaut “true”) Afficher une barre de recherche', 'amapress' ),
 			]
 		] );
@@ -149,8 +149,8 @@ function amapress_register_shortcodes() {
 				'recette'     => __( 'Filtre recettes', 'amapress' ),
 				'cat'         => __( 'Filtre catégories', 'amapress' ),
 				'cat__not_in' => __( 'Inverse filtre catégories', 'amapress' ),
-				'if_empty'    => '(Par défaut “Pas encore de produits”) Texte à afficher quand il n\’y a pas de recettes à afficher',
-				'size'        => '(Par défaut “thumbnail”) Taille de l\’aperçu',
+				'if_empty'    => __( '(Par défaut “Pas encore de produits”) Texte à afficher quand il n\’y a pas de recettes à afficher', 'amapress' ),
+				'size'        => __( '(Par défaut “thumbnail”) Taille de l\’aperçu', 'amapress' ),
 				'searchbox'   => __( '(Par défaut “true”) Afficher une barre de recherche', 'amapress' ),
 			]
 		] );
@@ -395,9 +395,9 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => __( 'Afficheur de calendrier ICAL/ICS', 'amapress' ),
 			'args' => [
-				'header_left'   => '(Par défaut “prev,next today”) Option de personnalisation de l\’entête partie gauche, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
-				'header_center' => '(Par défaut “title”) Option de personnalisation de l\’entête partie centrale, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
-				'header_right'  => '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\’entête partie droite, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
+				'header_left'   => __( '(Par défaut “prev,next today”) Option de personnalisation de l\’entête partie gauche, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
+				'header_center' => __( '(Par défaut “title”) Option de personnalisation de l\’entête partie centrale, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
+				'header_right'  => __( '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\’entête partie droite, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
 				'min_time'      => __( '(Par défaut “08:00:00”) Heure minimale affichée', 'amapress' ),
 				'max_time'      => __( '(Par défaut “22:00:00”) Heure maximale affichée', 'amapress' ),
 				'default_view'  => __( '(Par défaut “listMonth”) Type d’affichage <a href=”https://fullcalendar.io/docs#main”>Option Views de fullcalendar</a>', 'amapress' ),
@@ -417,9 +417,9 @@ function amapress_register_shortcodes() {
 			'desc' => __( 'Calendrier de l\'amapien', 'amapress' ),
 			'args' => [
 				'since_days'    => __( '(Par défaut 30) Nombre de jours d\'historique de l\'agenda', 'amapress' ),
-				'header_left'   => '(Par défaut “prev,next today”) Option de personnalisation de l\’entête partie gauche, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
-				'header_center' => '(Par défaut “title”) Option de personnalisation de l\’entête partie centrale, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
-				'header_right'  => '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\’entête partie droite, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
+				'header_left'   => __( '(Par défaut “prev,next today”) Option de personnalisation de l\’entête partie gauche, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
+				'header_center' => __( '(Par défaut “title”) Option de personnalisation de l\’entête partie centrale, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
+				'header_right'  => __( '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\’entête partie droite, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
 				'min_time'      => __( '(Par défaut “08:00:00”) Heure minimale affichée', 'amapress' ),
 				'max_time'      => __( '(Par défaut “22:00:00”) Heure maximale affichée', 'amapress' ),
 				'icon_size'     => __( '(Par défaut, 1em) Taille des icônes des évènements', 'amapress' ),
@@ -441,9 +441,9 @@ function amapress_register_shortcodes() {
 			'desc' => __( 'Calendrier publique de l\'AMAP', 'amapress' ),
 			'args' => [
 				'since_days'    => __( '(Par défaut 30) Nombre de jours d\'historique de l\'agenda', 'amapress' ),
-				'header_left'   => '(Par défaut “prev,next today”) Option de personnalisation de l\’entête partie gauche, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
-				'header_center' => '(Par défaut “title”) Option de personnalisation de l\’entête partie centrale, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
-				'header_right'  => '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\’entête partie droite, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>',
+				'header_left'   => __( '(Par défaut “prev,next today”) Option de personnalisation de l\’entête partie gauche, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
+				'header_center' => __( '(Par défaut “title”) Option de personnalisation de l\’entête partie centrale, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
+				'header_right'  => __( '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\’entête partie droite, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
 				'min_time'      => __( '(Par défaut “08:00:00”) Heure minimale affichée', 'amapress' ),
 				'max_time'      => __( '(Par défaut “22:00:00”) Heure maximale affichée', 'amapress' ),
 				'icon_size'     => __( '(Par défaut, 1em) Taille des icônes des évènements', 'amapress' ),
@@ -477,8 +477,8 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => __( 'Paniers proposés/échangés par un amapien', 'amapress' ),
 			'args' => [
-				'show_history' => '(Par défaut “false”) Afficher l\’historique des échanges de paniers de l\’amapien/intermittent',
-				'history_days' => '(Par défaut “180”) Nombre de jour de l\’historique',
+				'show_history' => __( '(Par défaut “false”) Afficher l\’historique des échanges de paniers de l\’amapien/intermittent', 'amapress' ),
+				'history_days' => __( '(Par défaut “180”) Nombre de jour de l\’historique', 'amapress' ),
 				'show_futur'   => __( '(Par défaut “true”) Afficher les échanges à venir', 'amapress' ),
 			]
 		] );
@@ -494,8 +494,10 @@ function amapress_register_shortcodes() {
 			'args' => [
 				'contrat'                 => __( 'Permet de filtrer les contrats pour lesquels les paneirs à échanger sont affichés', 'amapress' ),
 				'allow_amapiens'          => __( '(Par défaut “true”) Autoriser les amapiens à réserver des paniers', 'amapress' ),
-				'check_adhesion'          => __( '(Par défaut ', 'amapress' ) . ( Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ) ? 'true' : 'false' )
-				                             . ', configurable dans ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_intermit_conf_opt_page&tab=amapress_intermit_conf_tab' ), __( 'Tableau de bord>Espace intermittents>Configuration, onglet Configuration de l\'espace intermittents', 'amapress' ), true, true ) . ') Autoriser la réservation de paniers uniquement si l\'intermittent a une adhésion à l\'AMAP',
+				'check_adhesion'          => sprintf( __( '(Par défaut %s, configurable dans %s) Autoriser la réservation de paniers uniquement si l\'intermittent a une adhésion à l\'AMAP', 'amapress' ),
+					Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ) ? 'true' : 'false',
+					Amapress::makeLink( admin_url( 'admin.php?page=amapress_intermit_conf_opt_page&tab=amapress_intermit_conf_tab' ),
+						__( 'Tableau de bord>Espace intermittents>Configuration, onglet Configuration de l\'espace intermittents', 'amapress' ), true, true ) ),
 				'check_adhesion_received' => __( '(Par défaut false) Autoriser la réservation de paniers uniquement si l\'adhésion est validée', 'amapress' ),
 			]
 		] );
@@ -607,7 +609,7 @@ function amapress_register_shortcodes() {
 				'show_adherents_infos'                => __( '(true par défaut) Afficher les infos sur l\'ahdérent et ses co-adhérents', 'amapress' ),
 				'show_adhesion_infos'                 => __( '(true par défaut) Afficher la validité de l\'adhésion et le bouton d\'impression du bulletin', 'amapress' ),
 				'allow_coadherents_inscription'       => __( '(true par défaut) Autoriser l\'inscription aux contrats par les co-adhérents', 'amapress' ),
-				'allow_coadherents_access'            => '(true par défaut) Autoriser l\accès aux co-adhérents',
+				'allow_coadherents_access'            => __( '(true par défaut) Autoriser l\accès aux co-adhérents', 'amapress' ),
 				'allow_coadherents_adhesion'          => __( '(true par défaut) Autoriser l\'adhésion à l\'AMAP par les co-adhérents', 'amapress' ),
 				'allow_remove_coadhs'                 => __( '(false par défaut) Autoriser la suppression des co-adhérents', 'amapress' ),
 				'allow_remove_cofoyers'               => __( '(true par défaut) Autoriser la suppression des membres du foyers', 'amapress' ),
@@ -677,7 +679,7 @@ function amapress_register_shortcodes() {
 				'show_adherents_infos'                => __( '(true par défaut) Afficher les infos sur l\'ahdérent et ses co-adhérents', 'amapress' ),
 				'show_adhesion_infos'                 => __( '(true par défaut) Afficher la validité de l\'adhésion et le bouton d\'impression du bulletin', 'amapress' ),
 				'allow_coadherents_inscription'       => __( '(true par défaut) Autoriser l\'inscription aux contrats par les co-adhérents', 'amapress' ),
-				'allow_coadherents_access'            => '(true par défaut) Autoriser l\accès aux co-adhérents',
+				'allow_coadherents_access'            => __( '(true par défaut) Autoriser l\accès aux co-adhérents', 'amapress' ),
 				'allow_coadherents_adhesion'          => __( '(true par défaut) Autoriser l\'adhésion à l\'AMAP par les co-adhérents', 'amapress' ),
 				'allow_remove_coadhs'                 => __( '(false par défaut) Autoriser la suppression des co-adhérents', 'amapress' ),
 				'allow_remove_cofoyers'               => __( '(true par défaut) Autoriser la suppression des membres du foyers', 'amapress' ),
@@ -732,7 +734,7 @@ function amapress_register_shortcodes() {
 				'show_adhesion_infos'            => __( '(true par défaut) Afficher la validité de l\'adhésion et le bouton d\'impression du bulletin', 'amapress' ),
 				'allow_adhesion_lieu'            => __( '(booléen, false par défaut) : permettre de choisir son lieu de distribution souhaité dès l\'adhésion', 'amapress' ),
 				'allow_adhesion_message'         => __( '(booléen, false par défaut) : permettre d\'ajouter un message pour le trésorier lors de l\'adhésion', 'amapress' ),
-				'allow_coadherents_access'       => '(true par défaut) Autoriser l\accès aux co-adhérents',
+				'allow_coadherents_access'       => __( '(true par défaut) Autoriser l\accès aux co-adhérents', 'amapress' ),
 				'allow_coadherents_adhesion'     => __( '(true par défaut) Autoriser l\'adhésion à l\'AMAP par les co-adhérents', 'amapress' ),
 				'allow_remove_coadhs'            => __( '(false par défaut) Autoriser la suppression des co-adhérents', 'amapress' ),
 				'allow_remove_cofoyers'          => __( '(true par défaut) Autoriser la suppression des membres du foyers', 'amapress' ),
@@ -771,7 +773,7 @@ function amapress_register_shortcodes() {
 				'skip_coords'                    => __( '(false par défaut) Passer l\'étape de saisie des coordonnées et des coadhérents', 'amapress' ),
 				'show_adherents_infos'           => __( '(true par défaut) Afficher les infos sur l\'ahdérent et ses co-adhérents', 'amapress' ),
 				'show_adhesion_infos'            => __( '(true par défaut) Afficher la validité de l\'adhésion et le bouton d\'impression du bulletin', 'amapress' ),
-				'allow_coadherents_access'       => '(true par défaut) Autoriser l\accès aux co-adhérents',
+				'allow_coadherents_access'       => __( '(true par défaut) Autoriser l\accès aux co-adhérents', 'amapress' ),
 				'allow_coadherents_adhesion'     => __( '(true par défaut) Autoriser l\'adhésion à l\'AMAP par les co-adhérents', 'amapress' ),
 				'allow_remove_coadhs'            => __( '(false par défaut) Autoriser la suppression des co-adhérents', 'amapress' ),
 				'allow_remove_cofoyers'          => __( '(true par défaut) Autoriser la suppression des membres du foyers', 'amapress' ),
@@ -842,8 +844,8 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => __( 'Paniers réservés par un intermittent', 'amapress' ),
 			'args' => [
-				'show_history' => '(Par défaut “false”)  Afficher l\’historique des échanges de paniers de l\’amapien/intermittent',
-				'history_days' => '(Par défaut “30”) Nombre de jour de l\’historique',
+				'show_history' => __( '(Par défaut “false”)  Afficher l\’historique des échanges de paniers de l\’amapien/intermittent', 'amapress' ),
+				'history_days' => __( '(Par défaut “30”) Nombre de jour de l\’historique', 'amapress' ),
 				'show_futur'   => __( '(Par défaut “true”) Afficher les échanges à venir', 'amapress' ),
 			]
 		] );
@@ -1512,9 +1514,9 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => __( 'Affichage le formulaire HelloAsso (Formulaire/Vignette/Vignette horizontale/Bouton)', 'amapress' ),
 			'args' => [
-				'contenu'              => 'Dans le contenu du shortcode, placez vos instructions de ré/adhésion.',
-				'show_period'          => '(true par défaut) Afficher le nom de la période d\'adhésion du formulaire',
-				'show_adherent_info'   => '(true par défaut) Afficher les infos de l\'utilisateur connecté',
+				'contenu'              => __( 'Dans le contenu du shortcode, placez vos instructions de ré/adhésion.', 'amapress' ),
+				'show_period'          => __( '(true par défaut) Afficher le nom de la période d\'adhésion du formulaire', 'amapress' ),
+				'show_adherent_info'   => __( '(true par défaut) Afficher les infos de l\'utilisateur connecté', 'amapress' ),
 				'form_type'            => __( '(form par défaut) Type de formulaire à afficher (form: Formulaire, thumb: Vignette, thumbhori: Vignette horizontale, button: Bouton)', 'amapress' ),
 				'adhesion_shift_weeks' => sprintf( __( '(Configurable dans %s) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion', 'amapress' ), $contrats_conf_link ),
 			]
