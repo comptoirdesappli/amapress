@@ -847,7 +847,10 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 		admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page' ),
 		__( 'AMAP avec contrat obligatoire/principal', 'amapress' ) . __( ' : ', 'amapress' ) . ( ! Amapress::getOption( 'disable_principal' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
 		'<br/>' . __( 'Autoriser la co-adhésion partielle', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'allow_partial_coadh' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
+		'<br/>' . __( 'Rendre le numéro de téléphone mobile obligatoire', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'mob_phone_req' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
 		'<br/>' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/referent_producteur/co-panier' ) .
+		'<br/>' . __( 'Maximum par défaut de membre(s) du foyer', 'amapress' ) . __( ' : ', 'amapress' ) . Amapress::getOption( 'def_max_cofoy' ) .
+		'<br/>' . __( 'Maximum par défaut de co-adhérent(s)', 'amapress' ) . __( ' : ', 'amapress' ) . Amapress::getOption( 'def_max_coadh' ) .
 		'<br/>' . __( 'Les co-adhérents doivent avoir une adhésion séparée', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'coadh_self_adh' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
 		'<br/>' . __( 'L\'adhésion doit avoir été validée avant de pouvoir s\'inscrire aux contrats', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'check_adh_rcv' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
 		'<br/>' . __( 'L\'adhésion ou une adhésion précédente doit avoir été validée avant de pouvoir s\'inscrire aux contrats', 'amapress' ) . __( ' : ', 'amapress' ) . ( Amapress::getOption( 'check_adh_rcv_p' ) ? __( 'oui', 'amapress' ) : __( 'non', 'amapress' ) ) .
