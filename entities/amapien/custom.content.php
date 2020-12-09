@@ -172,7 +172,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
         </div>
         <div class="form-group">
             <label for="amapress_user_code_postal">
-				<?php _e( 'Code postal', 'amapress' ) ?><br/>
+		        <?php _e( 'Code postal', 'amapress' ) ?><br/>
             </label>
             <input class="form-control <?php echo $address_required ? 'required' : ''; ?>" type="text"
                    name="amapress_user_code_postal" id="amapress_user_code_postal"
