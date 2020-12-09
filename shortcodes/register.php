@@ -60,6 +60,10 @@ function amapress_register_shortcodes() {
 			] );
 	}
 
+	$contrats_conf_link      = Amapress::makeLink(
+		admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ),
+		__( 'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats', 'amapress' )
+	);
 	$inscr_distrib_conf_link = Amapress::makeLink(
 		admin_url( 'admin.php?page=amapress_distribs_conf_opt_page&tab=amp_inscr_distrib_options_tab' ),
 		__( 'Tableau de bord>Distributions>Configuration, onglet Inscription distribution', 'amapress' )
@@ -461,7 +465,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => __( 'Permet à un amapien de modifier ses coordonnées', 'amapress' ),
 			'args' => [
-				'max_cofoyers'          => __( '(3 par défaut) Nombre maximum de membres du foyer', 'amapress' ),
+				'max_cofoyers'          => sprintf( __( '(Configurable dans %s) Nombre maximum de membres du foyer', 'amapress' ), $contrats_conf_link ),
 				'edit_names'            => __( '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription', 'amapress' ),
 				'mob_phone_required'    => __( '(false par défaut) Téléphones (mobiles) requis', 'amapress' ),
 				'address_required'      => __( '(false par défaut) Adresse requise', 'amapress' ),
@@ -508,10 +512,6 @@ function amapress_register_shortcodes() {
 			]
 		] );
 
-	$contrats_conf_link = Amapress::makeLink(
-		admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=contrat_config' ),
-		__( 'Tableau de bord>Gestion Contrats>Configuration, onglet Contrats', 'amapress' )
-	);
 	amapress_register_shortcode( 'mes-contrats', 'amapress_mes_contrats',
 		[
 			'desc' => __( 'Permet l\'inscription aux contrats complémentaires en cours d\'année', 'amapress' ),
@@ -595,8 +595,8 @@ function amapress_register_shortcodes() {
 					}, AmapressContrats::get_contrats() ) ),
 				'shorturl'                            => __( 'Url raccourcie de la page sur laquelle se trouve cet Assistant de Préinscription en ligne', 'amapress' ),
 				'adhesion_shift_weeks'                => sprintf( __( '(Configurable dans %s) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion', 'amapress' ), $contrats_conf_link ),
-				'max_coadherents'                     => __( '(3 par défaut) Nombre maximum de co-adhérents', 'amapress' ),
-				'max_cofoyers'                        => __( '(3 par défaut) Nombre maximum de membres du foyer', 'amapress' ),
+				'max_coadherents'                     => sprintf( __( '(Configurable dans %s) Nombre maximum de co-adhérents', 'amapress' ), $contrats_conf_link ),
+				'max_cofoyers'                        => sprintf( __( '(Configurable dans %s) Nombre maximum de membres du foyer', 'amapress' ), $contrats_conf_link ),
 				'mob_phone_required'                  => __( '(false par défaut) Téléphones (mobiles) requis', 'amapress' ),
 				'address_required'                    => __( '(false par défaut) Adresse requise', 'amapress' ),
 				'track_no_renews'                     => __( '(false par défaut) Afficher une case "Je ne souhaite pas renouveler" et une zone Motif à l\'étape 1', 'amapress' ),
@@ -665,8 +665,8 @@ function amapress_register_shortcodes() {
 						return sprintf( __( '%d (%s)', 'amapress' ), $c->ID, $c->getTitle() );
 					}, AmapressContrats::get_contrats() ) ),
 				'adhesion_shift_weeks'                => sprintf( __( '(Configurable dans %s) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion', 'amapress' ), $contrats_conf_link ),
-				'max_coadherents'                     => __( '(3 par défaut) Nombre maximum de co-adhérents', 'amapress' ),
-				'max_cofoyers'                        => __( '(3 par défaut) Nombre maximum de membres du foyer', 'amapress' ),
+				'max_coadherents'                     => sprintf( __( '(Configurable dans %s) Nombre maximum de co-adhérents', 'amapress' ), $contrats_conf_link ),
+				'max_cofoyers'                        => sprintf( __( '(Configurable dans %s) Nombre maximum de membres du foyer', 'amapress' ), $contrats_conf_link ),
 				'mob_phone_required'                  => __( '(false par défaut) Téléphones (mobiles) requis', 'amapress' ),
 				'address_required'                    => __( '(false par défaut) Adresse requise', 'amapress' ),
 				'track_no_renews'                     => __( '(false par défaut) Afficher une case "Je ne souhaite pas renouveler" et une zone Motif à l\'étape 1', 'amapress' ),
@@ -723,8 +723,8 @@ function amapress_register_shortcodes() {
 				'edit_names'                     => __( '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription', 'amapress' ),
 				'send_welcome'                   => __( '(booléen, false par défaut si New User Approve est actif, false sinon) : permet de désactiver l\'envoi automatique du mail de bienvenue aux nouveaux amapiens', 'amapress' ),
 				'shorturl'                       => __( 'Url raccourcie de la page sur laquelle se trouve cet Assistant de Préinscription en ligne', 'amapress' ),
-				'max_coadherents'                => __( '(3 par défaut) Nombre maximum de co-adhérents', 'amapress' ),
-				'max_cofoyers'                   => __( '(3 par défaut) Nombre maximum de membres du foyer', 'amapress' ),
+				'max_coadherents'                => sprintf( __( '(Configurable dans %s)  Nombre maximum de co-adhérents', 'amapress' ), $contrats_conf_link ),
+				'max_cofoyers'                   => sprintf( __( '(Configurable dans %s)  Nombre maximum de membres du foyer', 'amapress' ), $contrats_conf_link ),
 				'mob_phone_required'             => __( '(false par défaut) Téléphones (mobiles) requis', 'amapress' ),
 				'address_required'               => __( '(false par défaut) Adresse requise', 'amapress' ),
 				'track_no_renews'                => __( '(false par défaut) Afficher une case "Je ne souhaite pas renouveler" et une zone Motif à l\'étape 1', 'amapress' ),
@@ -761,8 +761,8 @@ function amapress_register_shortcodes() {
 				'edit_names'                     => __( '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription', 'amapress' ),
 				'send_welcome'                   => __( '(booléen, false par défaut si New User Approve est actif, false sinon) : permet de désactiver l\'envoi automatique du mail de bienvenue aux nouveaux amapiens', 'amapress' ),
 				'shorturl'                       => __( 'Url raccourcie de la page sur laquelle se trouve cet Assistant de Préinscription en ligne', 'amapress' ),
-				'max_coadherents'                => __( '(3 par défaut) Nombre maximum de co-adhérents', 'amapress' ),
-				'max_cofoyers'                   => __( '(3 par défaut) Nombre maximum de membres du foyer', 'amapress' ),
+				'max_coadherents'                => sprintf( __( '(Configurable dans %s) Nombre maximum de co-adhérents', 'amapress' ), $contrats_conf_link ),
+				'max_cofoyers'                   => sprintf( __( '(Configurable dans %s) Nombre maximum de membres du foyer', 'amapress' ), $contrats_conf_link ),
 				'mob_phone_required'             => __( '(false par défaut) Téléphones (mobiles) requis', 'amapress' ),
 				'address_required'               => __( '(false par défaut) Adresse requise', 'amapress' ),
 				'track_no_renews'                => __( '(false par défaut) Afficher une case "Je ne souhaite pas renouveler" et une zone Motif à l\'étape 1', 'amapress' ),

@@ -18,7 +18,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
 	$atts                  = shortcode_atts(
 		[
 			'edit_names'            => 'true',
-			'max_cofoyers'          => 3,
+			'max_cofoyers'          => intval( Amapress::getOption( 'def_max_cofoy', 3 ) ),
 			'show_cofoyers_address' => 'false',
 			'show_adherents_infos'  => 'true',
 			'allow_remove_cofoyers' => 'true',
@@ -187,14 +187,14 @@ function amapress_edit_user_info_shortcode( $atts ) {
                    name="amapress_user_ville" id="amapress_user_ville"
                    value="<?php esc_attr_e( wp_unslash( $user->getVille() ) ); ?>"/>
         </div>
-		<?php if ( $allow_trombi_decline ) { ?>
+	    <?php if ( $allow_trombi_decline ) { ?>
             <div class="form-group">
                 <label for="amapress_user_hidaddr">
                     <input class="form-control" type="checkbox" name="amapress_user_hidaddr" id="amapress_user_hidaddr"
-						<?php echo checked( 1, $user->isHiddenFromTrombi() ); ?>/>
+					    <?php echo checked( 1, $user->isHiddenFromTrombi() ); ?>/>
 				    <?php _e( 'Ne pas apparaître sur le trombinoscope', 'amapress' ) ?><br/>
-			    </label>
-		    </div>
+                </label>
+            </div>
 	    <?php } ?>
         <div class="form-group">
             <label for="amapress_user_moyen">
