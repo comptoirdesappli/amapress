@@ -4449,7 +4449,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 		}
 
 		/** @var AmapressContrat_instance $contrat */
-		$meta                                   = [
+		$meta = [
 			'amapress_adhesion_adherent'         => $user_id,
 			'amapress_adhesion_status'           => 'to_confirm',
 			'amapress_adhesion_date_debut'       => $contrat->isCommandeVariable() && $edit_inscription ? $edit_inscription->getDate_debut() : $start_date,
@@ -4855,7 +4855,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
                     }
                 });
                 $td.nextAll().find("select").each(function () {
-                    $(this).val(val);
+                    $(this).val(val).trigger("change");
                 });
                 return false;
             });
