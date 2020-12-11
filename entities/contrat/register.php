@@ -247,8 +247,8 @@ function amapress_register_entities_contrat( $entities ) {
 
 				if ( empty( AmapressContrats::get_contrat_quantites( $post->ID ) ) ) {
 					$class   = 'notice notice-error';
-					$message = __( 'Vous devez configurer les quantités et tarifs des paniers', 'amapress' );
-					printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+					$message = __( '<a href="#amp_config_paniers">Vous devez configurer les quantités et tarifs des paniers</a>', 'amapress' );
+					printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 				}
 
 				echo '<h4>' . __( 'EDITER', 'amapress' ) . '</h4>';
@@ -2926,7 +2926,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 
 	ob_start();
 	?>
-    <p style="padding: 20px 10px 20px 0;">
+    <p style="padding: 20px 10px 20px 0;" id="amp_config_paniers">
         <strong><?php _e( 'Configuration des paniers (Taille/Quantités)', 'amapress' ) ?></strong></p>
     <p><?php _e( 'Exporter les paniers vers Excel', 'amapress' ) ?><?php echo Amapress::makeButtonLink(
 			AmapressExport_Posts::get_export_url( null,
