@@ -770,8 +770,9 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 	$amap_roles          = amapress_get_amap_roles();
 	$state['10_users'][] = amapress_get_check_state(
 		count( $amap_roles ) == 0 ? 'warning' : 'success',
-		__( 'Rôle descriptif des membres du collectif', 'amapress' ),
-		sprintf( __( 'Créer et <a href="%s" target=\'_blank\'>associer des rôles descriptifs aux utilisateurs</a> (par ex "Responsable des distribution", "Boîte contact", "Accueil des nouveaux")', 'amapress' ), admin_url( 'users.php?amapress_role=collectif' ) ),
+		__( 'Création de rôle descriptif des membres du collectif', 'amapress' ),
+		__( 'Créer des étiquettes pour les rôles spécifiques des membres du collectif.', 'amapress' ) .
+		'<br/>' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/roles#roles_specifiques', __( 'Rôles spécifiques', 'amapress' ) ),
 		admin_url( 'edit-tags.php?taxonomy=amps_amap_role_category' ),
 		implode( ', ', array_map( function ( $t ) {
 			/** @var WP_Term $t */
@@ -797,8 +798,9 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 	}
 	$state['10_users'][] = amapress_get_check_state(
 		count( $amap_roles ) == 0 || $empty_resp_roles ? 'warning' : 'success',
-		__( 'Rôle descriptif spécifiques des membres du collectif', 'amapress' ),
-		sprintf( __( '<a href="%s" target="_blank">Associer des rôles descriptifs spécifiques</a> aux responsables de la gestion des distributions, des visites/sorties, des intermittents ou des évènements', 'amapress' ), admin_url( 'users.php?page=amapress_collectif&tab=amp_amap_roles_config' ) ),
+		__( 'Association de rôle descriptif des membres du collectif', 'amapress' ),
+		__( 'Associer chaque membre du collectif au rôle spécifique qui lui est attribué dans son compte utilisateur', 'amapress' ) .
+		'<br/>' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/roles#roles_specifiques', __( 'Rôles spécifiques', 'amapress' ) ),
 		admin_url( 'users.php?page=amapress_collectif&tab=amp_amap_roles_config' )
 	);
 
