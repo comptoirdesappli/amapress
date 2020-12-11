@@ -2612,16 +2612,55 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'default' => true,
 										),
 										array(
-											'id'      => 'check_adh_rcv',
-											'name'    => __( 'L\'adhésion doit avoir été validée avant de pouvoir s\'inscrire aux contrats', 'amapress' ),
-											'type'    => 'checkbox',
-											'default' => false,
-										),
-										array(
-											'id'      => 'check_adh_rcv_p',
-											'name'    => __( 'L\'adhésion ou une adhésion précédente doit avoir été validée avant de pouvoir s\'inscrire aux contrats', 'amapress' ),
-											'type'    => 'checkbox',
-											'default' => false,
+											'id'          => 'adh-valid',
+											'name'        => __( 'Accès inscriptions en ligne aux contrats producteurs', 'amapress' ),
+											'type'        => 'radio',
+											'options'     => [
+												'check_adh_rcv'   => __( 'Adhésion obligatoire pour tous', 'amapress' ) .
+												                     '<br /><span class="description">' .
+												                     __( 'Sélectionner pour rendre obligatoire la validation de l’adhésion par le Trésorier pour autoriser les amapiens à s’inscrire aux contrats producteurs', 'amapress' ) .
+												                     '</span>',
+												'check_adh_rcv_p' => __( 'Adhésion obligatoire - anciens autorisés', 'amapress' ) .
+												                     '<br /><span class="description">' .
+												                     __( 'Sélectionner pour autoriser les anciens adhérents à s’inscrire aux contrats producteurs, la validation des adhésions reste nécessaire pour les nouveaux', 'amapress' ) .
+												                     '</span>',
+												'none'            => __( 'Adhésion facultative', 'amapress' ) .
+												                     '<br /><span class="description">' .
+												                     __( 'Sélectionner pour autoriser les amapiens à s’inscrire aux contrats producteurs sans validation de l’adhésion par le Trésorier', 'amapress' ) .
+												                     '</span>',
+											],
+											'default'     => 'all',
+											'custom_get'  => function ( $post_id ) {
+												$check_adh_rcv   = Amapress::getOption( 'check_adh_rcv' );
+												$check_adh_rcv_p = Amapress::getOption( 'check_adh_rcv_p' );
+												if ( $check_adh_rcv_p ) {
+													return 'check_adh_rcv_p';
+												} elseif ( $check_adh_rcv ) {
+													return 'check_adh_rcv';
+												} else {
+													return 'none';
+												}
+											},
+											'custom_save' => function ( $post_id ) {
+												if ( isset( $_REQUEST['amapress_adh-valid'] ) ) {
+													switch ( $_REQUEST['amapress_adh-valid'] ) {
+														case 'none':
+															Amapress::setOption( 'check_adh_rcv', 0 );
+															Amapress::setOption( 'check_adh_rcv_p', 0 );
+															break;
+														case 'check_adh_rcv_p':
+															Amapress::setOption( 'check_adh_rcv', 0 );
+															Amapress::setOption( 'check_adh_rcv_p', 1 );
+															break;
+														case 'check_adh_rcv':
+															Amapress::setOption( 'check_adh_rcv', 1 );
+															Amapress::setOption( 'check_adh_rcv_p', 0 );
+															break;
+													}
+												}
+
+												return true;
+											}
 										),
 										array(
 											'id'      => 'mob_phone_req',
