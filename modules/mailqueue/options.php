@@ -231,15 +231,31 @@ function amapress_mailing_queue_errored_mail_list_count( $mlgrp_id = '' ) {
 }
 
 function amapress_mailing_queue_errored_mail_list( $mlgrp_id = '' ) {
-	$href = add_query_arg(
+	$href_resend = add_query_arg(
 		array(
 			'action'   => 'amapress_retry_queue_send_all_msg',
 			'mlgrp_id' => $mlgrp_id,
 		),
 		admin_url( 'admin.php' )
 	);
-	$ret  = '<p><a class="button button-secondary" href="' . esc_attr( $href ) . '" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous la nouvelle tentative d\'envoi des emails en erreur ?', 'amapress' ) ) . '\')">' . __( 'Renvoyer tous les emails en erreur', 'amapress' ) . '</a></p>';
-	$ret  .= amapress_mailing_queue_mail_list( 'errored-mails', $mlgrp_id, 'errored' );
+	$href_delete = add_query_arg(
+		array(
+			'action'   => 'amapress_queue_delete_all_msg',
+			'mlgrp_id' => $mlgrp_id,
+		),
+		admin_url( 'admin.php' )
+	);
+	$ret         = '<p>';
+	$ret         .= '<a class="button button-secondary" href="' .
+	                esc_attr( $href_resend ) .
+	                '" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous la nouvelle tentative d\'envoi des emails en erreur ?', 'amapress' ) ) . '\')">' .
+	                __( 'Renvoyer tous les emails en erreur', 'amapress' ) . '</a>';
+	$ret         .= '<a class="button button-secondary" href="' .
+	                esc_attr( $href_delete ) .
+	                '" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous la suppression de tous les emails en erreur ?', 'amapress' ) ) . '\')">' .
+	                __( 'Supprimer tous les emails en erreur', 'amapress' ) . '</a>';
+	$ret         .= '</p>';
+	$ret         .= amapress_mailing_queue_mail_list( 'errored-mails', $mlgrp_id, 'errored' );
 
 	return $ret;
 }
@@ -447,6 +463,23 @@ function admin_action_amapress_retry_queue_send_msg() {
 		} else {
 			echo sprintf( __( 'Email %s non renvoyé', 'amapress' ), $msg_file );
 		}
+	} else {
+		wp_redirect( $_SERVER['HTTP_REFERER'] );
+	}
+	exit();
+}
+
+
+add_action( 'admin_action_amapress_queue_delete_all_msg', 'admin_action_amapress_queue_delete_all_msg' );
+function admin_action_amapress_queue_delete_all_msg() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( __( 'Accès non autorisé', 'amapress' ) );
+	}
+
+	$mlgrp_id = isset( $_REQUEST['mlgrp_id'] ) ? $_REQUEST['mlgrp_id'] : '';
+	AmapressSMTPMailingQueue::deleteAllErroredMessages( $mlgrp_id );
+	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
+		echo __( 'Emails en erreur supprimés avec succès', 'amapress' );
 	} else {
 		wp_redirect( $_SERVER['HTTP_REFERER'] );
 	}

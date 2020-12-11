@@ -438,6 +438,15 @@ class AmapressSMTPMailingQueue {
 		return empty( $errors );
 	}
 
+	public static function deleteAllErroredMessages( $mlgrp_id ) {
+		$errorred_dir = self::getUploadDir( $mlgrp_id, 'errored' );
+
+		foreach ( glob( $errorred_dir . '*.json' ) as $filename ) {
+			//phpcs:ignore
+			@unlink( $filename );
+		}
+	}
+
 	public static function retrySendAllErroredMessages( $mlgrp_id ) {
 		$waiting_dir  = self::getUploadDir( $mlgrp_id, 'waiting' );
 		$errorred_dir = self::getUploadDir( $mlgrp_id, 'errored' );
