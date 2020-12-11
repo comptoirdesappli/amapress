@@ -3516,6 +3516,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$has_groups = false;
 			$grp_data   = array();
 			foreach ( AmapressContrats::get_contrat_quantites( $contrat->ID ) as $quant ) {
+				if ( $contrat->isFull( $quant->ID ) ) {
+					if ( ! $edit_inscription || ! in_array( $quant->ID, $edit_inscription->getContrat_quantites_IDs() ) ) {
+						continue;
+					}
+				}
+
 				$multiple       = $quant->getGroupMultiple();
 				$grp_class_name = '';
 				$has_group      = preg_match( '/^\s*\[([^\]]+)\]/', $quant->getTitle(), $matches );
@@ -4404,6 +4410,11 @@ $paiements_dates
 		$quantite_factors = [];
 		if ( $contrat->isPanierVariable() ) {
 			$quantite_variables = $quants;
+			foreach ( $quants as $q_dt => $q_p ) {
+				foreach ( $q_p as $q_id => $q_v ) {
+					$any_full = $any_full || $contrat->isFull( $q_id );
+				}
+			}
 		} else {
 			foreach ( $quants as $q ) {
 				$q_id           = intval( $q['q'] );
