@@ -4428,7 +4428,7 @@ $paiements_dates
 		}
 
 
-		if ( $any_full ) {
+		if ( ! $edit_inscription && $any_full ) {
 			if ( $admin_mode ) {
 				$contrat_edit_link      = Amapress::makeLink( $contrat->getAdminEditLink(), $contrat->getTitle(), true, true );
 				$contrats_step_url_attr = esc_attr( $contrats_step_url );
