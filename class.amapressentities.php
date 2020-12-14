@@ -2616,11 +2616,11 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'name'        => __( 'Accès inscriptions en ligne aux contrats producteurs', 'amapress' ),
 											'type'        => 'radio',
 											'options'     => [
-												'check_adh_rcv'   => __( 'Adhésion obligatoire pour tous', 'amapress' ) .
+												'check_adh_rcv'   => __( 'Adhésion obligatoire : pour tous', 'amapress' ) .
 												                     '<br /><span class="description">' .
 												                     __( 'Sélectionner pour rendre obligatoire la validation de l’adhésion par le Trésorier pour autoriser les amapiens à s’inscrire aux contrats producteurs', 'amapress' ) .
 												                     '</span>',
-												'check_adh_rcv_p' => __( 'Adhésion obligatoire - anciens autorisés', 'amapress' ) .
+												'check_adh_rcv_p' => __( 'Adhésion obligatoire : anciens autorisés', 'amapress' ) .
 												                     '<br /><span class="description">' .
 												                     __( 'Sélectionner pour autoriser les anciens adhérents à s’inscrire aux contrats producteurs, la validation des adhésions reste nécessaire pour les nouveaux', 'amapress' ) .
 												                     '</span>',
