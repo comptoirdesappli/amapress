@@ -1,3 +1,190 @@
+# 0.96.195 (2020-12-13)
+
+* amélioration sélection du mode de validation des adhésions avant ouverture de l'accès aux inscriptions aux contrats 
+* lien vers la configuration des quantités sur le notice Vous devez configurer les quantités et tarifs des paniers 
+* **Assistant d'inscription en ligne:** 
+	- bug calcul recopieur de quantités 
+	- gestion du max adhérent par produit dans les paniers modulables 
+	- ne pas checker les quantités complètes sur la ré-édition d'une inscription 
+* **Etat Amapress:** 
+	- affichage du délai de suppression automatique des éléments en corbeille 
+	- affichage max coadhérents/membres du foyer et téléphone mobile obligatoire 
+	- suggestion amapress-amapien-agenda-viewer et amapien-details-paiements dans les shortcodes à configurer 
+* **Mail queue:** bouton Supprimer tous les emails en erreur 
+* confirmation avant mise à la corbeille 
+
+# 0.96.192 (2020-12-07)
+
+* **HelloAsso:** 
+	- prendre le montant de l'adhésion et pas le total (multi adhésion) 
+	- option Mettre à jour les informations des comptes utilisateurs existants (désactivé par défaut) 
+
+# 0.96.190 (2020-12-06)
+
+* cron (distrib, event, ag, visites...) planifier sur 6 semaines (pour gérer des rappels plus longtemps avant) 
+* logs des mails, amélioration affichage (remplacement "," par ", " pour autoriser le break) 
+* log de la date de mise dans la file d'attente et affichage 
+* **Adhésion Custom Checkbox:**
+	- bulk action pour cocher/décocher les custom check box 
+	- instruction de personnalisation du label des checkbox 
+	- placeholders custom_check1/2/3 
+* **Liste émargement:** option affichage du total des quantités livrées 
+
+# 0.96.185 (2020-12-01)
+
+* filtre Adhésion future (inclure les adhésions des périodes futures) 
+* **Liste émargement multi-date:** ne pas inclure les inscriptions futures et filtrage des distributions 
+
+# 0.96.180 (2020-12-01)
+
+* **Archivage:** 
+	- affichage seuil de passage en archivable en mois (contrats) 
+	- affichage seuil de passage en archivable en mois (période d'adhésion) 
+	- rappel à l'admin que des contrats/période d'adhésion/comptes utilisateurs sont archivables (weekly) 
+* **Emails groupés:** 
+	- gestion mail totalement vides 
+	- log fetch exceptions 
+	- séparation du mail de distribution automatique (sans modération) et du mail de distribution après modération 
+* amélioration affichage Archives Emails groupés 
+* amélioration affichage Logs/Error/Waiting de la file d'attente et des Emails groupés + affichage Cc/Bcc 
+* gestion +33 (0)X 
+* **Inscriptions:** placeholders %%coadherent.xxx%% 
+* **Liste émargement:** PDF et Excel, uniquement pour responsables ou responsables de distribution de la semaine 
+* **Liste multidates:** téléphone
+* **Emails groupés:** indication de la relation de l'intervalle d'envoi pour les Emails groupés et file d'attente globale 
+* **Liste émargement:** possibilité de génération d'une liste multidate simplifiée pour une durée déterminée (en mois) à partir d'un distribution donnée 
+* ajout des destinataires : "Amapiens sans adhésion", "Amapiens avec adhésion non réglée", "Amapiens avec adhésion (et co-adhérents/membres du foyer)" 
+* **Mailing list:** gestion d'exclusion d'utilisateurs et de groupes d'utilisateurs 
+* filtrage adhésion ok avec coadhérents (ok_co), all avec coadhérents (all_co) et sans adhésion (none) 
+* Possibilité d'éditer les mails en attente et en erreur dans la file d'attente global et celles des Emails groupés 
+* shortcode responsable-distrib-info, amélioration affichage (date) + paramètre emargement_pdf_link 
+* warning si fichier de log > 10MB (constante AMAPRESS_MAX_LOG_FILESIZE) 
+
+# 0.96.168 (2020-11-26)
+* placeholder %%coadherent.xxx%% si co-adhéséion partielle 
+
+# 0.96.167 (2020-11-26)
+
+* %%dest%% placeholder 
+
+# 0.96.165 (2020-11-24)
+* **Utilisateurs:** colonnes Adhésions, compter les adhésions en cours et futures 
+* **Assistant d'inscription:** si co-adhésion partielles activées, message aux co-adhérents au sujet du fait que l'adhérent principal doit effectuer les inscriptions communes 
+* **Co-adhérent:** option générale pour obliger les co-adhérents à prendre une adhésion séparée de l'adhérent principal 
+* **Rappels:** ajout de 2 rappels d'envoi des quantités à livrer (par exemple, pour distinguer les commandes des contrats récurrents ou si certains producteurs ont des délais différents) 
+
+# 0.96.160 (2020-11-24)
+
+* **Contrat:** 
+	- affichage simple Nombre de paiement 
+	- personnalisation en heures du délai de clôture des inscriptions avant la première distribution 
+	- bouton d'aide au remplissage du calendrier de distribution (toutes les semaines, toutes les deux semaines, tous les mois, suppression de toutes les dates) 
+	- calendrier des paiements, bouton de remplissage Premier jour de chaque mois et Dernier jour de chaque mois 
+	- clone pour la semaine suivante, deux semaine après et le mois d'après + fix clone/déplacement dates spécifiques configuration quantités 
+	- contrats Commandes variables (Paniers modulables ré-éditables avant chaque distribution pour les suivantes) 
+	- personnalisation du délai de clôture des inscriptions avant la première distribution 
+* **HelloAsso:**
+	- shortcode formulaire (form_type) 
+	- affichage message au sujet de l'utilisation de son adresse email et nom pour l'adhésion sur le formulaire HelloAsso (renouvellement) 
+	- log des accès au callback si la clé n'est pas valide 
+* filtre adhésion (ok, nok, all), check publish 
+* disable autoupdate for Amapress 
+* filtres A venir pour Période d'adhésion, Règlement Adhésions et Contrats
+* **Mes contrats:** Récapitulatif des livraisons, affichage du total dans les groupages 
+* option par défaut adhesion_shift_weeks et before_close_hours 
+
+# 0.96.150 (2020-11-20)
+* **ICAL:** 
+	- correction de l'unicité des uid d'évènements de distribution des différents contrats ([#22](https://github.com/comptoirdesappli/amapress/issues/22)) 
+	- ajout d'un espace avant le \n si jamais il n'est pas géré ([#22](https://github.com/comptoirdesappli/amapress/issues/22)) 
+* **HelloAsso:** correction création adhésion avec la période d'adhésion de renouvellement 
+* **Paiement mensuel:** check d'une date de paiement par mois minimum 
+* **Etat d'Amapress:** 
+	- ajout de section d'information sur la configuration de l'AMAP (contrat obligatoire, co-adhésion partielle...) + Responsables de distribution + Espace Intermittents + Système de garde de panier + Contrats avec paiement en ligne Stripe + adhésion HelloAsso (lien formulaire) 
+* **Mes contrats:** Récapitulatif des livraisons, merge vertical des cellules producteur/date de distribution ([#24](https://github.com/comptoirdesappli/amapress/issues/24)) 
+* **Shortcodes:** ajout d'un shortcode pour présenter le formulaire HelloAsso (ou lien/bouton) avec la période d'adhésion, les infos contenues dans le shortcode et les infos sur l'amapien connecté 
+
+# 0.96.145 (2020-11-18)
+
+* **Emails groupés:** clean du dossier de stockage de l'eml et de ses pièces jointes 
+* **Contrats:** 
+	- boutons d'aide au remplissage du calendrier (Toutes les dates de distribution, Première distribution de chaque mois, Dernière distribution de chaque mois, Supprimer toutes les dates) ([#24](https://github.com/comptoirdesappli/amapress/issues/24)) 
+	- possibilité de choisir des dates de paiement spécifiques pour les paiements en plusieurs fois ([#24](https://github.com/comptoirdesappli/amapress/issues/24)) 
+
+# 0.96.140 (2020-11-18)
+
+* **File d'attente':** amélioration interface configuration File d'attente des emails avec affichage du nombre de mail maximum envoyés par l'hébergement par heure/jour suivant la configuration 
+* **Récapitulatif des sommes dues:** bug affichage [#24](https://github.com/comptoirdesappli/amapress/issues/24) 
+* **Assistant d'isncription/adhésion:** placeholder %%me:xxx%% dans plus de messages 
+* **Récapitulatif des sommes dues:** affichage Total des paiements enregistrés 
+* **Règlements contrats:** row action et bulk action Marquer remis ([#23](https://github.com/comptoirdesappli/amapress/issues/23)) 
+
+# 0.96.135 (2020-11-16)
+
+* **Assistant Adhésion:** message adhésion obligatoire, possibilité d'afficher les infos de l'amapien connecté (%%me:xxx%%) 
+* **Calendrier/ICAL:** 
+	- amélioration intégration des paiements adhésion 
+	- amélioration intégration des paiements contrats 
+	- Location/Geo/Adresse des évènements 
+* **Don par distribution:** option pour compter le don à part 
+* **Mes contrats:** Détails, affichage message aux référents 
+* **Contrats:** 
+	- export Configurations de paniers 
+	- message de commande aux producteurs (par ex, personnalisation)
+	- check de la syntaxe, nombre de valeurs et somme des répartitions des règlements en plusieurs fois 
+
+# 0.96.130 (2020-11-15)
+
+* **Détails inscriptions:** ajout info Don par distribution 
+* **Récapitulatif des livraisons:** 
+	- ajout d'une ligne pour les Don par distribution 
+	- tri par date/prod/ordre des produits 
+* **Récapitulatif des sommes dues:** ajout info Don par distribution 
+* export inscription, co-adhérent 1 
+* **Don par distribution:** 
+	- affichage du total du don + possibilité de don au centime (au lieux de 0.50) 
+	- placeholder total_sans_don 
+* **Modèles de contrats:** possibilité d'export partiel 
+
+# 0.96.125 (2020-11-14)
+* **Don distribution:** 
+	- ajout/correction placeholders don_distribution_nom/don_distribution_desc
+	- prise en compte du don dans le calcul des règlements 
+
+# 0.96.120 (2020-11-13)
+
+* **HelloAsso:** notification du trésorier, actif par défaut 
+* **Don par distribution:** 
+	- possibilité de changer le libellé 
+	- description placeholders Don par distribution 
+* possibilité de redirection de la page Wordpress d'inscription des utilisateurs vers le formulaire d'adhésion 
+* **HelloAsso:** 
+	- gestion de l'association du formulaire avec la période d'adhésion (pour le renouvellement)
+	- possibilité de mettre un lien pour Adhérer via HelloAsso dans l'inscription en ligne connectée (ou Mes contrats)
+	- paramètre allow_classic_adhesion pour forcer (false) l'utilisation d'HelloAsso 
+* **Mes contrats/Inscriptions en ligne:** paramètre allow_inscriptions_without_adhesion 
+* **Placeholders:** contrat, placeholders adhesion_montant, adhesion_debut, adhesion_fin (si le montant de l'adhésion à l'AMAP doit appraitre sur le contrat principal par ex) 
+
+# 0.96.115 (2020-11-11)
+
+* **HelloAsso:** 
+	- envoi notification de création de compte à l'admin et email de bienvenue au nouvel amapien 
+	- recherche par numéro d'adhésion HelloAsso pour ne pas renvoyer la confirmation d'adhésion en cas de multiple appel de callback d'HelloAsso 
+* **Contrats:** possibilité de don libre par distribution (pour augmenter le prix du panier par exemple) 
+* **Placeholders:** 
+	- quantites_prix_unitaire 
+	- séparation placeholders cofoyers.noms/coadherents.noms/touscoadherents.noms
+	- séparation placeholders cofoyers.contacts/coadherents.contacts/touscoadherents.contacts 
+
+# 0.96.105 (2020-11-03)
+
+* **Créneaux distribution:** gestion des co adhérents, inscription unique pour tous les co-adhérents 
+* **Distributions:** affichage lien Se proposer comme gardien de panier si pas déjà gardien 
+
+# 0.96.101 (2020-11-03)
+
+* **Import CSV:** prise en compte description des paniers 
+
 # 0.96.100 (2020-11-01)
 * **Créneaux:** assouplissement de la syntaxe avec autorisation d'espaces
 * **Import/Export CSV:** 
