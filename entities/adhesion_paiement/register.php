@@ -648,7 +648,7 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 		$order    = $json->data;
 		$formType = $order->formType;
 		if ( 'Membership' != $formType ) {
-			wp_die( __( 'Type de formulaire non reconnu : doit être un formulaire d\'adhésion', 'amapress' ) );
+			exit();
 		}
 		$total            = $order->amount->total;
 		$payer            = $order->payer;
