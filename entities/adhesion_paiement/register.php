@@ -677,13 +677,15 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 			$adh_period = AmapressAdhesionPeriod::getCurrent( $order_date );
 		}
 		if ( $adh_period ) {
-			$default_email     = $payer->email;
-			$default_firstName = $payer->firstName;
-			$default_lastName  = $payer->lastName;
-			$default_address   = $payer->address;
-			$default_zipCode   = $payer->zipCode;
-			$default_city      = $payer->city;
-			$default_phone     = '';
+			$default_email        = $payer->email;
+			$default_firstName    = $payer->firstName;
+			$default_lastName     = $payer->lastName;
+			$default_address      = $payer->address;
+			$default_zipCode      = $payer->zipCode;
+			$default_city         = $payer->city;
+			$default_phone        = '';
+			$multiple_used_emails = [];
+			$existing_adhesions   = [];
 			if ( isset( $order->items ) && is_array( $order->items ) ) {
 				foreach ( $order->items as $item ) {
 					if ( 'Membership' == $item->type ) {
@@ -710,6 +712,11 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 							}
 						}
 
+						if ( ! isset( $multiple_used_emails[ $default_email ] ) ) {
+							$multiple_used_emails[ $default_email ] = 0;
+						}
+						$multiple_used_emails[ $default_email ] += 1;
+
 						$user_id = null;
 						$user    = get_user_by( 'email', $default_email );
 						if ( $user ) {
@@ -729,7 +736,12 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 						delete_user_meta( $user_id, 'pw_user_status' );
 						delete_transient( 'new_user_approve_user_statuses' );
 
+						$pmt = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period->getDate_debut(), false );
+						if ( $pmt && $pmt->isHelloAsso() && $pmt->getNumero() != $numero ) {
+							$existing_adhesions[] = $pmt;
+						}
 						$pmt = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period->getDate_debut(), true );
+						//is helloasso
 						$pmt->setHelloAsso(
 							$total / 100.0,
 							"https://www.helloasso.com/associations/{$organizationSlug}/adhesions/{$formSlug}/administration",
@@ -746,6 +758,32 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 						);
 					}
 				}
+			}
+
+			foreach ( $multiple_used_emails as $used_email => $cnt ) {
+				if ( $cnt <= 1 ) {
+					unset( $multiple_used_emails[ $used_email ] );
+				}
+			}
+			if ( ! empty( $multiple_used_emails ) || ! empty( $existing_adhesions ) ) {
+				$tresoriers = [];
+				foreach ( get_users( "role=tresorier" ) as $tresorier ) {
+					$user_obj   = AmapressUser::getBy( $tresorier );
+					$tresoriers = array_merge( $tresoriers, $user_obj->getAllEmails() );
+				}
+				$tresoriers[] = get_option( 'admin_email' );
+
+				amapress_wp_mail(
+					$tresoriers,
+					'Adhésion HelloAsso non importable',
+					"Bonjour,\nUne adhésion HelloAsso ne peut pas être importée :\n" .
+					( ! empty( $multiple_used_emails ) ? sprintf( "- %s ont été utilisées pour plusieurs adhésions\n", implode( ', ', array_keys( $multiple_used_emails ) ) ) : '' ) .
+					( ! empty( $existing_adhesions ) ? implode( "\n", array_map( function ( $adh ) {
+						/** @var AmapressAdhesion_paiement $adh */
+						return sprintf( '- L\'adhérent %s (s%) a fait une nouvelle adhésion',
+							$adh->getUser()->getDisplayName(), $adh->getUser()->getEmail() );
+					}, $existing_adhesions ) ) : '' )
+				);
 			}
 		}
 	}
