@@ -59,6 +59,7 @@ function amapress_register_entities_lieu_distribution( $entities ) {
 				'group'   => __( 'Information', 'amapress' ),
 				'type'    => 'checkbox',
 				'default' => true,
+				'desc'    => 'Cocher : lieu habituel | Décocher : lieu ponctuel'
 			),
 //            'photo' => array(
 //                'name' => amapress__('Photo'),
