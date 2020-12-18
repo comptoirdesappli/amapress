@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'phpDocumentor\\Reflection\\' => array($vendorDir . '/phpdocumentor/reflection-common/src', $vendorDir . '/phpdocumentor/reflection-docblock/src', $vendorDir . '/phpdocumentor/type-resolver/src'),
+    'kamermans\\OAuth2\\' => array($vendorDir . '/kamermans/guzzle-oauth2-subscriber/src'),
     'Zend\\Stdlib\\' => array($vendorDir . '/zendframework/zend-stdlib/src'),
     'Zend\\Escaper\\' => array($vendorDir . '/zendframework/zend-escaper/src'),
     'YaLinqo\\' => array($vendorDir . '/athari/yalinqo/YaLinqo'),
@@ -15,6 +16,7 @@ return array(
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
     'Stripe\\' => array($vendorDir . '/stripe/stripe-php/lib'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
+    'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src/Prophecy'),
     'PhpOffice\\PhpWord\\' => array($vendorDir . '/phpoffice/phpword/src/PhpWord'),
     'PhpOffice\\Common\\' => array($vendorDir . '/phpoffice/common/src/Common'),
     'PhpImap\\' => array($vendorDir . '/php-imap/php-imap/src/PhpImap'),

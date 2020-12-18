@@ -8,6 +8,7 @@ class ComposerStaticInit1b27907b0b8cf08fd0453c0309cfa11f
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
+        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
@@ -18,6 +19,10 @@ class ComposerStaticInit1b27907b0b8cf08fd0453c0309cfa11f
         'p' => 
         array (
             'phpDocumentor\\Reflection\\' => 25,
+        ),
+        'k' => 
+        array (
+            'kamermans\\OAuth2\\' => 17,
         ),
         'Z' => 
         array (
@@ -41,6 +46,7 @@ class ComposerStaticInit1b27907b0b8cf08fd0453c0309cfa11f
         'P' => 
         array (
             'Psr\\Http\\Message\\' => 17,
+            'Prophecy\\' => 9,
             'PhpOffice\\PhpWord\\' => 18,
             'PhpOffice\\Common\\' => 17,
             'PhpImap\\' => 8,
@@ -71,6 +77,10 @@ class ComposerStaticInit1b27907b0b8cf08fd0453c0309cfa11f
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
             1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+        ),
+        'kamermans\\OAuth2\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/kamermans/guzzle-oauth2-subscriber/src',
         ),
         'Zend\\Stdlib\\' => 
         array (
@@ -103,6 +113,10 @@ class ComposerStaticInit1b27907b0b8cf08fd0453c0309cfa11f
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Prophecy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy',
         ),
         'PhpOffice\\PhpWord\\' => 
         array (
@@ -145,10 +159,6 @@ class ComposerStaticInit1b27907b0b8cf08fd0453c0309cfa11f
     public static $prefixesPsr0 = array (
         'P' => 
         array (
-            'Prophecy\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
-            ),
             'PHPExcel' => 
             array (
                 0 => __DIR__ . '/..' . '/phpoffice/phpexcel/Classes',

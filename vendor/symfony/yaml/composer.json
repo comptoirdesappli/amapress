@@ -16,8 +16,8 @@
         }
     ],
     "require": {
-      "php": "^5.5.9|>=7.0.8",
-      "symfony/polyfill-ctype": "~1.8"
+        "php": "^5.5.9|>=7.0.8",
+        "symfony/polyfill-ctype": "~1.8"
     },
     "require-dev": {
         "symfony/console": "~3.4|~4.0"
@@ -34,10 +34,5 @@
             "/Tests/"
         ]
     },
-    "minimum-stability": "dev",
-    "extra": {
-        "branch-alias": {
-            "dev-master": "3.4-dev"
-        }
-    }
+    "minimum-stability": "dev"
 }

@@ -608,6 +608,14 @@ function amapress_global_init() {
 		Amapress::cleanFilesOlderThanDays( Amapress::getContratDir(), 6 * 30 );
 	} );
 
+	if ( Amapress::getOption( 'ha_fetch' ) ) {
+		if ( ! wp_next_scheduled( 'amps_ha_synchro' ) ) {
+			wp_schedule_event( time(), 'amps_ha_fetch', 'amps_ha_synchro' );
+		}
+	} else {
+		wp_unschedule_hook( 'amps_ha_synchro' );
+	}
+
 	if ( ! defined( 'AMAPRESS_NOTIFY_UPDATES' ) || AMAPRESS_NOTIFY_UPDATES ) {
 		if ( ! wp_next_scheduled( 'amps_updnotif' ) ) {
 			wp_schedule_event( time(), 'weekly', 'amps_updnotif' );

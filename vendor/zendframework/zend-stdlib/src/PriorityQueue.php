@@ -25,276 +25,277 @@ use Serializable;
  * "inner" iterator in the form of an SplPriorityQueue object for performing
  * the actual iteration.
  */
-class PriorityQueue implements Countable, IteratorAggregate, Serializable {
-	const EXTR_DATA = 0x00000001;
-	const EXTR_PRIORITY = 0x00000002;
-	const EXTR_BOTH = 0x00000003;
+class PriorityQueue implements Countable, IteratorAggregate, Serializable
+{
+    const EXTR_DATA     = 0x00000001;
+    const EXTR_PRIORITY = 0x00000002;
+    const EXTR_BOTH     = 0x00000003;
 
-	/**
-	 * Inner queue class to use for iteration
-	 * @var string
-	 */
-	protected $queueClass = 'Zend\Stdlib\SplPriorityQueue';
+    /**
+     * Inner queue class to use for iteration
+     * @var string
+     */
+    protected $queueClass = 'Zend\Stdlib\SplPriorityQueue';
 
-	/**
-	 * Actual items aggregated in the priority queue. Each item is an array
-	 * with keys "data" and "priority".
-	 * @var array
-	 */
-	protected $items = [];
+    /**
+     * Actual items aggregated in the priority queue. Each item is an array
+     * with keys "data" and "priority".
+     * @var array
+     */
+    protected $items      = [];
 
-	/**
-	 * Inner queue object
-	 * @var SplPriorityQueue
-	 */
-	protected $queue;
+    /**
+     * Inner queue object
+     * @var SplPriorityQueue
+     */
+    protected $queue;
 
-	/**
-	 * Insert an item into the queue
-	 *
-	 * Priority defaults to 1 (low priority) if none provided.
-	 *
-	 * @param  mixed $data
-	 * @param  int $priority
-	 *
-	 * @return PriorityQueue
-	 */
-	public function insert( $data, $priority = 1 ) {
-		$priority      = (int) $priority;
-		$this->items[] = [
-			'data'     => $data,
-			'priority' => $priority,
-		];
-		$this->getQueue()->insert( $data, $priority );
+    /**
+     * Insert an item into the queue
+     *
+     * Priority defaults to 1 (low priority) if none provided.
+     *
+     * @param  mixed $data
+     * @param  int $priority
+     * @return PriorityQueue
+     */
+    public function insert($data, $priority = 1)
+    {
+        $priority = (int) $priority;
+        $this->items[] = [
+            'data'     => $data,
+            'priority' => $priority,
+        ];
+        $this->getQueue()->insert($data, $priority);
+        return $this;
+    }
 
-		return $this;
-	}
+    /**
+     * Remove an item from the queue
+     *
+     * This is different than {@link extract()}; its purpose is to dequeue an
+     * item.
+     *
+     * This operation is potentially expensive, as it requires
+     * re-initialization and re-population of the inner queue.
+     *
+     * Note: this removes the first item matching the provided item found. If
+     * the same item has been added multiple times, it will not remove other
+     * instances.
+     *
+     * @param  mixed $datum
+     * @return bool False if the item was not found, true otherwise.
+     */
+    public function remove($datum)
+    {
+        $found = false;
+        foreach ($this->items as $key => $item) {
+            if ($item['data'] === $datum) {
+                $found = true;
+                break;
+            }
+        }
+        if ($found) {
+            unset($this->items[$key]);
+            $this->queue = null;
 
-	/**
-	 * Remove an item from the queue
-	 *
-	 * This is different than {@link extract()}; its purpose is to dequeue an
-	 * item.
-	 *
-	 * This operation is potentially expensive, as it requires
-	 * re-initialization and re-population of the inner queue.
-	 *
-	 * Note: this removes the first item matching the provided item found. If
-	 * the same item has been added multiple times, it will not remove other
-	 * instances.
-	 *
-	 * @param  mixed $datum
-	 *
-	 * @return bool False if the item was not found, true otherwise.
-	 */
-	public function remove( $datum ) {
-		$found = false;
-		foreach ( $this->items as $key => $item ) {
-			if ( $item['data'] === $datum ) {
-				$found = true;
-				break;
-			}
-		}
-		if ( $found ) {
-			unset( $this->items[ $key ] );
-			$this->queue = null;
+            if (! $this->isEmpty()) {
+                $queue = $this->getQueue();
+                foreach ($this->items as $item) {
+                    $queue->insert($item['data'], $item['priority']);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 
-			if ( ! $this->isEmpty() ) {
-				$queue = $this->getQueue();
-				foreach ( $this->items as $item ) {
-					$queue->insert( $item['data'], $item['priority'] );
-				}
-			}
+    /**
+     * Is the queue empty?
+     *
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return (0 === $this->count());
+    }
 
-			return true;
-		}
+    /**
+     * How many items are in the queue?
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->items);
+    }
 
-		return false;
-	}
+    /**
+     * Peek at the top node in the queue, based on priority.
+     *
+     * @return mixed
+     */
+    public function top()
+    {
+        return $this->getIterator()->top();
+    }
 
-	/**
-	 * Is the queue empty?
-	 *
-	 * @return bool
-	 */
-	public function isEmpty() {
-		return ( 0 === $this->count() );
-	}
+    /**
+     * Extract a node from the inner queue and sift up
+     *
+     * @return mixed
+     */
+    public function extract()
+    {
+        return $this->getQueue()->extract();
+    }
 
-	/**
-	 * How many items are in the queue?
-	 *
-	 * @return int
-	 */
-	public function count() {
-		return count( $this->items );
-	}
+    /**
+     * Retrieve the inner iterator
+     *
+     * SplPriorityQueue acts as a heap, which typically implies that as items
+     * are iterated, they are also removed. This does not work for situations
+     * where the queue may be iterated multiple times. As such, this class
+     * aggregates the values, and also injects an SplPriorityQueue. This method
+     * retrieves the inner queue object, and clones it for purposes of
+     * iteration.
+     *
+     * @return SplPriorityQueue
+     */
+    public function getIterator()
+    {
+        $queue = $this->getQueue();
+        return clone $queue;
+    }
 
-	/**
-	 * Peek at the top node in the queue, based on priority.
-	 *
-	 * @return mixed
-	 */
-	public function top() {
-		return $this->getIterator()->top();
-	}
+    /**
+     * Serialize the data structure
+     *
+     * @return string
+     */
+    public function serialize()
+    {
+        return serialize($this->items);
+    }
 
-	/**
-	 * Extract a node from the inner queue and sift up
-	 *
-	 * @return mixed
-	 */
-	public function extract() {
-		return $this->getQueue()->extract();
-	}
+    /**
+     * Unserialize a string into a PriorityQueue object
+     *
+     * Serialization format is compatible with {@link Zend\Stdlib\SplPriorityQueue}
+     *
+     * @param  string $data
+     * @return void
+     */
+    public function unserialize($data)
+    {
+        foreach (unserialize($data) as $item) {
+            $this->insert($item['data'], $item['priority']);
+        }
+    }
 
-	/**
-	 * Retrieve the inner iterator
-	 *
-	 * SplPriorityQueue acts as a heap, which typically implies that as items
-	 * are iterated, they are also removed. This does not work for situations
-	 * where the queue may be iterated multiple times. As such, this class
-	 * aggregates the values, and also injects an SplPriorityQueue. This method
-	 * retrieves the inner queue object, and clones it for purposes of
-	 * iteration.
-	 *
-	 * @return SplPriorityQueue
-	 */
-	public function getIterator() {
-		$queue = $this->getQueue();
+    /**
+     * Serialize to an array
+     *
+     * By default, returns only the item data, and in the order registered (not
+     * sorted). You may provide one of the EXTR_* flags as an argument, allowing
+     * the ability to return priorities or both data and priority.
+     *
+     * @param  int $flag
+     * @return array
+     */
+    public function toArray($flag = self::EXTR_DATA)
+    {
+        switch ($flag) {
+            case self::EXTR_BOTH:
+                return $this->items;
+            case self::EXTR_PRIORITY:
+                return array_map(function ($item) {
+                    return $item['priority'];
+                }, $this->items);
+            case self::EXTR_DATA:
+            default:
+                return array_map(function ($item) {
+                    return $item['data'];
+                }, $this->items);
+        }
+    }
 
-		return clone $queue;
-	}
+    /**
+     * Specify the internal queue class
+     *
+     * Please see {@link getIterator()} for details on the necessity of an
+     * internal queue class. The class provided should extend SplPriorityQueue.
+     *
+     * @param  string $class
+     * @return PriorityQueue
+     */
+    public function setInternalQueueClass($class)
+    {
+        $this->queueClass = (string) $class;
+        return $this;
+    }
 
-	/**
-	 * Serialize the data structure
-	 *
-	 * @return string
-	 */
-	public function serialize() {
-		return serialize( $this->items );
-	}
+    /**
+     * Does the queue contain the given datum?
+     *
+     * @param  mixed $datum
+     * @return bool
+     */
+    public function contains($datum)
+    {
+        foreach ($this->items as $item) {
+            if ($item['data'] === $datum) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Unserialize a string into a PriorityQueue object
-	 *
-	 * Serialization format is compatible with {@link Zend\Stdlib\SplPriorityQueue}
-	 *
-	 * @param  string $data
-	 *
-	 * @return void
-	 */
-	public function unserialize( $data ) {
-		foreach ( unserialize( $data ) as $item ) {
-			$this->insert( $item['data'], $item['priority'] );
-		}
-	}
+    /**
+     * Does the queue have an item with the given priority?
+     *
+     * @param  int $priority
+     * @return bool
+     */
+    public function hasPriority($priority)
+    {
+        foreach ($this->items as $item) {
+            if ($item['priority'] === $priority) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Serialize to an array
-	 *
-	 * By default, returns only the item data, and in the order registered (not
-	 * sorted). You may provide one of the EXTR_* flags as an argument, allowing
-	 * the ability to return priorities or both data and priority.
-	 *
-	 * @param  int $flag
-	 *
-	 * @return array
-	 */
-	public function toArray( $flag = self::EXTR_DATA ) {
-		switch ( $flag ) {
-			case self::EXTR_BOTH:
-				return $this->items;
-			case self::EXTR_PRIORITY:
-				return array_map( function ( $item ) {
-					return $item['priority'];
-				}, $this->items );
-			case self::EXTR_DATA:
-			default:
-				return array_map( function ( $item ) {
-					return $item['data'];
-				}, $this->items );
-		}
-	}
+    /**
+     * Get the inner priority queue instance
+     *
+     * @throws Exception\DomainException
+     * @return SplPriorityQueue
+     */
+    protected function getQueue()
+    {
+        if (null === $this->queue) {
+            $this->queue = new $this->queueClass();
+            if (! $this->queue instanceof \SplPriorityQueue) {
+                throw new Exception\DomainException(sprintf(
+                    'PriorityQueue expects an internal queue of type SplPriorityQueue; received "%s"',
+                    get_class($this->queue)
+                ));
+            }
+        }
+        return $this->queue;
+    }
 
-	/**
-	 * Specify the internal queue class
-	 *
-	 * Please see {@link getIterator()} for details on the necessity of an
-	 * internal queue class. The class provided should extend SplPriorityQueue.
-	 *
-	 * @param  string $class
-	 *
-	 * @return PriorityQueue
-	 */
-	public function setInternalQueueClass( $class ) {
-		$this->queueClass = (string) $class;
-
-		return $this;
-	}
-
-	/**
-	 * Does the queue contain the given datum?
-	 *
-	 * @param  mixed $datum
-	 *
-	 * @return bool
-	 */
-	public function contains( $datum ) {
-		foreach ( $this->items as $item ) {
-			if ( $item['data'] === $datum ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Does the queue have an item with the given priority?
-	 *
-	 * @param  int $priority
-	 *
-	 * @return bool
-	 */
-	public function hasPriority( $priority ) {
-		foreach ( $this->items as $item ) {
-			if ( $item['priority'] === $priority ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Get the inner priority queue instance
-	 *
-	 * @throws Exception\DomainException
-	 * @return SplPriorityQueue
-	 */
-	protected function getQueue() {
-		if ( null === $this->queue ) {
-			$this->queue = new $this->queueClass();
-			if ( ! $this->queue instanceof \SplPriorityQueue ) {
-				throw new Exception\DomainException( sprintf(
-					'PriorityQueue expects an internal queue of type SplPriorityQueue; received "%s"',
-					get_class( $this->queue )
-				) );
-			}
-		}
-
-		return $this->queue;
-	}
-
-	/**
-	 * Add support for deep cloning
-	 *
-	 * @return void
-	 */
-	public function __clone() {
-		if ( null !== $this->queue ) {
-			$this->queue = clone $this->queue;
-		}
-	}
+    /**
+     * Add support for deep cloning
+     *
+     * @return void
+     */
+    public function __clone()
+    {
+        if (null !== $this->queue) {
+            $this->queue = clone $this->queue;
+        }
+    }
 }

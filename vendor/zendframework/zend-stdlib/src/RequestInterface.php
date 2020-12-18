@@ -9,5 +9,6 @@
 
 namespace Zend\Stdlib;
 
-interface RequestInterface extends MessageInterface {
+interface RequestInterface extends MessageInterface
+{
 }

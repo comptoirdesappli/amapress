@@ -19,14 +19,15 @@ namespace Prophecy\Doubler\Generator;
  */
 class ClassCodeGenerator
 {
-	/**
-	 * @var TypeHintReference
-	 */
-	private $typeHintReference;
+    /**
+     * @var TypeHintReference
+     */
+    private $typeHintReference;
 
-	public function __construct( TypeHintReference $typeHintReference = null ) {
-		$this->typeHintReference = $typeHintReference ?: new TypeHintReference();
-	}
+    public function __construct(TypeHintReference $typeHintReference = null)
+    {
+        $this->typeHintReference = $typeHintReference ?: new TypeHintReference();
+    }
 
     /**
      * Generates PHP code for class node.
@@ -100,9 +101,8 @@ class ClassCodeGenerator
 
     private function generateArguments(array $arguments)
     {
-	    $typeHintReference = $this->typeHintReference;
-
-	    return array_map( function ( Node\ArgumentNode $argument ) use ( $typeHintReference ) {
+        $typeHintReference = $this->typeHintReference;
+        return array_map(function (Node\ArgumentNode $argument) use ($typeHintReference) {
             $php = '';
 
             if (version_compare(PHP_VERSION, '7.1', '>=')) {
@@ -110,7 +110,7 @@ class ClassCodeGenerator
             }
 
             if ($hint = $argument->getTypeHint()) {
-	            $php .= $typeHintReference->isBuiltInParamTypeHint( $hint ) ? $hint : '\\' . $hint;
+                $php .= $typeHintReference->isBuiltInParamTypeHint($hint) ? $hint : '\\'.$hint;
             }
 
             $php .= ' '.($argument->isPassedByReference() ? '&' : '');

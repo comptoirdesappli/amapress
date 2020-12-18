@@ -85,9 +85,7 @@ class Enumerable implements \IteratorAggregate
                 return $this->select(function ($v) { return (float)$v; });
             case 'null':
             case 'unset':
-	            return $this->select( function ( $v ) {
-		            return null;
-	            } );
+                return $this->select(function ($v) { return null; });
             case 'object':
                 return $this->select(function ($v) { return (object)$v; });
             case 'string':

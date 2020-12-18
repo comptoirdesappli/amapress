@@ -116,6 +116,19 @@ class AmapressAdhesionPeriod extends TitanEntity {
 		return trim( $this->getCustom( 'amapress_adhesion_period_hla_form_url' ) );
 	}
 
+	public function getHelloAssoOrganizationSlug() {
+		$url = $this->getHelloAssoFormUrl();
+		if ( empty( $url ) ) {
+			return '';
+		}
+
+		if ( preg_match( '%^https?://www\.helloasso\.com/associations/(?<orga_slug>[^/]+)/adhesions/[^/]+$%', $url, $m ) ) {
+			return $m['orga_slug'];
+		}
+
+		return '';
+	}
+
 	public function getHelloAssoFormSlug() {
 		$url = $this->getHelloAssoFormUrl();
 		if ( empty( $url ) ) {

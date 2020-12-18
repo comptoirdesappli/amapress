@@ -3753,6 +3753,10 @@ Vous maintenant vous connecter au site et effectuer vos inscriptions aux contrat
 											}
 										),
 										array(
+											'type' => 'heading',
+											'name' => __( 'Options d\'import des adhésions HelloAsso', 'amapress' ),
+										),
+										array(
 											'id'      => 'helloasso-auto-confirm',
 											'name'    => __( 'Confirmation automatique', 'amapress' ),
 											'type'    => 'checkbox',
@@ -3850,6 +3854,50 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 												return __( 'Les syntaxes [avec_bulletin]xxx[/avec_bulletin] et [sans_bulletin]xxx[/sans_bulletin] permettent de cibler le texte respectivement lorsqu\'un contrat Word est attaché ou non.<br />Les placeholders suivants sont disponibles:', 'amapress' ) .
 												       AmapressAdhesion_paiement::getPlaceholdersHelp( [], false );
 											},
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
+											'name' => __( 'Import des adhésions HelloAsso par API', 'amapress' ),
+										),
+										array(
+											'id'      => 'ha_fetch',
+											'name'    => __( 'API HelloAsso - Intervalle', 'amapress' ),
+											'desc'    => __( 'Intervalle de récupération des nouvelles adhésions (0 désactivé)', 'amapress' ),
+											'type'    => 'number',
+											'min'     => 0,
+											'max'     => 1000,
+											'step'    => 1,
+											'default' => 0,
+											'slider'  => false,
+											'unit'    => 'heure(s)',
+										),
+										array(
+											'id'           => 'ha_cid',
+											'name'         => __( 'API HelloAsso - Client Id', 'amapress' ),
+											'type'         => 'text',
+											'autocomplete' => false,
+										),
+										array(
+											'id'           => 'ha_csec',
+											'name'         => __( 'API HelloAsso - Client Secret', 'amapress' ),
+											'type'         => 'text',
+											'autocomplete' => false,
+											'is_password'  => true,
+										),
+										array(
+											'name'    => __( 'Tester', 'amapress' ),
+											'type'    => 'action-buttons',
+											'buttons' => [
+												[
+													'class'  => 'button button-primary',
+													'text'   => __( 'Tester et importer', 'amapress' ),
+													'action' => 'test_helloasso_access',
+													'desc'   => 'Tester la connexion à l\'API HelloAsso et importer les adhésions existantes de la période d\'adhésion en cours'
+												]
+											]
 										),
 										array(
 											'type' => 'save',

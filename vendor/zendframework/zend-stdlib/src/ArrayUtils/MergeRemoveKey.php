@@ -9,5 +9,6 @@
 
 namespace Zend\Stdlib\ArrayUtils;
 
-final class MergeRemoveKey {
+final class MergeRemoveKey
+{
 }
