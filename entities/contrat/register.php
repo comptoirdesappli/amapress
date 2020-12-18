@@ -1948,7 +1948,7 @@ jQuery(function($) {
 						}
 					}
 
-					return [ 'amapress_contrat_instance_paiements' => $values ];
+					return implode( ',', $values );
 				},
 				'options'           => function ( $option ) {
 					/** @var TitanFrameworkOption $option */
