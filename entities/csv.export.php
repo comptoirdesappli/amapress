@@ -55,6 +55,20 @@ function amapress_posts_get_field_display_name( $field_name, $post_type ) {
 		return $labels[ $field_name ];
 	}
 
+	if ( $post_type == AmapressAdhesion_paiement::POST_TYPE ) {
+		$terms = get_terms( AmapressAdhesion_paiement::PAIEMENT_TAXONOMY,
+			array(
+				'taxonomy'   => AmapressAdhesion_paiement::PAIEMENT_TAXONOMY,
+				'hide_empty' => false,
+			) );
+		foreach ( $terms as $term ) {
+			/** @var WP_Term $term */
+			if ( "amapress_adhesion_paiement_pmt_{$term->term_id}" == $field_name ) {
+				return $term->name;
+			}
+		}
+	}
+
 	$name = amapress_unsimplify_post_type( $post_type );
 	$cols = apply_filters( "manage_edit-{$name}_columns", array() );
 	if ( isset( $cols[ $field_name ] ) ) {

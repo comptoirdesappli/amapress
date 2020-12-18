@@ -306,6 +306,8 @@ class Amapress_Import_Posts_CSV {
 				) );;
 		}
 		$fields = array_merge( array_combine( $data_keys, $data_keys ), $meta_keys );
+		$fields = apply_filters( "amapress_posts_model_fields", $fields );
+		$fields = apply_filters( "amapress_posts_{$pt}_model_fields", $fields );
 
 		$options      = array();
 		$headers      = array();

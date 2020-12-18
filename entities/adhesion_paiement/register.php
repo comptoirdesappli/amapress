@@ -495,26 +495,78 @@ function amapress_import_adhesion_paiement_apply_default_values_to_posts_meta( $
 	return $postmeta;
 }
 
-add_action( 'amapress_post_adhesion_paiement_import', 'amapress_post_adhesion_paiement_import', 10, 3 );
-function amapress_post_adhesion_paiement_import( $post_id, $postdata, $postmeta ) {
-	$postmeta['amapress_adhesion_paiement_repartition'] = get_post_meta( $post_id, 'amapress_adhesion_paiement_repartition', true );
+add_filter( 'amapress_posts_adhesion_paiement_model_fields', function ( $fields ) {
+	$terms = get_terms( AmapressAdhesion_paiement::PAIEMENT_TAXONOMY,
+		array(
+			'taxonomy'   => AmapressAdhesion_paiement::PAIEMENT_TAXONOMY,
+			'hide_empty' => false,
+		) );
+	foreach ( $terms as $term ) {
+		/** @var WP_Term $term */
+		$key            = "amapress_adhesion_paiement_pmt_{$term->term_id}";
+		$fields[ $key ] = $key;
+	}
+
+	return $fields;
+} );
+
+add_filter( 'amapress_import_posts_adhesion_paiement_custom_fields', function ( $fields ) {
+	$terms = get_terms( AmapressAdhesion_paiement::PAIEMENT_TAXONOMY,
+		array(
+			'taxonomy'   => AmapressAdhesion_paiement::PAIEMENT_TAXONOMY,
+			'hide_empty' => false,
+		) );
+	foreach ( $terms as $term ) {
+		/** @var WP_Term $term */
+		$key            = "amapress_adhesion_paiement_pmt_{$term->term_id}";
+		$fields[ $key ] = $key;
+	}
+
+	return $fields;
+} );
+
+add_action( 'amapress_post_adhesion_paiement_import', 'amapress_post_adhesion_paiement_import', 10, 5 );
+function amapress_post_adhesion_paiement_import( $post_id, $postdata, $postmeta, $posttaxo, $postcustom ) {
+	$import_reps = [];
+	$terms       = get_terms( AmapressAdhesion_paiement::PAIEMENT_TAXONOMY,
+		array(
+			'taxonomy'   => AmapressAdhesion_paiement::PAIEMENT_TAXONOMY,
+			'hide_empty' => false,
+		) );
+	foreach ( $terms as $term ) {
+		/** @var WP_Term $term */
+		if ( ! empty( $postcustom["amapress_adhesion_paiement_pmt_{$term->term_id}"] ) ) {
+			$import_reps[ $term->term_id ] = floatval( $postcustom["amapress_adhesion_paiement_pmt_{$term->term_id}"] );
+		}
+	}
+
+	if ( ! empty( $import_reps ) ) {
+		$postmeta['amapress_adhesion_paiement_repartition'] = [];
+	} else {
+		$postmeta['amapress_adhesion_paiement_repartition'] = get_post_meta( $post_id, 'amapress_adhesion_paiement_repartition', true );
+	}
 	if ( empty( $postmeta['amapress_adhesion_paiement_repartition'] ) ) {
 		$period = AmapressAdhesionPeriod::getBy( $postmeta['amapress_adhesion_paiement_period'] );
 		if ( $period ) {
-			$rep       = [];
+			$rep       = $import_reps;
 			$amap_term = intval( Amapress::getOption( 'adhesion_amap_term' ) );
-			if ( $amap_term ) {
+			if ( $amap_term && ! isset( $rep[ $amap_term ] ) ) {
 				$rep[ $amap_term ] = $period->getMontantAmap();
 			}
 			$reseau_amap_term = intval( Amapress::getOption( 'adhesion_reseau_amap_term' ) );
-			if ( $reseau_amap_term ) {
+			if ( $reseau_amap_term && ! isset( $rep[ $reseau_amap_term ] ) ) {
 				$rep[ $reseau_amap_term ] = $period->getMontantReseau();
 			}
 			$postmeta['amapress_adhesion_paiement_repartition'] = $rep;
 		}
 	}
 	if ( ! empty( $postmeta['amapress_adhesion_paiement_repartition'] ) ) {
-		wp_set_post_terms( $post_id, array_keys( $postmeta['amapress_adhesion_paiement_repartition'] ), 'amps_paiement_category' );
+		wp_set_post_terms(
+			$post_id,
+			array_keys( $postmeta['amapress_adhesion_paiement_repartition'] ),
+			'amps_paiement_category' );
+		update_post_meta( $post_id, 'amapress_adhesion_paiement_repartition',
+			$postmeta['amapress_adhesion_paiement_repartition'] );
 		$sum = 0;
 		foreach ( $postmeta['amapress_adhesion_paiement_repartition'] as $k => $v ) {
 			$sum += $v;

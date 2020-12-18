@@ -236,6 +236,20 @@ function amapress_import_posts_get_field_name( $field_name, $post_type, $colname
 		return $labels[ $field_name ];
 	}
 
+	if ( $post_type == AmapressAdhesion_paiement::POST_TYPE ) {
+		$terms = get_terms( AmapressAdhesion_paiement::PAIEMENT_TAXONOMY,
+			array(
+				'taxonomy'   => AmapressAdhesion_paiement::PAIEMENT_TAXONOMY,
+				'hide_empty' => false,
+			) );
+		foreach ( $terms as $term ) {
+			/** @var WP_Term $term */
+			if ( 0 === strcasecmp( $term->name, $field_name ) ) {
+				return "amapress_adhesion_paiement_pmt_{$term->term_id}";
+			}
+		}
+	}
+
 	//TODO place in right entity
 	if ( $post_type == AmapressAdhesion::POST_TYPE ) {
 		if ( $field_name == __( 'Contrat', 'amapress' ) ) {
