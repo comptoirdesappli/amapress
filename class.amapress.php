@@ -2968,7 +2968,7 @@ class Amapress {
 		);
 		wp_add_dashboard_widget(
 			'amapress_paiements_dashboard_widget',         // Widget slug.
-			__( 'Adhésions Amapress', 'amapress' ),         // Title.
+			__( 'Inscriptions Amapress', 'amapress' ),         // Title.
 			array( 'Amapress', 'amapress_paiements_dashboard_widget_function' ) // Display function.
 		);
 		wp_add_dashboard_widget(
@@ -3206,7 +3206,7 @@ class Amapress {
 		);
 		$adm   = admin_url( 'edit.php?post_type=amps_adhesion' );
 		$cnt   = count( $ads );
-		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> adhésions :</p>', 'amapress' ), $adm, $cnt );
+		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> inscriptions :</p>', 'amapress' ), $adm, $cnt );
 		echo '<ul>';
 		foreach ( $lieux as $lieu ) {
 			$ads_lieu = get_posts(
@@ -3224,7 +3224,7 @@ class Amapress {
 			);
 			$adm      = admin_url( 'edit.php?post_type=amps_adhesion&meta_key=amapress_adhesion_lieu&meta_value=' . $lieu->ID );
 			$cnt      = count( $ads_lieu );
-			echo sprintf( __( '<li>%s: <a href=\'%s\'>(%s)</a> adhésions</li>', 'amapress' ), $lieu->post_title, $adm, $cnt );
+			echo sprintf( __( '<li>%s: <a href=\'%s\'>(%s)</a> inscriptions</li>', 'amapress' ), $lieu->post_title, $adm, $cnt );
 		}
 		echo '</ul>';
 		echo '<ul>';
@@ -3244,7 +3244,7 @@ class Amapress {
 			);
 			$adm         = admin_url( 'edit.php?post_type=amps_adhesion&meta_key=amapress_adhesion_contrat_instance&meta_value=' . $contrat->ID );
 			$cnt         = count( $ads_contrat );
-			echo sprintf( __( '<li>%s: <a href=\'%s\'>(%s)</a> adhésions</li>', 'amapress' ), $contrat->getTitle(), $adm, $cnt );
+			echo sprintf( __( '<li>%s: <a href=\'%s\'>(%s)</a> inscriptions</li>', 'amapress' ), $contrat->getTitle(), $adm, $cnt );
 		}
 		echo '</ul>';
 
@@ -3265,7 +3265,7 @@ class Amapress {
 		$cnt            = count( $ads_to_confirm );
 		if ( $cnt > 0 ) {
 			$adm = admin_url( 'edit.php?post_type=amps_adhesion&meta_key=amapress_adhesion_status&meta_value=to_confirm' );
-			echo sprintf( __( '<p style=\'color:red\'><a href=\'%s\'>(%s)</a> adhésions à confirmer</p>', 'amapress' ), $adm, $cnt );
+			echo sprintf( __( '<p style=\'color:red\'><a href=\'%s\'>(%s)</a> inscriptions à confirmer</p>', 'amapress' ), $adm, $cnt );
 		}
 	}
 
