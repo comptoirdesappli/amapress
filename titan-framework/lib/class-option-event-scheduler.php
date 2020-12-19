@@ -212,7 +212,7 @@ class TitanFrameworkOptionEventScheduler extends TitanFrameworkOption {
 	}
 
 	public static function getFormattedEventDate( $value, $scheduler_type ) {
-		if ( ! $value['enabled'] ) {
+		if ( ! $value || ! isset( $value['enabled'] ) || ! $value['enabled'] ) {
 			return __( 'Désactivé', 'amapress' );
 		}
 
