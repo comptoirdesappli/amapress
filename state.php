@@ -418,6 +418,13 @@ function amapress_get_state() {
 		__( '<strong>Recommandé</strong> : permet d\'optimiser la vitesse du site', 'amapress' ),
 		'active' === amapress_is_plugin_active( 'pwa' ) ? 'warning' : 'info' );
 
+	$state['05_config'][] = amapress_get_check_state(
+		'info',
+		__( 'Configuration Autoptimize', 'amapress' ),
+		__( 'Configurer l\'optimisation du code Javascript, CSS et HTML', 'amapress' ),
+		admin_url( 'options-general.php?page=autoptimize' )
+	);
+
 	$permalink_structure = get_option( 'permalink_structure' );
 	if ( defined( 'FREE_PAGES_PERSO' ) && FREE_PAGES_PERSO ) {
 		$state['05_config'][] = amapress_get_check_state(
