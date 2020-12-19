@@ -1814,7 +1814,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 	}
 	$state['26_online_inscr'][] = amapress_get_check_state(
 		empty( $adh_period ) ? 'error' : ( ! defined( 'AMAPRESS_DEMO_MODE' ) && ! $adh_period->getWordModelId() ? 'warning' :
-			! empty( $status_text ) ? 'error' : 'success' ),
+			( ! empty( $status_text ) ? 'error' : 'success' ) ),
 		__( 'Période d\'adhésion', 'amapress' ),
 		sprintf( __( 'Créer une période d\'adhésion au %s pour les adhésions en ligne et attaché lui un bulletin d\'adhésion en Word', 'amapress' ), date_i18n( 'd/m/Y', $first_online_date ) ),
 		$adh_period ? $adh_period->getAdminEditLink() : admin_url( 'edit.php?post_type=' . AmapressAdhesionPeriod::INTERNAL_POST_TYPE ),

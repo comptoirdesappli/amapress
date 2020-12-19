@@ -563,9 +563,9 @@ class TitanFrameworkOption {
 		if ( isset( $this->settings['conditional'] ) && is_array( $this->settings['conditional'] ) ) {
 			$defVal = ! empty( $default_value ) ?
 				$default_value :
-				! empty( $this->settings['conditional']['_default_'] ) ?
+				( ! empty( $this->settings['conditional']['_default_'] ) ?
 					$this->settings['conditional']['_default_'] :
-					'';
+					'' );
 			$val    = $this->getValue();
 			if ( ! empty( $val ) ) {
 				$defVal = $val;

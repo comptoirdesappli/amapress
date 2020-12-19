@@ -919,7 +919,7 @@ class AmapressPaniers {
 			echo '<h3>' . amapress_get_font_icon( 'fa-fa' ) . ' ' . __( 'Recettes associées', 'amapress' ) . '</h3>';
 			$recette_edit_link = ( amapress_current_user_can( 'publish_recette' ) ?
 				amapress_get_button( __( 'Publier une nouvelle recette', 'amapress' ), admin_url( "post-new.php?post_type=amps_recette" ), 'fa-fa' ) :
-				amapress_is_user_logged_in() && ! empty( Amapress::getOption( 'publier-recette-page' ) ) ? amapress_get_button( __( 'Proposer une nouvelle recette', 'amapress' ), get_post_permalink( Amapress::getOption( 'publier-recette-page' ) ), 'fa-fa' ) : '' );
+				( amapress_is_user_logged_in() && ! empty( Amapress::getOption( 'publier-recette-page' ) ) ? amapress_get_button( __( 'Proposer une nouvelle recette', 'amapress' ), get_post_permalink( Amapress::getOption( 'publier-recette-page' ) ), 'fa-fa' ) : '' ) );
 			$recette_empty     = '<span class="recette-empty">' . __( 'Pas de recettes pour les produits présents dans le panier', 'amapress' ) . '</span> ' . $recette_edit_link;
 			$no_recettes       = urlencode( $recette_empty );
 			echo get_amapress_recettes_gallery(
