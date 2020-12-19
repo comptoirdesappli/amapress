@@ -3830,7 +3830,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 			if ( ! $admin_mode ) {
 				if ( ! $use_contrat_term ) {
-					echo '<p style="margin-bottom: 0">' . sprintf( __( 'Vous allez vous passer commande de %s pour un montant %s avec les options suivantes:', 'amapress' ), esc_html( $contrat->getTitle() ), $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
+					echo '<p style="margin-bottom: 0">' . sprintf( __( 'Vous allez passer commande de %s pour un montant %s avec les options suivantes:', 'amapress' ), esc_html( $contrat->getTitle() ), $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
 				} else {
 					echo '<p style="margin-bottom: 0">' . sprintf( __( 'Vous allez vous inscrire au contrat %s pour un montant %s avec les options suivantes:', 'amapress' ), esc_html( $contrat->getTitle() ), $total > 0 ? 'de ' . Amapress::formatPrice( $total, true ) : 'payable à la livraison' ) . '</p>';
 				}
