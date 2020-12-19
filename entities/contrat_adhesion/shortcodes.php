@@ -3945,8 +3945,6 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 		}
 
-		echo wp_unslash( $contrat->getPaiementsMention() );
-
 		/** @var AmapressContrat_instance $contrat */
 		if ( ! $contrat->isCommandeVariable() && $contrat->getManage_Cheques() ) {
 			if ( ! $admin_mode ) {
