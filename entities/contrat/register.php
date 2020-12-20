@@ -1763,17 +1763,13 @@ jQuery(function($) {
 					if ( $contrat->getAllow_Delivery_Pay() ) {
 						$ret[] = __( 'à la livraison', 'amapress' );
 					}
-					if ( $contrat
-					     && $contrat->getDate_ouverture() > Amapress::start_of_day( amapress_time() )
-					) {
+					if ( $contrat->isFull() ) {
+						$ret[] = '<span style="color:red"><strong>' . __( 'COMPLET', 'amapress' ) . '</strong></span>';
+					} elseif ( $contrat->getDate_ouverture() > Amapress::start_of_day( amapress_time() ) ) {
 						$ret[] = sprintf( __( '<span style="color:orange">ouvrira le %s</span>', 'amapress' ), date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ) );
-					} elseif ( $contrat
-					           && $contrat->getDate_cloture() < Amapress::end_of_day( amapress_time() )
-					) {
+					} elseif ( $contrat->getDate_cloture() < Amapress::end_of_day( amapress_time() ) ) {
 						$ret[] = sprintf( __( '<span style="color:orange">clos depuis %s</span>', 'amapress' ), date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) );
-					} elseif ( $contrat
-					           && ! $contrat->canSelfSubscribe()
-					) {
+					} elseif ( ! $contrat->canSelfSubscribe() ) {
 						$ret[] = '<span style="color:orange">inscription fermée</span>';
 					} elseif ( ! empty( $contrat->canSelfContratsCondition() ) ) {
 						$ret[] = sprintf( __( '<span style="color: green">inscription conditionnelle (%s&gt;%s)</span>', 'amapress' ),
