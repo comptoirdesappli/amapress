@@ -254,7 +254,7 @@ function amapress_exception_error_handler( $errno, $errstr, $errfile, $errline, 
 	if ( WP_DEBUG || ini_get( 'log_errors' ) ) {
 		$message = sprintf( __( '%s in %s on line %s, backtrace: %s, url: %s, user: %s', 'amapress' ),
 			$errstr, $errfile, $errline,
-			amapress_debug_backtrace_summary( null, 1 ),
+			amapress_debug_backtrace_summary(),
 			$_SERVER['REQUEST_URI'], get_current_user_id() );
 		error_log( $message );
 	}
