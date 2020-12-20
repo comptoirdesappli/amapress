@@ -83,3 +83,26 @@ function amapress_row_action_adhesion_paiement_send_valid( $post_id ) {
 
 	wp_redirect_and_exit( wp_get_referer() );
 }
+
+add_filter( 'amapress_bulk_action_amp_adh_pmt_send_valid', 'amapress_bulk_action_amp_adh_pmt_send_valid', 10, 2 );
+function amapress_bulk_action_amp_adh_pmt_send_valid( $sendback, $post_ids ) {
+	foreach ( $post_ids as $post_id ) {
+		$adh = AmapressAdhesion_paiement::getBy( $post_id, true );
+		if ( $adh ) {
+			$adh->sendValidation();
+		}
+	}
+
+	return amapress_add_bulk_count( $sendback, count( $post_ids ) );
+}
+
+add_filter( 'amapress_bulk_action_amp_adh_pmt_mark_recv_valid', 'amapress_bulk_action_amp_adh_pmt_mark_recv_valid', 10, 2 );
+function amapress_bulk_action_amp_adh_pmt_mark_recv_valid( $sendback, $post_ids ) {
+	foreach ( $post_ids as $post_id ) {
+		$adh = AmapressAdhesion_paiement::getBy( $post_id, true );
+		$adh->setStatus( AmapressAdhesion_paiement::RECEIVED );
+		$adh->sendValidation();
+	}
+
+	return amapress_add_bulk_count( $sendback, count( $post_ids ) );
+}
