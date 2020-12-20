@@ -92,11 +92,11 @@ function amapress_register_entities_adhesion( $entities ) {
 				},
 			],
 			'add_compl'            => [
-				'label'   => __( 'Ajouter inscription complémentaire', 'amapress' ),
-				'confirm' => true,
-				'show_on' => 'editor',
-				'target'  => '_blank',
-				'href'    => function ( $adh_id ) {
+				'label'     => __( 'Ajouter inscription complémentaire', 'amapress' ),
+				'confirm'   => true,
+				'show_on'   => 'editor',
+				'target'    => '_blank',
+				'href'      => function ( $adh_id ) {
 					$adh  = AmapressAdhesion::getBy( $adh_id );
 					$args = [
 						'amapress_adhesion_adherent'         => $adh->getAdherentId(),
@@ -258,7 +258,7 @@ function amapress_register_entities_adhesion( $entities ) {
 					return $adh->getAdherent()->getUser()->last_name;
 				}
 			),
-			'adherent_email'   => array(
+			'adherent_email'    => array(
 				'csv_import'    => false,
 				'csv_export'    => true,
 				'hidden'        => true,
@@ -277,7 +277,7 @@ function amapress_register_entities_adhesion( $entities ) {
 					return $adh->getAdherent()->getUser()->user_email;
 				}
 			),
-			'adherent_address' => array(
+			'adherent_address'  => array(
 				'csv_import'     => false,
 				'csv_export'     => true,
 				'hidden'         => true,
@@ -294,7 +294,7 @@ function amapress_register_entities_adhesion( $entities ) {
 					return $adh->getAdherent()->getFormattedAdresse();
 				}
 			),
-			'adherent_phone'   => array(
+			'adherent_phone'    => array(
 				'csv_import'     => false,
 				'csv_export'     => true,
 				'col_def_hidden' => true,
@@ -311,7 +311,7 @@ function amapress_register_entities_adhesion( $entities ) {
 					return $adh->getAdherent()->getTelTo( true );
 				}
 			),
-			'status'           => array(
+			'status'            => array(
 				'name'     => __( 'Statut', 'amapress' ),
 				'type'     => 'select',
 				'group'    => __( 'Infos', 'amapress' ),
@@ -393,7 +393,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				}
 
 			),
-			'contrat_quantite' => array(
+			'contrat_quantite'  => array(
 				'name'              => __( 'Quantité', 'amapress' ),
 				'type'              => 'custom',
 				'readonly'          => true,
@@ -476,7 +476,7 @@ function amapress_register_entities_adhesion( $entities ) {
 //                'import_key' => true,
 //                'csv_required' => true,
 			),
-			'prod_msg'         => array(
+			'prod_msg'          => array(
 				'name'           => __( 'Message au producteur', 'amapress' ),
 				'type'           => 'textarea',
 				'group'          => __( '2/ Contrat', 'amapress' ),
@@ -484,7 +484,7 @@ function amapress_register_entities_adhesion( $entities ) {
 				'readonly'       => 'amapress_is_contrat_adhesion_readonly',
 				'col_def_hidden' => true,
 			),
-			'date_debut'       => array(
+			'date_debut'        => array(
 				'name'          => __( 'Date de début', 'amapress' ),
 				'type'          => 'date',
 				'required'      => true,
@@ -666,7 +666,7 @@ jQuery(function($) {
 				'col_def_hidden' => true,
 				'csv_import'     => false,
 			),
-			'message'          => array(
+			'message'           => array(
 				'name'           => __( 'Message aux référents', 'amapress' ),
 				'type'           => 'textarea',
 				'readonly'       => true,
@@ -3253,6 +3253,11 @@ add_action( 'delete_post', function ( $post_id ) {
 	$post_type = get_post_type( $post_id );
 
 	if ( AmapressAdhesion::INTERNAL_POST_TYPE == $post_type ) {
+		$adh = AmapressAdhesion::getBy( $post_id );
+		@error_log( sprintf( 'Deleting post %d (%s), backtrace: %s, url: %s, user: %s',
+			$post_id, $adh->getTitle(),
+			amapress_debug_backtrace_summary(),
+			$_SERVER['REQUEST_URI'], get_current_user_id() ) );
 		$paiements_ids = get_posts(
 			[
 				'fields'         => 'ids',
