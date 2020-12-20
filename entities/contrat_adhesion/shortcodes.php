@@ -2600,7 +2600,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="edit_inscr_id" value="' . $adh->ID . '" />
 <input type="submit" value="' . esc_attr__( 'Modifier', 'amapress' ) . '" class="btn btn-default btn-assist-inscr" />
 </form>';
-							$edit_contrat    .= '<form method="get" style="display: inline-block; margin-left: 5px" action="' . esc_attr( $inscription_url ) . '">
+							if ( ! $adh->getContrat_instance()->isCommandeVariable() ) {
+								$edit_contrat .= '<form method="get" style="display: inline-block; margin-left: 5px" action="' . esc_attr( $inscription_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="details" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
@@ -2608,6 +2609,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="cancel_inscr_id" value="' . $adh->ID . '" />
 <input type="submit" value="' . esc_attr__( 'Annuler', 'amapress' ) . '" class="btn btn-default btn-assist-inscr" />
 </form>';
+							}
 						}
 						echo '<li style="margin-left: 35px"><strong>' . $inscription_title . '</strong>' . $coadherents_info . '<br/><em style="font-size: 0.9em">' . $contrat_info . '</em>' . $edit_contrat . '<br/>' . $print_contrat . '</li>';
 					}
@@ -3309,6 +3311,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			if ( ! $adh->canSelfEdit() ) {
 				wp_die( $invalid_access_message ); //phpcs:ignore
 			}
+			if ( $adh->getContrat_instance()->isCommandeVariable() ) {
+				wp_die( $invalid_access_message ); //phpcs:ignore
+			}
 			if ( isset( $_GET['confirm'] ) ) {
 				if ( Amapress::toBool( $atts['send_referents'] ) ) {
 					$adh->sendReferentsNotificationMail( false, $notify_email, 'cancel' );
@@ -3317,6 +3322,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				if ( ! wp_delete_post( $adh->ID, true ) ) {
 					wp_die( $invalid_access_message ); //phpcs:ignore
 				}
+
 				if ( ! $use_contrat_term ) {
 					echo '<p>' . sprintf( __( 'Votre commande %s a été annulée avec succès.', 'amapress' ), esc_html( $adh->getTitle() ) ) . '</p>';
 				} else {
@@ -3524,6 +3530,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 				$multiple       = $quant->getGroupMultiple();
 				$grp_class_name = '';
+				$quant_cmd      = $contrat->isCommandeVariable() ? 'quant-cmd' : '';
 				$has_group      = preg_match( '/^\s*\[([^\]]+)\]/', $quant->getTitle(), $matches );
 				if ( $has_group ) {
 					if ( $multiple > 1 && isset( $matches[1] ) ) {
@@ -3550,7 +3557,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$price_unit = esc_attr( $quant->getPrix_unitaire() );
 				foreach ( $dates as $date ) {
 					$ed = '';
-					$ed .= "<select style='max-width: none;min-width: 0' data-grp-class='$grp_class_name' data-price='0' data-price-unit='$price_unit' name='panier_vars[$date][{$quant->ID}]' id='panier_vars-$date-{$quant->ID}' class='quant-var $grp_class_name'>";
+					$ed .= "<select style='max-width: none;min-width: 0' data-grp-class='$grp_class_name' data-price='0' data-price-unit='$price_unit' name='panier_vars[$date][{$quant->ID}]' id='panier_vars-$date-{$quant->ID}' class='quant-var $quant_cmd $grp_class_name'>";
 					$ed .= tf_parse_select_options( $options,
 						$edit_inscription
 							? $edit_inscription->getContrat_quantite_factor( $quant->ID, $date )
@@ -4385,7 +4392,7 @@ $paiements_dates
 			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 		$quants = unserialize( stripslashes( $_REQUEST['quants'] ) ); //phpcs:ignore
-		if ( empty( $quants ) ) {
+		if ( ! $contrat->isCommandeVariable() && empty( $quants ) ) {
 			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 
@@ -4493,7 +4500,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 		if ( ! empty( $quantite_factors ) ) {
 			$meta['amapress_adhesion_contrat_quantite_factors'] = $quantite_factors;
 		}
-		if ( ! empty( $quantite_variables ) ) {
+		if ( ! empty( $quantite_variables ) || $contrat->isCommandeVariable() ) {
 			/** @var AmapressAdhesion $edit_inscription */
 			if ( $edit_inscription && $edit_inscription->getContrat_instance()->isCommandeVariable() ) {
 				$rem_dates = $edit_inscription->getContrat_instance()->getRemainingDates( $start_date );
@@ -4630,7 +4637,14 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 <input type="hidden" name="edit_inscr_id" value="' . $inscription->ID . '" />
 <input type="submit" value="' . esc_attr__( 'Modifier', 'amapress' ) . '" class="btn btn-default btn-assist-inscr" />
 </form>';
-				$cancel_button   = '<form method="get" action="' . esc_attr( $inscription_url ) . '">
+				if ( strpos( $online_contrats_end_step_edit_message, '%%modify_button%%' ) !== false ) {
+					$online_contrats_end_step_edit_message = str_replace( '%%modify_button%%', $modify_button, $online_contrats_end_step_edit_message );
+				} else {
+					echo '<br/>' . $modify_button;
+				}
+
+				if ( ! $inscription->getContrat_instance()->isCommandeVariable() ) {
+					$cancel_button = '<form method="get" action="' . esc_attr( $inscription_url ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="details" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
@@ -4638,15 +4652,13 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 <input type="hidden" name="cancel_inscr_id" value="' . $inscription->ID . '" />
 <input type="submit" value="' . esc_attr__( 'Annuler', 'amapress' ) . '" class="btn btn-default btn-assist-inscr" />
 </form>';
-				if ( strpos( $online_contrats_end_step_edit_message, '%%modify_button%%' ) !== false ) {
-					$online_contrats_end_step_edit_message = str_replace( '%%modify_button%%', $modify_button, $online_contrats_end_step_edit_message );
+					if ( strpos( $online_contrats_end_step_edit_message, '%%cancel_button%%' ) !== false ) {
+						$online_contrats_end_step_edit_message = str_replace( '%%cancel_button%%', $cancel_button, $online_contrats_end_step_edit_message );
+					} else {
+						echo '<br/>' . $cancel_button;
+					}
 				} else {
-					echo '<br/>' . $modify_button;
-				}
-				if ( strpos( $online_contrats_end_step_edit_message, '%%cancel_button%%' ) !== false ) {
-					$online_contrats_end_step_edit_message = str_replace( '%%cancel_button%%', $cancel_button, $online_contrats_end_step_edit_message );
-				} else {
-					echo '<br/>' . $cancel_button;
+					$online_contrats_end_step_edit_message = str_replace( '%%cancel_button%%', __( 'Les commandes variables sont seulement modifiables', 'amapress' ), $online_contrats_end_step_edit_message );
 				}
 			} else {
 				$online_contrats_end_step_edit_message = '';
@@ -4894,7 +4906,8 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
                 if ($this.data('grp-class')) {
                     opt[$this.data('grp-class')] = true;
                 }
-                $this.rules('add', opt);
+                if (!$this.is('.quant-cmd'))
+                    $this.rules('add', opt);
             });
             jQuery('.amapress_validate .quant').change(function () {
                 var $this = jQuery(this);
