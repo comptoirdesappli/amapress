@@ -4494,9 +4494,13 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 			$meta['amapress_adhesion_contrat_quantite_factors'] = $quantite_factors;
 		}
 		if ( ! empty( $quantite_variables ) ) {
-			if ( $edit_inscription ) {
-				/** @var AmapressAdhesion $edit_inscription */
+			/** @var AmapressAdhesion $edit_inscription */
+			if ( $edit_inscription && $edit_inscription->getContrat_instance()->isCommandeVariable() ) {
+				$rem_dates = $edit_inscription->getContrat_instance()->getRemainingDates( $start_date );
 				foreach ( $edit_inscription->getPaniersVariables() as $k => $v ) {
+					if ( in_array( $k, $rem_dates ) ) {
+						continue;
+					}
 					if ( ! isset( $quantite_variables[ $k ] ) ) {
 						$quantite_variables[ $k ] = $v;
 					}
