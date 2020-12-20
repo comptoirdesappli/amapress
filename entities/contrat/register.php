@@ -1763,6 +1763,13 @@ jQuery(function($) {
 					if ( $contrat->getAllow_Delivery_Pay() ) {
 						$ret[] = __( 'à la livraison', 'amapress' );
 					}
+					if ( $contrat->getMax_adherents() > 0 ) {
+						if ( $contrat->getMaxUseEquivalentQuant() ) {
+							$ret[] = '<strong>' . sprintf( __( '%d parts max.', 'amapress' ), $contrat->getMax_adherents() ) . '</strong>';
+						} else {
+							$ret[] = '<strong>' . sprintf( __( '%d adhérents max.', 'amapress' ), $contrat->getMax_adherents() ) . '</strong>';
+						}
+					}
 					if ( $contrat->isFull() ) {
 						$ret[] = '<span style="color:red"><strong>' . __( 'COMPLET', 'amapress' ) . '</strong></span>';
 					} elseif ( $contrat->getDate_ouverture() > Amapress::start_of_day( amapress_time() ) ) {
