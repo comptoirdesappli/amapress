@@ -1,3 +1,26 @@
+# 0.97.0 (2020-12-20)
+
+* **Assistant inscription:** mention au sujet des règlements dupliquée 
+* **Commandes variables:** gestion de l'annulation (des dates à venir) 
+* **Contrats:** 
+	- affichage contrat complet 
+	- affichage max parts/adhérents 
+* **Paniers modulables:** correction de la suppression d'une commande pour une date (bug conservation des commandes antérieures des Commandes variables) 
+* confirmation suppression définitive depuis la corbeille 
+* **Adhésions:** actions groupées Marquer reçu et envoyer adhésion confirmée et envoi adhésion confirmée 
+* log suppression inscriptions 
+
+# 0.96.200 (2020-12-19)
+
+* **HelloAsso:** 
+	- rejet propre des formulaires non membership 
+	- import des adhésion par l'API HelloAsso (pour palier aux appels de callback bloqués par un parefeu par ex) 
+	- notification des adhésions HelloAsso non importables (plusieurs fois le même mail, adhésion avec un même mail si une adhésion HelloAsso est déjà enregistrée) 
+* **Import CSV:** 
+	- contrats, correction import nombre de chèques 
+	- import complet des adhésions (répartitions, lieu, date) 
+* **Etat Amapress:** lien de configuration Autoptimize 
+
 # 0.96.195 (2020-12-13)
 
 * amélioration sélection du mode de validation des adhésions avant ouverture de l'accès aux inscriptions aux contrats 
