@@ -52,6 +52,10 @@
     display: none;
 }
 
+.tf-date-datepicker .ui-timepicker-div .ui_tpicker_unit_hide {
+    display: none;
+}
+
 .tf-date-datepicker .ui-datepicker-prev:before,
 .tf-date-datepicker .ui-datepicker-next:before {
     content: "\f341";

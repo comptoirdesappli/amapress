@@ -164,6 +164,16 @@ class TitanFrameworkOptionDate extends TitanFrameworkOption {
                 );
                 var datepickerSettings = {
                     dateFormat: '<?php echo self::$default_jquery_date_format ?>',
+                    showMillisec: false,
+                    showSecond: false,
+                    showMicrosec: false,
+                    showTimezone: false,
+                    currentText: '<?php echo esc_js( __( 'Maintenant', 'amapress' ) ); ?>',
+                    closeText: 'OK',
+                    timeOnlyTitle: '<?php echo esc_js( __( 'Choisir une heure', 'amapress' ) ); ?>',
+                    timeText: '<?php echo esc_js( __( 'Temps', 'amapress' ) ); ?>',
+                    hourText: '<?php echo esc_js( __( 'Heure', 'amapress' ) ); ?>',
+                    minuteText: '<?php echo esc_js( __( 'Minute', 'amapress' ) ); ?>',
 
                     beforeShow: function (input, inst) {
                         $('#ui-datepicker-div').addClass('tf-date-datepicker');
