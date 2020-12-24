@@ -75,7 +75,7 @@ class TitanFrameworkAdminTab {
 				'page' => $this->owner->settings['id'],
 				'tab'  => $this->settings['id'],
 			),
-			remove_query_arg( 'message' )
+			remove_query_arg( array_keys( $_GET ) )
 		);
 		?>
         <a href="<?php echo esc_url( $url ) ?>"
