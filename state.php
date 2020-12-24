@@ -402,29 +402,6 @@ function amapress_get_state() {
 		__( '<strong>Recommandé</strong> : Aide à passer votre site en HTTPS.', 'amapress' ),
 		is_ssl() ? 'info' : 'warning' );
 
-	$state['05_config'][] = amapress_check_plugin_install( 'pwa', __( 'Progressive Web App', 'amapress' ),
-		__( '<strong>Recommandé</strong> : permet au site d\'être vu comme une application mobile et d\'ajouter un raccourci à l\'écran d\'accueil', 'amapress' ),
-		'info' );
-
-	$pwa_short_name       = Amapress::getOption( 'pwa_short_name' );
-	$state['05_config'][] = amapress_get_check_state(
-		'active' === amapress_is_plugin_active( 'pwa' ) ? ( ! empty( $pwa_short_name ) ? 'success' : 'warning' ) : 'info',
-		__( 'Configuration Progressive Web App', 'amapress' ),
-		__( 'Configurer un nom de raccourci (max 12 caractères), une couleur de thème et un type d\'affichage', 'amapress' ),
-		admin_url( 'options-general.php?page=amapress_pwa_options_page' )
-	);
-
-	$state['05_config'][] = amapress_check_plugin_install( 'autoptimize', __( 'Autoptimize', 'amapress' ),
-		__( '<strong>Recommandé</strong> : permet d\'optimiser la vitesse du site', 'amapress' ),
-		'active' === amapress_is_plugin_active( 'pwa' ) ? 'warning' : 'info' );
-
-	$state['05_config'][] = amapress_get_check_state(
-		'info',
-		__( 'Configuration Autoptimize', 'amapress' ),
-		__( 'Configurer l\'optimisation du code Javascript, CSS et HTML', 'amapress' ),
-		admin_url( 'options-general.php?page=autoptimize' )
-	);
-
 	$permalink_structure = get_option( 'permalink_structure' );
 	if ( defined( 'FREE_PAGES_PERSO' ) && FREE_PAGES_PERSO ) {
 		$state['05_config'][] = amapress_get_check_state(
@@ -730,6 +707,29 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 <br/>Par défaut, Amapress met les mails dans une file d\'attente avant de les envoyer pour éviter les blocages et rejets de l\'hébergeur. 
 <br />Un autre bénéfice est le réessaie d\'envoi en cas d\'erreur temporaire et le logs des emails envoyés par le site pour traçage des activités (pour une durée configurable).</p>', 'amapress' ), $nb_mails ),
 		admin_url( 'options-general.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_options' )
+	);
+
+	$state['05_config'][] = amapress_check_plugin_install( 'pwa', __( 'Progressive Web App', 'amapress' ),
+		__( '<strong>Recommandé</strong> : permet au site d\'être vu comme une application mobile et d\'ajouter un raccourci à l\'écran d\'accueil', 'amapress' ),
+		'info' );
+
+	$pwa_short_name       = Amapress::getOption( 'pwa_short_name' );
+	$state['05_config'][] = amapress_get_check_state(
+		'active' === amapress_is_plugin_active( 'pwa' ) ? ( ! empty( $pwa_short_name ) ? 'success' : 'warning' ) : 'info',
+		__( 'Configuration Progressive Web App', 'amapress' ),
+		__( 'Configurer un nom de raccourci (max 12 caractères), une couleur de thème et un type d\'affichage', 'amapress' ),
+		admin_url( 'options-general.php?page=amapress_pwa_options_page' )
+	);
+
+	$state['05_config'][] = amapress_check_plugin_install( 'autoptimize', __( 'Autoptimize', 'amapress' ),
+		__( '<strong>Recommandé</strong> : permet d\'optimiser la vitesse du site', 'amapress' ),
+		'active' === amapress_is_plugin_active( 'pwa' ) ? 'warning' : 'info' );
+
+	$state['05_config'][] = amapress_get_check_state(
+		'info',
+		__( 'Configuration Autoptimize', 'amapress' ),
+		__( 'Configurer l\'optimisation du code Javascript, CSS et HTML', 'amapress' ),
+		admin_url( 'options-general.php?page=autoptimize' )
 	);
 
 	$state['10_users'] = array();
