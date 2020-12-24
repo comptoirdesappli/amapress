@@ -1648,6 +1648,15 @@ add_action( 'admin_init', function () {
 				'error', false, false );
 		}
 
+		global $pagenow;
+		if ( 'update.php' == $pagenow ) {
+			amapress_add_admin_notice(
+				'<span style="color: red">' .
+				__( '<strong>ATTENTION</strong> : afin de ne pas perturber l\'installation ou la mise à jour en cours et de ne pas provoquer un échec d\'installation, merci d\'attendre la fin du chargement de la page et le résultat de l\'opération : par exemple, un message indiquant la réactivation des extensions mises à jour ou la désactivation du mode Maintenance', 'amapress' ) .
+				'</span>',
+				'error', false, false );
+		}
+
 		$errored_mails_count = AmapressSMTPMailingQueue::getErroredMailsCount();
 		if ( $errored_mails_count > 0 ) {
 			$errored_mails_url = admin_url( 'options-general.php?page=amapress_mailqueue_options_page&tab=amapress_mailqueue_errored_mails' );
