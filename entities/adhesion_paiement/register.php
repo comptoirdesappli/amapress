@@ -214,7 +214,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'searchable' => true,
 			),
 			'categ_editor'   => array(
-				'name'       => __( 'Répartitions', 'amapress' ),
+				'name'       => __( 'Répartition', 'amapress' ),
 				'type'       => 'custom',
 				'column'     => 'amapress_get_adhesion_paiements_summary',
 				'custom'     => 'amapress_get_adhesion_paiements_categories',
@@ -224,10 +224,10 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'group'      => __( '3/ Règlement', 'amapress' ),
 			),
 			'amount'         => array(
-				'name'       => __( 'Montant', 'amapress' ),
+				'name'       => __( 'Montant total', 'amapress' ),
 				'type'       => 'readonly',
 				'unit'       => '€',
-				'desc'       => __( 'Montant', 'amapress' ),
+				'desc'       => __( 'Montant total', 'amapress' ),
 				'csv_import' => false,
 				'group'      => __( '3/ Règlement', 'amapress' ),
 			),
