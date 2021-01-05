@@ -67,7 +67,7 @@ class Amapress_Agenda_ICAL_Export {
 			$lines[] = $value;
 		}
 
-		return join( $lines, "\n\t" );
+		return implode( "\n\t", $lines );
 	}
 
 	public static function load() {
