@@ -182,7 +182,11 @@ class Amapress_Import_Posts_CSV {
 					echo '<div class="error"><p><strong>' . sprintf( __( 'Aucun %s n\'a pu être importé%s.', 'amapress' ), $post_type, $error_log_msg ) . '</strong></p></div>';
 					break;
 				case 'errors':
-					echo '<div class="error"><p><strong>' . sprintf( __( '%d %s(s) ont été importés et %d autres pas%s.', 'amapress' ), $imports, $post_type, $remain, $error_log_msg ) . '</strong></p></div>';
+					if ( $remain > 0 ) {
+						echo '<div class="error"><p><strong>' . sprintf( __( '%d %s(s) ont été importés et %d autres pas%s.', 'amapress' ), $imports, $post_type, $remain, $error_log_msg ) . '</strong></p></div>';
+					} else {
+						echo '<div class="error"><p><strong>' . sprintf( __( '%d %s(s) ont été importés%s.', 'amapress' ), $imports, $post_type, $error_log_msg ) . '</strong></p></div>';
+					}
 					break;
 				case 'success':
 					echo '<div class="updated"><p><strong>' . sprintf( __( 'Les %s ont été importés avec succès.', 'amapress' ), $post_type ) . '</strong></p></div>';
