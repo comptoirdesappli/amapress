@@ -162,7 +162,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => __( 'Emplacement d\'un lieu (carte et StreetView)', 'amapress' ),
 			'args' => [
-				'lieu' => __( 'Afficher la carte du lieu indiqué', 'amapress' ),
+				'lieu' => __( 'Afficher la carte du lieu indiqué. ', 'amapress' ) . AmapressLieu_distribution::getLieuFilterHelp(),
 				'mode' => __( '(Par défaut “map”) Mode d’affichage. Si Gooogle est votre afficheur de carte, alors vous pouvez choisir : map, map+streetview ou streetview', 'amapress' ),
 			]
 		] );
@@ -176,7 +176,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => __( 'Emplacement d\'un producteur', 'amapress' ),
 			'args' => [
-				'lieu' => __( 'Afficher la carte du lieu indiqué', 'amapress' ),
+				'lieu' => __( 'Afficher la carte du lieu indiqué. ', 'amapress' ) . AmapressLieu_distribution::getLieuFilterHelp(),
 				'mode' => __( '(Par défaut “map”) Mode d’affichage. Si Gooogle est votre afficheur de carte, alors vous pouvez choisir : map, map+streetview ou streetview', 'amapress' ),
 			]
 		] );
@@ -199,7 +199,7 @@ function amapress_register_shortcodes() {
 				'show_roles'          => __( '(Par défaut “false”) Afficher les rôles des membres du collectif', 'amapress' ),
 				'show_title'          => __( '(Par défaut “true”) Afficher les noms des lieux', 'amapress' ),
 				'past_weeks'          => __( '(Par défaut “5”) Nombre de semaines d’historique des distributions', 'amapress' ),
-				'lieu'                => __( 'Filtre de lieu', 'amapress' ),
+				'lieu'                => __( 'Filtre de lieu. ', 'amapress' ) . AmapressLieu_distribution::getLieuFilterHelp(),
 				'scroll_y'            => sprintf( __( '(Configurable dans %s) Limite la hauteur à X pixels et permet la navigation verticale avec scroll dans la date de distributions', 'amapress' ), $inscr_distrib_conf_link ),
 				'font_size'           => sprintf( __( '(Configurable dans %s) Taille relative du texte dans la vue en %% ou em', 'amapress' ), $inscr_distrib_conf_link ),
 				'show_no_contrat'     => __( '(Par défaut “true”) Afficher un message "Pas de livraison" pour les dates sans livraison pour l\'amapien', 'amapress' ),
@@ -236,7 +236,7 @@ function amapress_register_shortcodes() {
 			'args' => [
 				'show_title' => __( '(Par défaut “true”) Afficher les noms des lieux', 'amapress' ),
 				'max_dates'  => sprintf( __( '(Configurable dans %s) Nombre maximum de distributions à venir à afficher', 'amapress' ), $inscr_distrib_conf_link ),
-				'lieu'       => __( 'Filtre de lieu', 'amapress' ),
+				'lieu'       => __( 'Filtre de lieu. ', 'amapress' ) . AmapressLieu_distribution::getLieuFilterHelp(),
 			]
 		] );
 	amapress_register_shortcode( 'inscription-distrib', 'amapress_inscription_distrib_shortcode',
@@ -255,7 +255,7 @@ function amapress_register_shortcodes() {
 				'show_title'                => __( '(Par défaut “true”) Afficher les noms des lieux', 'amapress' ),
 				'past_weeks'                => __( '(Par défaut “5”) Nombre de semaines d’historique des distributions', 'amapress' ),
 				'max_dates'                 => sprintf( __( '(Configurable dans %s) Nombre maximum de distributions à venir à afficher', 'amapress' ), $inscr_distrib_conf_link ),
-				'lieu'                      => __( 'Filtre de lieu', 'amapress' ),
+				'lieu'                      => __( 'Filtre de lieu. ', 'amapress' ) . AmapressLieu_distribution::getLieuFilterHelp(),
 				'column_date_width'         => sprintf( __( '(Configurable dans %s) Largeur de la colonne Dates/Produits', 'amapress' ), $inscr_distrib_conf_link ),
 				'fixed_column_width'        => sprintf( __( '(Configurable dans %s) : fixe la largeur des colonnes Responsables ; en em ou px pour forcer une largeur fixe ; %% pour répartir la largeur de colonnes sur la largeur du tableau', 'amapress' ), $inscr_distrib_conf_link ),
 				'scroll_y'                  => sprintf( __( '(Configurable dans %s) Limite la hauteur à X pixels et permet la navigation verticale avec scroll dans la date de distributions', 'amapress' ), $inscr_distrib_conf_link ),
@@ -290,7 +290,7 @@ function amapress_register_shortcodes() {
 				'show_title'                => __( '(Par défaut “true”) Afficher les noms des lieux', 'amapress' ),
 				'past_weeks'                => __( '(Par défaut “5”) Nombre de semaines d’historique des distributions', 'amapress' ),
 				'max_dates'                 => sprintf( __( '(Configurable dans %s) Nombre maximum de distributions à venir à afficher', 'amapress' ), $inscr_distrib_conf_link ),
-				'lieu'                      => __( 'Filtre de lieu', 'amapress' ),
+				'lieu'                      => __( 'Filtre de lieu. ', 'amapress' ) . AmapressLieu_distribution::getLieuFilterHelp(),
 				'column_date_width'         => sprintf( __( '(Configurable dans %s) Largeur de la colonne Dates/Produits', 'amapress' ), $inscr_distrib_conf_link ),
 				'fixed_column_width'        => sprintf( __( '(Configurable dans %s) : fixe la largeur des colonnes Responsables ; en em ou px pour forcer une largeur fixe ; %% pour répartir la largeur de colonnes sur la largeur du tableau', 'amapress' ), $inscr_distrib_conf_link ),
 				'scroll_y'                  => sprintf( __( '(Configurable dans %s) Limite la hauteur à X pixels et permet la navigation verticale avec scroll dans la date de distributions', 'amapress' ), $inscr_distrib_conf_link ),
@@ -855,7 +855,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => __( 'Carte des amapiens', 'amapress' ),
 			'args' => [
-				'lieu'            => __( 'Afficher les amapiens ayant un contrat dans le lieu de distribution indiqué', 'amapress' ),
+				'lieu'            => __( 'Afficher les amapiens ayant un contrat dans le lieu de distribution indiqué. ', 'amapress' ) . AmapressLieu_distribution::getLieuFilterHelp(),
 				'show_email'      => __( '(Par défaut “default”) Afficher les emails des amapiens', 'amapress' ),
 				'show_tel'        => __( '(Par défaut “default”) Afficher les numéros de téléphones des amapiens', 'amapress' ),
 				'show_tel_fixe'   => __( '(Par défaut “default”) Afficher les numéros de fixes des amapiens', 'amapress' ),
@@ -869,7 +869,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => __( 'Liste des membres du collectif de l\'AMAP', 'amapress' ),
 			'args' => [
-				'lieu'            => __( 'Afficher les membres du collectif du lieu de distribution indiqué', 'amapress' ),
+				'lieu'            => __( 'Afficher les membres du collectif du lieu de distribution indiqué. ', 'amapress' ) . AmapressLieu_distribution::getLieuFilterHelp(),
 				'show_prod'       => __( '(Par défaut “false”) Afficher les producteurs', 'amapress' ),
 				'show_email'      => __( '(Par défaut “force”) Afficher les emails des membres du collectif', 'amapress' ),
 				'show_tel'        => __( '(Par défaut “default”) Afficher les numéros de téléphones des membres du collectif', 'amapress' ),

@@ -84,7 +84,7 @@ function amapress_register_entities_intermittence( $entities ) {
 //				'searchable'        => true,
 				'top_filter'        => array(
 					'name'        => 'amapress_lieu',
-					'placeholder' => __( 'Toutes les lieux', 'amapress' ),
+					'placeholder' => __( 'Tous les lieux', 'amapress' ),
 				),
 			),
 			'repreneur'          => array(

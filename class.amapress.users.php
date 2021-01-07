@@ -420,7 +420,7 @@ class AmapressUsers {
 			[
 				'desc' => __( 'Trombinoscope des membres d\'un lieu de distribution de l\'AMAP', 'amapress' ),
 				'args' => [
-					'lieu'                 => __( 'Filtre de lieux de distributions', 'amapress' ),
+					'lieu'                 => __( 'Filtre de lieux de distributions. ', 'amapress' ) . AmapressLieu_distribution::getLieuFilterHelp(),
 					'show_amap_roles'      => __( '(par défaut false) Affichage des différents "Rôles dans l\'AMAP"', 'amapress' ),
 					'show_amapiens_groups' => __( '(par défaut false) Affichage des différents "Groupes amapiens"', 'amapress' ),
 				]
@@ -430,7 +430,7 @@ class AmapressUsers {
 				'desc' => __( 'Trombinoscope des membres avec un certain role', 'amapress' ),
 				'args' => [
 					'role'      => __( '(Par défaut "all") Affiche les amapiens d\'un rôle particulier : all, producteurs, responsables (membres du collectif), referents_lieux, referents_producteurs, amapiens, resp_distrib_cette_semaine, resp_distrib_semaine_prochaine, amap_role_xxx (où xxx est le slug du "Rôle dans l\'AMAP"), amapien_group_xxx (où xxx est le slug du "Groupe amapien")', 'amapress' ),
-					'lieu'      => __( 'Filtre de lieux de distributions', 'amapress' ),
+					'lieu'      => __( 'Filtre de lieux de distributions. ', 'amapress' ) . AmapressLieu_distribution::getLieuFilterHelp(),
 					'searchbox' => __( '(Par défaut “true”) Afficher une barre de recherche', 'amapress' ),
 				]
 			] );

@@ -202,5 +202,23 @@ class AmapressLieu_distribution extends TitanEntity implements iAmapress_Event_L
 				'amapress_lieu_distribution', $this->getFormattedAdresse() );
 		}
 	}
+
+	public static function getLieuFilterHelp() {
+		$key = 'amps_getLieuFilterHelp';
+		$res = wp_cache_get( $key );
+		if ( false === $res ) {
+			$res = sprintf(
+				__( 'Valeurs possibles : %s', 'amapress' ),
+				implode( ', ', array_map( function ( $l ) {
+					return sprintf(
+						__( '%d ou "%s" ou "%s"', 'amapress' ),
+						$l->ID, $l->getTitle(), $l->getSlug() );
+				}, Amapress::get_lieux() ) )
+			);
+			wp_cache_set( $key, $res );
+		}
+
+		return $res;
+	}
 }
 
