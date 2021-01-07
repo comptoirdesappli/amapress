@@ -1997,7 +1997,7 @@ jQuery(function($) {
 							        tf_parse_select_options( $all_liste_dates_options, $liste_dates_options, false ) . '</select>';
 						}
 						$options[ strval( $i ) ] = ( $is_readonly ? '<strong>' : '' ) . sprintf( __( '%d chèques', 'amapress' ), $i ) . ( $is_readonly ? '</strong>' : '' ) .
-						                           ( $is_readonly ? '' : '</label>' ) . $rep . ( $is_readonly ? '' : '<label>' ); //hack for excluding $rep of wrapping label added to multicheck
+						                           ( $is_readonly ? '' : '</label>' ) . "<span id='chq-rep-$i'>" . $rep . "</span>" . ( $is_readonly ? '' : '<label>' ); //hack for excluding $rep of wrapping label added to multicheck
 					}
 
 					return $options;
@@ -2049,11 +2049,24 @@ jQuery(function($) {
 				'after_option'      => function ( $options ) {
 					echo '<script type="application/javascript">
 jQuery(function($) {
-            $(".repartitions-dates").select2MultiCheckboxes({
-                templateSelection: function(selected, total, element) {
-                  return selected.length + "' . __( ' sur ', 'amapress' ) . '" + $(element).data("max");
-                },
-          });
+    $("input[name^=amapress_contrat_instance_paiements]").each(function() {
+        var $this = $(this);
+        var $chqrep = $("#chq-rep-" + $this.attr("value"));
+        var handleRepState = function() {
+            if ($this.is(":checked")) {
+                $chqrep.show();
+            } else {
+                $chqrep.hide();
+            }
+        };
+        $this.change(handleRepState);
+        handleRepState();
+    });
+    $(".repartitions-dates").select2MultiCheckboxes({
+        templateSelection: function(selected, total, element) {
+          return selected.length + "' . __( ' sur ', 'amapress' ) . '" + $(element).data("max");
+        },
+    });
 });
 </script>';
 				}
@@ -2858,7 +2871,7 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 	echo "<br/><input style='width: 100%' type='text' class='' name='amapress_quant_data[$id][code]' placeholder='" . __( "NP", 'amapress' ) . "' value='$code' />";
 	echo '</td>';
 	echo '<td>';
-	echo '<span title="' . esc_attr__( 'Variantes de poids, de composition, de confection.', 'amapress' ) . '">' . esc_html__('Description', 'amapress' ) . '</span>';
+	echo '<span title="' . esc_attr__( 'Variantes de poids, de composition, de confection.', 'amapress' ) . '">' . esc_html__( 'Description', 'amapress' ) . '</span>';
 	echo "<textarea style='width: 100%; height: 100%' rows='3' class='' name='amapress_quant_data[$id][desc]' placeholder='" . __( "Variante poids, composition, confection", 'amapress' ) . "'>{$description}</textarea>";
 	echo '</td>';
 	echo '<td style="width: 15%">';
@@ -2968,7 +2981,7 @@ function amapress_get_contrat_quantite_editor( $contrat_instance_id ) {
 		?>
         </tbody>
     </table>
-    <p class="description"><?php echo Amapress::makeWikiLink('https://wiki.amapress.fr/contrats/creation#configurer_les_paniers', __('Configurer les paniers', 'amapress')) ?></p>
+    <p class="description"><?php echo Amapress::makeWikiLink( 'https://wiki.amapress.fr/contrats/creation#configurer_les_paniers', __( 'Configurer les paniers', 'amapress' ) ) ?></p>
 	<?php
 	$contents = ob_get_clean();
 
