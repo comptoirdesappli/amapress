@@ -34,6 +34,7 @@
         <exclude name="WordPress.WhiteSpace.PrecisionAlignment.Found"/>
         <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
         <exclude name="Squiz.Commenting.FunctionComment.Missing"/>
+        <exclude name="WordPress.WP.I18n.MissingTranslatorsComment"/>
 
         <exclude name="Generic.Commenting.DocComment.SpacingAfter"/>
         <exclude name="Generic.Files.LineEndings.InvalidEOLChar"/>
@@ -51,6 +52,8 @@
         <exclude name="Generic.WhiteSpace.DisallowSpaceIndent.SpacesUsed"/>
         <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
         <exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict"/>
+
+        <exclude name="Generic.Arrays.DisallowShortArraySyntax.Found"/>
     </rule>
 
     <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
