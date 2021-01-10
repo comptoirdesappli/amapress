@@ -1074,3 +1074,8 @@ table.docspace_list tr.dir td:first-of-type a {
 #details_all_delivs .dtrg-group + .dtrg-group {
     display: none;
 }
+
+.amps-bk-center {
+    display: block;
+    text-align: center;
+}

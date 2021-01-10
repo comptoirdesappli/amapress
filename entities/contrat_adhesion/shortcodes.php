@@ -4981,7 +4981,7 @@ function amapress_get_contrats_calendar( $contrats ) {
 		$remaining_dates = $contrat->getRemainingDates();
 		foreach ( $dates as $date ) {
 			if ( in_array( $date, $remaining_dates ) ) {
-				$row[ 'date_' . $date ] = 'X';
+				$row[ 'date_' . $date ] = '<span class="amps-bk-center">X</span>';
 			} else {
 				$row[ 'date_' . $date ] = '';
 			}
@@ -4991,12 +4991,13 @@ function amapress_get_contrats_calendar( $contrats ) {
 
 	$ret .= amapress_get_datatable( 'calend_delivs', $columns, $data,
 		array(
-			'paging'      => false,
-			'searching'   => false,
-			'responsive'  => false,
-			'scrollX'     => true,
-			'scrollY'     => '300px',
-			'fixedHeader' => true,
+			'paging'       => false,
+			'searching'    => false,
+			'responsive'   => false,
+			'scrollX'      => true,
+			'scrollY'      => '300px',
+			'fixedHeader'  => true,
+			'fixedColumns' => [ 'leftColumns' => 1 ],
 		),
 		array(
 			[
