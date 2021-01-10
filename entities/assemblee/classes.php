@@ -261,7 +261,7 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 	public function getLieuTitle() {
 		$lieu = $this->getLieu();
 		if ( $lieu ) {
-			return $lieu->getShortName();
+			return $lieu->getTitle();
 		} else {
 			return $this->getLieu_externe_nom();
 		}
