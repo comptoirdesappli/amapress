@@ -1692,244 +1692,256 @@ function amapress_get_contrat_quantite_datatable(
 				return strcmp( $a->getAdherent()->getSortableDisplayName(), $b->getAdherent()->getSortableDisplayName() );
 			} );
 		}
+		$dist_date = $d ? $d->getDate() : $date;
 		$real_date = $d ? $d->getRealDateForContrat( $contrat_instance_id ) : $date;
-		/** @var AmapressAdhesion[] $adhesions */
-		foreach (
-			array_merge( $show_adherents && count( $all_adhesions ) > 1 ? array_map( function ( $adh ) {
-				return [ $adh ];
-			}, $all_adhesions ) : [], [ $all_adhesions ] ) as $adhesions
-		) {
-			$qidx = 0;
-			foreach ( $contrat_instance_quantites as $quant ) {
-				$qidx += 1;
-				if ( $contrat_instance->isPanierVariable() && empty( $quant ) && ( ! $show_adherents_count || $show_adherents ) ) {
-					continue;
-				}
-				/** @var AmapressContrat_quantite $quant */
-				$row = array();
-				if ( $show_adherents ) {
-					if ( isset( $adhesions[0] ) ) {
-						/** @var AmapressAdhesion $adhesion */
-						$adhesion            = $adhesions[0];
-						$row['adherent']     = $adhesion->getAdherent()->getSortableDisplayName();
-						$row['adherent_tel'] = implode( '/', $adhesion->getAdherent()->getPhoneNumbers( true ) );
-					} else {
-						$row['adherent']     = '';
-						$row['adherent_tel'] = '';
+		foreach ( $real_date != $dist_date ? [ $dist_date, $real_date ] : [ $real_date ] as $final_date ) {
+			/** @var AmapressAdhesion[] $adhesions */
+			foreach (
+				array_merge( $show_adherents && count( $all_adhesions ) > 1 ? array_map( function ( $adh ) {
+					return [ $adh ];
+				}, $all_adhesions ) : [], [ $all_adhesions ] ) as $adhesions
+			) {
+				$qidx = 0;
+				foreach ( $contrat_instance_quantites as $quant ) {
+					$qidx += 1;
+					if ( $contrat_instance->isPanierVariable() && empty( $quant ) && ( ! $show_adherents_count || $show_adherents ) ) {
+						continue;
 					}
-				}
-				$row['date']      = date_i18n( 'd/m/Y', $real_date );
-				$row['date_sort'] = date( 'Y-m-d', $real_date );
-				$quant_title      = $quant ? $quant->getTitle() : '-toutes-';
-				$row['quant']     = $quant ? ( $has_groups ? $quant->getTitleWithoutGroup() : $quant->getTitle() ) : '¤-Toutes-¤';
-				$row['group']     = $quant ? $quant->getGroupName() : '--';
-				$row['quant_id']  = $quant ? $quant->ID : 0;
-				$row['qid']       = $quant ? str_pad( $qidx, 8, '0', STR_PAD_LEFT ) : '99999999';
-				$quand_id         = $quant ? $quant->getID() : 0;
-				if ( count( $lieux ) > 1 ) {
-					foreach ( $lieux as $lieu ) {
-						$lieu_quant_adh_count      = 0;
-						$lieu_quant_count          = 0;
-						$lieu_quant_sum            = 0;
-						$lieu_quant_fact_adh_count = [];
-						foreach ( $adhesions as $adh ) {
-							if ( $adh->getLieuId() != $lieu->ID ) {
-								continue;
-							}
-							if ( empty( $quand_id ) ) {
-								$lieu_quant_adh_count += 1;
-							}
-							foreach ( $adh->getContrat_quantites( $real_date ) as $adh_quant ) {
-								if ( ! empty( $quand_id ) && $adh_quant->getId() != $quand_id ) {
+					/** @var AmapressContrat_quantite $quant */
+					$row = array();
+					if ( $show_adherents ) {
+						if ( isset( $adhesions[0] ) ) {
+							/** @var AmapressAdhesion $adhesion */
+							$adhesion            = $adhesions[0];
+							$row['adherent']     = $adhesion->getAdherent()->getSortableDisplayName();
+							$row['adherent_tel'] = implode( '/', $adhesion->getAdherent()->getPhoneNumbers( true ) );
+						} else {
+							$row['adherent']     = '';
+							$row['adherent_tel'] = '';
+						}
+					}
+					$row['date']      = date_i18n( 'd/m/Y', $dist_date ) .
+					                    ( $final_date != $dist_date ? sprintf( __( ' (report du %s)', 'amapress' ),
+						                    date_i18n( 'd/m/Y', $final_date ) ) : '' );
+					$row['date_sort'] = date( 'Y-m-d', $dist_date ) .
+					                    ( $final_date != $dist_date ? date_i18n( '-Y-m-d', $final_date ) : '' );
+					$quant_title      = $quant ? $quant->getTitle() :
+						( '-toutes-' .
+						  ( $final_date != $dist_date ? sprintf( __( ' (report du %s)', 'amapress' ),
+							  date_i18n( 'd/m/Y', $final_date ) ) : '' ) );
+					$row['quant']     = $quant ? ( $has_groups ? $quant->getTitleWithoutGroup() : $quant->getTitle() ) :
+						( '¤-Toutes-¤' .
+						  ( $final_date != $dist_date ? sprintf( __( ' (report du %s)', 'amapress' ),
+							  date_i18n( 'd/m/Y', $final_date ) ) : '' ) );
+					$row['group']     = $quant ? $quant->getGroupName() : '--';
+					$row['quant_id']  = $quant ? $quant->ID : 0;
+					$row['qid']       = $quant ? str_pad( $qidx, 8, '0', STR_PAD_LEFT ) : '99999999';
+					$quand_id         = $quant ? $quant->getID() : 0;
+					if ( count( $lieux ) > 1 ) {
+						foreach ( $lieux as $lieu ) {
+							$lieu_quant_adh_count      = 0;
+							$lieu_quant_count          = 0;
+							$lieu_quant_sum            = 0;
+							$lieu_quant_fact_adh_count = [];
+							foreach ( $adhesions as $adh ) {
+								if ( $adh->getLieuId() != $lieu->ID ) {
 									continue;
 								}
-
-								if ( ! empty( $quand_id ) ) {
+								if ( empty( $quand_id ) ) {
 									$lieu_quant_adh_count += 1;
 								}
-								$lieu_quant_count += $adh_quant->getFactor();
-								$lieu_quant_sum   += $adh_quant->getQuantite();
-
-								if ( ! empty( $quand_id ) ) {
-									$quant_key = trim( $quant->formatValue( $adh_quant->getFactor(), '' ) . ' "' . $quant->getCode() ) . '"';
-									if ( empty( $lieu_quant_fact_adh_count[ $quant_key ] ) ) {
-										$lieu_quant_fact_adh_count[ $quant_key ] = 0;
+								foreach ( $adh->getContrat_quantites( $final_date ) as $adh_quant ) {
+									if ( ! empty( $quand_id ) && $adh_quant->getId() != $quand_id ) {
+										continue;
 									}
 
-									$lieu_quant_fact_adh_count[ $quant_key ] += 1;
+									if ( ! empty( $quand_id ) ) {
+										$lieu_quant_adh_count += 1;
+									}
+									$lieu_quant_count += $adh_quant->getFactor();
+									$lieu_quant_sum   += $adh_quant->getQuantite();
+
+									if ( ! empty( $quand_id ) ) {
+										$quant_key = trim( $quant->formatValue( $adh_quant->getFactor(), '' ) . ' "' . $quant->getCode() ) . '"';
+										if ( empty( $lieu_quant_fact_adh_count[ $quant_key ] ) ) {
+											$lieu_quant_fact_adh_count[ $quant_key ] = 0;
+										}
+
+										$lieu_quant_fact_adh_count[ $quant_key ] += 1;
+									}
 								}
 							}
-						}
-						ksort( $lieu_quant_fact_adh_count );
-						$fact_details = implode( "<br/>", array_map(
-							function ( $k, $v ) {
-								return "$v x $k";
-							},
-							array_keys( $lieu_quant_fact_adh_count ),
-							array_values( $lieu_quant_fact_adh_count )
-						) );
+							ksort( $lieu_quant_fact_adh_count );
+							$fact_details = implode( "<br/>", array_map(
+								function ( $k, $v ) {
+									return "$v x $k";
+								},
+								array_keys( $lieu_quant_fact_adh_count ),
+								array_values( $lieu_quant_fact_adh_count )
+							) );
 
-						$row["lieu_{$lieu->ID}_adhs"] = $lieu_quant_adh_count;
-						$row["lieu_{$lieu->ID}_num"]  = $lieu_quant_count;
-						if ( empty( $lieu_quant_adh_count ) ) {
-							$row["lieu_{$lieu->ID}"]     = '';
-							$row["lieu_{$lieu->ID}_txt"] = '';
-						} else if ( abs( $lieu_quant_sum ) < 0.001 || ! $show_equiv_quantite ) {
-							$row["lieu_{$lieu->ID}"]     = ( $show_adherents_count ?
-									"$lieu_quant_adh_count adhérents ; " : '' ) .
-							                               ( $show_fact_details ?
-								                               "<br/>$fact_details" . ( $show_sum_fact_details && count( $lieu_quant_fact_adh_count ) > 1 ? "<br/>= $lieu_quant_count x $quant_title" : '' )
-								                               : "$lieu_quant_count x $quant_title" );
-							$row["lieu_{$lieu->ID}_txt"] = ( $show_fact_details ?
-								"<br/>$fact_details" . ( $show_sum_fact_details && count( $lieu_quant_fact_adh_count ) > 1 ? "<br/>= $lieu_quant_count x $quant_title" : '' )
-								: "$lieu_quant_count x $quant_title" );
-						} else {
-							$row["lieu_{$lieu->ID}"]     = ( $show_adherents_count ?
-									"$lieu_quant_adh_count adhérents ; " : '' ) .
-							                               ( $show_fact_details ?
-								                               "<br/>$fact_details" . ( $show_sum_fact_details && count( $lieu_quant_fact_adh_count ) > 1 ? "<br/>= $lieu_quant_count x $quant_title" : '' )
-								                               : "$lieu_quant_count x $quant_title" ) .
-							                               "<br/><em>équivalent quantité : $lieu_quant_sum</em>";
-							$row["lieu_{$lieu->ID}_txt"] = ( $show_fact_details ?
-								"<br/>$fact_details" . ( $show_sum_fact_details && count( $lieu_quant_fact_adh_count ) > 1 ? "<br/>= $lieu_quant_count x $quant_title" : '' )
-								: "$lieu_quant_count x $quant_title" );
+							$row["lieu_{$lieu->ID}_adhs"] = $lieu_quant_adh_count;
+							$row["lieu_{$lieu->ID}_num"]  = $lieu_quant_count;
+							if ( empty( $lieu_quant_adh_count ) ) {
+								$row["lieu_{$lieu->ID}"]     = '';
+								$row["lieu_{$lieu->ID}_txt"] = '';
+							} else if ( abs( $lieu_quant_sum ) < 0.001 || ! $show_equiv_quantite ) {
+								$row["lieu_{$lieu->ID}"]     = ( $show_adherents_count ?
+										"$lieu_quant_adh_count adhérents ; " : '' ) .
+								                               ( $show_fact_details ?
+									                               "<br/>$fact_details" . ( $show_sum_fact_details && count( $lieu_quant_fact_adh_count ) > 1 ? "<br/>= $lieu_quant_count x $quant_title" : '' )
+									                               : "$lieu_quant_count x $quant_title" );
+								$row["lieu_{$lieu->ID}_txt"] = ( $show_fact_details ?
+									"<br/>$fact_details" . ( $show_sum_fact_details && count( $lieu_quant_fact_adh_count ) > 1 ? "<br/>= $lieu_quant_count x $quant_title" : '' )
+									: "$lieu_quant_count x $quant_title" );
+							} else {
+								$row["lieu_{$lieu->ID}"]     = ( $show_adherents_count ?
+										"$lieu_quant_adh_count adhérents ; " : '' ) .
+								                               ( $show_fact_details ?
+									                               "<br/>$fact_details" . ( $show_sum_fact_details && count( $lieu_quant_fact_adh_count ) > 1 ? "<br/>= $lieu_quant_count x $quant_title" : '' )
+									                               : "$lieu_quant_count x $quant_title" ) .
+								                               "<br/><em>équivalent quantité : $lieu_quant_sum</em>";
+								$row["lieu_{$lieu->ID}_txt"] = ( $show_fact_details ?
+									"<br/>$fact_details" . ( $show_sum_fact_details && count( $lieu_quant_fact_adh_count ) > 1 ? "<br/>= $lieu_quant_count x $quant_title" : '' )
+									: "$lieu_quant_count x $quant_title" );
+							}
 						}
 					}
-				}
-				$all_quant_adh_count      = 0;
-				$all_quant_count          = 0;
-				$all_quant_sum            = 0;
-				$all_quant_all_price      = 0;
-				$all_quant_fact_adh_count = [];
-				foreach ( $adhesions as $adh ) {
-					$quants_for_date = $adh->getContrat_quantites( $real_date );
-					if ( empty( $quand_id ) && ! empty( $quants_for_date ) ) {
-						$all_quant_adh_count += 1;
-					}
-					foreach ( $quants_for_date as $adh_quant ) {
-						if ( ! empty( $quand_id ) && $adh_quant->getId() != $quand_id ) {
-							continue;
-						}
-
-						if ( ! empty( $quand_id ) ) {
+					$all_quant_adh_count      = 0;
+					$all_quant_count          = 0;
+					$all_quant_sum            = 0;
+					$all_quant_all_price      = 0;
+					$all_quant_fact_adh_count = [];
+					foreach ( $adhesions as $adh ) {
+						$quants_for_date = $adh->getContrat_quantites( $final_date );
+						if ( empty( $quand_id ) && ! empty( $quants_for_date ) ) {
 							$all_quant_adh_count += 1;
 						}
-						$all_quant_count += $adh_quant->getFactor();
-						$all_quant_sum   += $adh_quant->getQuantite();
-
-						$all_quant_all_price += $adh_quant->getPrice();
-
-						if ( ! empty( $quand_id ) ) {
-							$quant_key = trim( $quant->formatValue( $adh_quant->getFactor(), '' ) ) . ' "' . $quant->getCode() . '"';
-							if ( empty( $all_quant_fact_adh_count[ $quant_key ] ) ) {
-								$all_quant_fact_adh_count[ $quant_key ] = 0;
-							}
-							$all_quant_fact_adh_count[ $quant_key ] += 1;
-						}
-					}
-				}
-				ksort( $all_quant_fact_adh_count );
-				$fact_details = implode( "<br/>", array_map(
-					function ( $k, $v ) {
-						return "$v x $k";
-					},
-					array_keys( $all_quant_fact_adh_count ),
-					array_values( $all_quant_fact_adh_count )
-				) );
-				$total_price  = $all_quant_all_price;
-
-				$row['price_d'] = Amapress::formatPrice( $total_price, true );
-				$row['price']   = $total_price;
-				if ( $quant && ( ! $show_adherents || 1 == count( $adhesions ) ) ) {
-					$overall_total_price += $total_price;
-				}
-
-				$row['all_adhs'] = $all_quant_adh_count;
-				$row['all_num']  = $all_quant_count;
-				if ( empty( $all_quant_adh_count ) ) {
-					$row['all']     = '';
-					$row['all_txt'] = '';
-				} else if ( abs( $all_quant_sum ) < 0.001 || ! $show_equiv_quantite ) {
-					$row['all']     = ( $show_adherents_count ? "$all_quant_adh_count adhérents ; " : '' ) .
-					                  ( $show_fact_details ?
-						                  "<br/>$fact_details" . ( $show_sum_fact_details && count( $all_quant_fact_adh_count ) > 1 ? "<br/>= <strong>$all_quant_count</strong> x $quant_title" : '' )
-						                  : "<strong>$all_quant_count</strong> x $quant_title" );
-					$row['all_txt'] = ( $show_fact_details ?
-						"<br/>$fact_details" . ( $show_sum_fact_details && count( $all_quant_fact_adh_count ) > 1 ? "<br/>= <strong>$all_quant_count</strong> x $quant_title" : '' )
-						: "<strong>$all_quant_count</strong> x $quant_title" );
-				} else {
-					$row['all']     = ( $show_adherents_count ? "$all_quant_adh_count adhérents ; " : '' ) .
-					                  ( $show_fact_details ?
-						                  "<br/>$fact_details" . ( $show_sum_fact_details && count( $all_quant_fact_adh_count ) > 1 ? "<br/>= <strong>$all_quant_count</strong> x $quant_title" : '' )
-						                  : "<strong>$all_quant_count</strong> x $quant_title" ) . "<br/><em>" . __( 'équivalent quantité : ', 'amapress' ) . "$all_quant_sum</em>";
-					$row['all_txt'] = ( $show_fact_details ?
-						"<br/>$fact_details" . ( $show_sum_fact_details && count( $all_quant_fact_adh_count ) > 1 ? "<br/>= <strong>$all_quant_count</strong> x $quant_title" : '' )
-						: "<strong>$all_quant_count</strong> x $quant_title" );
-				}
-				if ( ! $show_empty_lines && 0 == $all_quant_adh_count ) {
-					continue;
-				}
-				if ( $group_by_group || 'month' == $group_by || 'quarter' == $group_by ) {
-					if ( $show_adherents ) {
-						if ( count( $adhesions ) > 1 ) {
-							$sum_data[] = $row;
-							continue;
-						} elseif ( 1 == count( $all_adhesions ) ) {
-							$sum_data[] = $row;
-						}
-					}
-
-					if ( 'quarter' == $group_by ) {
-						$quarter          = ceil( intval( date( 'n', $real_date ) ) / 3 );
-						$row['date']      = "T$quarter";
-						$row['date_sort'] = "T$quarter";
-					} elseif ( 'month' == $group_by ) {
-						$row['date']      = date_i18n( 'm/Y', $real_date );
-						$row['date_sort'] = date( 'Y-m', $real_date );
-					}
-					$key = $row['date_sort'] . ( $group_by_group ? $row['group'] : $row['quant'] ) . ( $show_adherents ? $row['adherent'] : '' );
-					if ( $quant ) {
-						$row['all_mult'] = $quant->getGroupMultiple();
-					}
-					if ( isset( $data[ $key ] ) ) {
-						foreach ( $row as $k => $v ) {
-							if ( $group_by_group ) {
-								if ( 'quant' == $k ) {
-									$data[ $key ][ $k ] .= '<br/> + <strong>' . $row['all_num'] . '</strong> x ' . $v;
-									continue;
-								}
-							}
-							if ( 'quant' == $k || 'quant_id' == $k || 'date' == $k || 'date_sort' == $k || 'adherent_tel' == $k || 'adherent' == $k || 'group' == $k || 'all_mult' == $k ) {
+						foreach ( $quants_for_date as $adh_quant ) {
+							if ( ! empty( $quand_id ) && $adh_quant->getId() != $quand_id ) {
 								continue;
 							}
-							if ( ! is_numeric( $v ) ) {
-								if ( ! empty( $data[ $key ][ $k ] ) && ! empty( $v ) ) {
-									$data[ $key ][ $k ] .= ' + ' . $v;
-								} else {
-									$data[ $key ][ $k ] .= $v;
+
+							if ( ! empty( $quand_id ) ) {
+								$all_quant_adh_count += 1;
+							}
+							$all_quant_count += $adh_quant->getFactor();
+							$all_quant_sum   += $adh_quant->getQuantite();
+
+							$all_quant_all_price += $adh_quant->getPrice();
+
+							if ( ! empty( $quand_id ) ) {
+								$quant_key = trim( $quant->formatValue( $adh_quant->getFactor(), '' ) ) . ' "' . $quant->getCode() . '"';
+								if ( empty( $all_quant_fact_adh_count[ $quant_key ] ) ) {
+									$all_quant_fact_adh_count[ $quant_key ] = 0;
 								}
-							} else {
-								$data[ $key ][ $k ] += $v;
+								$all_quant_fact_adh_count[ $quant_key ] += 1;
 							}
 						}
-						$data[ $key ]['price_d'] = Amapress::formatPrice( $data[ $key ]['price'], true );
-					} else {
-						if ( $group_by_group ) {
-							$row['quant'] = '<strong>' . $row['all_num'] . '</strong> x ' . $row['quant'];
-						}
-						$data[ $key ] = $row;
 					}
-				} elseif ( $show_adherents ) {
-					if ( count( $adhesions ) > 1 ) {
-						$sum_data[] = $row;
-					} elseif ( 1 == count( $all_adhesions ) ) {
-						$sum_data[] = $row;
-						$data[]     = $row;
+					ksort( $all_quant_fact_adh_count );
+					$fact_details = implode( "<br/>", array_map(
+						function ( $k, $v ) {
+							return "$v x $k";
+						},
+						array_keys( $all_quant_fact_adh_count ),
+						array_values( $all_quant_fact_adh_count )
+					) );
+					$total_price  = $all_quant_all_price;
+
+					$row['price_d'] = Amapress::formatPrice( $total_price, true );
+					$row['price']   = $total_price;
+					if ( $quant && ( ! $show_adherents || 1 == count( $adhesions ) ) ) {
+						$overall_total_price += $total_price;
+					}
+
+					$row['all_adhs'] = $all_quant_adh_count;
+					$row['all_num']  = $all_quant_count;
+					if ( empty( $all_quant_adh_count ) ) {
+						$row['all']     = '';
+						$row['all_txt'] = '';
+					} else if ( abs( $all_quant_sum ) < 0.001 || ! $show_equiv_quantite ) {
+						$row['all']     = ( $show_adherents_count ? "$all_quant_adh_count adhérents ; " : '' ) .
+						                  ( $show_fact_details ?
+							                  "<br/>$fact_details" . ( $show_sum_fact_details && count( $all_quant_fact_adh_count ) > 1 ? "<br/>= <strong>$all_quant_count</strong> x $quant_title" : '' )
+							                  : "<strong>$all_quant_count</strong> x $quant_title" );
+						$row['all_txt'] = ( $show_fact_details ?
+							"<br/>$fact_details" . ( $show_sum_fact_details && count( $all_quant_fact_adh_count ) > 1 ? "<br/>= <strong>$all_quant_count</strong> x $quant_title" : '' )
+							: "<strong>$all_quant_count</strong> x $quant_title" );
+					} else {
+						$row['all']     = ( $show_adherents_count ? "$all_quant_adh_count adhérents ; " : '' ) .
+						                  ( $show_fact_details ?
+							                  "<br/>$fact_details" . ( $show_sum_fact_details && count( $all_quant_fact_adh_count ) > 1 ? "<br/>= <strong>$all_quant_count</strong> x $quant_title" : '' )
+							                  : "<strong>$all_quant_count</strong> x $quant_title" ) . "<br/><em>" . __( 'équivalent quantité : ', 'amapress' ) . "$all_quant_sum</em>";
+						$row['all_txt'] = ( $show_fact_details ?
+							"<br/>$fact_details" . ( $show_sum_fact_details && count( $all_quant_fact_adh_count ) > 1 ? "<br/>= <strong>$all_quant_count</strong> x $quant_title" : '' )
+							: "<strong>$all_quant_count</strong> x $quant_title" );
+					}
+					if ( ! $show_empty_lines && 0 == $all_quant_adh_count ) {
+						continue;
+					}
+					if ( $group_by_group || 'month' == $group_by || 'quarter' == $group_by ) {
+						if ( $show_adherents ) {
+							if ( count( $adhesions ) > 1 ) {
+								$sum_data[] = $row;
+								continue;
+							} elseif ( 1 == count( $all_adhesions ) ) {
+								$sum_data[] = $row;
+							}
+						}
+
+						if ( 'quarter' == $group_by ) {
+							$quarter          = ceil( intval( date( 'n', $final_date ) ) / 3 );
+							$row['date']      = "T$quarter";
+							$row['date_sort'] = "T$quarter";
+						} elseif ( 'month' == $group_by ) {
+							$row['date']      = date_i18n( 'm/Y', $final_date );
+							$row['date_sort'] = date( 'Y-m', $final_date );
+						}
+						$key = $row['date_sort'] . ( $group_by_group ? $row['group'] : $row['quant'] ) . ( $show_adherents ? $row['adherent'] : '' );
+						if ( $quant ) {
+							$row['all_mult'] = $quant->getGroupMultiple();
+						}
+						if ( isset( $data[ $key ] ) ) {
+							foreach ( $row as $k => $v ) {
+								if ( $group_by_group ) {
+									if ( 'quant' == $k ) {
+										$data[ $key ][ $k ] .= '<br/> + <strong>' . $row['all_num'] . '</strong> x ' . $v;
+										continue;
+									}
+								}
+								if ( 'quant' == $k || 'quant_id' == $k || 'date' == $k || 'date_sort' == $k || 'adherent_tel' == $k || 'adherent' == $k || 'group' == $k || 'all_mult' == $k ) {
+									continue;
+								}
+								if ( ! is_numeric( $v ) ) {
+									if ( ! empty( $data[ $key ][ $k ] ) && ! empty( $v ) ) {
+										$data[ $key ][ $k ] .= ' + ' . $v;
+									} else {
+										$data[ $key ][ $k ] .= $v;
+									}
+								} else {
+									$data[ $key ][ $k ] += $v;
+								}
+							}
+							$data[ $key ]['price_d'] = Amapress::formatPrice( $data[ $key ]['price'], true );
+						} else {
+							if ( $group_by_group ) {
+								$row['quant'] = '<strong>' . $row['all_num'] . '</strong> x ' . $row['quant'];
+							}
+							$data[ $key ] = $row;
+						}
+					} elseif ( $show_adherents ) {
+						if ( count( $adhesions ) > 1 ) {
+							$sum_data[] = $row;
+						} elseif ( 1 == count( $all_adhesions ) ) {
+							$sum_data[] = $row;
+							$data[]     = $row;
+						} else {
+							$data[] = $row;
+						}
 					} else {
 						$data[] = $row;
 					}
-				} else {
-					$data[] = $row;
 				}
 			}
 		}
