@@ -1329,10 +1329,14 @@ if ( ! function_exists( 'wp_mail' ) ) {
 		global $amapress_smtpMailingQueue;
 
 		if ( empty( $to ) ) {
-			throw new Exception( "Trying send email with empty To" );
+			@error_log( sprintf( 'Sending mail with empty To, backtrace: %s, url: %s, user: %s',
+				amapress_debug_backtrace_summary(),
+				$_SERVER['REQUEST_URI'], get_current_user_id() ) );
 		}
 		if ( empty( $message ) ) {
-			throw new Exception( "Trying send email with empty Content" );
+			@error_log( sprintf( 'Sending mail with empty Content, backtrace: %s, url: %s, user: %s',
+				amapress_debug_backtrace_summary(),
+				$_SERVER['REQUEST_URI'], get_current_user_id() ) );
 		}
 
 		if ( $amapress_smtpMailingQueue ) {
