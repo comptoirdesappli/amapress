@@ -886,25 +886,6 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 	}
 
-	if ( Amapress::toBool( $atts['check_principal'] ) && $is_inscription_mode && ! $disable_principal && ! $admin_mode && empty( $principal_contrats ) ) {
-		if ( ! $is_mes_contrats ) {
-			if ( amapress_can_access_admin() ) {
-				ob_clean();
-
-				return __( 'Aucun contrat principal. Veuillez définir un contrat principal depuis ', 'amapress' ) . Amapress::makeLink( admin_url( 'edit.php?post_type=amps_contrat_inst' ), __( 'Edition des contrats', 'amapress' ) );
-			} elseif ( ! $allow_adhesion_alone && ! $user_has_contrat ) {
-				ob_clean();
-
-				$closed_message = wp_unslash( Amapress::getOption( 'online_inscr_closed_message' ) );
-				if ( ! $use_contrat_term ) {
-					return '<p>' . __( 'Les commandes en ligne sont closes.', 'amapress' ) . '</p>' . $closed_message;
-				} else {
-					return '<p>' . __( 'Les inscriptions en ligne sont closes.', 'amapress' ) . '</p>' . $closed_message;
-				}
-			}
-		}
-	}
-
 	if ( is_admin() ) {
 		$start_step_url = admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription' );
 		if ( isset( $_REQUEST['user_id'] ) ) {
@@ -2203,26 +2184,28 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 			$user_id = intval( $_REQUEST['user_id'] );
 		}
-		$has_principal_contrat = $user_has_contrat;
+		$has_principal_contrat = false;
 
 		Amapress::setFilterForReferent( false );
 		$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, null, $ignore_renouv_delta, true );
 		Amapress::setFilterForReferent( true );
+		if ( Amapress::toBool( $atts['check_principal'] ) && ! $disable_principal ) {
+			foreach ( $adhs as $adh ) {
+				/** @var AmapressAdhesion $adh */
+				if ( $adh->getContrat_instance()->isPrincipal()
+				     && ( empty( $principal_contrats_ids ) || in_array( $adh->getContrat_instanceId(), $principal_contrats_ids ) ) ) {
+					$has_principal_contrat = true;
+				}
+			}
+		} else {
+			$has_principal_contrat = true;
+		}
 		if ( $show_only_subscribable_inscriptions ) {
 			$adhs = array_filter( $adhs,
 				function ( $adh ) use ( $all_subscribable_contrats_ids ) {
 					/** @var AmapressAdhesion $adh */
 					return in_array( $adh->getContrat_instanceId(), $all_subscribable_contrats_ids );
 				} );
-		}
-		if ( Amapress::toBool( $atts['check_principal'] ) && ! $disable_principal ) {
-			foreach ( $adhs as $adh ) {
-				if ( $adh->getContrat_instance()->isPrincipal() ) {
-					$has_principal_contrat = true;
-				}
-			}
-		} else {
-			$has_principal_contrat = true;
 		}
 		usort( $adhs, function ( $a, $b ) {
 			return strcmp( $a->getTitle(), $b->getTitle() );
@@ -2404,7 +2387,24 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 				$display_remaining_contrats = false;
 			} else {
-				if ( count( $principal_contrats ) == 1 ) {
+				if ( empty( $principal_contrats ) ) {
+					$adm = '';
+					if ( amapress_can_access_admin() ) {
+						$adm = __( 'Aucun contrat principal. Veuillez définir un contrat principal depuis ', 'amapress' )
+						       . Amapress::makeLink(
+								admin_url( 'edit.php?post_type=amps_contrat_inst' ),
+								__( 'Edition des contrats', 'amapress' ) )
+						       . '<br/>';
+					}
+					$closed_message = wp_unslash( Amapress::getOption( 'online_inscr_closed_message' ) );
+					if ( ! $use_contrat_term ) {
+						echo '<p>' . __( 'Les commandes en ligne sont closes aux amapiens sans contrat principal.', 'amapress' ) . '</p>' . $closed_message;
+					} else {
+						echo '<p>' . __( 'Les inscriptions en ligne sont closes aux amapiens sans contrat principal.', 'amapress' ) . '</p>' . $closed_message;
+					}
+
+					return ob_get_clean();
+				} elseif ( count( $principal_contrats ) == 1 ) {
 					?>
                     <p><?php echo sprintf( __( 'Pour accéder à tous nos contrats en ligne,
                         vous devez d’abord vous inscrire au contrat “<strong>%s</strong>” (%s)', 'amapress' ),
@@ -2652,10 +2652,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$display_remaining_contrats = false;
 			} else {
 				if ( ! $admin_mode ) {
-					if ( ! $use_contrat_term ) {
-						echo '<p>' . __( 'Vous n\'avez pas encore de passé de commandes', 'amapress' ) . '</p>';
-					} elseif ( $allow_inscriptions ) {
-						echo '<p>' . __( 'Vous n\'avez pas encore de contrats', 'amapress' ) . '</p>';
+					if ( $show_current_inscriptions ) {
+						if ( ! $use_contrat_term ) {
+							echo '<p>' . __( 'Vous n\'avez pas encore de passé de commandes', 'amapress' ) . '</p>';
+						} elseif ( $allow_inscriptions ) {
+							echo '<p>' . __( 'Vous n\'avez pas encore de contrats', 'amapress' ) . '</p>';
+						}
 					}
 					if ( $allow_inscriptions ) {
 						if ( ! $use_contrat_term ) {
