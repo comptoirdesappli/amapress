@@ -1794,6 +1794,7 @@ class AmapressAdhesion extends TitanEntity {
 			/** @var AmapressAdhesionQuantite $vv */
 			return $vv->getCode();
 		}, $this->getContrat_quantites( $date ) );
+
 		return implode( ',', $codes );
 	}
 
@@ -2763,6 +2764,10 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 				}
 			}
 		}
+		if ( empty( $new_paiement_date ) ) {
+			$new_paiement_date = $contrat_instance->getPaiements_Liste_dates();
+		}
+
 		sort( $new_paiement_date );
 
 		$nb_paiements = count( $contrat_paiements );
@@ -2811,7 +2816,12 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			$status      = $paiement ? $paiement->getStatus() : $default_status;
 			$paiement_dt = $paiement && ! $contrat_instance->getPayByMonth() ?
 				$paiement->getDate() :
-				( isset( $new_paiement_date[ $def_date ] ) ? $new_paiement_date[ $def_date ++ ] : 0 );
+				( isset( $new_paiement_date[ $def_date ] ) ?
+					$new_paiement_date[ $def_date ++ ] :
+					( isset( $new_paiement_date[ count( $new_paiement_date ) - 1 ] ) ?
+						$new_paiement_date[ count( $new_paiement_date ) - 1 ] :
+						amapress_time() //should never happen
+					) );
 
 			if ( isset( $pre_filled_paiements[ $pre_filled_paiement_index ] ) ) {
 				if ( isset( $pre_filled_paiements[ $pre_filled_paiement_index ]['num'] ) ) {
