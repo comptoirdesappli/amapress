@@ -2764,31 +2764,32 @@ function amapress_get_paiement_table_by_dates(
 				$emetteur_paiements2 = array_values( $emetteur_paiements );
 				$contrat_adhesion    = array_shift( $emetteur_paiements2 )->getAdhesion();
 			}
-			if ( $contrat_adhesion && $date < $contrat_adhesion->getDate_debut() ) {
-				$val = [
-					'value' => '&gt;&gt;&gt;',
-					'style' => 'background-color: #ccc;',
-				];
-			} else if ( $contrat_adhesion && $date > $contrat_adhesion->getDate_fin() ) {
-				$val = [
-					'value' => '&lt;&lt;&lt;',
-					'style' => 'background-color: #ccc;',
-				];
-			} else {
-				$val = implode( ',', array_filter(
-					array_map(
-						function ( $p ) use ( $emetteur_obj ) {
-							/** @var AmapressAmapien_paiement $p */
-							$banque = $p->getBanque();
-							if ( ! empty( $banque ) && $emetteur_obj['banque'] != $banque ) {
-								return esc_html( "{$p->getNumero()} ({$banque})" );
-							} else {
-								return esc_html( "{$p->getNumero()}" );
-							}
-						}, $emetteur_date_paiements )
-					, function ( $e ) {
-					return ! empty( $e );
-				} ) );
+			$val = implode( ',', array_filter(
+				array_map(
+					function ( $p ) use ( $emetteur_obj ) {
+						/** @var AmapressAmapien_paiement $p */
+						$banque = $p->getBanque();
+						if ( ! empty( $banque ) && $emetteur_obj['banque'] != $banque ) {
+							return esc_html( "{$p->getNumero()} ({$banque})" );
+						} else {
+							return esc_html( "{$p->getNumero()}" );
+						}
+					}, $emetteur_date_paiements )
+				, function ( $e ) {
+				return ! empty( $e );
+			} ) );
+			if ( empty( $val ) ) {
+				if ( $contrat_adhesion && $date < $contrat_adhesion->getDate_debut() ) {
+					$val = [
+						'value' => '&gt;&gt;&gt;',
+						'style' => 'background-color: #ccc;',
+					];
+				} else if ( $contrat_adhesion && $date > $contrat_adhesion->getDate_fin() ) {
+					$val = [
+						'value' => '&lt;&lt;&lt;',
+						'style' => 'background-color: #ccc;',
+					];
+				}
 			}
 			$row["date_{$date}"] = $val;
 		}
