@@ -220,6 +220,15 @@ class Amapress {
 	/**
 	 * @return AmapressLieu_distribution[]
 	 */
+	public static function get_principal_lieux() {
+		return array_filter( self::get_lieux(), function ( $l ) {
+			return $l->isPrincipal();
+		} );
+	}
+
+	/**
+	 * @return AmapressLieu_distribution[]
+	 */
 	public static function get_lieux() {
 		$ret = get_option( 'amps_lieux' );
 		if ( ! $ret ) {

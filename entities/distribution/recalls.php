@@ -476,8 +476,11 @@ add_action( 'amapress_recall_missing_resp_distrib', function ( $args ) {
 	}
 
 	$subject = Amapress::getOption( 'distribution-miss-resps-recall-mail-subject' );
-	$content = Amapress::getOption( 'distribution-miss-resps-recall-mail-content' );
-	$url     = Amapress::get_inscription_distrib_page_href( $dist->getLieu() );
+	$content = Amapress::getOption( 'distribution-miss-resps-recall-l' . $dist->getLieuId() . '-mail-content' );
+	if ( empty( $content ) ) {
+		$content = Amapress::getOption( 'distribution-miss-resps-recall-mail-content' );
+	}
+	$url = Amapress::get_inscription_distrib_page_href( $dist->getLieu() );
 	if ( ! empty( $url ) ) {
 		$inscription_link = Amapress::makeLink( $url, __( 'S\'inscrire comme responsable de distribution', 'amapress' ) );
 	} else {
@@ -889,7 +892,7 @@ function amapress_distribution_all_amapiens_recall_options() {
 }
 
 function amapress_distribution_missing_responsables_recall_options() {
-	return array(
+	$res = array(
 		array(
 			'id'                  => 'distribution-miss-resps-recall-1',
 			'name'                => __( 'Rappel 1', 'amapress' ),
@@ -931,23 +934,50 @@ function amapress_distribution_missing_responsables_recall_options() {
 			'type'     => 'text',
 			'default'  => '[Rappel] Responsable(s) manquant(s) à %%post:title%%',
 		),
-		array(
-			'id'      => 'distribution-miss-resps-recall-mail-content',
-			'name'    => __( 'Contenu de l\'email', 'amapress' ),
-			'type'    => 'editor',
-			'default' => wpautop( __( "Bonjour,\nA la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%, il manque %%nb_resp_manquants%% responsable(s) de distribution sur les %%nb_resp_requis%% requis.\n%%lien_inscription%%\nPensez à vous inscrire ! Merci\n\n%%nom_site%%", 'amapress' ) ),
-			'desc'    =>
-				function ( $option ) {
-					return AmapressDistribution::getPlaceholdersHelp(
-						[
-							'nb_resp_manquants' => __( 'Nombre de responsables de distribution manquants à la distribution', 'amapress' ),
-							'nb_resp_inscrits'  => __( 'Nombre de responsables inscrits à la distribution', 'amapress' ),
-							'nb_resp_requis'    => __( 'Nombre de responsables requis à la distribution', 'amapress' ),
-							'lien_inscription'  => __( 'Lien "S\'inscrire comme responsable de distribution" vers la page d\'inscription aux distributions', 'amapress' ),
-						]
-					);
-				},
-		),
+	);
+
+	$res[] = array(
+		'id'      => 'distribution-miss-resps-recall-mail-content',
+		'name'    => __( 'Contenu de l\'email', 'amapress' ),
+		'type'    => 'editor',
+		'default' => wpautop( __( "Bonjour,\nA la %%lien_distrib_titre%% qui a lieu de %%post:heure_debut%% à %%post:heure_fin%%, il manque %%nb_resp_manquants%% responsable(s) de distribution sur les %%nb_resp_requis%% requis.\n%%lien_inscription%%\nPensez à vous inscrire ! Merci\n\n%%nom_site%%", 'amapress' ) ),
+		'desc'    =>
+			function ( $option ) {
+				return AmapressDistribution::getPlaceholdersHelp(
+					[
+						'nb_resp_manquants' => __( 'Nombre de responsables de distribution manquants à la distribution', 'amapress' ),
+						'nb_resp_inscrits'  => __( 'Nombre de responsables inscrits à la distribution', 'amapress' ),
+						'nb_resp_requis'    => __( 'Nombre de responsables requis à la distribution', 'amapress' ),
+						'lien_inscription'  => __( 'Lien "S\'inscrire comme responsable de distribution" vers la page d\'inscription aux distributions', 'amapress' ),
+					]
+				);
+			},
+	);
+
+	$lieux = Amapress::get_principal_lieux();
+	if ( count( $lieux ) > 1 ) {
+		foreach ( $lieux as $lieu ) {
+			$res[] = array(
+				'id'      => 'distribution-miss-resps-recall-l' . $lieu->ID . '-mail-content',
+				'name'    => __( 'Contenu de l\'email', 'amapress' ) . ' - ' . $lieu->getTitle(),
+				'type'    => 'editor',
+				'default' => '',
+				'desc'    =>
+					function ( $option ) {
+						return AmapressDistribution::getPlaceholdersHelp(
+							[
+								'nb_resp_manquants' => __( 'Nombre de responsables de distribution manquants à la distribution', 'amapress' ),
+								'nb_resp_inscrits'  => __( 'Nombre de responsables inscrits à la distribution', 'amapress' ),
+								'nb_resp_requis'    => __( 'Nombre de responsables requis à la distribution', 'amapress' ),
+								'lien_inscription'  => __( 'Lien "S\'inscrire comme responsable de distribution" vers la page d\'inscription aux distributions', 'amapress' ),
+							]
+						);
+					},
+			);
+		}
+	}
+
+	$res = array_merge( $res, array(
 		array(
 			'id'           => 'distribution-miss-resps-recall-cc',
 			'name'         => __( 'Cc', 'amapress' ),
@@ -970,7 +1000,9 @@ function amapress_distribution_missing_responsables_recall_options() {
 		array(
 			'type' => 'save',
 		),
-	);
+	) );
+
+	return $res;
 }
 
 function amapress_distribution_slots_inscr_recall_options() {
