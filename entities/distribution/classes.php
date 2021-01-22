@@ -521,7 +521,11 @@ class AmapressDistribution extends Amapress_EventBase {
 		$key     = 'AmapressDistribution-getDelayedToThisPaniers-' . $this->ID;
 		$paniers = wp_cache_get( $key );
 		if ( false === $paniers ) {
-			$paniers = AmapressPanier::get_delayed_paniers( null, $this->getDate(), null, [ 'delayed' ] );
+			$paniers = AmapressPanier::get_delayed_paniers(
+				null,
+				$this->getDate(), null,
+				[ 'delayed' ],
+				$this->getLieuId() );
 			wp_cache_set( $key, $paniers );
 		}
 
@@ -551,7 +555,12 @@ class AmapressDistribution extends Amapress_EventBase {
 	}
 
 	public function getCancelledPaniers() {
-		return AmapressPanier::get_delayed_paniers( null, null, $this->getDate() );
+		return AmapressPanier::get_delayed_paniers(
+			null,
+			null, $this->getDate(),
+			[ 'cancelled' ],
+			$this->getLieuId()
+		);
 	}
 
 	/** @return int[] */

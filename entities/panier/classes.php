@@ -114,7 +114,8 @@ class AmapressPanier extends Amapress_EventBase {
 		$contrat_instance_id = null,
 		$date_delayed = null,
 		$date_orig = null,
-		$status = [ 'delayed', 'cancelled' ]
+		$status = [ 'delayed', 'cancelled' ],
+		$lieu_id = null
 	) {
 		if ( ! empty( $contrat_instance_id ) && ! is_array( $contrat_instance_id ) ) {
 			$contrat_instance_id = array( $contrat_instance_id );
@@ -173,6 +174,16 @@ class AmapressPanier extends Amapress_EventBase {
 				function ( $p ) use ( $contrat_instance_id ) {
 					/** @var AmapressPanier $p */
 					return in_array( $p->getContrat_instanceId(), $contrat_instance_id );
+				}
+			);
+		}
+		if ( ! empty( $lieu_id ) ) {
+			$ret = array_filter(
+				$ret,
+				function ( $p ) use ( $lieu_id ) {
+					/** @var AmapressPanier $p */
+					return null != $p->getContrat_instance()
+					       && in_array( $lieu_id, $p->getContrat_instance()->getLieuxIds() );
 				}
 			);
 		}
