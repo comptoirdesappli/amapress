@@ -152,12 +152,12 @@ class AmapressPanier extends Amapress_EventBase {
 				$res = maybe_unserialize( $ress );
 			}
 			wp_cache_set( $key, $res );
-		}
 
-		update_meta_cache( 'post', array_map( function ( $p ) {
-			/** @var AmapressPanier $p */
-			return $p->getID();
-		}, $res ) );
+			update_meta_cache( 'post', array_map( function ( $p ) {
+				/** @var AmapressPanier $p */
+				return $p->getID();
+			}, $res ) );
+		}
 
 		$ret = $res;
 		$ret = array_filter(
