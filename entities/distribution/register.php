@@ -388,6 +388,13 @@ function amapress_register_entities_distribution( $entities ) {
 
 add_filter( 'amapress_can_delete_distribution', 'amapress_can_delete_distribution', 10, 2 );
 function amapress_can_delete_distribution( $can, $post_id ) {
+	if ( amapress_current_user_can( 'administrator' ) ) {
+		$dist = AmapressDistribution::getBy( $post_id );
+		if ( $dist && empty( $dist->getContratIds() ) ) {
+			return true;
+		}
+	}
+
 	return false;
 }
 
