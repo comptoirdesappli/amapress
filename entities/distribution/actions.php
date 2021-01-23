@@ -58,7 +58,9 @@ function amapress_get_custom_title_distribution_liste_emargement( $content ) {
 
 	if ( ! empty( $amapress_contrat_qt ) ) {
 		$contrat_qt = get_post( Amapress::resolve_post_id( $amapress_contrat_qt, AmapressContrat_quantite::INTERNAL_POST_TYPE ) );
-		$content    .= ' - ' . $contrat_qt->post_title;
+		if ( $contrat_qt ) {
+			$content .= ' - ' . $contrat_qt->post_title;
+		}
 	}
 
 	return $content;
@@ -188,7 +190,7 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 		$show_sums = Amapress::toBool( $_GET['show_sums'] );
 	}
 
-	$columns             = array(
+	$columns = array(
 //		array(
 //			'title' => __('Passage', 'amapress'),
 //			'data'  => 'check',

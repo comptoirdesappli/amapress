@@ -316,24 +316,15 @@ function amapress_get_event_html( $ev_date, $arr, $lieu_hour_dic, $first_lieu, $
 				$dist_id = Amapress::resolve_post_id( $ids[0], AmapressDistribution::INTERNAL_POST_TYPE );
 				if ( $dist_id ) {
 					$dist = AmapressDistribution::getBy( $dist_id );
+					if ( $dist ) {
+						$query = array(
+							'status' => 'to_exchange',
+						);
 
-					$query = array(
-						'status' => 'to_exchange',
-					);
-
-					$query['contrat_instance_id'] = $dist->getContratIds();
-					$query['date']                = intval( $dist->getDate() );
-					$query['lieu_id']             = $lieu->getLieuId();
-
-//					if ( Amapress::isIntermittenceEnabled() ) {
-//						$adhs = AmapressPaniers::getPanierIntermittents( $query );
-//						if ( count( $adhs ) > 0 ) {
-//							$paniers_url = Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $dist->getSlug();
-////                                $paniers_url = $dist->getPermalink();
-//							$paniers_cnt = count( $adhs );
-//							$ret         .= "<div class='evt-panier-intermittent'><a href='$paniers_url'><span class='badge'>$paniers_cnt</span> panier(s) intermittent(s)</a></div>";
-//						}
-//					}
+						$query['contrat_instance_id'] = $dist->getContratIds();
+						$query['date']                = intval( $dist->getDate() );
+						$query['lieu_id']             = $lieu->getLieuId();
+					}
 				}
 			}
 		}

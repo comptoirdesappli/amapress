@@ -243,7 +243,9 @@ function amapress_get_formatter( $post_type, $key, $type, $label ) {
 				return $value;
 			}
 
-			return get_post( $id )->post_title;
+			$post = get_post( $id );
+
+			return $post ? $post->post_title : $value;
 		};
 	} else if ( $type == 'select-users' ) {
 		return function ( $value ) use ( $label ) {

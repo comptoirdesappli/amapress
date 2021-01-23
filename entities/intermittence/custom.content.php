@@ -81,12 +81,14 @@ function amapress_all_paniers_intermittents_shortcode( $atts ) {
 	if ( ! empty( $atts['contrat'] ) ) {
 		$dist_id = Amapress::resolve_post_id( $atts['contrat'], AmapressDistribution::INTERNAL_POST_TYPE );
 		if ( $dist_id ) {
-			$dist                         = AmapressDistribution::getBy( $dist_id );
-			$query['contrat_instance_id'] = array_map( function ( $a ) {
-				return $a->ID;
-			},
-				$dist->getContrats() );
-			$query['date']                = $dist->getDate();
+			$dist = AmapressDistribution::getBy( $dist_id );
+			if ( $dist ) {
+				$query['contrat_instance_id'] = array_map( function ( $a ) {
+					return $a->ID;
+				},
+					$dist->getContrats() );
+				$query['date']                = $dist->getDate();
+			}
 		}
 	}
 	$adhs = AmapressPaniers::getPanierIntermittents( $query );
