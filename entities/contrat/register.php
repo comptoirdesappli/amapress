@@ -2662,6 +2662,10 @@ function amapress_import_adhesion_meta( $postmeta, $postdata, $posttaxo, $postmu
 	if ( empty( $contrat_instance_id ) || $contrat_instance_id <= 0 ) {
 		return new WP_Error( 'cannot_find_contrat', sprintf( __( "Impossible de trouver le contrat '%s'", 'amapress' ), $postmeta['amapress_adhesion_contrat_instance'] ) );
 	}
+	$contrat_instance = AmapressContrat_instance::getBy( $contrat_instance_id );
+	if ( empty( $contrat_instance ) ) {
+		return new WP_Error( 'cannot_find_contrat', sprintf( __( "Impossible de trouver le contrat '%s'", 'amapress' ), $postmeta['amapress_adhesion_contrat_instance'] ) );
+	}
 
 	$postmeta['amapress_adhesion_contrat_instance'] = $contrat_instance_id;
 
