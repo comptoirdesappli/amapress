@@ -230,7 +230,7 @@ function amapress_get_formatter( $post_type, $key, $type, $label ) {
 		return function ( $value ) use ( $label, $post_type, $key ) {
 			$v      = strtolower( $value );
 			$fields = AmapressEntities::getFilteredFields( $post_type );
-			if ( array_key_exists( $v, $fields[ $key ]['options'] ) ) {
+			if ( is_array( $fields[ $key ]['options'] ) && array_key_exists( $v, $fields[ $key ]['options'] ) ) {
 				return $fields[ $key ]['options'][ $v ];
 			}
 
