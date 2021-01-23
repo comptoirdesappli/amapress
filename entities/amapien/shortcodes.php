@@ -137,7 +137,12 @@ function amapress_amapiens_map_shortcode( $atts ) {
 	if ( ! empty( $atts['lieu'] ) ) {
 		$lieu_id = Amapress::resolve_post_id( $atts['lieu'], AmapressLieu_distribution::INTERNAL_POST_TYPE );
 		if ( $lieu_id ) {
-			$lieux = array( AmapressLieu_distribution::getBy( $lieu_id ) );
+			$lieu = AmapressLieu_distribution::getBy( $lieu_id );
+			if ( $lieu ) {
+				$lieux = array( $lieu );
+			} else {
+				$lieux = Amapress::get_lieux();
+			}
 		} else {
 			$lieux = Amapress::get_lieux();
 		}

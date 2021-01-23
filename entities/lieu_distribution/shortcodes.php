@@ -18,11 +18,13 @@ function amapress_lieu_map_shortcode( $atts ) {
 		'mode' => 'map',
 	), $atts );
 	$lieu_id = Amapress::resolve_post_id( $atts['lieu'], 'amps_lieu' );
-	if ( ! $lieu_id ) {
+	if ( $lieu_id <= 0 ) {
 		return '';
 	}
-
 	$lieu = AmapressLieu_distribution::getBy( $lieu_id );
+	if ( ! $lieu ) {
+		return '';
+	}
 
 	$markers = array();
 	if ( ! $lieu->isAdresseLocalized() ) {
