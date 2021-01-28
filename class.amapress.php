@@ -4535,6 +4535,16 @@ class Amapress {
 		return self::$has_partial_coadhesion;
 	}
 
+	public static function getWpConfigSecretHelp(
+		$const_name,
+		$sample_value = 'xxx'
+	) {
+		return sprintf(
+			__( 'Pour une sécurité renforcée, vous pouvez définir une constante <code>define(\'%s\', \'%s\');</code> dans <code>wp-config.php</code> et laisser ce champs vide', 'amapress' ),
+			$const_name, $sample_value
+		);
+	}
+
 	/**
 	 * @param array $m
 	 * @param TitanFramework $titan
