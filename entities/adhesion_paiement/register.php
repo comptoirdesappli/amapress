@@ -712,6 +712,9 @@ add_action( 'tf_custom_admin_amapress_action_test_helloasso_access', function ()
 function amapress_fetch_helloasso_orders( $date = null, $interactive = false ) {
 	$ha_cid  = Amapress::getOption( 'ha_cid' );
 	$ha_csec = Amapress::getOption( 'ha_csec' );
+	if ( defined( 'AMAPRESS_HELLOASSO_API_CLIENT_SECRET' ) ) {
+		$ha_csec = AMAPRESS_HELLOASSO_API_CLIENT_SECRET;
+	}
 	if ( empty( $ha_cid ) || empty( $ha_csec ) ) {
 		if ( $interactive ) {
 			wp_die( 'Clés API HelloAsso non définies (Client Id et Client Secret)' );

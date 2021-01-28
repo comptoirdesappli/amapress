@@ -3932,6 +3932,9 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'type'         => 'text',
 											'autocomplete' => false,
 											'is_password'  => true,
+											'desc'         => function ( $option ) {
+												return Amapress::getWpConfigSecretHelp( 'AMAPRESS_HELLOASSO_API_CLIENT_SECRET' );
+											}
 										),
 										array(
 											'name'    => __( 'Tester', 'amapress' ),
