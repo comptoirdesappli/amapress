@@ -5740,6 +5740,85 @@ Sélectionnez les Coordinateurs Amap en charge des réponses à l\'aide des menu
 					),
 				),
 				array(
+					'id'       => 'edit.php',
+					'type'     => 'builtin',
+					'subpages' => array(
+						array(
+							'subpage'  => true,
+							'id'       => 'post_emails_page',
+							'type'     => 'panel',
+							'settings' => array(
+								'name'       => __( 'Emails et rappels', 'amapress' ),
+								'menu_title' => __( 'Emails/Rappels', 'amapress' ),
+								'capability' => 'manage_amapress',
+								'menu_icon'  => 'dashicons-email',
+							),
+							'tabs'     => array(
+								__( 'Notification', 'amapress' ) => array(
+									'id'      => 'amapress_new_post_notif',
+									'options' => array(
+										array(
+											'id'           => 'new-post-notif-mail-to-groups',
+											'name'         => __( 'Groupes Destinataires', 'amapress' ),
+											'type'         => 'select',
+											'options'      => 'amapress_get_collectif_target_queries',
+											'autocomplete' => true,
+											'multiple'     => true,
+											'tags'         => true,
+											'desc'         => __( 'Groupe(s) destinataire(s) de la notification', 'amapress' ),
+										),
+										array(
+											'id'           => 'new-post-notif-mail-to',
+											'name'         => __( 'Destinataires', 'amapress' ),
+											'type'         => 'select-users',
+											'autocomplete' => true,
+											'multiple'     => true,
+											'tags'         => true,
+											'desc'         => __( 'Destinataires de la notification', 'amapress' ),
+										),
+										array(
+											'id'      => 'new-post-notif-types',
+											'name'    => __( 'Types d\'articles', 'amapress' ),
+											'type'    => 'multicheck',
+											'options' => [
+												'post'                                         => __( 'Article', 'amapress' ),
+												AmapressAmap_event::INTERNAL_POST_TYPE         => __( 'Evènements', 'amapress' ),
+												AmapressAssemblee_generale::INTERNAL_POST_TYPE => __( 'Assemblées générales', 'amapress' ),
+												AmapressVisite::INTERNAL_POST_TYPE             => __( 'Visites à la ferme', 'amapress' ),
+												AmapressRecette::INTERNAL_POST_TYPE            => __( 'Recettes', 'amapress' ),
+											],
+											'default' => 'post',
+										),
+										array(
+											'id'       => 'new-post-notif-mail-subject',
+											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => 'Nouvel article publié - %%post:titre%%',
+										),
+										array(
+											'id'      => 'new-post-notif-mail-content',
+											'name'    => __( 'Contenu de l\'email', 'amapress' ),
+											'type'    => 'editor',
+											'default' => wpautop( __( "Bonjour,\n\nUn nouvel article a été publié : %%post:titre%% (%%post:lien%%)\n\n%%nom_site%%", 'amapress' ) ),
+											'desc'    =>
+												function ( $option ) {
+													return Amapress::getPlaceholdersHelpTable(
+														'new-post-notif-phs',
+														[], null, [], true
+													);
+												},
+										),
+										array(
+											'type' => 'save',
+										),
+									),
+								),
+							),
+						),
+					),
+				),
+				array(
 					'id'       => 'amapress_import_page',
 					'type'     => 'panel',
 					'settings' => array(

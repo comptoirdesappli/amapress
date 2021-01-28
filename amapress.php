@@ -2264,3 +2264,34 @@ add_action( 'admin_footer-edit.php', function () {
     }
 );</script>';
 } );
+
+add_action( 'transition_post_status', 'some_function', 10, 3 );
+function some_function( $new, $old, $post ) {
+	if ( ( 'publish' == $new ) && ( 'publish' != $old ) ) {
+		$types = Amapress::get_array( Amapress::getOption( 'new-post-notif-types' ) );
+		if ( in_array( $post->post_type, $types ) ) {
+			$ids = Amapress::get_array( Amapress::getOption( 'new-post-notif-mail-to' ) );
+			if ( empty( $ids ) ) {
+				$ids = [];
+			}
+			$ids = array_map( 'intval', $ids );
+			$ids = array_merge( $ids, amapress_get_groups_user_ids_from_option( 'new-post-notif-mail-to-groups' ) );
+			if ( ! empty( $ids ) ) {
+				$entity = new GenericTitanEntity( $post );
+
+				$notify_users = amapress_prepare_message_target_bcc(
+					"user:include=" . implode( ',', $ids ),
+					__( 'Notification', 'amapress' ),
+					'post'
+				);
+				amapress_send_message(
+					Amapress::getOption( 'new-post-notif-mail-subject' ),
+					Amapress::getOption( 'new-post-notif-mail-content' ),
+					'', $notify_users, $entity, array()
+				);
+			}
+		}
+	} else {
+		return;
+	}
+}

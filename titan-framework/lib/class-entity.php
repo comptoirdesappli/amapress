@@ -4,6 +4,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+class GenericTitanEntity extends TitanEntity {
+	function __construct( $post_or_id ) {
+		parent::__construct( $post_or_id );
+	}
+}
+
 class TitanEntity {
 	private $initialized = false;
 	private $post_id = null;
