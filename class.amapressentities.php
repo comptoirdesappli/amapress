@@ -5018,7 +5018,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										),
 									),
 								),
-								__( 'Notifications', 'amapress' )                                   => array(
+								__( 'Notifications administrateur', 'amapress' )                    => array(
 									'id'      => 'amp_notif_config',
 									'options' => array(
 										array(
