@@ -961,11 +961,11 @@ function amapress_register_admin_bar_menu_items( $items ) {
 	);
 	$main_items = array(
 		array(
-			'id'         => 'amapress_add_inscription',
-			'title'      => __( 'Ajout Inscription Contrat', 'amapress' ),
+			'id'         => 'amapress_add_adhesion',
+			'title'      => __( 'Ajout Adhésion AMAP', 'amapress' ),
 			'icon'       => 'dashicons-id',
-			'capability' => 'edit_contrat_instance',
-			'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription' ),
+			'capability' => 'edit_adhesion_paiement',
+			'href'       => admin_url( 'admin.php?page=amapress_gestion_adhesions_page&tab=add_adhesion' ),
 		),
 	);
 	$cnt        = AmapressAdhesion_paiement::getAdhesionToConfirmCount();
