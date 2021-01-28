@@ -2929,7 +2929,7 @@ add_action( 'tf_custom_admin_amapress_action_new_user', function () {
 	wp_redirect_and_exit( add_query_arg( 'user_id', $user_id ) );
 } );
 
-function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOption $option ) {
+function amapress_create_user_and_inscription_assistant( $post_id, TitanFrameworkOption $option ) {
 	if ( isset( $_REQUEST['user_id'] ) ) {
 		if ( isset( $_REQUEST['assistant'] ) ) {
 			echo do_shortcode( '[inscription-en-ligne admin_mode=true]' );

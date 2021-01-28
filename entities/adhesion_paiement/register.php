@@ -994,3 +994,128 @@ add_filter( 'cron_schedules', function ( $new_schedules ) {
 
 	return $new_schedules;
 } );
+
+function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOption $option ) {
+	if ( isset( $_REQUEST['user_id'] ) ) {
+		echo '<h4>2/ Adhésion</h4>';
+
+		$user = AmapressUser::getBy( $_REQUEST['user_id'] );
+
+		echo '<hr />';
+		echo $user->getDisplay();
+		echo '<p>' . Amapress::makeButtonLink( $user->getEditLink(), __( 'Modifier', 'amapress' ), true, true ) . '</p>';
+		echo '<hr />';
+
+
+		$periods = array_filter(
+			AmapressAdhesionPeriod::getAll(),
+			function ( $p ) {
+				return $p->getDate_fin() > Amapress::start_of_day( amapress_time() );
+			} );
+		usort( $periods, function ( $a, $b ) {
+			/** @var AmapressAdhesionPeriod $a */
+			/** @var AmapressAdhesionPeriod $b */
+			return strcmp( $a->getDate_debut(), $b->getDate_debut() );
+		} );
+		echo '<p><strong>' . __( 'Ses adhésions :', 'amapress' ) . '</strong></p>';
+		echo '<ul style="list-style-type: circle">';
+		foreach ( $periods as $period ) {
+			$adh = AmapressAdhesion_paiement::getForUser( $user->ID, $period->getDate_debut(), false );
+			echo '<li style="margin-left: 35px">';
+			echo esc_html( $period->getTitle() ) . __( ' : ', 'amapress' );
+			if ( $adh ) {
+				$lnk = current_user_can( 'edit_post', $adh->ID ) ?
+					'<a target="_blank" href="' . esc_attr( $adh->getAdminEditLink() ) . '" >' . __( 'Voir', 'amapress' ) . '</a>&nbsp;:&nbsp;' : '';
+				echo $lnk . esc_html( $adh->getTitle() );
+			} else {
+				echo '<a target="_blank" href="' .
+				     esc_attr( admin_url( sprintf( 'post-new.php?post_type=amps_adh_pmt&amapress_adhesion_paiement_user=%d&amapress_adhesion_paiement_period=%d&amapress_adhesion_paiement_date=%s',
+					     $user->ID, $period->ID, date_i18n( TitanFrameworkOptionDate::$default_date_format, amapress_time() ) ) ) ) .
+				     '" >' . __( 'Ajouter une adhésion pour la période', 'amapress' ) . '</a>';
+			}
+
+			echo '</li>';
+		}
+		if ( empty( $periods ) ) {
+			echo '<li>' . __( 'Aucune période d\'adhésion', 'amapress' ) . '</li>';
+		}
+		echo '</ul>';
+	} else {
+		echo '<h4>1/ Choisir un utilisateur ou le créer</h4>';
+		$options       = [];
+		$all_user_adhs = AmapressAdhesion_paiement::getAllActiveByUserId();
+		amapress_precache_all_users();
+		/** @var WP_User $user */
+		foreach ( get_users() as $user ) {
+			if ( ! empty( $all_user_adhs[ $user->ID ] ) ) {
+				$options[ $user->ID ] = sprintf( __( '%s[%s] (adhérent)', 'amapress' ), $user->display_name, $user->user_email );
+			} else {
+				$options[ $user->ID ] = sprintf( __( '%s[%s] (non adhérent)', 'amapress' ), $user->display_name, $user->user_email );
+			}
+		}
+
+		echo '<form method="post" id="existing_user">';
+		echo '<input type="hidden" name="action" value="existing_user" />';
+		wp_nonce_field( 'amapress_gestion_adhesions_page', TF . '_nonce' );
+		echo '<select style="max-width: none; min-width: 50%;" id="user_id" name="user_id" class="autocomplete" data-placeholder="' . esc_attr__( 'Sélectionner un utilisateur', 'amapress' ) . '">';
+		tf_parse_select_options( $options, isset( $_REQUEST['user_id'] ) ? $_REQUEST['user_id'] : null );
+		echo '</select><br />';
+		echo '<input type="submit" class="button button-primary" value="' . esc_attr__( 'Choisir', 'amapress' ) . '" />';
+		echo '</form>';
+
+		echo '<p><strong>' . __( 'OU', 'amapress' ) . '</strong></p>';
+
+		echo '<form method="post" id="new_user">';
+		echo '<input type="hidden" name="action" value="new_user" />';
+		wp_nonce_field( 'amapress_gestion_adhesions_page', TF . '_nonce' );
+		echo '<table style="min-width: 50%">';
+		echo '<tr>';
+		echo '<th style="text-align: left; width: auto"><label style="width: 10%" for="email">' . __( 'Email: ', 'amapress' ) . '</label></th>
+<td><input style="width: 100%" type="text" id="email" name="email" class="required email emailDoesNotExists" />';
+		echo '</tr><tr>';
+		echo '<th style="text-align: left; width: auto"><label for="last_name">' . __( 'Nom: ', 'amapress' ) . '</label></th>
+<td><input style="width: 100%" type="text" id="last_name" name="last_name" class="required" />';
+		echo '</tr><tr>';
+		echo '<th style="text-align: left; width: auto"><label for="first_name">' . __( 'Prénom: ', 'amapress' ) . '</label></th>
+<td><input style="width: 100%" type="text" id="first_name" name="first_name" class="required" />';
+		echo '</tr><tr>';
+		echo '<th style="text-align: left; width: auto"><label for="tel">' . __( 'Téléphone: ', 'amapress' ) . '</label></th>
+<td><input style="width: 100%" type="text" id="tel" name="tel" class="required" />';
+		echo '</tr><tr>';
+		echo '<th style="text-align: left; width: auto"><label for="address">' . __( 'Adresse: ', 'amapress' ) . '</label></th>
+<td><textarea style="width: 100%" rows="8" id="address" name="address" class=""></textarea>';
+		echo '</tr>';
+		echo '</table>';
+		echo '<input style="min-width: 50%" type="submit" class="button button-primary" value="' . esc_attr__( 'Créer l\'amapien', 'amapress' ) . '" />';
+		echo '</form>';
+	}
+	echo '<hr />';
+	echo '<p><a href="' . remove_query_arg( [
+			'user_id',
+		] ) . '" class="button button-primary">' . __( 'Choisir un autre amapien', 'amapress' ) . '</a></p>';
+	echo '<script type="text/javascript">jQuery(function($) {
+    $("#user_id").select2({
+        allowClear: true,
+		  escapeMarkup: function(markup) {
+		return markup;
+	},
+		  templateResult: function(data) {
+		return $("<span>"+data.text+"</span>");
+	},
+		  templateSelection: function(data) {
+		return $("<span>"+data.text+"</span>");
+	},
+    });
+    $("form#new_user").validate({
+                onkeyup: false,
+        }
+    );
+});
+</script>
+<style type="text/css">
+	.error {
+		font-weight: bold;
+		color: red;
+	}
+</style>';
+}

@@ -2146,7 +2146,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'type'       => 'custom',
 									'bare'       => true,
 									'capability' => 'edit_contrat_instance',
-									'custom'     => 'amapress_create_user_and_adhesion_assistant',
+									'custom'     => 'amapress_create_user_and_inscription_assistant',
 								)
 							),
 						),
@@ -3339,7 +3339,53 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 						}
 					),
 					'options'  => array(),
-					'tabs'     => array(),
+					'tabs'     => array(
+						__( 'Ajouter une adhésion', 'amapress' )           => array(
+							'id'         => 'add_adhesion',
+							'use_form'   => false,
+							'use_table'  => false,
+							'capability' => 'edit_adhesion_paiement',
+							'options'    => array(
+								array(
+									'id'         => 'add_user_adhes',
+									'type'       => 'custom',
+									'bare'       => true,
+									'capability' => 'edit_adhesion_paiement',
+									'custom'     => 'amapress_create_user_and_adhesion_assistant',
+								)
+							),
+						),
+						__( 'Ajouter un coadhérent', 'amapress' )          => array(
+							'id'         => 'add_coadherent',
+							'use_form'   => false,
+							'use_table'  => false,
+							'capability' => 'edit_adhesion_paiement',
+							'options'    => array(
+								array(
+									'id'         => 'add_user_adh_coinscr',
+									'type'       => 'custom',
+									'bare'       => true,
+									'capability' => 'edit_adhesion_paiement',
+									'custom'     => 'amapress_create_coadhesion_assistant',
+								)
+							),
+						),
+						__( 'Ajouter une personne hors AMAP', 'amapress' ) => array(
+							'id'         => 'add_other_adh_user',
+							'use_form'   => false,
+							'use_table'  => false,
+							'capability' => 'edit_adhesion_paiement',
+							'options'    => array(
+								array(
+									'id'         => 'add_user_adh_other',
+									'type'       => 'custom',
+									'bare'       => true,
+									'capability' => 'edit_adhesion_paiement',
+									'custom'     => 'amapress_create_user_for_distribution',
+								)
+							),
+						),
+					),
 					'subpages' => array(
 						array(
 							'title'      => __( 'Etat des règlements Adhésions', 'amapress' ),
