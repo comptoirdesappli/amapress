@@ -74,6 +74,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 
 	public function setStatus( $status ) {
 		$this->setCustom( 'amapress_adhesion_paiement_status', $status );
+		delete_transient( 'amps_adhpmt_to_confirm' );
 	}
 
 	public function setCustomCheck( $num, $value ) {
@@ -1160,6 +1161,20 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		amapress_wp_mail( $this->getUser()->getAllEmails(), $mail_subject, $mail_content, [
 			'Reply-To: ' . implode( ',', $tresoriers )
 		], $attachments );
+	}
+
+	public static function getAdhesionToConfirmCount() {
+		$current_user_id = amapress_current_user_id();
+		$cnt             = get_transient( 'amps_adhpmt_to_confirm' );
+		if ( false === $cnt ) {
+			$cnt = [];
+		}
+		if ( ! isset( $cnt[ $current_user_id ] ) ) {
+			$cnt[ $current_user_id ] = get_posts_count( 'post_type=amps_adh_pmt&amapress_status=not_received' );
+			set_transient( 'amps_adhpmt_to_confirm', $cnt, HOUR_IN_SECONDS );
+		}
+
+		return $cnt[ $current_user_id ];
 	}
 }
 

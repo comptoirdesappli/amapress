@@ -48,6 +48,10 @@ function amapress_clean_transients( $post_id ) {
 	if ( AmapressAdhesion::INTERNAL_POST_TYPE == $post_type ) {
 		delete_transient( 'amps_adh_to_confirm' );
 	}
+
+	if ( AmapressAdhesion_paiement::INTERNAL_POST_TYPE == $post_type ) {
+		delete_transient( 'amps_adhpmt_to_confirm' );
+	}
 }
 
 add_action( 'save_post', 'amapress_clean_transients', 1000 );

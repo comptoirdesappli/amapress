@@ -967,14 +967,25 @@ function amapress_register_admin_bar_menu_items( $items ) {
 			'capability' => 'edit_contrat_instance',
 			'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription' ),
 		),
-//		array(
-//			'id'         => 'amapress_inscriptions',
-//			'title'      => __('Les inscriptions', 'amapress'),
-//			'capability' => 'edit_contrat_instance',
-//			'href'       => admin_url( 'edit.php?post_type=amps_adhesion&amapress_date=active' ),
-//		),
 	);
-	$cnt        = AmapressAdhesion::getAdhesionToConfirmCount();
+	$cnt        = AmapressAdhesion_paiement::getAdhesionToConfirmCount();
+	if ( $cnt ) {
+		$main_items[] = array(
+			'id'         => 'amapress_adh_to_confirm',
+			'title'      => "<span class='badge'>$cnt</span> Adhésions à confirmer",
+			'capability' => 'edit_adhesion_paiement',
+			'href'       => admin_url( 'edit.php?post_type=amps_adh_pmt&amapress_status=not_received' ),
+		);
+	}
+
+	$main_items[] = array(
+		'id'         => 'amapress_add_inscription',
+		'title'      => __( 'Ajout Inscription Contrat', 'amapress' ),
+		'icon'       => 'dashicons-id',
+		'capability' => 'edit_contrat_instance',
+		'href'       => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription' ),
+	);
+	$cnt          = AmapressAdhesion::getAdhesionToConfirmCount();
 	if ( $cnt ) {
 		$main_items[] = array(
 			'id'         => 'amapress_inscr_to_confirm',
