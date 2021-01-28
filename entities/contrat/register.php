@@ -2148,7 +2148,9 @@ jQuery(function($) {
 				'readonly'    => 'amapress_is_contrat_instance_readonly',
 				'default'     => '',
 				'show_column' => false,
-				'desc'        => __( 'Clé publique des paiement en ligne via Stripe pour ce contrat/producteur. Remplir ce champs active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien le paiement en ligne', 'amapress' ),
+				'desc'        => function ( $option ) {
+					return __( 'Clé publique des paiement en ligne via Stripe pour ce contrat/producteur. Remplir ce champs active une option dans l’assistant de pré-inscription en ligne pour permettre à l’amapien le paiement en ligne', 'amapress' );
+				}
 			),
 			'stripe_secret_key'     => array(
 				'name'        => __( 'Clé Stripe (secrète)', 'amapress' ),
@@ -2157,7 +2159,17 @@ jQuery(function($) {
 				'readonly'    => 'amapress_is_contrat_instance_readonly',
 				'default'     => '',
 				'show_column' => false,
-				'desc'        => __( 'Clé secrète des paiement en ligne via Stripe pour ce contrat/producteur.', 'amapress' ),
+				'desc'        => function ( $option ) {
+					/** @var TitanFrameworkOption $option */
+					$prod_id          = - 1;
+					$contrat_instance = AmapressContrat_instance::getBy( $option->getPostID() );
+					if ( $contrat_instance && $contrat_instance->getModel() ) {
+						$prod_id = $contrat_instance->getModel()->getProducteurId();
+					}
+
+					return __( 'Clé secrète des paiement en ligne via Stripe pour ce contrat/producteur.', 'amapress' ) .
+					       ( $prod_id > 0 ? '<br/>' . Amapress::getWpConfigSecretHelp( "AMAPRESS_PRODUCTEUR_{$prod_id}_STRIPE_SECRET_KEY" ) : '' );
+				}
 			),
 			'stripe_min_amount'     => array(
 				'name'           => __( 'Montant min. Stripe', 'amapress' ),

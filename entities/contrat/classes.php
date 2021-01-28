@@ -312,6 +312,12 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getStripeSecretKey() {
+		$prod_id = $this->getModel() ? $this->getModel()->getProducteurId() : - 1;
+		$cst     = "AMAPRESS_PRODUCTEUR_{$prod_id}_STRIPE_SECRET_KEY";
+		if ( defined( $cst ) ) {
+			return constant( $cst );
+		}
+
 		return $this->getCustom( 'amapress_contrat_instance_stripe_secret_key', '' );
 	}
 
