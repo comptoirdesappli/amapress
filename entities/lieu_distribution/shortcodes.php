@@ -14,8 +14,10 @@ function amapress_lieu_map_shortcode( $atts ) {
 	$amapress_map_instance ++;
 
 	$atts    = shortcode_atts( array(
-		'lieu' => $post,
-		'mode' => 'map',
+		'lieu'     => $post,
+		'mode'     => 'map',
+		'padding'  => '0',
+		'max_zoom' => null,
 	), $atts );
 	$lieu_id = Amapress::resolve_post_id( $atts['lieu'], 'amps_lieu' );
 	if ( $lieu_id <= 0 ) {
@@ -46,11 +48,19 @@ function amapress_lieu_map_shortcode( $atts ) {
 	}
 	$markers[] = $m;
 
-	return amapress_generate_map( $markers, $atts['mode'] );
+	return amapress_generate_map( $markers, $atts['mode'], [
+		'padding'  => $atts['padding'],
+		'max_zoom' => $atts['max_zoom'],
+	] );
 }
 
-function amapress_where_to_find_us_shortcode( $attr ) {
+function amapress_where_to_find_us_shortcode( $atts ) {
 	amapress_ensure_no_cache();
+
+	$atts = shortcode_atts( array(
+		'padding'  => '0',
+		'max_zoom' => null,
+	), $atts );
 
 	$lieux = Amapress::get_lieux();
 	if ( empty( $lieux ) ) {
@@ -78,6 +88,9 @@ function amapress_where_to_find_us_shortcode( $attr ) {
 		$markers[] = $m;
 	}
 
-	return amapress_generate_map( $markers, 'map' );
+	return amapress_generate_map( $markers, 'map', [
+		'padding'  => $atts['padding'],
+		'max_zoom' => $atts['max_zoom'],
+	] );
 
 }

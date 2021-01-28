@@ -25,6 +25,8 @@ function amapress_producteur_map_shortcode( $atts ) {
 		'show_adresse'    => 'false',
 		'show_avatar'     => 'default',
 		'mode'            => 'map',
+		'padding'         => '0',
+		'max_zoom'        => null,
 	), $atts );
 
 //    if (!amapress_is_user_logged_in()) return '';
@@ -46,7 +48,10 @@ function amapress_producteur_map_shortcode( $atts ) {
 		'content'   => $producteur->getUser() ? $producteur->getUser()->getDisplay( $atts ) : '',
 	);
 
-	return amapress_generate_map( $markers, $atts['mode'] );
+	return amapress_generate_map( $markers, $atts['mode'], [
+		'padding'  => $atts['padding'],
+		'max_zoom' => $atts['max_zoom'],
+	] );
 }
 
 function amapress_user_map_shortcode( $atts ) {
@@ -59,6 +64,8 @@ function amapress_user_map_shortcode( $atts ) {
 		'show_adresse'    => 'default',
 		'show_avatar'     => 'default',
 		'mode'            => 'map',
+		'padding'         => '0',
+		'max_zoom'        => null,
 	), $atts );
 
 	if ( ! amapress_is_user_logged_in() ) {
@@ -82,7 +89,10 @@ function amapress_user_map_shortcode( $atts ) {
 		'content'   => $user->getDisplay( $atts ),
 	);
 
-	return amapress_generate_map( $markers, $atts['mode'] );
+	return amapress_generate_map( $markers, $atts['mode'], [
+		'padding'  => $atts['padding'],
+		'max_zoom' => $atts['max_zoom'],
+	] );
 }
 
 function amapress_amapien_avatar_shortcode( $atts ) {
@@ -128,6 +138,8 @@ function amapress_amapiens_map_shortcode( $atts ) {
 		'show_adresse'    => 'default',
 		'show_avatar'     => 'default',
 		'show_lieu'       => 'default',
+		'padding'         => '0',
+		'max_zoom'        => null,
 	), $atts );
 
 	if ( ! amapress_is_user_logged_in() ) {
@@ -206,7 +218,10 @@ function amapress_amapiens_map_shortcode( $atts ) {
 		$lix += 1;
 	}
 
-	return amapress_generate_map( $markers, 'map' );
+	return amapress_generate_map( $markers, 'map', [
+		'padding'  => $atts['padding'],
+		'max_zoom' => $atts['max_zoom'],
+	] );
 }
 
 function amapress_amapiens_role_list_shortcode( $atts ) {

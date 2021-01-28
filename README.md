@@ -74,3 +74,4 @@ Première *configuration* : aller dans **Tableau de bord>État d'Amapress** : ht
 * [Autocomplétion de formulaires](https://github.com/tbosch/autofill-event)
 * [Gestion UTF8](https://github.com/neitanod/forceutf8)
 * [Datables RowsGroup (merge vertical)](https://github.com/ashl1/datatables-rowsgroup)
+* [Leaflet Sleep (scroll sur les pages contenant des cartes)](https://github.com/CliffCloud/Leaflet.Sleep)

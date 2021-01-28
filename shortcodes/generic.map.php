@@ -22,9 +22,17 @@ function amapress_get_distance( $p1_lat, $p1_lng, $p2_lat, $p2_lng ) {
 	return $d; // returns the distance in meter
 }
 
-function amapress_generate_map( $markers, $mode = 'map' ) {
+function amapress_generate_map( $markers, $mode = 'map', $options = [] ) {
 	if ( count( $markers ) == 0 ) {
 		return '<p>' . __( 'Aucune localisation disponible', 'amapress' ) . '</p>';
+	}
+
+	$fitBoundsOptions = [];
+	$fitBoundsOptions = array_merge( $fitBoundsOptions, isset( $options['padding'] ) && intval( $options['padding'] ) > 0 ?
+		[ 'padding' => [ intval( $options['padding'] ), intval( $options['padding'] ) ] ] :
+		[ 'padding' => [ 50, 50 ] ] );
+	if ( ! empty( $options['max_zoom'] ) ) {
+		$fitBoundsOptions['maxZoom'] = $options['max_zoom'];
 	}
 
 	if ( ! defined( 'AMAPRESS_MAX_MAP_DISTANCE' ) ) {
@@ -51,7 +59,7 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
 	$icons['red']       = 'https://maps.google.com/mapfiles/ms/micons/red-dot.png';
 	$icons['lieu']      = 'https://maps.google.com/mapfiles/ms/micons/convienancestore.png';
 	$icons['man']       = 'https://maps.google.com/mapfiles/ms/micons/man.png';
-	$icons['tree'] = 'https://maps.google.com/mapfiles/ms/micons/tree.png';
+	$icons['tree']      = 'https://maps.google.com/mapfiles/ms/micons/tree.png';
 
 	$ref_lat = 0;
 	$ref_lng = 0;
@@ -62,7 +70,7 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
 		}
 	}
 	$coords     = [
-		[ $ref_lat, $ref_lng ]
+		[ floatval( $ref_lat ), floatval( $ref_lng ) ]
 	];
 	$js_markers = '';
 	foreach ( $markers as $marker ) {
@@ -216,10 +224,16 @@ function amapress_generate_map( $markers, $mode = 'map' ) {
 		return $htm . '<script type="text/javascript">
                 //<![CDATA[
                 jQuery(function() {
-var map = L.map(\'map' . $amapress_map_instance . '\').fitBounds(' . wp_json_encode( $coords ) . ');
+var map = L.map(\'map' . $amapress_map_instance . '\', {
+	zoomSnap: 0.5,
+	zoomDelta: 0.5,
+	scrollWheelZoom: false,
+	sleepOpacity: .9,
+	sleepNote: false,
+});
 // add an OpenStreetMap tile layer
 L.tileLayer(\'https://{s}.tile.osm.org/{z}/{x}/{y}.png\', {
-    attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\'
+    attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\',
 }).addTo(map);
 
                 var markers = [' . $js_markers . '];
@@ -232,6 +246,7 @@ L.tileLayer(\'https://{s}.tile.osm.org/{z}/{x}/{y}.png\', {
 					    icon: marker.icon ? L.icon({iconUrl: marker.icon}) : null}).addTo(map);
 					    m.bindPopup((marker.url ? "<h4><a href="+marker.url+" target=\'_blank\'>"+marker.title+"<a/></h4>" : "<h4>"+marker.title+"</h4>") + (marker.content || ""));
                 }
+                map.fitBounds(' . wp_json_encode( $coords ) . ', ' . wp_json_encode( $fitBoundsOptions ) . ');
                 });
                 //]]>
 </script>';

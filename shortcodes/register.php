@@ -131,6 +131,8 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => __( 'Carte des lieux de distributions', 'amapress' ),
 			'args' => [
+				'padding'  => __( '(0 par défaut) marge autours du centrage de la carte', 'amapress' ),
+				'max_zoom' => __( '(18 par défaut, maximum) zoom maximal de la carte', 'amapress' ),
 			]
 		] );
 	amapress_register_shortcode( 'recettes', 'amapress_recettes_shortcode',
@@ -162,22 +164,28 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => __( 'Emplacement d\'un lieu (carte et StreetView)', 'amapress' ),
 			'args' => [
-				'lieu' => __( 'Afficher la carte du lieu indiqué. ', 'amapress' ) . AmapressLieu_distribution::getLieuFilterHelp(),
-				'mode' => __( '(Par défaut “map”) Mode d’affichage. Si Gooogle est votre afficheur de carte, alors vous pouvez choisir : map, map+streetview ou streetview', 'amapress' ),
+				'lieu'     => __( 'Afficher la carte du lieu indiqué. ', 'amapress' ) . AmapressLieu_distribution::getLieuFilterHelp(),
+				'mode'     => __( '(Par défaut “map”) Mode d’affichage. Si Gooogle est votre afficheur de carte, alors vous pouvez choisir : map, map+streetview ou streetview', 'amapress' ),
+				'padding'  => __( '(0 par défaut) marge autours du centrage de la carte', 'amapress' ),
+				'max_zoom' => __( '(18 par défaut, maximum) zoom maximal de la carte', 'amapress' ),
 			]
 		] );
 	amapress_register_shortcode( 'user-map', 'amapress_user_map_shortcode',
 		[
 			'desc' => __( 'Emplacement d\'un amapien', 'amapress' ),
 			'args' => [
+				'padding'  => __( '(0 par défaut) marge autours du centrage de la carte', 'amapress' ),
+				'max_zoom' => __( '(18 par défaut, maximum) zoom maximal de la carte', 'amapress' ),
 			]
 		] );
 	amapress_register_shortcode( 'producteur-map', 'amapress_producteur_map_shortcode',
 		[
 			'desc' => __( 'Emplacement d\'un producteur', 'amapress' ),
 			'args' => [
-				'lieu' => __( 'Afficher la carte du lieu indiqué. ', 'amapress' ) . AmapressLieu_distribution::getLieuFilterHelp(),
-				'mode' => __( '(Par défaut “map”) Mode d’affichage. Si Gooogle est votre afficheur de carte, alors vous pouvez choisir : map, map+streetview ou streetview', 'amapress' ),
+				'lieu'     => __( 'Afficher la carte du lieu indiqué. ', 'amapress' ) . AmapressLieu_distribution::getLieuFilterHelp(),
+				'mode'     => __( '(Par défaut “map”) Mode d’affichage. Si Gooogle est votre afficheur de carte, alors vous pouvez choisir : map, map+streetview ou streetview', 'amapress' ),
+				'padding'  => __( '(0 par défaut) marge autours du centrage de la carte', 'amapress' ),
+				'max_zoom' => __( '(18 par défaut, maximum) zoom maximal de la carte', 'amapress' ),
 			]
 		] );
 	amapress_register_shortcode( 'amapien-avatar', 'amapress_amapien_avatar_shortcode',
@@ -863,6 +871,8 @@ function amapress_register_shortcodes() {
 				'show_adresse'    => __( '(Par défaut “default”) Afficher les adresses des amapiens', 'amapress' ),
 				'show_avatar'     => __( '(Par défaut “default”) Afficher les photos des amapiens', 'amapress' ),
 				'show_lieu'       => __( '(Par défaut “default”) Afficher le nom du lieu de distribution', 'amapress' ),
+				'padding'         => __( '(0 par défaut) marge autours du centrage de la carte', 'amapress' ),
+				'max_zoom'        => __( '(18 par défaut, maximum) zoom maximal de la carte', 'amapress' ),
 			]
 		] );
 	amapress_register_shortcode( 'amapiens-role-list', 'amapress_amapiens_role_list_shortcode',
