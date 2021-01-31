@@ -373,29 +373,6 @@ h3.amap-panel-title {
     list-style-type: none;
 }
 
-#amapress_impersonation_control {
-    position: absolute;
-    right: 0;
-    top: 32px;
-    background-color: #1b6d85;
-    border: 1px solid #23282d;
-    z-index: 99999;
-    padding: 5px;
-    color: #eee;
-    font-family: "Open Sans", sans-serif;
-    vertical-align: baseline;
-}
-
-#amapress_impersonation_user, #amapress_impersonation_date {
-    color: #080808;
-    opacity: 1;
-}
-
-#amapress_impersonation_user[disabled], #amapress_impersonation_date[disabled] {
-    color: #555555;
-    background-color: #e0e0e0;
-}
-
 .entry-content ul {
     padding-left: 1.5em;
 }
