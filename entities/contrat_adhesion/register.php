@@ -1733,10 +1733,17 @@ function amapress_get_contrat_quantite_datatable(
 						( '¤-Toutes-¤' .
 						  ( $final_date != $dist_date ? sprintf( __( ' (report du %s)', 'amapress' ),
 							  date_i18n( 'd/m/Y', $final_date ) ) : '' ) );
-					$row['group']     = $quant ? $quant->getGroupName() : '--';
-					$row['quant_id']  = $quant ? $quant->ID : 0;
-					$row['qid']       = $quant ? str_pad( $qidx, 8, '0', STR_PAD_LEFT ) : '99999999';
-					$quand_id         = $quant ? $quant->getID() : 0;
+					if ( ! $quant && $show_adherents ) {
+						if ( isset( $adhesions[0] ) ) {
+							if ( ! empty( $adhesions[0]->getProducteurMessage() ) ) {
+								$row['quant'] .= '<br />' . __( 'Message : ', 'amapress' ) . $adhesions[0]->getProducteurMessage();
+							}
+						}
+					}
+					$row['group']    = $quant ? $quant->getGroupName() : '--';
+					$row['quant_id'] = $quant ? $quant->ID : 0;
+					$row['qid']      = $quant ? str_pad( $qidx, 8, '0', STR_PAD_LEFT ) : '99999999';
+					$quand_id        = $quant ? $quant->getID() : 0;
 					if ( count( $lieux ) > 1 ) {
 						foreach ( $lieux as $lieu ) {
 							$lieu_quant_adh_count      = 0;
