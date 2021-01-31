@@ -690,6 +690,13 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'id'      => 'amapress_mailinglist_sync_frama_tab',
 									'options' => array(
 										array(
+											'id'      => 'framalistes_enable',
+											'name'    => __( 'Activer', 'amapress' ),
+											'type'    => 'checkbox',
+											'desc'    => __( 'Activer la synchronisation', 'amapress' ),
+											'default' => true,
+										),
+										array(
 											'id'           => 'framalistes_admin_user',
 											'name'         => __( 'Email de l\'admin', 'amapress' ),
 											'type'         => 'text',
