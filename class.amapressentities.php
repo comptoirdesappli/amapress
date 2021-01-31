@@ -352,7 +352,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 								),
 								array(
 									'id'       => 'mailinggroup-waiting-sender-mail-subject',
-									'name'     => __( 'Sujet de l\'email', 'amapress' ),
+									'name'     => __( 'Objet de l\'email', 'amapress' ),
 									'sanitize' => false,
 									'type'     => 'text',
 									'default'  => __( 'Email pour la liste %%liste_nom%% transmis au(x) modérateur(s)', 'amapress' ),
@@ -372,7 +372,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 								),
 								array(
 									'id'       => 'mailinggroup-waiting-mods-mail-subject',
-									'name'     => __( 'Sujet de l\'email', 'amapress' ),
+									'name'     => __( 'Objet de l\'email', 'amapress' ),
 									'sanitize' => false,
 									'type'     => 'text',
 									'default'  => __( 'Email à modérer de %%sender%% pour la liste %%liste_nom%%', 'amapress' ),
@@ -392,7 +392,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 								),
 								array(
 									'id'       => 'mailinggroup-reject-sender-mail-subject',
-									'name'     => __( 'Sujet de l\'email', 'amapress' ),
+									'name'     => __( 'Objet de l\'email', 'amapress' ),
 									'sanitize' => false,
 									'type'     => 'text',
 									'default'  => __( 'Rejet de votre email à %%liste_nom%% - %%msg_subject%%', 'amapress' ),
@@ -412,7 +412,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 								),
 								array(
 									'id'       => 'mailinggroup-distrib-sender-mail-subject',
-									'name'     => __( 'Sujet de l\'email', 'amapress' ),
+									'name'     => __( 'Objet de l\'email', 'amapress' ),
 									'sanitize' => false,
 									'type'     => 'text',
 									'default'  => __( 'Diffusion de votre email à %%liste_nom%%', 'amapress' ),
@@ -435,7 +435,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 								),
 								array(
 									'id'       => 'mailinggroup-distrib-sender-auto-mail-subject',
-									'name'     => __( 'Sujet de l\'email', 'amapress' ),
+									'name'     => __( 'Objet de l\'email', 'amapress' ),
 									'sanitize' => false,
 									'type'     => 'text',
 									'default'  => __( 'Diffusion automatique de votre email à %%liste_nom%%', 'amapress' ),
@@ -1029,7 +1029,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'options' => array(
 										array(
 											'id'       => 'inscr-distrib-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Votre inscription à %%post:title%%', 'amapress' ),
@@ -1066,7 +1066,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'options' => array(
 										array(
 											'id'       => 'desinscr-distrib-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Désinscription de %%post:title%%', 'amapress' ),
@@ -1364,7 +1364,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'id'       => 'inscr-distrib-gardiened-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Garde de vos paniers par %%gardien%% à %%post:title%%', 'amapress' ),
@@ -1391,7 +1391,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'id'       => 'inscr-distrib-gardieneur-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Garde de panier de %%amapien%% à %%post:title%%', 'amapress' ),
@@ -1418,7 +1418,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'id'       => 'desinscr-distrib-gardieneur-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Désaffectation garde de panier de %%amapien%% à %%post:title%%', 'amapress' ),
@@ -1445,7 +1445,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'id'       => 'inscr-distrib-gardien-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Inscription gardien de panier de %%post:title%%', 'amapress' ),
@@ -1466,7 +1466,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'id'       => 'desinscr-distrib-gardien-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Désinscription gardien de panier de %%post:title%%', 'amapress' ),
@@ -1509,7 +1509,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'id'       => 'inscr-distribution-slot-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Réservation du créneau %%creneau%% à %%post:title%%', 'amapress' ),
@@ -1540,7 +1540,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'id'       => 'inscr-distribution-admin-slot-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Attribution du créneau %%creneau%% à %%post:title%%', 'amapress' ),
@@ -1812,7 +1812,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'options' => array(
 										array(
 											'id'       => 'inscr-event-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Votre inscription à %%post:title%%', 'amapress' ),
@@ -1836,7 +1836,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'options' => array(
 										array(
 											'id'       => 'desinscr-event-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Désinscription de %%post:title%%', 'amapress' ),
@@ -1860,7 +1860,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'options' => array(
 										array(
 											'id'       => 'comment-event-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Nouveau commentaire pour %%post:title%%', 'amapress' ),
@@ -1964,7 +1964,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'id'       => 'inscr-visite-slot-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Votre inscription de %%creneau%% à %%post:title%%', 'amapress' ),
@@ -2525,7 +2525,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'options' => array(
 										array(
 											'id'       => 'paiement-awaiting-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Règlement à remettre pour %%contrat_titre_complet%%', 'amapress' ),
@@ -4153,7 +4153,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'options' => array(
 										array(
 											'id'       => 'intermittence-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Votre demande d\'adhésion à l\'espace intermittents', 'amapress' ),
@@ -4176,7 +4176,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 									'options' => array(
 										array(
 											'id'       => 'intermittence-desincr-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Votre demande de désinscription de l\'espace intermittents', 'amapress' ),
@@ -4203,7 +4203,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 										array(
 											'id'       => 'intermittence-panier-dispo-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => '%%post:panier%% à réserver',
@@ -4224,7 +4224,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 										array(
 											'id'       => 'intermittence-panier-on-list-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Votre %%post:panier%% a été mis sur la liste des paniers à échanger', 'amapress' ),
@@ -4255,7 +4255,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 										array(
 											'id'       => 'intermittence-panier-repris-ask-adherent-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Demande de reprise %%post:panier%% par %%post:repreneur-nom%%', 'amapress' ),
@@ -4276,7 +4276,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 										array(
 											'id'       => 'intermittence-panier-repris-ask-repreneur-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'La demande de reprise %%post:panier%% a été envoyée', 'amapress' ),
@@ -4307,7 +4307,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 										array(
 											'id'       => 'intermittence-panier-repris-validation-adherent-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => '%%post:panier%% repris par %%post:repreneur-nom%%',
@@ -4328,7 +4328,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 										array(
 											'id'       => 'intermittence-panier-repris-validation-repreneur-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => '%%post:adherent-nom%% a accepté la reprise de %%post:panier%%',
@@ -4356,7 +4356,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 										array(
 											'id'       => 'intermittence-panier-repris-rejet-repreneur-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => '%%post:adherent-nom%% a refusé la reprise de %%post:panier%%',
@@ -4384,7 +4384,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 										array(
 											'id'       => 'intermittence-panier-cancel-from-adherent-adherent-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Annulation de votre proposition de reprise %%post:panier%%', 'amapress' ),
@@ -4405,7 +4405,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 										array(
 											'id'       => 'intermittence-panier-cancel-from-adherent-repreneur-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Annulation de repise %%post:panier%% de %%post:adherent-nom%%', 'amapress' ),
@@ -4433,7 +4433,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 										array(
 											'id'       => 'intermittence-panier-cancel-from-repreneur-adherent-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Annulation de repise %%post:panier%% par %%post:repreneur-nom%%', 'amapress' ),
@@ -4454,7 +4454,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 										array(
 											'id'       => 'intermittence-panier-cancel-from-repreneur-repreneur-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Confirmation d\'annulation de repise de %%post:panier%% de %%post:adherent-nom%%', 'amapress' ),
@@ -4482,7 +4482,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 										array(
 											'id'       => 'intermittence-panier-admin-adh-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Attribution de votre panier %%post:panier%% à %%post:repreneur-nom%%', 'amapress' ),
@@ -4505,7 +4505,7 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 										),
 										array(
 											'id'       => 'intermittence-panier-admin-rep-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Attribution de %%post:panier%% de %%post:adherent-nom%%', 'amapress' ),
@@ -4949,7 +4949,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 									'options' => array(
 										array(
 											'id'      => 'welcome_mail_subject',
-											'name'    => __( 'Sujet de l\'email d\'enregistrement', 'amapress' ),
+											'name'    => __( 'Objet de l\'email d\'enregistrement', 'amapress' ),
 											'type'    => 'text',
 											'default' => '[%%nom_site%%] Votre compte utilisateur',
 //                                            'capability' => 'manage_amapress',
@@ -4966,7 +4966,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 										),
 										array(
 											'id'      => 'password_lost_mail_subject',
-											'name'    => __( 'Sujet de l\'email de récupération de mot de passe', 'amapress' ),
+											'name'    => __( 'Objet de l\'email de récupération de mot de passe', 'amapress' ),
 											'type'    => 'text',
 											'default' => '[%%nom_site%%] Récupération de votre mot de passe',
 //                                            'capability' => 'manage_amapress',
@@ -4998,7 +4998,7 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 									'options' => array(
 										array(
 											'id'       => 'adh-request-reply-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => __( 'Votre demande d\'adhésion à %%site_name%%', 'amapress' ),
@@ -5791,7 +5791,7 @@ Sélectionnez les Coordinateurs Amap en charge des réponses à l\'aide des menu
 										),
 										array(
 											'id'       => 'new-post-notif-mail-subject',
-											'name'     => __( 'Sujet de l\'email', 'amapress' ),
+											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,
 											'type'     => 'text',
 											'default'  => 'Nouvel article publié - %%post:titre%%',
@@ -6515,7 +6515,7 @@ jQuery(function($) {
 						),
 						array(
 							'id'       => 'msg_subject',
-							'name'     => __( 'Sujet de l\'email', 'amapress' ),
+							'name'     => __( 'Objet de l\'email', 'amapress' ),
 							'type'     => 'text',
 							'required' => true,
 							'default'  => '[AMAP] ',

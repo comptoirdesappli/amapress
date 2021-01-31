@@ -285,7 +285,7 @@ function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] 
 		'className'          => 'min-tablet',
 	);
 	$columns[] = array(
-		'title'              => __( 'Sujet', 'amapress' ),
+		'title'              => __( 'Objet', 'amapress' ),
 		'data'               => 'subject',
 		'responsivePriority' => 1,
 		'className'          => 'min-tablet',

@@ -748,7 +748,7 @@ function amapress_contrat_quantites_recall_options( $num = '' ) {
 		),
 		array(
 			'id'       => 'distribution-quantites' . $num . '-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'type'     => 'text',
 			'sanitize' => false,
 			'default'  => __( 'Quantités de la semaine pour %%producteur_nom%% (%%producteur_contrats%%) - %%post:title%%', 'amapress' ),
@@ -910,7 +910,7 @@ function amapress_contrat_paiements_recall_options() {
 		),
 		array(
 			'id'       => 'contrats-liste-paiements-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Chèques au producteur] Liste des chèques à remettre à %%producteur_nom%% pour %%contrat_nom%% au %%prochaine_date_remise_cheques%%',
@@ -1015,7 +1015,7 @@ function amapress_contrat_renew_recall_options() {
 		),
 		array(
 			'id'       => 'contrat-renew-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'type'     => 'text',
 			'sanitize' => false,
 			'default'  => '%%nb_contrats%% contrats à renouveler',
@@ -1122,7 +1122,7 @@ function amapress_contrat_open_recall_options() {
 		),
 		array(
 			'id'       => 'contrat-open-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'type'     => 'text',
 			'sanitize' => false,
 			'default'  => __( 'Inscriptions %%contrat_type_complet%% - ouverture préinscription %%ouvre_date%%', 'amapress' ),
@@ -1228,7 +1228,7 @@ function amapress_contrat_close_recall_options() {
 		),
 		array(
 			'id'       => 'contrat-close-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'type'     => 'text',
 			'sanitize' => false,
 			'default'  => __( 'Inscriptions %%contrat_type_complet%% - clôture %%ferme_date%%', 'amapress' ),
@@ -1326,7 +1326,7 @@ function amapress_contrat_recap_cloture_recall_options() {
 		),
 		array(
 			'id'       => 'contrat-recap-cloture-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'type'     => 'text',
 			'sanitize' => false,
 			'default'  => __( 'Récapitulatif des inscriptions pour %%post:titre%%', 'amapress' ),

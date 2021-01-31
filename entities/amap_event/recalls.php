@@ -76,7 +76,7 @@ function amapress_amap_event_inscription_recall_options() {
 		),
 		array(
 			'id'       => 'amap-event-inscription-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Vous êtes inscrit à %%post:title%%',
@@ -146,7 +146,7 @@ function amapress_amap_event_available_recall_options() {
 		),
 		array(
 			'id'       => 'amap-event-available-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Un évènement AMAP a lieu bientôt : %%post:title%%',

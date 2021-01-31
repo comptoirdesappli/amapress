@@ -820,7 +820,7 @@ function amapress_distribution_all_amapiens_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-amapiens-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Infos sur %%post:title%%',
@@ -863,7 +863,7 @@ function amapress_distribution_all_amapiens_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-amapiens-indiv-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Infos sur %%post:title%%',
@@ -929,7 +929,7 @@ function amapress_distribution_missing_responsables_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-miss-resps-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Responsable(s) manquant(s) à %%post:title%%',
@@ -1043,7 +1043,7 @@ function amapress_distribution_slots_inscr_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-slot-inscr-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Vous n\'êtes pas encore inscrits aux créneaux de distribution à %%post:title%%',
@@ -1125,7 +1125,7 @@ function amapress_distribution_verify_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-verify-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Vérifier les infos de la %%post:title%%',
@@ -1209,7 +1209,7 @@ function amapress_distribution_responsable_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-resp-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Vous êtes inscrit responsable à %%post:title%%',
@@ -1308,7 +1308,7 @@ function amapress_distribution_responsable_recall2_options() {
 		),
 		array(
 			'id'       => 'distribution-resp-recall-2-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Vous êtes inscrit responsable à %%post:title%%',
@@ -1397,7 +1397,7 @@ function amapress_distribution_gardiens_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-gardiens-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Gardes de paniers à %%post:title%%',
@@ -1420,7 +1420,7 @@ function amapress_distribution_gardiens_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-amapiens-gardiened-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Garde de votre panier par %%gardien%% à %%post:title%%',
@@ -1492,7 +1492,7 @@ function amapress_distribution_emargement_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-emargement-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Emargement] Liste d\'émargement de %%post:title%%',
@@ -1629,7 +1629,7 @@ function amapress_distribution_changes_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-lieu-change-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Changement de lieu pour %%post:title%%',
@@ -1650,7 +1650,7 @@ function amapress_distribution_changes_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-hours-change-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Changement d\'horaire pour %%post:title%%',
@@ -1671,7 +1671,7 @@ function amapress_distribution_changes_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-paniers-change-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Modification de livraison à %%post:title%%',
@@ -1692,7 +1692,7 @@ function amapress_distribution_changes_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-none-this-day-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Pas de distribution le %%date%%',
@@ -1714,7 +1714,7 @@ function amapress_distribution_changes_recall_options() {
 		),
 		array(
 			'id'       => 'distribution-moved-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] La distribution cette semaine aura lieu le %%jour_date_dist%%',

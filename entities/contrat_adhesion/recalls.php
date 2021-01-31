@@ -98,7 +98,7 @@ function amapress_inscriptions_to_validate_recall_options() {
 		),
 		array(
 			'id'       => 'inscriptions-validate-recall-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'type'     => 'text',
 			'sanitize' => false,
 			'default'  => '%%nb_inscriptions%% inscriptions restent à valider',

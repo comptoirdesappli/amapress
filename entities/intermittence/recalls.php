@@ -169,7 +169,7 @@ function amapress_intermittence_dispo_recall_options() {
 		),
 		array(
 			'id'       => 'intermittence-recall-dispo-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => __( 'Il reste encore %%nb-paniers-intermittents%% panier(s) à échanger à %%post:title%%', 'amapress' ),
@@ -226,7 +226,7 @@ function amapress_intermittence_validation_recall_options() {
 		),
 		array(
 			'id'       => 'intermittence-panier-repris-recall-adherent-mail-subject',
-			'name'     => __( 'Sujet de l\'email', 'amapress' ),
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Demande de reprise %%post:panier%% par %%post:repreneur-nom%% à valider depuis le %%attente_depuis%%',
