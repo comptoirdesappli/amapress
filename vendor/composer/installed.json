@@ -2117,23 +2117,23 @@
     },
     {
         "name": "tecnickcom/tcpdf",
-        "version": "6.2.17",
-        "version_normalized": "6.2.17.0",
+        "version": "6.3.5",
+        "version_normalized": "6.3.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/tecnickcom/TCPDF.git",
-            "reference": "64fc19439863e1b1314487a72a74d9bfd0b55a53"
+            "reference": "19a535eaa7fb1c1cac499109deeb1a7a201b4549"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/64fc19439863e1b1314487a72a74d9bfd0b55a53",
-            "reference": "64fc19439863e1b1314487a72a74d9bfd0b55a53",
+            "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/19a535eaa7fb1c1cac499109deeb1a7a201b4549",
+            "reference": "19a535eaa7fb1c1cac499109deeb1a7a201b4549",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2018-02-24T11:48:20+00:00",
+        "time": "2020-02-14T14:20:12+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -2158,7 +2158,7 @@
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
-            "LGPL-3.0"
+            "LGPL-3.0-only"
         ],
         "authors": [
             {
@@ -2185,12 +2185,12 @@
         "version_normalized": "1.9.1.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/webmozart/assert.git",
+            "url": "https://github.com/webmozarts/assert.git",
             "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/webmozart/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
+            "url": "https://api.github.com/repos/webmozarts/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
             "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389",
             "shasum": ""
         },
