@@ -32,11 +32,11 @@ namespace Stripe;
  * amount due for the invoice is less than Stripe's <a
  * href="/docs/currencies#minimum-and-maximum-charge-amounts">minimum allowed
  * charge per currency</a>, the invoice is automatically marked paid, and we add
- * the amount due to the customer's running account balance which is applied to the
- * next invoice.
+ * the amount due to the customer's credit balance which is applied to the next
+ * invoice.
  *
- * More details on the customer's account balance are <a
- * href="https://stripe.com/docs/api/customers/object#customer_object-account_balance">here</a>.
+ * More details on the customer's credit balance are <a
+ * href="https://stripe.com/docs/billing/customer/balance">here</a>.
  *
  * Related guide: <a href="https://stripe.com/docs/billing/invoices/sending">Send
  * Invoices to Customers</a>.
@@ -45,6 +45,7 @@ namespace Stripe;
  * @property string $object String representing the object's type. Objects of the same type share the same value.
  * @property null|string $account_country The country of the business associated with this invoice, most often the business creating the invoice.
  * @property null|string $account_name The public name of the business associated with this invoice, most often the business creating the invoice.
+ * @property null|(string|\Stripe\TaxId)[] $account_tax_ids The account tax IDs associated with the invoice. Only editable when the invoice is a draft.
  * @property int $amount_due Final amount due at this time for this invoice. If the invoice's total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the <code>amount_due</code> may be 0. If there is a positive <code>starting_balance</code> for the invoice (the customer owes money), the <code>amount_due</code> will also take that into account. The charge that gets generated for the invoice will be for the amount specified in <code>amount_due</code>.
  * @property int $amount_paid The amount, in %s, that was paid.
  * @property int $amount_remaining The amount remaining, in %s, that is due.
@@ -67,16 +68,17 @@ namespace Stripe;
  * @property null|string $customer_tax_exempt The customer's tax exempt status. Until the invoice is finalized, this field will equal <code>customer.tax_exempt</code>. Once the invoice is finalized, this field will no longer be updated.
  * @property null|\Stripe\StripeObject[] $customer_tax_ids The customer's tax IDs. Until the invoice is finalized, this field will contain the same tax IDs as <code>customer.tax_ids</code>. Once the invoice is finalized, this field will no longer be updated.
  * @property null|string|\Stripe\PaymentMethod $default_payment_method ID of the default payment method for the invoice. It must belong to the customer associated with the invoice. If not set, defaults to the subscription's default payment method, if any, or to the default payment method in the customer's invoice settings.
- * @property null|string|\Stripe\StripeObject $default_source ID of the default payment source for the invoice. It must belong to the customer associated with the invoice and be in a chargeable state. If not set, defaults to the subscription's default source, if any, or to the customer's default source.
- * @property null|\Stripe\TaxRate[] $default_tax_rates The tax rates applied to this invoice, if any.
+ * @property null|string|\Stripe\Account|\Stripe\AlipayAccount|\Stripe\BankAccount|\Stripe\BitcoinReceiver|\Stripe\Card|\Stripe\Source $default_source ID of the default payment source for the invoice. It must belong to the customer associated with the invoice and be in a chargeable state. If not set, defaults to the subscription's default source, if any, or to the customer's default source.
+ * @property \Stripe\TaxRate[] $default_tax_rates The tax rates applied to this invoice, if any.
  * @property null|string $description An arbitrary string attached to the object. Often useful for displaying to users. Referenced as 'memo' in the Dashboard.
- * @property null|\Stripe\Discount $discount Describes the current discount applied to this invoice, if there is one.
+ * @property null|\Stripe\Discount $discount Describes the current discount applied to this invoice, if there is one. Not populated if there are multiple discounts.
  * @property null|(string|\Stripe\Discount)[] $discounts The discounts applied to the invoice. Line item discounts are applied before invoice discounts. Use <code>expand[]=discounts</code> to expand each discount.
  * @property null|int $due_date The date on which payment for this invoice is due. This value will be <code>null</code> for invoices where <code>collection_method=charge_automatically</code>.
  * @property null|int $ending_balance Ending customer balance after the invoice is finalized. Invoices are finalized approximately an hour after successful webhook delivery or when payment collection is attempted for the invoice. If the invoice has not been finalized yet, this will be null.
  * @property null|string $footer Footer displayed on the invoice.
  * @property null|string $hosted_invoice_url The URL for the hosted invoice page, which allows customers to view and pay an invoice. If the invoice has not been finalized yet, this will be null.
  * @property null|string $invoice_pdf The link to download the PDF for the invoice. If the invoice has not been finalized yet, this will be null.
+ * @property null|\Stripe\ErrorObject $last_finalization_error The error encountered during the previous attempt to finalize the invoice. This field is cleared when the invoice is successfully finalized.
  * @property \Stripe\Collection $lines The individual line items that make up the invoice. <code>lines</code> is sorted as follows: invoice items in reverse chronological order, followed by the subscription, if any.
  * @property bool $livemode Has the value <code>true</code> if the object exists in live mode or the value <code>false</code> if the object exists in test mode.
  * @property null|\Stripe\StripeObject $metadata Set of <a href="https://stripe.com/docs/api/metadata">key-value pairs</a> that you can attach to an object. This can be useful for storing additional information about the object in a structured format.
@@ -97,11 +99,10 @@ namespace Stripe;
  * @property int $subscription_proration_date Only set for upcoming invoices that preview prorations. The time used to calculate prorations.
  * @property int $subtotal Total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or tax is applied. Item discounts are already incorporated
  * @property null|int $tax The amount of tax on this invoice. This is the sum of all the tax amounts on this invoice.
- * @property null|float $tax_percent This percentage of the subtotal has been added to the total amount of the invoice, including invoice line items and discounts. This field is inherited from the subscription's <code>tax_percent</code> field, but can be changed before the invoice is paid. This field defaults to null.
  * @property \Stripe\StripeObject $threshold_reason
  * @property int $total Total after discounts and taxes.
  * @property null|\Stripe\StripeObject[] $total_discount_amounts The aggregate amounts calculated per discount across all line items.
- * @property null|\Stripe\StripeObject[] $total_tax_amounts The aggregate amounts calculated per tax rate for all line items.
+ * @property \Stripe\StripeObject[] $total_tax_amounts The aggregate amounts calculated per tax rate for all line items.
  * @property null|int $webhooks_delivered_at Invoices are automatically paid or sent 1 hour after webhooks are delivered, or until all webhook delivery attempts have <a href="https://stripe.com/docs/billing/webhooks#understand">been exhausted</a>. This field tracks the time when webhooks for this invoice were successfully delivered. If the invoice had no webhooks to deliver, this will be set while the invoice is being created.
  */
 class Invoice extends ApiResource
