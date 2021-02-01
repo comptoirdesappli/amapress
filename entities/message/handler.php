@@ -287,7 +287,7 @@ function amapress_handle_send_message() {
 
 	$opt                 = json_decode( wp_unslash( $_REQUEST['amapress_msg_target'] ), true );
 	$opt['send_mode']    = $_REQUEST['amapress_send_mode'];
-	$opt['send_from_me'] = isset( $_REQUEST['amapress_send_from_me'] );
+	$opt['send_from_me'] = isset( $_REQUEST['amapress_send_from'] ) && 'user' == $_REQUEST['amapress_send_from'];
 
 //    $target_name = $opt['target_name'];
 //    $target_type = $opt['target_type'];

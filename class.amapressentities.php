@@ -6484,13 +6484,17 @@ jQuery(document).ready(function($) {
 							}
 						),
 						array(
+							'name' => __( 'Personalisation de l\'email', 'amapress' ),
+							'type' => 'heading',
+						),
+						array(
 							'id'           => 'msg_target',
 							'name'         => __( 'Destinataire', 'amapress' ),
 							'type'         => 'select',
 							'options'      => 'amapress_message_get_targets',
 							'required'     => true,
 							'after_option' => function ( $option ) {
-								echo '<p>' . __( 'Sera envoyé à : ', 'amapress' ) . '<span id="amapress_msg_target_members"></span></p>';
+								echo '<p>' . __( 'Envoyer à : ', 'amapress' ) . '<span id="amapress_msg_target_members"></span></p>';
 								echo '<script type="text/javascript">
 jQuery(function($) {
     var on_change = function() {
@@ -6507,41 +6511,51 @@ jQuery(function($) {
 							'name'     => __( 'Type d\'envoi', 'amapress' ),
 							'type'     => 'select',
 							'options'  => array(
-								'bcc'   => __( 'Email groupé (Bcc)', 'amapress' ),
-								'cc'    => __( 'Email groupé avec tout le monde en copie (Cc)', 'amapress' ),
-								'indiv' => __( 'Email individuel', 'amapress' ),
+								'bcc'   => __( 'Groupé Bcc : les destinaires sont en copie cachée', 'amapress' ),
+								'cc'    => __( 'Groupé Cc : les destinaires sont en copie visible', 'amapress' ),
+								'indiv' => __( 'Individuel : un mail par destinaire', 'amapress' ),
 							),
 							'required' => true,
 						),
 						array(
-							'id'       => 'send_from_me',
-							'name'     => __( 'Envoyer de ma part', 'amapress' ),
-							'type'     => 'checkbox',
-							'default'  => true,
+							'id'       => 'send_from',
+							'name'     => __( 'Emetteur', 'amapress' ),
+							'type'     => 'radio',
+							'options'  => function () {
+								$amapien    = AmapressUser::getBy( amapress_current_user_id() );
+								$site_name  = $new = Amapress::getOption( 'email_from_name' );
+								$site_email = $new = Amapress::getOption( 'email_from_mail' );
+								if ( empty( $site_email ) ) {
+									$site_email = amapress_get_default_wordpress_from_email();
+								}
+								$ret = array(
+									'site' => sprintf( '%s (%s)', $site_name, $site_email ),
+									'user' => sprintf( '%s (%s)', $amapien->getDisplayName(), $amapien->getEmail() ),
+								);
+
+								return $ret;
+							},
+							'default'  => 'site',
 							'required' => true,
 						),
 						array(
 							'id'       => 'msg_subject',
-							'name'     => __( 'Objet de l\'email', 'amapress' ),
+							'name'     => __( 'Objet', 'amapress' ),
 							'type'     => 'text',
 							'required' => true,
 							'default'  => '[AMAP] ',
 							'desc'     => function ( $o ) {
-								return sprintf( __( 'Pensez à préfixer le sujet de votre mail avec un motif du type [AMAP] ou [%s] pour être mieux identifié par les destinataires', 'amapress' ),
+								return sprintf( __( 'Ajoutez un préfixe de la forme [%s] pour que le mail soit facilement identifié par vos destinataires', 'amapress' ),
 									get_bloginfo( 'name' ) );
 							},
 						),
 						array(
 							'id'       => 'msg_content',
-							'name'     => __( 'Contenu de l\'email', 'amapress' ),
+							'name'     => __( 'Contenu', 'amapress' ),
 							'type'     => 'editor',
 							'required' => true,
+							'desc'     => __( 'Rédigez votre message', 'amapress' ),
 						),
-//						array(
-//							'id'   => 'msg_content_for_sms',
-//							'name' => 'Contenu du sms associé',
-//							'type' => 'textarea',
-//						),
 						array(
 							'type'      => 'save',
 							'save'      => __( 'Envoyer', 'amapress' ),
