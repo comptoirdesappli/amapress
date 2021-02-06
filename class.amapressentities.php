@@ -5412,12 +5412,13 @@ Retrouvez le shortcode associé avec le filtre docspace-amapiens.
 //                                ),
 										array(
 											'id'        => 'preinscription-form',
-											'name'      => __( 'Formulaire de préinscription', 'amapress' ),
+											'name'      => __( 'Formulaire de demande d\'adhésion', 'amapress' ),
 											'type'      => 'select-posts',
 											'edit_link' => false,
 											'post_type' => Amapress::WPCF7_POST_TYPE,
 											'desc'      => function ( $o ) {
-												return sprintf( __( 'Sélectionner une formulaire de contact dans la liste ci-dessus. Vous les éditer depuis la <a href="%s">page suivante</a>. Ce formulaire sera automatiquement ajouté aux infos de contact ci-dessous.', 'amapress' ), admin_url( 'admin.php?page=wpcf7' ) );
+												return sprintf( __( 'Sélectionner votre formulaire de demande d\'adhésion dans la liste ci-dessus. <br/>Vous pouvez en créer un depuis <a href="%s">Tableau de bord&gt;Contact&gt;Modifier le formulaire de contact</a>. <br/>Ce formulaire sera automatiquement ajouté en dessous des infos de contact ci-dessous.', 'amapress' ), admin_url( 'admin.php?page=wpcf7' ) )
+												       . '<br/>' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/contact_form' );
 											},
 										),
 //                                array(

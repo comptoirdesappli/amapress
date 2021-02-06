@@ -283,7 +283,10 @@ function amapress_get_state() {
 		__( '<strong>Recommandé</strong> : Permet de remplacer facilement une image ou un contrat Word dans la « Media Library » de Wordpress', 'amapress' ),
 		'warning' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'contact-form-7', __( 'Contact Form 7', 'amapress' ),
-		__( '<strong>Optionnel</strong> : Permet de créer des formulaires de préinscription à l’AMAP, de contacter les auteurs de recettes…', 'amapress' ),
+		sprintf(
+			__( '<strong>Optionnel</strong> : Permet de créer des formulaires de demande d\'adhésion à l’AMAP (%s), de contact les auteurs de recettes…', 'amapress' ),
+			Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/contact_form' )
+		),
 		'info' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'really-simple-captcha', __( 'Really Simple CAPTCHA', 'amapress' ),
 		__( '<strong>Optionnel</strong> : Permet de mettre des captcha dans les formulaires Contact Form 7 pour empêcher les bots de spams', 'amapress' ),
@@ -551,7 +554,8 @@ function amapress_get_state() {
 	$state['05_config'][] = amapress_get_check_state(
 		empty( $contact_page ) || strpos( $contact_page, '[[' ) !== false ? 'warning' : 'success',
 		__( 'Contenu de la page de contact', 'amapress' ),
-		__( 'Ajouter les informations nécessaires pour contacter l’Amap pour une nouvelle inscription.', 'amapress' ),
+		__( 'Ajouter les informations nécessaires pour contacter l’Amap pour une nouvelle inscription.', 'amapress' )
+		. '<br/>' . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/contact_form' ),
 		admin_url( 'options-general.php?page=amapress_options_page&tab=amp_public_contacts_config' )
 	);
 	$state['05_config'][] = amapress_get_check_state(
@@ -1514,22 +1518,22 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 			'href'  => $amapien_les_paniers_edit_href,
 			'categ' => __( '5/ Espace intermittents', 'amapress' ),
 		],
-		'intermittent-paniers'           => [
+		'intermittent-paniers'          => [
 			'desc'  => __( 'Ajouter le shortcode %s à la page Mes paniers échangés pour afficher "Les paniers que j\'ai réservé"', 'amapress' ),
 			'href'  => $amapien_mes_paniers_edit_href,
 			'categ' => __( '5/ Espace intermittents', 'amapress' ),
 		],
-		'amapiens-map'                   => [
+		'amapiens-map'                  => [
 			'desc'  => __( 'Ajouter une page avec le shortcode %s pour afficher la carte des amapiens', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '3/ Info utiles', 'amapress' ),
 		],
-		'amapiens-role-list'             => [
+		'amapiens-role-list'            => [
 			'desc'  => __( 'Ajouter une page avec le shortcode %s pour afficher la liste des membres du collectif', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '3/ Info utiles', 'amapress' ),
 		],
-		'agenda-url'                     => [
+		'agenda-url'                    => [
 			'desc'  => __( 'Ajouter le shortcode %s (ou [agenda-url-button]) à la page Mes infos pour permettre aux amapiens d\'ajouter leur calendrier à leur agenda', 'amapress' ),
 			'href'  => $amapien_mes_infos_edit_href,
 			'categ' => __( '4/ Profil amapien', 'amapress' ),
@@ -1574,22 +1578,22 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 			'href'  => $new_page_href,
 			'categ' => __( '6/ Inscriptions en ligne', 'amapress' ),
 		],
-		'listes-diffusions'              => [
+		'listes-diffusions'             => [
 			'desc'  => __( 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens ou au collectif de connaitre les listes de diffusions configurées de votre AMAP', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '3/ Info utiles', 'amapress' ),
 		],
-		'inscription-visite'             => [
+		'inscription-visite'            => [
 			'desc'  => __( 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens de s\'inscrires aux visites aux producteurs', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '8/ Inscriptions', 'amapress' ),
 		],
-		'amapress-latest-posts'          => [
+		'amapress-latest-posts'         => [
 			'desc'  => __( 'Ajouter le shortcode %s sur une page pour permettre d\'afficher une liste des derniers articles publiés sur le site', 'amapress' ),
 			'href'  => $new_page_href,
 			'categ' => __( '3/ Info utiles', 'amapress' ),
 		],
-		'producteur-map'                 => [
+		'producteur-map'                => [
 			'desc'  => __( 'Ajouter le shortcode %s sur une page pour permettre d\'afficher la carte des producteurs', 'amapress' ),
 			'href'  => $new_page_href,
 			'categ' => __( '3/ Info utiles', 'amapress' ),
