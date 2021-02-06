@@ -155,6 +155,9 @@ function amapress_SudOuest_get_mailinglist_systems( $systems ) {
 	$mailinglist_domain = trim( trim( Amapress::getOption( 'sud-ouest_mailing_domain' ) ), '@' );
 	$login              = Amapress::getOption( 'sud-ouest_admin_user' );
 	$pass               = Amapress::getOption( 'sud-ouest_admin_pass' );
+	if ( defined( 'AMAPRESS_SUDOUEST_SYMPA_ADMIN_PASSWORD' ) ) {
+		$pass = AMAPRESS_SUDOUEST_SYMPA_ADMIN_PASSWORD;
+	}
 	if ( ! empty( $mailinglist_domain ) && ! empty( $login ) && ! empty( $pass ) ) {
 		$systems[] = new Amapress_SudOuest_MailSystem( $mailinglist_domain, $login, $pass );
 	}

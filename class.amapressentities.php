@@ -660,6 +660,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'autocomplete' => false,
 											'is_password'  => true,
 											'default'      => '',
+											'desc'         => function ( $option ) {
+												return Amapress::getWpConfigSecretHelp( 'AMAPRESS_SUDOUEST_SYMPA_ADMIN_PASSWORD' );
+											}
 										),
 										array(
 											'id'      => 'sud-ouest_secret',
