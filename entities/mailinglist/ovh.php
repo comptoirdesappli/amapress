@@ -202,11 +202,20 @@ class Amapress_OVH_MailSystem extends Amapress_MailingSystem {
 
 add_filter( 'amapress_get_mailinglist_systems', 'amapress_ovh_get_mailinglist_systems' );
 function amapress_ovh_get_mailinglist_systems( $systems ) {
-	$ovh_mailingdomain      = Amapress::getOption( 'ovh_mailing_domain' );
-	$ovh_application_key    = Amapress::getOption( 'ovh_application_key' );
+	$ovh_mailingdomain   = Amapress::getOption( 'ovh_mailing_domain' );
+	$ovh_application_key = Amapress::getOption( 'ovh_application_key' );
+	if ( defined( 'AMAPRESS_MAILING_OVH_APPLICATION_KEY' ) ) {
+		$ovh_application_key = AMAPRESS_MAILING_OVH_APPLICATION_KEY;
+	}
 	$ovh_application_secret = Amapress::getOption( 'ovh_application_secret' );
-	$ovh_consumer_key       = Amapress::getOption( 'ovh_consumer_key' );
-	$ovh_endpoint           = Amapress::getOption( 'ovh_endpoint' );
+	if ( defined( 'AMAPRESS_MAILING_OVH_APPLICATION_SECRET' ) ) {
+		$ovh_application_secret = AMAPRESS_MAILING_OVH_APPLICATION_SECRET;
+	}
+	$ovh_consumer_key = Amapress::getOption( 'ovh_consumer_key' );
+	if ( defined( 'AMAPRESS_MAILING_OVH_CONSUMER_KEY' ) ) {
+		$ovh_consumer_key = AMAPRESS_MAILING_OVH_CONSUMER_KEY;
+	}
+	$ovh_endpoint = Amapress::getOption( 'ovh_endpoint' );
 	if ( ! empty( $ovh_application_key ) && ! empty( $ovh_application_secret ) && ! empty( $ovh_consumer_key ) ) {
 		$systems[] = new Amapress_OVH_MailSystem( $ovh_mailingdomain,
 			$ovh_application_key, $ovh_application_secret, $ovh_consumer_key,

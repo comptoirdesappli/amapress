@@ -752,6 +752,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'         => 'text',
 											'autocomplete' => false,
 											'default'      => '',
+											'desc'         => function ( $option ) {
+												return Amapress::getWpConfigSecretHelp( 'AMAPRESS_MAILING_OVH_APPLICATION_KEY' );
+											}
 										),
 										array(
 											'id'           => 'ovh_application_secret',
@@ -759,6 +762,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'         => 'text',
 											'autocomplete' => false,
 											'default'      => '',
+											'desc'         => function ( $option ) {
+												return Amapress::getWpConfigSecretHelp( 'AMAPRESS_MAILING_OVH_APPLICATION_SECRET' );
+											}
 										),
 										array(
 											'id'           => 'ovh_consumer_key',
@@ -766,6 +772,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'type'         => 'text',
 											'autocomplete' => false,
 											'default'      => '',
+											'desc'         => function ( $option ) {
+												return Amapress::getWpConfigSecretHelp( 'AMAPRESS_MAILING_OVH_CONSUMER_KEY' );
+											}
 										),
 										array(
 											'id'           => 'ovh_endpoint',
