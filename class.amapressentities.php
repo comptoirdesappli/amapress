@@ -716,6 +716,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'autocomplete' => false,
 											'is_password'  => true,
 											'default'      => '',
+											'desc'         => function ( $option ) {
+												return Amapress::getWpConfigSecretHelp( 'AMAPRESS_FRAMALISTE_ADMIN_PASSWORD' );
+											}
 										),
 //										array(
 //											'id'      => 'framalistes_manage_waiting',

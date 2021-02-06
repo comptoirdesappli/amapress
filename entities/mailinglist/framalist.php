@@ -199,8 +199,11 @@ class Amapress_Framalist_MailSystem extends Amapress_Sympa_MailSystem {
 
 add_filter( 'amapress_get_mailinglist_systems', 'amapress_framalistes_get_mailinglist_systems' );
 function amapress_framalistes_get_mailinglist_systems( $systems ) {
-	$login   = Amapress::getOption( 'framalistes_admin_user' );
-	$pass    = Amapress::getOption( 'framalistes_admin_pass' );
+	$login = Amapress::getOption( 'framalistes_admin_user' );
+	$pass  = Amapress::getOption( 'framalistes_admin_pass' );
+	if ( defined( 'AMAPRESS_FRAMALISTE_ADMIN_PASSWORD' ) ) {
+		$pass = AMAPRESS_FRAMALISTE_ADMIN_PASSWORD;
+	}
 	$enabled = Amapress::getOption( 'framalistes_enable' );
 	if ( $enabled && ! empty( $login ) && ! empty( $pass ) ) {
 		$systems[] = new Amapress_Framalist_MailSystem( 'framalistes.org', $login, $pass );
