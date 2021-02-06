@@ -129,11 +129,11 @@ if ( ! class_exists( 'Amapress_Install_Plugin_From_GitHub' ) ) {
 
 add_action( 'admin_action_install_github_plugin', function () {
 	if ( ! current_user_can( 'update_core' ) ) {
-		wp_die( 'Access denied' );
+		wp_die( 'Access denied', 403 );
 	}
 
 	if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'install_github_plugin' ) ) {
-		wp_die( 'Access denied' );
+		wp_die( 'Access denied', 403 );
 	}
 
 	$installer = new Amapress_Install_Plugin_From_GitHub(

@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action( 'admin_post_test_mail', function () {
 	$key = Amapress::getOption( 'test_mail_key' );
 	if ( empty( $_GET['key'] ) || $_GET['key'] != $key ) {
-		wp_die( __( 'Access denied', 'amapress' ) );
+		wp_die( 'Access denied', 403 );
 	}
 
 	if ( ! defined( 'DOING_CRON' ) ) {

@@ -3361,11 +3361,11 @@ add_action( 'admin_menu', function () {
 			$contrat_id = null;
 			if ( isset( $_GET['inscr_id'] ) ) {
 				if ( ! current_user_can( 'edit_adhesion', $_GET['inscr_id'] ) ) {
-					wp_die( __( 'Access denied', 'amapress' ) );
+					wp_die( 'Access denied', 403 );
 				}
 				$adh = AmapressAdhesion::getBy( intval( $_GET['inscr_id'] ) );
 				if ( empty( $adh ) ) {
-					wp_die( __( 'Access denied', 'amapress' ) );
+					wp_die( 'Access denied', 403 );
 				}
 
 				$grp_by_grp = isset( $_GET['grp_by_grp'] );
