@@ -176,6 +176,9 @@ function amapress_ouvaton_get_mailinglist_systems( $systems ) {
 	$mailinglist_domain = trim( trim( Amapress::getOption( 'ouvaton_mailing_domain' ) ), '@' );
 	$login              = Amapress::getOption( 'ouvaton_admin_user' );
 	$pass               = Amapress::getOption( 'ouvaton_admin_pass' );
+	if ( defined( 'AMAPRESS_OUVATON_SYMPA_ADMIN_PASSWORD' ) ) {
+		$pass = AMAPRESS_OUVATON_SYMPA_ADMIN_PASSWORD;
+	}
 	if ( ! empty( $mailinglist_domain ) && ! empty( $login ) && ! empty( $pass ) ) {
 		$systems[] = new Amapress_Ouvaton_MailSystem( $mailinglist_domain, $login, $pass );
 	}

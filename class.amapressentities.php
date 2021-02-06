@@ -599,7 +599,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										),
 										array(
 											'id'           => 'ouvaton_admin_user',
-											'name'         => __( 'Email de l\'admin', 'amapress' ),
+											'name'         => __( 'Email de l\'admin Sympa', 'amapress' ),
 											'type'         => 'text',
 											'autocomplete' => false,
 											'default'      => '',
@@ -611,6 +611,9 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'autocomplete' => false,
 											'is_password'  => true,
 											'default'      => '',
+											'desc'         => function ( $option ) {
+												return Amapress::getWpConfigSecretHelp( 'AMAPRESS_OUVATON_SYMPA_ADMIN_PASSWORD' );
+											}
 										),
 //										array(
 //											'id'      => 'ouvaton_manage_waiting',
