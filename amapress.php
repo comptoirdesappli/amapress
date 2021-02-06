@@ -2295,3 +2295,15 @@ function some_function( $new, $old, $post ) {
 		return;
 	}
 }
+
+add_filter( 'wp_die_handler', function ( $handler ) {
+	return function ( $message, $title, $args ) use ( $handler ) {
+		if ( isset( $args['response'] ) && 403 == $args['response'] ) {
+			$message .= '<br/>' . Amapress::makeButtonLink(
+					admin_url(),
+					__( 'Retourner au Tableau de bord', 'amapress' ) );
+		}
+
+		return call_user_func( $handler, $message, $title, $args );
+	};
+} );
