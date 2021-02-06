@@ -18,7 +18,7 @@ class TitanFrameworkOptionRadio extends TitanFrameworkOption {
 
 		echo '<fieldset>';
 
-		foreach ( $this->settings['options'] as $value => $label ) {
+		foreach ( $this->fetchOptions() as $value => $label ) {
 			printf( '<label for="%s"><input id="%s" type="radio" name="%s" value="%s" %s/> %s</label><br>',
 				$this->getID() . $value,
 				$this->getID() . $value,
@@ -34,6 +34,15 @@ class TitanFrameworkOptionRadio extends TitanFrameworkOption {
 		$this->echoOptionFooter( false );
 	}
 
+	public function fetchOptions() {
+		$options = $this->settings['options'];
+		if ( is_callable( $options, false ) ) {
+			return call_user_func( $options, $this );
+		} else {
+			return $options;
+		}
+	}
+
 	/*
 	 * Display for theme customizer
 	 */
@@ -42,7 +51,7 @@ class TitanFrameworkOptionRadio extends TitanFrameworkOption {
 			'label'       => $this->settings['name'],
 			'section'     => $section->settings['id'],
 			'settings'    => $this->getID(),
-			'choices'     => $this->settings['options'],
+			'choices'     => $this->fetchOptions(),
 			'type'        => 'radio',
 			'description' => $this->settings['desc'],
 			'priority'    => $priority,
