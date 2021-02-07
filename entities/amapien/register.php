@@ -217,7 +217,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'default'        => 0,
 				'col_def_hidden' => true,
 			),
-			'no_renew_reason' => array(
+			'no_renew_reason'   => array(
 				'name'           => __( 'Motif', 'amapress' ),
 				'type'           => 'text',
 				'default'        => '',
@@ -226,7 +226,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'desc'           => __( 'Motif de non renouvellement', 'amapress' ),
 				'col_def_hidden' => true,
 			),
-			'last_login'      => array(
+			'last_login'        => array(
 				'name'                 => __( 'Dernière connexion', 'amapress' ),
 				'type'                 => 'custom',
 				'show_column'          => true,
@@ -244,7 +244,7 @@ function amapress_register_entities_amapien( $entities ) {
 					return date_i18n( 'd/m/Y H:i:s', intval( $last_login ) );
 				}
 			),
-			'create_date'     => array(
+			'create_date'       => array(
 				'name'                 => __( 'Date création', 'amapress' ),
 				'type'                 => 'custom',
 				'show_column'          => true,
@@ -262,12 +262,12 @@ function amapress_register_entities_amapien( $entities ) {
 					return date_i18n( 'd/m/Y H:i:s', intval( $creation_date ) );
 				}
 			),
-			'head_amapress0'  => array(
+			'head_amapress0'    => array(
 				'id'   => 'amapress_sect',
 				'name' => __( 'Amapress', 'amapress' ),
 				'type' => 'heading',
 			),
-			'avatar'          => array(
+			'avatar'            => array(
 				'name'            => __( 'Avatar', 'amapress' ),
 				'selector-title'  => __( 'Sélectionnez/téléversez votre photo', 'amapress' ),
 				'selector-button' => __( 'Utiliser cette photo', 'amapress' ),
@@ -276,7 +276,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'desc'            => __( 'Avatar', 'amapress' ),
 				'show_column'     => false,
 			),
-			'head_amapress'   => array(
+			'head_amapress'     => array(
 				'id'   => 'address_sect',
 				'name' => __( 'Adresses', 'amapress' ),
 				'type' => 'heading',
@@ -355,7 +355,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'telephone4'     => array(
+			'telephone4'        => array(
 				'name'           => __( 'Téléphone 4', 'amapress' ),
 				'type'           => 'text',
 				'desc'           => __( 'Téléphone 4', 'amapress' ),
@@ -364,7 +364,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'moyen'          => array(
+			'moyen'             => array(
 				'name'           => __( 'Moyen préféré', 'amapress' ),
 				'type'           => 'select',
 				'show_column'    => true,
@@ -375,13 +375,13 @@ function amapress_register_entities_amapien( $entities ) {
 				),
 				'desc'           => __( 'Moyen de communication préféré', 'amapress' ),
 			),
-			'head_amapress6' => array(
+			'head_amapress6'    => array(
 				'id'      => 'contrats_sect',
 				'name'    => __( 'Contrats', 'amapress' ),
 				'type'    => 'heading',
 				'show_on' => 'edit-only',
 			),
-			'adhesions'      => array(
+			'adhesions'         => array(
 				'name'                     => __( 'Adhésions', 'amapress' ),
 				'show_column'              => true,
 				'col_def_hidden'           => true,
@@ -407,7 +407,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'                     => 'related-posts',
 				'query'                    => 'post_type=amps_adh_pmt&amapress_user=%%id%%&orderby=title&order=asc',
 			),
-			'contrats'       => array(
+			'contrats'          => array(
 				'name'                     => __( 'Contrats', 'amapress' ),
 				'show_column'              => true,
 				'related_posts_count_func' => function ( $user_id ) {
@@ -433,7 +433,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'                     => 'related-posts',
 				'query'                    => 'post_type=amps_adhesion&amapress_date=active&amapress_user=%%id%%&orderby=title&order=asc',
 			),
-			'contrats-past'  => array(
+			'contrats-past'     => array(
 				'name'              => __( 'Contrats passés', 'amapress' ),
 				'show_column'       => false,
 				'include_columns'   => array(
@@ -1195,9 +1195,47 @@ function amapress_register_admin_bar_menu_items( $items ) {
 		)
 	);
 
+	if ( amapress_is_admin_or_responsable() || isset( $_COOKIE['amps_role'] ) ) {
+		$roles_items = [];
+		foreach (
+			[
+				'producteur'        => __( 'Amap Producteur', 'amapress' ),
+				'tresorier'         => __( 'Amap Trésorier', 'amapress' ),
+				'coordinateur_amap' => __( 'Amap Coordinateur', 'amapress' ),
+				'redacteur_amap'    => __( 'Amap Rédacteur', 'amapress' ),
+				'referent'          => __( 'Amap Référent producteur', 'amapress' ),
+				'responsable_amap'  => __( 'Amap Responsable', 'amapress' ),
+				'reset'             => __( 'Revenir au principal', 'amapress' ),
+			] as $role => $role_name
+		) {
+			$selected      = ( isset( $_COOKIE['amps_role'] ) && $_COOKIE['amps_role'] == $role );
+			$roles_items[] = array(
+				'id'         => 'amapress_set_role_' . $role,
+				'title'      => $role_name,
+				'icon'       => $selected ? 'dashicons-saved' : '',
+				'capability' => 'read',
+				'href'       => wp_nonce_url( add_query_arg(
+					array(
+						'action' => 'amps_set_role',
+						'role'   => $role,
+					),
+					admin_url( 'admin.php' )
+				), 'amps_set_role' ),
+			);
+		}
+		$items[] = array(
+			'id'        => 'amapress_role_setter',
+			'title'     => '<span class="ab-icon amps-role-chooser dashicons-universal-access"></span><span class="ab-label">Rôle</span>',
+			'condition' => function () {
+				return amapress_can_access_admin();
+			},
+			'items'     => $roles_items,
+		);
+	}
+
 	$items[] = array(
 		'id'        => 'amapress',
-		'title'     => '<span class="ab-icon amps-icon"></span><span class="ab-label">Amapress</span>',
+		'title'     => '<span class="ab-icon amps-icon"></span><span class="ab-label">Accès rapide</span>',
 		'condition' => function () {
 			return amapress_can_access_admin();
 		},
@@ -1243,9 +1281,9 @@ function amapress_add_infos_to_user_editor( WP_User $user ) {
 	$user_infos .= sprintf( __( ' ; Dernière connexion : %s', 'amapress' ), empty( $last_login ) ? __( 'jamais', 'amapress' ) : date_i18n( 'd/m/Y H:i:s', intval( $last_login ) ) );
 	echo "<tr class='row-action-wrap'><th scope='row'><label>" . __( 'Infos', 'amapress' ) . "</label></th><td>$user_infos</td></tr>";
 
-	$is_ref_prod_list = AmapressContrats::getReferentProducteursAndLieux( $user->ID );
-	$is_ref_prod      = ! empty( $is_ref_prod_list );
-	$ref_prod_message = implode( ', ', array_unique( array_map(
+	$is_ref_prod_list   = AmapressContrats::getReferentProducteursAndLieux( $user->ID );
+	$is_ref_prod        = ! empty( $is_ref_prod_list );
+	$ref_prod_message   = implode( ', ', array_unique( array_map(
 		function ( $r ) {
 			$prod = AmapressProducteur::getBy( $r['producteur'] );
 			if ( empty( $prod ) ) {
@@ -1437,3 +1475,43 @@ function amapress_get_new_user_approve_user_status( $user_id ) {
 
 	return $user_status;
 }
+
+add_action( 'admin_action_amps_set_role', function () {
+	if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'amps_set_role' ) ) {
+		wp_die( 'Access denied', 403 );
+	}
+
+	if ( ! amapress_is_admin_or_responsable() && ! isset( $_COOKIE['amps_role'] ) ) {
+		wp_die( 'Access denied', 403 );
+	}
+
+	$role = ! empty( $_REQUEST['role'] ) ? $_REQUEST['role'] : '';
+	if ( ! empty( $role ) ) {
+		if ( 'reset' == $role ) {
+			setcookie( 'amps_role', false, time() - YEAR_IN_SECONDS, '/' );
+		} else {
+			setcookie( 'amps_role', $role, 0, '/' );
+		}
+	}
+	wp_redirect_and_exit( admin_url() );
+} );
+
+add_action( 'wp_login', function () {
+	setcookie( 'amps_role', false, time() - YEAR_IN_SECONDS, '/' );
+} );
+
+add_filter( 'user_has_cap', function ( $allcaps ) {
+	if ( ! empty( $_COOKIE['amps_role'] ) ) {
+		$role_name = $_COOKIE['amps_role'];
+		$key       = "amps-role-{$role_name}";
+		$allcaps   = wp_cache_get( $key );
+		if ( false == $allcaps ) {
+			$role                  = get_role( $role_name ); // Get the role object by role name
+			$allcaps               = $role->capabilities;  // Get the capabilities for the role
+			$allcaps[ $role_name ] = true;     // Add role name to capabilities
+			wp_cache_set( $key, $allcaps );
+		}
+	}
+
+	return $allcaps;
+} );
