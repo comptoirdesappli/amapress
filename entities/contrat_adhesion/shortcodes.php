@@ -1337,13 +1337,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                             : </label>
                     </th>
                     <td><input style="width: 100%" type="text" id="telm" name="telm"
-                               class="<?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
+                               class="mobilePhoneCheck <?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
                                value="<?php echo esc_attr( $user_mobile_phones ) ?>"/></td>
                 </tr>
                 <tr>
                     <th style="text-align: left; width: auto"><label
                                 for="telf"><?php _e( 'Téléphone fixe : ', 'amapress' ) ?></label></th>
-                    <td><input style="width: 100%" type="text" id="telf" name="telf" class=""
+                    <td><input style="width: 100%" type="text" id="telf" name="telf" class="fixPhoneCheck"
                                value="<?php echo esc_attr( $user_fix_phones ) ?>"/></td>
                 </tr>
                 <tr>
@@ -4792,13 +4792,6 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
                     }
                 }
             );
-
-            jQuery.validator.addMethod("required_if_not_empty", function (value, element) {
-                if (jQuery('#' + jQuery(element).data('if-id')).val().length > 0) {
-                    return jQuery(element).val().trim().length > 0;
-                }
-                return true;
-            }, "<?php echo esc_js( __( 'Champ requis', 'amapress' ) ); ?>");
 
             jQuery.validator.addMethod("single_name", function (value, element) {
                 return !(/[;\/\\,]/.test(jQuery(element).val()));

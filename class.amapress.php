@@ -4511,6 +4511,16 @@ class Amapress {
 		return empty( trim( wp_strip_all_tags( $html, true ) ) );
 	}
 
+	public static function formatPhone( $tel, $with_spaces = false ) {
+		$tel = preg_replace( '/\+33\s*(?:\(\s*0\s*\)|0)?/', '0', $tel );
+		$tel = preg_replace( '/\D+/', '', $tel );
+		if ( $with_spaces ) {
+			$tel = preg_replace( '/^(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/', "$1\xA0$2\xA0$3\xA0$4\xA0$5", $tel );
+		}
+
+		return $tel;
+	}
+
 	public static function getSiteDomainName(
 		$tld = false
 	) {

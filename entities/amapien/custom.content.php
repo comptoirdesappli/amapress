@@ -91,21 +91,6 @@ function amapress_edit_user_info_shortcode( $atts ) {
 		$cofoy3_address        = $user->getCoFoyer3()->getFormattedAdresse();
 	}
 	?>
-
-    <script type="text/javascript">
-        //<![CDATA[
-        jQuery(function ($) {
-            $(".amapress_validate").validate();
-
-            jQuery.validator.addMethod("required_if_not_empty", function (value, element) {
-                if (jQuery('#' + jQuery(element).data('if-id')).val().length > 0) {
-                    return jQuery(element).val().trim().length > 0;
-                }
-                return true;
-            }, "<?php echo esc_js( __( 'Champ requis', 'amapress' ) ); ?>");
-        });
-        //]]>
-    </script>
     <form role="form" action="" id="user_profile" method="POST" enctype="multipart/form-data" class="amapress_validate">
 		<?php wp_nonce_field( 'user_profile_nonce', 'user_profile_nonce_field' ); ?>
         <div class="form-group">
@@ -129,12 +114,13 @@ function amapress_edit_user_info_shortcode( $atts ) {
         <div class="form-group">
             <label for="amapress_user_telephone"><?php _e( 'Téléphone mobile', 'amapress' ) ?></label>
             <input type="text" name="amapress_user_telephone" id="amapress_user_telephone"
-                   class="form-control <?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
+                   class="form-control mobilePhoneCheck <?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
                    value="<?php esc_attr_e( implode( '/', $user->getPhoneNumbers( true ) ) ); ?>"/>
         </div>
         <div class="form-group">
             <label for="amapress_user_telephone2"><?php _e( 'Téléphone fixe', 'amapress' ) ?></label>
-            <input class="form-control" type="text" name="amapress_user_telephone2" id="amapress_user_telephone2"
+            <input class="form-control fixPhoneCheck" type="text" name="amapress_user_telephone2"
+                   id="amapress_user_telephone2"
                    value="<?php esc_attr_e( implode( '/', $user->getPhoneNumbers( false ) ) ); ?>"/>
         </div>
         <div class="form-group">

@@ -238,3 +238,39 @@ function amapress_post_validation() {
     </script>';
 	<?php
 }
+
+add_action( 'wp_print_footer_scripts', function () {
+	?>
+    <script type="text/javascript">
+        //<![CDATA[
+        jQuery(function ($) {
+            $(".amapress_validate").validate();
+
+            jQuery.validator.addMethod("required_if_not_empty", function (value, element) {
+                if (jQuery('#' + jQuery(element).data('if-id')).val().length > 0) {
+                    return jQuery(element).val().trim().length > 0;
+                }
+                return true;
+            }, "<?php echo esc_js( __( 'Champ requis', 'amapress' ) ); ?>");
+
+            jQuery.validator.addMethod(
+                "mobilePhoneCheck",
+                function (value, element) {
+                    var re = new RegExp(/^(\+33\s?[67]|0[67])\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}$/);
+                    return this.optional(element) || null == value || 0 === value.length || re.test(value);
+                },
+                "<?php echo esc_js( __( 'Numéro de téléphone mobile invalide', 'amapress' ) ); ?>"
+            );
+            jQuery.validator.addMethod(
+                "fixPhoneCheck",
+                function (value, element) {
+                    var re = new RegExp(/^(\+33\s?[123459]|0[123459])\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}$/);
+                    return this.optional(element) || null == value || 0 === value.length || re.test(value);
+                },
+                "<?php echo esc_js( __( 'Numéro de téléphone fixe invalide', 'amapress' ) ); ?>"
+            );
+        });
+        //]]>
+    </script>
+	<?php
+} );

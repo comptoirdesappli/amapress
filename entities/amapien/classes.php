@@ -406,13 +406,17 @@ WHERE tt.taxonomy = %s", AmapressUser::AMAPIEN_GROUP ) );
 			return '';
 		}
 
-		return $this->custom['amapress_user_telephone'];
+		return Amapress::formatPhone( $this->custom['amapress_user_telephone'] );
 	}
 
 	public function getPhoneNumbers(
-		$mobile = 'both'
+		$mobile = 'both',
+		$with_spaces = true
 	) {
-		$tel = $this->getTelephone() . ' ' . $this->getTelephone2();
+		$tel = $this->getTelephone()
+		       . ' ' . $this->getTelephone2()
+		       . ' ' . $this->getTelephone3()
+		       . ' ' . $this->getTelephone4();
 		if ( empty( $tel ) ) {
 			return [];
 		}
@@ -434,7 +438,7 @@ WHERE tt.taxonomy = %s", AmapressUser::AMAPIEN_GROUP ) );
 			if ( isset( $ret[ $tel_norm ] ) ) {
 				continue;
 			}
-			$ret[ $tel_norm ] = $m[0];
+			$ret[ $tel_norm ] = Amapress::formatPhone( $m[0], $with_spaces );
 		}
 
 		return $ret;
@@ -443,7 +447,7 @@ WHERE tt.taxonomy = %s", AmapressUser::AMAPIEN_GROUP ) );
 	public function getTelTo(
 		$mobile = 'both', $sms = false, $first_only = false, $separator = '<br/>'
 	) {
-		$phone_numbers = $this->getPhoneNumbers( $mobile );
+		$phone_numbers = $this->getPhoneNumbers( $mobile, false );
 		if ( empty( $phone_numbers ) ) {
 			return '';
 		}
@@ -464,7 +468,25 @@ WHERE tt.taxonomy = %s", AmapressUser::AMAPIEN_GROUP ) );
 			return '';
 		}
 
-		return $this->custom['amapress_user_telephone2'];
+		return Amapress::formatPhone( $this->custom['amapress_user_telephone2'] );
+	}
+
+	public function getTelephone3() {
+		$this->ensure_init();
+		if ( empty( $this->custom['amapress_user_telephone3'] ) ) {
+			return '';
+		}
+
+		return Amapress::formatPhone( $this->custom['amapress_user_telephone3'] );
+	}
+
+	public function getTelephone4() {
+		$this->ensure_init();
+		if ( empty( $this->custom['amapress_user_telephone4'] ) ) {
+			return '';
+		}
+
+		return Amapress::formatPhone( $this->custom['amapress_user_telephone4'] );
 	}
 
 	public function getAdditionalCoAdherents() {
