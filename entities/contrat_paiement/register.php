@@ -78,7 +78,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 					return date_i18n( 'm/Y', $paiement->getDate() );
 				},
 			),
-			'date_emission' => array(
+			'date_emission'      => array(
 				'name'         => __( 'Date d\'émission', 'amapress' ),
 				'type'         => 'date',
 				'required'     => false,
@@ -87,7 +87,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'csv_required' => true,
 				'searchable'   => true,
 			),
-			'adhesion'      => array(
+			'adhesion'           => array(
 				'name'         => __( 'Inscription', 'amapress' ),
 				'type'         => 'select-posts',
 				'post_type'    => 'amps_adhesion',
@@ -100,7 +100,39 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'searchable'   => true,
 				'show_column'  => false,
 			),
-			'contrat'       => array(
+			'adherent_lastname'  => array(
+				'csv_import'     => false,
+				'csv_export'     => true,
+				'hidden'         => true,
+				'name'           => __( 'Nom', 'amapress' ),
+				'type'           => 'custom',
+				'col_def_hidden' => true,
+				'column'         => function ( $post_id ) {
+					$pmt = AmapressAmapien_paiement::getBy( $post_id );
+					if ( ! $pmt->getAdhesion() || ! $pmt->getAdhesion()->getAdherent() ) {
+						return '';
+					}
+
+					return $pmt->getAdhesion()->getAdherent()->getUser()->last_name;
+				}
+			),
+			'adherent_firstname' => array(
+				'csv_import'     => false,
+				'csv_export'     => true,
+				'hidden'         => true,
+				'name'           => __( 'Prénom', 'amapress' ),
+				'type'           => 'custom',
+				'col_def_hidden' => true,
+				'column'         => function ( $post_id ) {
+					$pmt = AmapressAmapien_paiement::getBy( $post_id );
+					if ( ! $pmt->getAdhesion() || ! $pmt->getAdhesion()->getAdherent() ) {
+						return '';
+					}
+
+					return $pmt->getAdhesion()->getAdherent()->getUser()->first_name;
+				}
+			),
+			'contrat'            => array(
 				'name'       => __( 'Contrat', 'amapress' ),
 				'type'       => 'custom',
 				'hidden'     => true,
