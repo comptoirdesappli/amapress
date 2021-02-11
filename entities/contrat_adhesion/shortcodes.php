@@ -459,6 +459,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'email'                               => get_option( 'admin_email' ),
 			'use_quantite_tables'                 => 'false',
 			'allow_trombi_decline'                => 'true',
+			'force_upper'                         => 'false',
 			'for_intermittent'                    => 'false',
 			'allow_existing_mail_for_public'      => 'false',
 		]
@@ -481,6 +482,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 
 	$amapien                             = null;
 	$paiements_info_required             = Amapress::toBool( $atts['paiements_info_required'] );
+	$force_upper                         = Amapress::toBool( $atts['force_upper'] );
 	$allow_trombi_decline                = Amapress::toBool( $atts['allow_trombi_decline'] );
 	$allow_classic_adhesion              = Amapress::toBool( $atts['allow_classic_adhesion'] );
 	$activate_adhesion                   = Amapress::toBool( $atts['adhesion'] );
@@ -1319,7 +1321,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     <th style="text-align: left; width: auto"><label
                                 for="last_name"><?php _e( 'Nom* : ', 'amapress' ) ?></label></th>
                     <td><input style="width: 100%" type="text" id="last_name" name="last_name"
-                               class="required single_name"
+                               class="required single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                value="<?php echo esc_attr( $user_last_name ) ?>" <?php disabled( ! $edit_names ) ?>/>
                     </td>
                 </tr>
@@ -1327,7 +1329,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                     <th style="text-align: left; width: auto"><label
                                 for="first_name"><?php _e( 'Prénom* : ', 'amapress' ) ?></label></th>
                     <td><input style="width: 100%" type="text" id="first_name" name="first_name"
-                               class="required single_name"
+                               class="required single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                value="<?php echo esc_attr( $user_firt_name ) ?>" <?php disabled( ! $edit_names ) ?>/>
                     </td>
                 </tr>
@@ -1351,10 +1353,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                 for="address"><?php _e( 'Adresse', 'amapress' ) ?><?php echo( Amapress::toBool( $atts['address_required'] ) ? '*' : '' ); ?>
                             : </label></th>
                     <td><textarea style="width: 100%" rows="4" id="address" name="address"
-                                  class="<?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
+                                  class="<?php echo( $force_upper ? 'force-upper' : '' ); ?> <?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
                     </td>
                 </tr>
-				<?php if ( $allow_trombi_decline ) { ?>
+	            <?php if ( $allow_trombi_decline ) { ?>
                     <tr>
                         <th style="text-align: left; width: auto"></th>
                         <td>
@@ -1363,7 +1365,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                             </label>
                         </td>
                     </tr>
-				<?php } ?>
+	            <?php } ?>
             </table>
             <div>
 				<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
@@ -1393,7 +1395,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                                                                                    type="text"
                                                                                                    id="cofoy1_last_name"
                                                                                                    name="cofoy1_last_name"
-                                                                                                   class="required_if_not_empty single_name"
+                                                                                                   class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                                    data-if-id="cofoy1_email"
                                                                                                    value="<?php echo esc_attr( $cofoy1_user_last_name ) ?>"/>
                         </td>
@@ -1406,7 +1408,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                                                                                    type="text"
                                                                                                    id="cofoy1_first_name"
                                                                                                    name="cofoy1_first_name"
-                                                                                                   class="required_if_not_empty single_name"
+                                                                                                   class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                                    data-if-id="cofoy1_email"
                                                                                                    value="<?php echo esc_attr( $cofoy1_user_firt_name ) ?>"/>
                         </td>
@@ -1432,7 +1434,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                                                                                           rows="4"
                                                                                                           id="cofoy1_address"
                                                                                                           name="cofoy1_address"
-                                                                                                          class=""><?php echo esc_textarea( $cofoy1_address ); ?></textarea>
+                                                                                                          class="<?php echo( $force_upper ? 'force-upper' : '' ); ?>"><?php echo esc_textarea( $cofoy1_address ); ?></textarea>
                             </td>
                         </tr>
 					<?php } ?>
@@ -1474,7 +1476,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                                                                                    type="text"
                                                                                                    id="cofoy2_last_name"
                                                                                                    name="cofoy2_last_name"
-                                                                                                   class="required_if_not_empty single_name"
+                                                                                                   class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                                    data-if-id="cofoy2_email"
                                                                                                    value="<?php echo esc_attr( $cofoy2_user_last_name ) ?>"/>
                         </td>
@@ -1487,7 +1489,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                                                                                    type="text"
                                                                                                    id="cofoy2_first_name"
                                                                                                    name="cofoy2_first_name"
-                                                                                                   class="required_if_not_empty single_name"
+                                                                                                   class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                                    data-if-id="cofoy2_email"
                                                                                                    value="<?php echo esc_attr( $cofoy2_user_firt_name ) ?>"/>
                         </td>
@@ -1511,7 +1513,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                                                                                           rows="4"
                                                                                                           id="cofoy2_address"
                                                                                                           name="cofoy2_address"
-                                                                                                          class=""><?php echo esc_textarea( $cofoy2_address ); ?></textarea>
+                                                                                                          class="<?php echo( $force_upper ? 'force-upper' : '' ); ?>"><?php echo esc_textarea( $cofoy2_address ); ?></textarea>
                             </td>
                         </tr>
 					<?php } ?>
@@ -1552,7 +1554,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                                                                                    type="text"
                                                                                                    id="cofoy3_last_name"
                                                                                                    name="cofoy3_last_name"
-                                                                                                   class="required_if_not_empty single_name"
+                                                                                                   class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                                    data-if-id="cofoy3_email"
                                                                                                    value="<?php echo esc_attr( $cofoy3_user_last_name ) ?>"/>
                         </td>
@@ -1565,7 +1567,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                                                                                    type="text"
                                                                                                    id="cofoy3_first_name"
                                                                                                    name="cofoy3_first_name"
-                                                                                                   class="required_if_not_empty single_name"
+                                                                                                   class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                                    data-if-id="cofoy3_email"
                                                                                                    value="<?php echo esc_attr( $cofoy3_user_firt_name ) ?>"/>
                         </td>
@@ -1589,7 +1591,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                                                                                           rows="4"
                                                                                                           id="cofoy3_address"
                                                                                                           name="cofoy3_address"
-                                                                                                          class=""><?php echo esc_textarea( $cofoy3_address ); ?></textarea>
+                                                                                                          class="<?php echo( $force_upper ? 'force-upper' : '' ); ?>"><?php echo esc_textarea( $cofoy3_address ); ?></textarea>
                             </td>
                         </tr>
 					<?php } ?>
@@ -1628,7 +1630,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh1_last_name"
                                                                                   name="coadh1_last_name"
-                                                                                  class="required_if_not_empty single_name"
+                                                                                  class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                   data-if-id="coadh1_email"
                                                                                   value="<?php echo esc_attr( $coadh1_user_last_name ) ?>"/>
                         </td>
@@ -1640,7 +1642,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         <td><input <?php disabled( ! empty( $coadh1_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh1_first_name"
                                                                                   name="coadh1_first_name"
-                                                                                  class="required_if_not_empty single_name"
+                                                                                  class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                   data-if-id="coadh1_email"
                                                                                   value="<?php echo esc_attr( $coadh1_user_firt_name ) ?>"/>
                         </td>
@@ -1661,7 +1663,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                         for="coadh1_address"><?php _e( 'Adresse : ', 'amapress' ) ?></label>
                             </th>
                             <td><textarea style="width: 100%" rows="4" id="coadh1_address" name="coadh1_address"
-                                          class=""><?php echo esc_textarea( $coadh1_address ); ?></textarea></td>
+                                          class="<?php echo( $force_upper ? 'force-upper' : '' ); ?>"><?php echo esc_textarea( $coadh1_address ); ?></textarea>
+                            </td>
                         </tr>
 					<?php } ?>
 					<?php if ( $allow_remove_coadhs && ! empty( $coadh1_email ) ) { ?>
@@ -1698,7 +1701,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh2_last_name"
                                                                                   name="coadh2_last_name"
-                                                                                  class="required_if_not_empty single_name"
+                                                                                  class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                   data-if-id="coadh2_email"
                                                                                   value="<?php echo esc_attr( $coadh2_user_last_name ) ?>"/>
                         </td>
@@ -1710,7 +1713,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         <td><input <?php disabled( ! empty( $coadh2_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh2_first_name"
                                                                                   name="coadh2_first_name"
-                                                                                  class="required_if_not_empty single_name"
+                                                                                  class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                   data-if-id="coadh2_email"
                                                                                   value="<?php echo esc_attr( $coadh2_user_firt_name ) ?>"/>
                         </td>
@@ -1731,7 +1734,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                         for="coadh2_address"><?php _e( 'Adresse : ', 'amapress' ) ?></label>
                             </th>
                             <td><textarea style="width: 100%" rows="4" id="coadh2_address" name="coadh2_address"
-                                          class=""><?php echo esc_textarea( $coadh2_address ); ?></textarea></td>
+                                          class="<?php echo( $force_upper ? 'force-upper' : '' ); ?>"><?php echo esc_textarea( $coadh2_address ); ?></textarea>
+                            </td>
                         </tr>
 					<?php } ?>
 					<?php if ( $allow_remove_coadhs && ! empty( $coadh2_email ) ) { ?>
@@ -1768,7 +1772,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh3_last_name"
                                                                                   name="coadh3_last_name"
-                                                                                  class="required_if_not_empty single_name"
+                                                                                  class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                   data-if-id="coadh3_email"
                                                                                   value="<?php echo esc_attr( $coadh3_user_last_name ) ?>"/>
                         </td>
@@ -1780,7 +1784,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                         <td><input <?php disabled( ! empty( $coadh3_email ) ); ?> style="width: 100%" type="text"
                                                                                   id="coadh3_first_name"
                                                                                   name="coadh3_first_name"
-                                                                                  class="required_if_not_empty single_name"
+                                                                                  class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                   data-if-id="coadh3_email"
                                                                                   value="<?php echo esc_attr( $coadh3_user_firt_name ) ?>"/>
                         </td>
@@ -1801,7 +1805,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                         for="coadh3_address"><?php _e( 'Adresse : ', 'amapress' ) ?></label>
                             </th>
                             <td><textarea style="width: 100%" rows="4" id="coadh3_address" name="coadh3_address"
-                                          class=""><?php echo esc_textarea( $coadh3_address ); ?></textarea></td>
+                                          class="<?php echo( $force_upper ? 'force-upper' : '' ); ?>"><?php echo esc_textarea( $coadh3_address ); ?></textarea>
+                            </td>
                         </tr>
 					<?php } ?>
 					<?php if ( $allow_remove_coadhs && ! empty( $coadh3_email ) ) { ?>

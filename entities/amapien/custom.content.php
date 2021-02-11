@@ -18,6 +18,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
 	$atts                  = shortcode_atts(
 		[
 			'edit_names'            => 'true',
+			'force_upper'           => 'false',
 			'max_cofoyers'          => intval( Amapress::getOption( 'def_max_cofoy', 3 ) ),
 			'show_cofoyers_address' => 'false',
 			'show_adherents_infos'  => 'true',
@@ -27,6 +28,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
 			'allow_trombi_decline'  => 'true',
 		], $atts
 	);
+	$force_upper           = Amapress::toBool( $atts['force_upper'] );
 	$address_required      = Amapress::toBool( $atts['address_required'] );
 	$show_adherents_infos  = Amapress::toBool( $atts['show_adherents_infos'] );
 	$allow_trombi_decline  = Amapress::toBool( $atts['allow_trombi_decline'] );
@@ -95,20 +97,23 @@ function amapress_edit_user_info_shortcode( $atts ) {
 		<?php wp_nonce_field( 'user_profile_nonce', 'user_profile_nonce_field' ); ?>
         <div class="form-group">
             <label for="first_name"><?php _e( 'Prénom', 'amapress' ) ?></label>
-            <input type="text" class="form-control required" id="first_name" name="first_name"
+            <input type="text" id="first_name" name="first_name"
                    placeholder="<?php echo esc_attr__( 'Prénom', 'amapress' ) ?>"
+                   class="form-control required <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                    value="<?php esc_attr_e( $user->getUser()->first_name ); ?>" <?php disabled( ! $edit_names ) ?>>
         </div>
         <div class="form-group">
             <label for="last_name"><?php _e( 'Nom', 'amapress' ) ?></label>
-            <input type="text" class="form-control required" id="last_name" name="last_name"
+            <input type="text" id="last_name" name="last_name"
                    placeholder="<?php echo esc_attr__( 'Nom', 'amapress' ) ?>"
+                   class="form-control required <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                    value="<?php esc_attr_e( $user->getUser()->last_name ); ?>" <?php disabled( ! $edit_names ) ?>>
         </div>
         <div class="form-group">
             <label for="last_name"><?php _e( 'Nom d\'affichage', 'amapress' ) ?></label>
             <input type="text" class="form-control required" id="display_name" name="display_name"
                    placeholder="<?php echo esc_attr__( 'Nom d\'affichage', 'amapress' ) ?>"
+                   class="form-control required <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                    value="<?php esc_attr_e( $user->getUser()->display_name ); ?>" <?php disabled( ! $edit_names ) ?>>
         </div>
         <div class="form-group">
@@ -151,14 +156,15 @@ function amapress_edit_user_info_shortcode( $atts ) {
             <label for="amapress_user_adresse">
 				<?php _e( 'Adresse', 'amapress' ) ?><br/>
             </label>
-            <textarea class="form-control <?php echo $address_required ? 'required' : ''; ?>"
-                      name="amapress_user_adresse" id="amapress_user_adresse" rows="4"
-                      cols="40"
-                      placeholder="<?php echo esc_attr__( 'Adresse', 'amapress' ) ?>"><?php echo esc_textarea( $user->getAdresse() ); ?></textarea>
+            <textarea
+                    class="form-control <?php echo $address_required ? 'required' : ''; ?> <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
+                    name="amapress_user_adresse" id="amapress_user_adresse" rows="4"
+                    cols="40"
+                    placeholder="<?php echo esc_attr__( 'Adresse', 'amapress' ) ?>"><?php echo esc_textarea( $user->getAdresse() ); ?></textarea>
         </div>
         <div class="form-group">
             <label for="amapress_user_code_postal">
-		        <?php _e( 'Code postal', 'amapress' ) ?><br/>
+				<?php _e( 'Code postal', 'amapress' ) ?><br/>
             </label>
             <input class="form-control <?php echo $address_required ? 'required' : ''; ?>" type="text"
                    name="amapress_user_code_postal" id="amapress_user_code_postal"
@@ -167,24 +173,25 @@ function amapress_edit_user_info_shortcode( $atts ) {
         </div>
         <div class="form-group">
             <label for="amapress_user_ville">
-			    <?php _e( 'Ville', 'amapress' ) ?><br/>
+				<?php _e( 'Ville', 'amapress' ) ?><br/>
             </label>
-            <input class="form-control <?php echo $address_required ? 'required' : ''; ?>" type="text"
+            <input class="form-control <?php echo $address_required ? 'required' : ''; ?> <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
+                   type="text"
                    name="amapress_user_ville" id="amapress_user_ville"
                    value="<?php esc_attr_e( wp_unslash( $user->getVille() ) ); ?>"/>
         </div>
-	    <?php if ( $allow_trombi_decline ) { ?>
+		<?php if ( $allow_trombi_decline ) { ?>
             <div class="form-group">
                 <label for="amapress_user_hidaddr">
                     <input class="form-control" type="checkbox" name="amapress_user_hidaddr" id="amapress_user_hidaddr"
-					    <?php echo checked( 1, $user->isHiddenFromTrombi() ); ?>/>
-				    <?php _e( 'Ne pas apparaître sur le trombinoscope', 'amapress' ) ?><br/>
+						<?php echo checked( 1, $user->isHiddenFromTrombi() ); ?>/>
+					<?php _e( 'Ne pas apparaître sur le trombinoscope', 'amapress' ) ?><br/>
                 </label>
             </div>
-	    <?php } ?>
+		<?php } ?>
         <div class="form-group">
             <label for="amapress_user_moyen">
-			    <?php _e( 'Moyen de communication préféré', 'amapress' ) ?><br/>
+				<?php _e( 'Moyen de communication préféré', 'amapress' ) ?><br/>
             </label>
             <select class="form-control" name="amapress_user_moyen" id="amapress_user_moyen">
                 <option
@@ -238,7 +245,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
                                                                                                type="text"
                                                                                                id="cofoy1_last_name"
                                                                                                name="cofoy1_last_name"
-                                                                                               class="required_if_not_empty single_name"
+                                                                                               class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                                data-if-id="cofoy1_email"
                                                                                                value="<?php echo esc_attr( $cofoy1_user_last_name ) ?>"/>
                     </td>
@@ -251,7 +258,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
                                                                                                type="text"
                                                                                                id="cofoy1_first_name"
                                                                                                name="cofoy1_first_name"
-                                                                                               class="required_if_not_empty single_name"
+                                                                                               class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                                data-if-id="cofoy1_email"
                                                                                                value="<?php echo esc_attr( $cofoy1_user_firt_name ) ?>"/>
                     </td>
@@ -277,7 +284,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
                                                                                                       rows="4"
                                                                                                       id="cofoy1_address"
                                                                                                       name="cofoy1_address"
-                                                                                                      class=""><?php echo esc_textarea( $cofoy1_address ); ?></textarea>
+                                                                                                      class="<?php echo( $force_upper ? 'force-upper' : '' ); ?>"><?php echo esc_textarea( $cofoy1_address ); ?></textarea>
                         </td>
                     </tr>
 				<?php } ?>
@@ -319,7 +326,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
                                                                                                type="text"
                                                                                                id="cofoy2_last_name"
                                                                                                name="cofoy2_last_name"
-                                                                                               class="required_if_not_empty single_name"
+                                                                                               class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                                data-if-id="cofoy2_email"
                                                                                                value="<?php echo esc_attr( $cofoy2_user_last_name ) ?>"/>
                     </td>
@@ -332,7 +339,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
                                                                                                type="text"
                                                                                                id="cofoy2_first_name"
                                                                                                name="cofoy2_first_name"
-                                                                                               class="required_if_not_empty single_name"
+                                                                                               class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                                data-if-id="cofoy2_email"
                                                                                                value="<?php echo esc_attr( $cofoy2_user_firt_name ) ?>"/>
                     </td>
@@ -356,7 +363,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
                                                                                                       rows="4"
                                                                                                       id="cofoy2_address"
                                                                                                       name="cofoy2_address"
-                                                                                                      class=""><?php echo esc_textarea( $cofoy2_address ); ?></textarea>
+                                                                                                      class="<?php echo( $force_upper ? 'force-upper' : '' ); ?>"><?php echo esc_textarea( $cofoy2_address ); ?></textarea>
                         </td>
                     </tr>
 				<?php } ?>
@@ -397,7 +404,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
                                                                                                type="text"
                                                                                                id="cofoy3_last_name"
                                                                                                name="cofoy3_last_name"
-                                                                                               class="required_if_not_empty single_name"
+                                                                                               class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                                data-if-id="cofoy3_email"
                                                                                                value="<?php echo esc_attr( $cofoy3_user_last_name ) ?>"/>
                     </td>
@@ -410,7 +417,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
                                                                                                type="text"
                                                                                                id="cofoy3_first_name"
                                                                                                name="cofoy3_first_name"
-                                                                                               class="required_if_not_empty single_name"
+                                                                                               class="required_if_not_empty single_name <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                                                                                                data-if-id="cofoy3_email"
                                                                                                value="<?php echo esc_attr( $cofoy3_user_firt_name ) ?>"/>
                     </td>
@@ -434,7 +441,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
                                                                                                       rows="4"
                                                                                                       id="cofoy3_address"
                                                                                                       name="cofoy3_address"
-                                                                                                      class=""><?php echo esc_textarea( $cofoy3_address ); ?></textarea>
+                                                                                                      class="<?php echo( $force_upper ? 'force-upper' : '' ); ?>"><?php echo esc_textarea( $cofoy3_address ); ?></textarea>
                         </td>
                     </tr>
 				<?php } ?>

@@ -130,7 +130,11 @@ function amapress_post_validation() {
                     alert('<?php echo esc_js( __( 'Certains champs ne sont pas valides', 'amapress' ) ); ?>');
                 }
             });
-
+            $('.force-upper').each(function () {
+                $(this).val($(this).val().toUpperCase());
+            }).keyup(function () {
+                $(this).val($(this).val().toUpperCase());
+            });
             var updateBtn = jQuery("form#your-profile #submit");
             updateBtn.hide().after("<input type=\'button\' value=\'<?php echo esc_js( __( 'Mettre à jour', 'amapress' ) ); ?>\' id=\'amapress_update_user\' class=\'amapress_update_user button-primary\' />");
             jQuery("#amapress_update_user, #wp-admin-bar-amapress_update_user_admin_bar button.amapress_update_user").click(function () {
@@ -245,6 +249,12 @@ add_action( 'wp_print_footer_scripts', function () {
         //<![CDATA[
         jQuery(function ($) {
             $(".amapress_validate").validate();
+
+            $('.force-upper').each(function () {
+                $(this).val($(this).val().toUpperCase());
+            }).keyup(function () {
+                $(this).val($(this).val().toUpperCase());
+            });
 
             jQuery.validator.addMethod("required_if_not_empty", function (value, element) {
                 if (jQuery('#' + jQuery(element).data('if-id')).val().length > 0) {

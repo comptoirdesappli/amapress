@@ -7,12 +7,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function amapress_intermittence_anon_inscription_shortcode( $atts, $content = null, $tag = '' ) {
 	$atts = shortcode_atts( array(
-		'key'      => '',
-		'shorturl' => '',
+		'key'         => '',
+		'shorturl'    => '',
+		'force_upper' => 'false',
 	), $atts );
 
-	$ret = '';
-	$key = $atts['key'];
+	$ret         = '';
+	$force_upper = Amapress::toBool( $atts['force_upper'] );
+	$key         = $atts['key'];
 	if ( amapress_can_access_admin() ) {
 		$sample_key = uniqid() . uniqid();
 		$url        = add_query_arg( 'key', $key, get_permalink() );
@@ -68,11 +70,11 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
   </div>
   <div class="form-group">
     <label for="first_name">' . __( 'Prénom:', 'amapress' ) . '</label>
-    <input type="text" class="form-control required" id="first_name" name="first_name">
+    <input type="text" class="form-control required ' . ( $force_upper ? 'force-upper' : '' ) . '" id="first_name" name="first_name">
   </div>
   <div class="form-group">
     <label for="last_name">' . __( 'Nom:', 'amapress' ) . '</label>
-    <input type="text" class="form-control required" id="last_name" name="last_name">
+    <input type="text" class="form-control required ' . ( $force_upper ? 'force-upper' : '' ) . '" id="last_name" name="last_name">
   </div>
   <div class="form-group">
     <label for="phone"><em>' . __( 'Téléphone', 'amapress' ) . '</em>:</label>
@@ -80,7 +82,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
   </div>
   <div class="form-group">
     <label for="address"><em>' . __( 'Adresse', 'amapress' ) . '</em>:</label>
-    <input type="text" class="form-control" id="address" name="address">
+    <input type="text" class="form-control ' . ( $force_upper ? 'force-upper' : '' ) . '" id="address" name="address">
   </div>
   <button type="submit" class="btn btn-default" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous votre inscription ?', 'amapress' ) ) . '\')">' . __( 'S\'inscrire', 'amapress' ) . '</button>
 </form>';
@@ -98,12 +100,14 @@ function amapress_intermittence_inscription_shortcode( $atts ) {
 
 	$atts = shortcode_atts(
 		array(
-			'view'      => 'me',
-			'show_info' => 'yes',
+			'view'        => 'me',
+			'show_info'   => 'yes',
+			'force_upper' => 'false',
 		)
 		, $atts );
 
 	$ret                      = '';
+	$force_upper              = Amapress::toBool( $atts['force_upper'] );
 	$inscription_intermittent = isset( $_REQUEST['inscription_intermittent'] ) ? $_REQUEST['inscription_intermittent'] : null;
 	$admin_post_url           = admin_url( 'admin-post.php' );
 	switch ( $atts['view'] ) {
@@ -148,11 +152,11 @@ function amapress_intermittence_inscription_shortcode( $atts ) {
   </div>
   <div class="form-group">
     <label for="first_name">' . __( 'Prénom:', 'amapress' ) . '</label>
-    <input type="text" class="form-control" id="first_name" name="first_name">
+    <input type="text" class="form-control' . ( $force_upper ? 'force-upper' : '' ) . '" id="first_name" name="first_name">
   </div>
   <div class="form-group">
     <label for="last_name">' . __( 'Nom:', 'amapress' ) . '</label>
-    <input type="text" class="form-control" id="last_name" name="last_name">
+    <input type="text" class="form-control' . ( $force_upper ? 'force-upper' : '' ) . '" id="last_name" name="last_name">
   </div>
   <div class="form-group">
     <label for="phone"><em>' . __( 'Téléphone', 'amapress' ) . '</em>:</label>
@@ -160,7 +164,7 @@ function amapress_intermittence_inscription_shortcode( $atts ) {
   </div>
   <div class="form-group">
     <label for="address"><em>' . __( 'Adresse', 'amapress' ) . '</em>:</label>
-    <input type="text" class="form-control" id="address" name="address">
+    <input type="text" class="form-control' . ( $force_upper ? 'force-upper' : '' ) . '" id="address" name="address">
   </div>
   <button type="submit" class="btn btn-default" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous votre inscription ?', 'amapress' ) ) . '\')">' . __( 'Inscrire', 'amapress' ) . '</button>
 </form>';
