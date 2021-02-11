@@ -110,8 +110,8 @@ function amapress_edit_user_info_shortcode( $atts ) {
                    value="<?php esc_attr_e( $user->getUser()->last_name ); ?>" <?php disabled( ! $edit_names ) ?>>
         </div>
         <div class="form-group">
-            <label for="last_name"><?php _e( 'Nom d\'affichage', 'amapress' ) ?></label>
-            <input type="text" class="form-control required" id="display_name" name="display_name"
+            <label for="display_name"><?php _e( 'Nom d\'affichage', 'amapress' ) ?></label>
+            <input type="text" id="display_name" name="display_name"
                    placeholder="<?php echo esc_attr__( 'Nom d\'affichage', 'amapress' ) ?>"
                    class="form-control required <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                    value="<?php esc_attr_e( $user->getUser()->display_name ); ?>" <?php disabled( ! $edit_names ) ?>>
@@ -135,26 +135,26 @@ function amapress_edit_user_info_shortcode( $atts ) {
                    value="<?php esc_attr_e( $user->getEmail() ); ?>">
         </div>
         <div class="form-group">
-            <label for="email"><?php _e( 'Adresse email 2', 'amapress' ) ?></label>
+            <label for="email2"><?php _e( 'Adresse email 2', 'amapress' ) ?></label>
             <input type="email" class="form-control email" id="email2" name="email2"
                    placeholder="<?php echo esc_attr__( 'Email 2', 'amapress' ) ?>"
                    value="<?php esc_attr_e( $user->getEmail( 2 ) ); ?>">
         </div>
         <div class="form-group">
-            <label for="email"><?php _e( 'Adresse email 3', 'amapress' ) ?></label>
+            <label for="email3"><?php _e( 'Adresse email 3', 'amapress' ) ?></label>
             <input type="email" class="form-control email" id="email3" name="email3"
                    placeholder="<?php echo esc_attr__( 'Email 3', 'amapress' ) ?>"
                    value="<?php esc_attr_e( $user->getEmail( 3 ) ); ?>">
         </div>
         <div class="form-group">
-            <label for="email"><?php _e( 'Adresse email 4', 'amapress' ) ?></label>
+            <label for="email4"><?php _e( 'Adresse email 4', 'amapress' ) ?></label>
             <input type="email" class="form-control email" id="email4" name="email4"
                    placeholder="<?php echo esc_attr__( 'Email 4', 'amapress' ) ?>"
                    value="<?php esc_attr_e( $user->getEmail( 4 ) ); ?>">
         </div>
         <div class="form-group">
             <label for="amapress_user_adresse">
-				<?php _e( 'Adresse', 'amapress' ) ?><br/>
+			    <?php _e( 'Adresse', 'amapress' ) ?><br/>
             </label>
             <textarea
                     class="form-control <?php echo $address_required ? 'required' : ''; ?> <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
