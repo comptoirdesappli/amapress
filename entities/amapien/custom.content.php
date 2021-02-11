@@ -51,6 +51,12 @@ function amapress_edit_user_info_shortcode( $atts ) {
 		echo '<p>' . $user->getAdherentInfo( false, true, $max_cofoyers > 0 ) . '</p>';
 	}
 
+	$fix_phones      = array_values( $user->getPhoneNumbers( false ) );
+	$mob_phones      = array_values( $user->getPhoneNumbers( true ) );
+	$user_fix_phone  = ! empty( $fix_phones[0] ) ? $fix_phones[0] : '';
+	$user_mob_phone1 = ! empty( $mob_phones[0] ) ? $mob_phones[0] : '';
+	$user_mob_phone2 = ! empty( $mob_phones[1] ) ? $mob_phones[1] : '';
+
 	$cofoy1_user_firt_name = '';
 	$cofoy1_user_last_name = '';
 	$cofoy1_email          = '';
@@ -105,28 +111,34 @@ function amapress_edit_user_info_shortcode( $atts ) {
         <div class="form-group">
             <label for="last_name"><?php _e( 'Nom', 'amapress' ) ?></label>
             <input type="text" id="last_name" name="last_name"
-                   placeholder="<?php echo esc_attr__( 'Nom', 'amapress' ) ?>"
+                   placeholder="<?php echo esc_attr__( 'Nom', 'amapress' ); ?>"
                    class="form-control required <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
                    value="<?php esc_attr_e( $user->getUser()->last_name ); ?>" <?php disabled( ! $edit_names ) ?>>
         </div>
         <div class="form-group">
-            <label for="display_name"><?php _e( 'Nom d\'affichage', 'amapress' ) ?></label>
+            <label for="display_name"><?php _e( 'Nom d\'affichage', 'amapress' ); ?></label>
             <input type="text" id="display_name" name="display_name"
-                   placeholder="<?php echo esc_attr__( 'Nom d\'affichage', 'amapress' ) ?>"
+                   placeholder="<?php echo esc_attr__( 'Nom d\'affichage', 'amapress' ); ?>"
                    class="form-control required <?php echo( $force_upper ? 'force-upper' : '' ); ?>"
-                   value="<?php esc_attr_e( $user->getUser()->display_name ); ?>" <?php disabled( ! $edit_names ) ?>>
+                   value="<?php esc_attr_e( $user->getUser()->display_name ); ?>" <?php disabled( ! $edit_names ); ?>>
         </div>
         <div class="form-group">
-            <label for="amapress_user_telephone"><?php _e( 'Téléphone mobile', 'amapress' ) ?></label>
+            <label for="amapress_user_telephone"><?php _e( 'Téléphone mobile', 'amapress' ); ?></label>
             <input type="text" name="amapress_user_telephone" id="amapress_user_telephone"
-                   class="form-control mobilePhoneCheck <?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ) ?>"
-                   value="<?php esc_attr_e( implode( '/', $user->getPhoneNumbers( true ) ) ); ?>"/>
+                   class="form-control mobilePhoneCheck <?php echo( Amapress::toBool( $atts['mob_phone_required'] ) ? 'required' : '' ); ?>"
+                   value="<?php echo esc_attr( $user_mob_phone1 ); ?>"/>
         </div>
         <div class="form-group">
-            <label for="amapress_user_telephone2"><?php _e( 'Téléphone fixe', 'amapress' ) ?></label>
+            <label for="amapress_user_telephone2"><?php _e( 'Téléphone fixe', 'amapress' ); ?></label>
             <input class="form-control fixPhoneCheck" type="text" name="amapress_user_telephone2"
                    id="amapress_user_telephone2"
-                   value="<?php esc_attr_e( implode( '/', $user->getPhoneNumbers( false ) ) ); ?>"/>
+                   value="<?php echo esc_attr( $user_fix_phone ); ?>"/>
+        </div>
+        <div class="form-group">
+            <label for="amapress_user_telephone3"><?php _e( 'Téléphone mobile 2', 'amapress' ); ?></label>
+            <input class="form-control mobilePhoneCheck" type="text" name="amapress_user_telephone3"
+                   id="amapress_user_telephone3"
+                   value="<?php echo esc_attr( $user_mob_phone2 ); ?>"/>
         </div>
         <div class="form-group">
             <label for="email"><?php _e( 'Adresse email', 'amapress' ) ?></label>
@@ -164,7 +176,7 @@ function amapress_edit_user_info_shortcode( $atts ) {
         </div>
         <div class="form-group">
             <label for="amapress_user_code_postal">
-				<?php _e( 'Code postal', 'amapress' ) ?><br/>
+			    <?php _e( 'Code postal', 'amapress' ) ?><br/>
             </label>
             <input class="form-control <?php echo $address_required ? 'required' : ''; ?>" type="text"
                    name="amapress_user_code_postal" id="amapress_user_code_postal"

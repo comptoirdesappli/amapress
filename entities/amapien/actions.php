@@ -127,6 +127,7 @@ function amapress_process_user_profile_data() {
 			'amapress_user_ville'       => sanitize_text_field( $_POST['amapress_user_ville'] ),
 			'amapress_user_telephone'   => sanitize_text_field( $_POST['amapress_user_telephone'] ),
 			'amapress_user_telephone2'  => sanitize_text_field( $_POST['amapress_user_telephone2'] ),
+			'amapress_user_telephone3'  => sanitize_text_field( $_POST['amapress_user_telephone3'] ),
 			'amapress_user_moyen'       => sanitize_text_field( $_POST['amapress_user_moyen'] ),
 			'amapress_user_hidaddr'     => isset( $_POST['amapress_user_hidaddr'] ) ? 1 : 0,
 			'user_pass'                 => isset( $_POST['pass1'] ) ? $_POST['pass1'] : null,
@@ -201,6 +202,7 @@ function amapress_process_user_profile_data() {
 			     || $key == 'amapress_user_ville'
 			     || $key == 'amapress_user_telephone'
 			     || $key == 'amapress_user_telephone2'
+			     || $key == 'amapress_user_telephone3'
 			     || $key == 'amapress_user_moyen'
 			     || $key == 'email2'
 			     || $key == 'email3'
