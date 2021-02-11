@@ -4515,7 +4515,8 @@ class Amapress {
 		$tel = preg_replace( '/\+33\s*(?:\(\s*0\s*\)|0)?/', '0', $tel );
 		$tel = preg_replace( '/\D+/', '', $tel );
 		if ( $with_spaces ) {
-			$tel = preg_replace( '/^(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/', "$1\xA0$2\xA0$3\xA0$4\xA0$5", $tel );
+			$tel = preg_replace( '/^(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/', "$1 $2 $3 $4 $5", $tel );
+			$tel = str_replace( ' ', "\xC2\xA0", $tel );
 		}
 
 		return $tel;
