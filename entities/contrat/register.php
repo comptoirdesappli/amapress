@@ -3314,7 +3314,11 @@ function amapress_can_delete_attachment( $can, $post_id ) {
 
 
 add_filter( 'amapress_can_edit_contrat_instance', function ( $can, $post_id ) {
-	if ( is_admin() && amapress_can_access_admin() && ! amapress_is_admin_or_responsable() ) {
+	if ( is_admin()
+	     && amapress_can_access_admin()
+	     && ! amapress_is_admin_or_responsable()
+	     && ! isset( $_COOKIE[ AMAPRESS_ROLE_SETTER_COOKIE ] )
+	) {
 		$refs = AmapressContrats::getReferentProducteursAndLieux();
 		if ( count( $refs ) > 0 ) {
 			$contrat_instance = AmapressContrat_instance::getBy( $post_id );
@@ -3339,7 +3343,11 @@ add_filter( 'amapress_can_edit_contrat_instance', function ( $can, $post_id ) {
 }, 10, 2 );
 
 add_filter( 'amapress_can_edit_contrat', function ( $can, $post_id ) {
-	if ( is_admin() && amapress_can_access_admin() && ! amapress_is_admin_or_responsable() ) {
+	if ( is_admin()
+	     && amapress_can_access_admin()
+	     && ! amapress_is_admin_or_responsable()
+	     && ! isset( $_COOKIE[ AMAPRESS_ROLE_SETTER_COOKIE ] )
+	) {
 		$refs = AmapressContrats::getReferentProducteursAndLieux();
 		if ( count( $refs ) > 0 ) {
 			foreach ( $refs as $r ) {

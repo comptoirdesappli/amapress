@@ -40,7 +40,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 //                'import_key' => true,
 //                'csv_required' => true,
 //            ),
-			'date'          => array(
+			'date'               => array(
 				'name'         => __( 'Date de paiement', 'amapress' ),
 				'type'         => 'date',
 				'required'     => true,
@@ -63,7 +63,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 					return add_query_arg( 'amapress_date', date( 'Y-m-d', @intval( $value ) ) );
 				}
 			),
-			'date_month'    => array(
+			'date_month'         => array(
 				'name'           => __( 'Mois/Année', 'amapress' ),
 				'type'           => 'custom',
 				'hidden'         => true,
@@ -163,7 +163,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 					}
 				),
 			),
-			'lieu'          => array(
+			'lieu'               => array(
 				'name'       => __( 'Lieu', 'amapress' ),
 				'type'       => 'custom',
 				'hidden'     => true,
@@ -193,7 +193,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 					}
 				),
 			),
-			'status'        => array(
+			'status'             => array(
 				'name'         => __( 'Statut', 'amapress' ),
 				'type'         => 'select',
 				'options'      => array(
@@ -209,7 +209,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 					'placeholder' => __( 'Tous les statut', 'amapress' ),
 				),
 			),
-			'type'          => array(
+			'type'               => array(
 				'name'       => __( 'Type', 'amapress' ),
 				'type'       => 'select',
 				'options'    => array(
@@ -229,7 +229,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 					'placeholder' => __( 'Tous les type', 'amapress' ),
 				),
 			),
-			'amount'        => array(
+			'amount'             => array(
 				'name'         => __( 'Montant', 'amapress' ),
 				'type'         => 'float',
 				'unit'         => '€',
@@ -237,7 +237,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'desc'         => __( 'Montant du chèque/espèces/virement/prélèvement', 'amapress' ),
 				'csv_required' => true,
 			),
-			'numero'        => array(
+			'numero'             => array(
 				'name'         => __( 'Numéro du chèque', 'amapress' ),
 				'type'         => 'text',
 				'required'     => false,
@@ -246,13 +246,13 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'csv_required' => true,
 				'searchable'   => true,
 			),
-			'banque'        => array(
+			'banque'             => array(
 				'name'       => __( 'Banque', 'amapress' ),
 				'type'       => 'text',
 				'desc'       => __( 'Banque émettrice ou "Esp." pour des règlements en espèces ou "Vir." pour virement ou "Mon." pour des règlements en monnaie locale', 'amapress' ),
 				'searchable' => true,
 			),
-			'emetteur'      => array(
+			'emetteur'           => array(
 				'name'       => __( 'Emetteur', 'amapress' ),
 				'type'       => 'text',
 				'required'   => true,
@@ -384,7 +384,12 @@ function amapress_contrat_paiement_set_contrat_instance( $contrat_paiement_id ) 
 //}
 
 add_filter( 'amapress_can_edit_contrat_paiement', function ( $can, $post_id ) {
-	if ( is_admin() && amapress_can_access_admin() && ! amapress_is_admin_or_responsable() && ! TitanFrameworkOption::isOnNewScreen() ) {
+	if ( is_admin()
+	     && amapress_can_access_admin()
+	     && ! amapress_is_admin_or_responsable()
+	     && ! TitanFrameworkOption::isOnNewScreen()
+	     && ! isset( $_COOKIE[ AMAPRESS_ROLE_SETTER_COOKIE ] )
+	) {
 		$refs = AmapressContrats::getReferentProducteursAndLieux();
 		if ( count( $refs ) > 0 ) {
 			$paiement = AmapressAmapien_paiement::getBy( $post_id );

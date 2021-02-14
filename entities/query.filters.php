@@ -122,8 +122,13 @@ function amapress_filter_posts( WP_Query $query ) {
 
 	global $amapress_no_filter_referent;
 	if ( ! $amapress_no_filter_referent
-	     && ( ! isset( $query->query_vars['amapress_no_filter_referent'] ) || ! $query->query_vars['amapress_no_filter_referent'] )
-	     && is_admin() && amapress_can_access_admin() && ! amapress_is_admin_or_responsable() ) {
+	     && ( ! isset( $query->query_vars['amapress_no_filter_referent'] )
+	          || ! $query->query_vars['amapress_no_filter_referent'] )
+	     && is_admin()
+	     && amapress_can_access_admin()
+	     && ! amapress_is_admin_or_responsable()
+	     && ! isset( $_COOKIE[ AMAPRESS_ROLE_SETTER_COOKIE ] )
+	) {
 		$refs = AmapressContrats::getReferentProducteursAndLieux();
 		if ( count( $refs ) > 0 ) {
 			$meta = array();
@@ -210,7 +215,9 @@ function amapress_filter_posts( WP_Query $query ) {
 			}
 		}
 	}
-	if ( is_admin() && amapress_current_user_can( 'producteur' ) ) {
+	if ( is_admin()
+	     && amapress_is_current_user_producteur()
+	     && ! isset( $_COOKIE[ AMAPRESS_ROLE_SETTER_COOKIE ] ) ) {
 		$meta = [];
 		if ( $pt == 'producteur' ) {
 			$meta[] = array(

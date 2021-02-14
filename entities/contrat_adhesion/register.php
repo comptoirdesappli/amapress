@@ -3311,7 +3311,12 @@ add_filter( 'hidden_meta_boxes', function ( $hidden ) {
 } );
 
 add_filter( 'amapress_can_edit_adhesion', function ( $can, $post_id ) {
-	if ( is_admin() && amapress_can_access_admin() && ! amapress_is_admin_or_responsable() && ! TitanFrameworkOption::isOnNewScreen() ) {
+	if ( is_admin()
+	     && amapress_can_access_admin()
+	     && ! amapress_is_admin_or_responsable()
+	     && ! TitanFrameworkOption::isOnNewScreen()
+	     && ! isset( $_COOKIE[ AMAPRESS_ROLE_SETTER_COOKIE ] )
+	) {
 		$refs = AmapressContrats::getReferentProducteursAndLieux();
 		if ( count( $refs ) > 0 ) {
 			$adhesion = AmapressAdhesion::getBy( $post_id );
