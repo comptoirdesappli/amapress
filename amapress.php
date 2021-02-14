@@ -60,6 +60,12 @@ if ( ! defined( 'AMAPRESS_MAX_LOG_FILESIZE' ) ) {
 	define( 'AMAPRESS_MAX_LOG_FILESIZE', 10 );
 }
 
+function amapress_sha_secret( $d ) {
+	return sha1( AUTH_KEY . $d . SECURE_AUTH_KEY );
+}
+
+define( 'AMAPRESS_ROLE_SETTER_COOKIE', 'amps_role' . amapress_sha_secret( 'amps_role' ) );
+
 //remove_role('responable_amap');
 
 function amapress_ensure_no_cache() {

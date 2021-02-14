@@ -4,10 +4,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-function amapress_sha_secret( $d ) {
-	return sha1( AUTH_KEY . $d . SECURE_AUTH_KEY );
-}
-
 add_action( 'amapress_init', function () {
 	if ( isset( $_REQUEST['inscr_assistant'] ) && 'validate_coords' == $_REQUEST['inscr_assistant'] ) {
 		if ( ! amapress_is_user_logged_in() ) {

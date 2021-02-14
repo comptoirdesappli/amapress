@@ -1195,7 +1195,7 @@ function amapress_register_admin_bar_menu_items( $items ) {
 		)
 	);
 
-	if ( amapress_is_admin_or_responsable() || isset( $_COOKIE['amps_role'] ) ) {
+	if ( amapress_is_admin_or_responsable() || isset( $_COOKIE[ AMAPRESS_ROLE_SETTER_COOKIE ] ) ) {
 		$roles_items = [];
 		foreach (
 			[
@@ -1208,7 +1208,8 @@ function amapress_register_admin_bar_menu_items( $items ) {
 				'reset'             => __( 'Revenir au principal', 'amapress' ),
 			] as $role => $role_name
 		) {
-			$selected      = ( isset( $_COOKIE['amps_role'] ) && $_COOKIE['amps_role'] == $role );
+			$selected      = ( isset( $_COOKIE[ AMAPRESS_ROLE_SETTER_COOKIE ] )
+			                   && $_COOKIE[ AMAPRESS_ROLE_SETTER_COOKIE ] == amapress_sha_secret( $role ) );
 			$roles_items[] = array(
 				'id'         => 'amapress_set_role_' . $role,
 				'title'      => $role_name,
@@ -1481,35 +1482,55 @@ add_action( 'admin_action_amps_set_role', function () {
 		wp_die( 'Access denied', 403 );
 	}
 
-	if ( ! amapress_is_admin_or_responsable() && ! isset( $_COOKIE['amps_role'] ) ) {
+	if ( ! amapress_is_admin_or_responsable() && ! isset( $_COOKIE[ AMAPRESS_ROLE_SETTER_COOKIE ] ) ) {
 		wp_die( 'Access denied', 403 );
 	}
 
 	$role = ! empty( $_REQUEST['role'] ) ? $_REQUEST['role'] : '';
 	if ( ! empty( $role ) ) {
 		if ( 'reset' == $role ) {
-			setcookie( 'amps_role', false, time() - YEAR_IN_SECONDS, '/' );
+			setcookie( AMAPRESS_ROLE_SETTER_COOKIE, false, time() - YEAR_IN_SECONDS, '/' );
 		} else {
-			setcookie( 'amps_role', $role, 0, '/' );
+			setcookie( AMAPRESS_ROLE_SETTER_COOKIE, amapress_sha_secret( $role ), 0, '/' );
 		}
 	}
 	wp_redirect_and_exit( admin_url() );
 } );
 
-add_action( 'wp_login', function () {
-	setcookie( 'amps_role', false, time() - YEAR_IN_SECONDS, '/' );
+add_action( 'wp_logout', function () {
+	if ( isset( $_COOKIE[ AMAPRESS_ROLE_SETTER_COOKIE ] ) ) {
+		setcookie( AMAPRESS_ROLE_SETTER_COOKIE, false, time() - YEAR_IN_SECONDS, '/' );
+	}
 } );
 
 add_filter( 'user_has_cap', function ( $allcaps ) {
-	if ( ! empty( $_COOKIE['amps_role'] ) ) {
-		$role_name = $_COOKIE['amps_role'];
-		$key       = "amps-role-{$role_name}";
-		$allcaps   = wp_cache_get( $key );
-		if ( false == $allcaps ) {
-			$role                  = get_role( $role_name ); // Get the role object by role name
-			$allcaps               = $role->capabilities;  // Get the capabilities for the role
-			$allcaps[ $role_name ] = true;     // Add role name to capabilities
-			wp_cache_set( $key, $allcaps );
+	if ( ! empty( $_COOKIE[ AMAPRESS_ROLE_SETTER_COOKIE ] ) ) {
+		$role_name_hash = $_COOKIE[ AMAPRESS_ROLE_SETTER_COOKIE ];
+		$role_name      = false;
+		foreach (
+			[
+				'producteur',
+				'tresorier',
+				'coordinateur_amap',
+				'redacteur_amap',
+				'referent',
+				'responsable_amap'
+			] as $candidate_role_name
+		) {
+			if ( amapress_sha_secret( $candidate_role_name ) == $role_name_hash ) {
+				$role_name = $candidate_role_name;
+				break;
+			}
+		}
+		if ( $role_name ) {
+			$key     = "amps-role-{$role_name}";
+			$allcaps = wp_cache_get( $key );
+			if ( false == $allcaps ) {
+				$role                  = get_role( $role_name ); // Get the role object by role name
+				$allcaps               = $role->capabilities;  // Get the capabilities for the role
+				$allcaps[ $role_name ] = true;     // Add role name to capabilities
+				wp_cache_set( $key, $allcaps );
+			}
 		}
 	}
 
