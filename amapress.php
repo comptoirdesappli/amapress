@@ -1297,7 +1297,7 @@ function amapress_user_has_cap( $allcaps, $caps, $args ) {
 		$user    = AmapressUser::getBy( $user_id );
 		if ( $user ) {
 			$user_role_caps = $user->getAmapRoleCapabilities();
-			if ( ! empty( $user_role_caps ) && $cap = "access_admin" ) {
+			if ( ! empty( $user_role_caps ) && $cap == "access_admin" ) {
 				$allcaps[ $req_cap ] = true;
 			} else if ( in_array( $cap, $user_role_caps ) ) {
 				$allcaps[ $req_cap ] = true;
