@@ -26,7 +26,7 @@ function amapress_generic_gallery(
 	$selector        = "iso-gallery-{$amapress_gallery_instance}";
 	$selector_search = $selector . '-search';
 
-	if ( $options['searchbox'] && ! empty( $options ) ) {
+	if ( Amapress::toBool( $options['searchbox'] ) ) {
 		$output .= "<div><label for='$selector_search'>" . __( 'Rechercher: ', 'amapress' ) . "</label><input type='text' data-gallery='$selector' id='$selector_search' class='iso-gallery-search' /></div>";
 	}
 
