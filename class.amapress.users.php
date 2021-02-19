@@ -414,6 +414,7 @@ class AmapressUsers {
 					'show_principal_only'  => __( '(Par défaut "true") N\'afficher que les lieux principaux', 'amapress' ),
 					'show_amap_roles'      => __( '(par défaut false) Affichage des différents "Rôles dans l\'AMAP"', 'amapress' ),
 					'show_amapiens_groups' => __( '(par défaut false) Affichage des différents "Groupes amapiens"', 'amapress' ),
+					'searchbox'            => __( '(Par défaut “true”) Afficher une barre de recherche', 'amapress' ),
 				]
 			] );
 		amapress_register_shortcode( 'trombinoscope_lieu', array( 'AmapressUsers', 'trombinoscope_lieu_shortcode' ),
@@ -423,6 +424,7 @@ class AmapressUsers {
 					'lieu'                 => __( 'Filtre de lieux de distributions. ', 'amapress' ) . AmapressLieu_distribution::getLieuFilterHelp(),
 					'show_amap_roles'      => __( '(par défaut false) Affichage des différents "Rôles dans l\'AMAP"', 'amapress' ),
 					'show_amapiens_groups' => __( '(par défaut false) Affichage des différents "Groupes amapiens"', 'amapress' ),
+					'searchbox'            => __( '(Par défaut “true”) Afficher une barre de recherche', 'amapress' ),
 				]
 			] );
 		amapress_register_shortcode( 'trombinoscope_role', array( 'AmapressUsers', 'trombinoscope_role_shortcode' ),
@@ -824,7 +826,9 @@ jQuery(function($) {
 			'role'      => 'all',
 			'lieu'      => null,
 			'searchbox' => true,
-		), $atts, 'trombinoscope_role' );
+		), $atts );
+
+		$searchbox = Amapress::toBool( $atts['searchbox'] );
 
 		if ( ! empty( $atts['lieu'] ) ) {
 			$lieu_id = Amapress::resolve_post_id( $atts['lieu'], AmapressLieu_distribution::INTERNAL_POST_TYPE );
@@ -914,7 +918,7 @@ jQuery(function($) {
 		} );
 
 		return amapress_generic_gallery( $users, 'user_cell', [
-			'searchbox' => $atts['searchbox'],
+			'searchbox' => $searchbox,
 		] );
 	}
 
@@ -950,35 +954,37 @@ jQuery(function($) {
 			'show_principal_only'  => true,
 			'show_amap_roles'      => false,
 			'show_amapiens_groups' => false,
+			'searchbox'            => true,
 		), $atts );
 
-		$lieu_ids = AmapressUsers::get_user_lieu_ids( amapress_current_user_id() );
+		$searchbox_att = 'searchbox=' . ( Amapress::toBool( $atts['searchbox'] ) ? 'true' : 'false' );
+		$lieu_ids      = AmapressUsers::get_user_lieu_ids( amapress_current_user_id() );
 
 		ob_start();
 
 		amapress_echo_panel_start( __( 'Les responsables de l\'AMAP', 'amapress' ) );
-		echo do_shortcode( '[trombinoscope_role role=responsables]' );
+		echo do_shortcode( '[trombinoscope_role role=responsables ' . $searchbox_att . ']' );
 		amapress_echo_panel_end();
 		amapress_echo_panel_start( __( 'Les producteurs', 'amapress' ) );
-		echo do_shortcode( '[trombinoscope_role role=producteurs]' );
+		echo do_shortcode( '[trombinoscope_role role=producteurs ' . $searchbox_att . ']' );
 		amapress_echo_panel_end();
 		amapress_echo_panel_start( __( 'Les référents producteurs', 'amapress' ) );
-		echo do_shortcode( '[trombinoscope_role role=referents_producteurs]' );
+		echo do_shortcode( '[trombinoscope_role role=referents_producteurs ' . $searchbox_att . ']' );
 		amapress_echo_panel_end();
 		amapress_echo_panel_start( __( 'Les référents lieux de distribution', 'amapress' ) );
-		echo do_shortcode( '[trombinoscope_role role=referents_lieux]' );
+		echo do_shortcode( '[trombinoscope_role role=referents_lieux ' . $searchbox_att . ']' );
 		amapress_echo_panel_end();
 		if ( Amapress::toBool( $atts['show_amap_roles'] ) ) {
 			foreach ( amapress_get_amap_roles() as $role ) {
 				amapress_echo_panel_start( __( 'Rôle "', 'amapress' ) . $role->name . '"' );
-				echo do_shortcode( '[trombinoscope_role role=amap_role_' . $role->slug . ']' );
+				echo do_shortcode( '[trombinoscope_role role=amap_role_' . $role->slug . ' ' . $searchbox_att . ']' );
 				amapress_echo_panel_end();
 			}
 		}
 		if ( Amapress::toBool( $atts['show_amapiens_groups'] ) ) {
 			foreach ( amapress_get_amapien_groups() as $role ) {
 				amapress_echo_panel_start( __( 'Groupe "', 'amapress' ) . $role->name . '"' );
-				echo do_shortcode( '[trombinoscope_role role=amapien_group_' . $role->slug . ']' );
+				echo do_shortcode( '[trombinoscope_role role=amapien_group_' . $role->slug . ' ' . $searchbox_att . ']' );
 				amapress_echo_panel_end();
 			}
 		}
@@ -994,7 +1000,7 @@ jQuery(function($) {
 			if ( count( $lieux ) > 1 ) {
 				echo '<h2>' . esc_html( $lieu->getTitle() ) . '</h2>';
 			}
-			echo do_shortcode( '[trombinoscope_lieu lieu=' . $lieu->ID . ']' );
+			echo do_shortcode( '[trombinoscope_lieu lieu=' . $lieu->ID . ' ' . $searchbox_att . ']' );
 		}
 
 		$t = ob_get_clean();
@@ -1011,9 +1017,11 @@ jQuery(function($) {
 			'lieu'                 => null,
 			'show_amap_roles'      => false,
 			'show_amapiens_groups' => false,
+			'searchbox'            => true,
 		), $atts, 'trombinoscope_lieu' );
 
-		$lieu_id = Amapress::get_lieu_id( $atts['lieu'] );
+		$searchbox_att = 'searchbox=' . ( Amapress::toBool( $atts['searchbox'] ) ? 'true' : 'false' );
+		$lieu_id       = Amapress::get_lieu_id( $atts['lieu'] );
 		//$lieu = get_post($lieu_id);
 		ob_start();
 
@@ -1021,34 +1029,34 @@ jQuery(function($) {
 		amapress_echo_panel_start( __( 'Les responsables à la distribution de cette semaine (', 'amapress' ) .
 		                           date_i18n( 'd/m/Y', Amapress::start_of_week( amapress_time() ) ) . ')',
 			null, 'amap-panel-resp-dist' );
-		echo do_shortcode( '[trombinoscope_role role=resp_distrib_cette_semaine lieu=' . $lieu_id . ']' );
+		echo do_shortcode( '[trombinoscope_role role=resp_distrib_cette_semaine lieu=' . $lieu_id . ' ' . $searchbox_att . ']' );
 		amapress_echo_panel_end();
 		amapress_echo_panel_start( __( 'Les responsables à la distribution de la semaine prochaine (', 'amapress' ) .
 		                           date_i18n( 'd/m/Y', Amapress::start_of_week( Amapress::add_a_week( amapress_time() ) ) ) . ')',
 			null, 'amap-panel-resp-dist' );
-		echo do_shortcode( '[trombinoscope_role role=resp_distrib_semaine_prochaine lieu=' . $lieu_id . ']' );
+		echo do_shortcode( '[trombinoscope_role role=resp_distrib_semaine_prochaine lieu=' . $lieu_id . ' ' . $searchbox_att . ']' );
 		amapress_echo_panel_end();
 		if ( count( Amapress::get_lieux() ) > 1 ) {
 			amapress_echo_panel_start( __( 'Les responsables de l\'AMAP dans ce lieu', 'amapress' ) );
-			echo do_shortcode( '[trombinoscope_role role=responsables lieu=' . $lieu_id . ']' );
+			echo do_shortcode( '[trombinoscope_role role=responsables lieu=' . $lieu_id . ' ' . $searchbox_att . ']' );
 			amapress_echo_panel_end();
 		}
 		if ( Amapress::toBool( $atts['show_amap_roles'] ) ) {
 			foreach ( amapress_get_amap_roles() as $role ) {
 				amapress_echo_panel_start( __( 'Rôle "', 'amapress' ) . $role->name . '"' );
-				echo do_shortcode( '[trombinoscope_role role=amap_role_' . $role->slug . ' lieu=' . $lieu_id . ']' );
+				echo do_shortcode( '[trombinoscope_role role=amap_role_' . $role->slug . ' lieu=' . $lieu_id . ' ' . $searchbox_att . ']' );
 				amapress_echo_panel_end();
 			}
 		}
 		if ( Amapress::toBool( $atts['show_amapiens_groups'] ) ) {
 			foreach ( amapress_get_amapien_groups() as $role ) {
 				amapress_echo_panel_start( __( 'Groupe "', 'amapress' ) . $role->name . '"' );
-				echo do_shortcode( '[trombinoscope_role role=amapien_group_' . $role->slug . ' lieu=' . $lieu_id . ']' );
+				echo do_shortcode( '[trombinoscope_role role=amapien_group_' . $role->slug . ' lieu=' . $lieu_id . ' ' . $searchbox_att . ']' );
 				amapress_echo_panel_end();
 			}
 		}
 		amapress_echo_panel_start( __( 'Les amapiens', 'amapress' ), null, 'amap-panel-amapiens' );
-		echo do_shortcode( '[trombinoscope_role role=amapiens lieu=' . $lieu_id . ']' );
+		echo do_shortcode( '[trombinoscope_role role=amapiens lieu=' . $lieu_id . ' ' . $searchbox_att . ']' );
 		amapress_echo_panel_end();
 
 		$t = ob_get_clean();
