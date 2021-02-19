@@ -224,4 +224,7 @@ jQuery(function ($) {
             $this.text(response);
         });
     });
+    $('.evt-date').on('click', function () {
+        window.location.href = $('.evt-link:first', $(this).parent()).attr('href');
+    });
 });

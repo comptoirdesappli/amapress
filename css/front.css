@@ -183,6 +183,7 @@ table.responsive {
     margin-right: 15px;
     padding-top: 0.5em;
     flex-shrink: 0;
+    cursor: pointer;
 }
 
 a.evt-link img {
