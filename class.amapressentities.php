@@ -6341,15 +6341,15 @@ Par exemple :</p>
 											ksort( $desc['args'] );
 											if ( ! empty( $desc['args'] ) ) {
 												foreach ( $desc['args'] as $kk => $vv ) {
-													$ret .= '<tr><td><strong>' .
-													        esc_html( $k ) . '</strong><br/><em>' .
+													$ret .= '<tr><td><strong>[' .
+													        esc_html( $k ) . ']</strong><br/><em>' .
 													        esc_html( $desc['desc'] ) . '</em></td><td style="padding-left: 1em">' .
 													        '<strong>' . esc_html( $kk ) . '</strong>: ' . ( wp_strip_all_tags( $vv ) != $vv ? $vv : esc_html( $vv ) ) .
 													        '</td></tr>';
 												}
 											} else {
-												$ret .= '<tr><td><strong>' .
-												        esc_html( $k ) . '</strong><br/><em>' .
+												$ret .= '<tr><td><strong>[' .
+												        esc_html( $k ) . ']</strong><br/><em>' .
 												        esc_html( $desc['desc'] ) . '</em></td><td style="padding-left: 1em"></td></tr>';
 											}
 										}
