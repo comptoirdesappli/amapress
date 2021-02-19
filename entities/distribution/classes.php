@@ -558,7 +558,7 @@ class AmapressDistribution extends Amapress_EventBase {
 		return AmapressPanier::get_delayed_paniers(
 			null,
 			null, $this->getDate(),
-			[ 'cancelled' ],
+			[ 'delayed', 'cancelled' ],
 			$this->getLieuId()
 		);
 	}
