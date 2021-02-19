@@ -234,6 +234,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 		'show_tel_mobile' => 'force',
 		'show_adresse'    => 'default',
 		'show_avatar'     => 'default',
+		'searchbox'       => true,
 	), $atts );
 
 	$atts['show_roles'] = 'false';
@@ -576,6 +577,7 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 		[
 			'nowrap'     => false,
 			'responsive' => false,
+			'searching'  => Amapress::toBool( $atts['searchbox'] ),
 //			'init_as_html' => true,
 		],
 		array(
