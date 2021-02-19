@@ -242,6 +242,12 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 		return '';
 	}
 
+	$current_user    = AmapressUser::getBy( amapress_current_user_id() );
+	$show_tel_fix    = amapress_check_info_visibility( $atts['show_tel'], 'tel', $current_user ) || amapress_check_info_visibility( $atts['show_tel_fixe'], 'tel_fixe', $current_user );
+	$show_tel_mobile = amapress_check_info_visibility( $atts['show_tel'], 'tel', $current_user ) || amapress_check_info_visibility( $atts['show_tel_mobile'], 'tel_mobile', $current_user );
+	$show_address    = amapress_check_info_visibility( $atts['show_adresse'], 'adresse', $current_user );
+	$show_email      = amapress_check_info_visibility( $atts['show_email'], 'email', $current_user );
+
 	$all_lieu_ids = Amapress::get_lieu_ids();
 
 	if ( ! empty( $atts['lieu'] ) ) {
@@ -295,42 +301,50 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 			'sort' => 'user_name',
 		)
 	);
-	$columns[] = array(
-		'name'    => 'user_address',
-		'title'   => __( 'Adresse', 'amapress' ),
-		'visible' => false,
-		'data'    => array(
-			'_'    => 'user_address',
-			'sort' => 'user_address',
-		)
-	);
-	$columns[] = array(
-		'name'    => 'user_phone_fix',
-		'title'   => __( 'Tel Fixe', 'amapress' ),
-		'visible' => false,
-		'data'    => array(
-			'_'    => 'user_phone_fix',
-			'sort' => 'user_phone_fix',
-		)
-	);
-	$columns[] = array(
-		'name'    => 'user_phone_mob',
-		'title'   => __( 'Tel Mobile', 'amapress' ),
-		'visible' => false,
-		'data'    => array(
-			'_'    => 'user_phone_mob',
-			'sort' => 'user_phone_mob',
-		)
-	);
-	$columns[] = array(
-		'name'    => 'user_email',
-		'title'   => __( 'Email', 'amapress' ),
-		'visible' => false,
-		'data'    => array(
-			'_'    => 'user_email',
-			'sort' => 'user_email',
-		)
-	);
+	if ( $show_address ) {
+		$columns[] = array(
+			'name'    => 'user_address',
+			'title'   => __( 'Adresse', 'amapress' ),
+			'visible' => false,
+			'data'    => array(
+				'_'    => 'user_address',
+				'sort' => 'user_address',
+			)
+		);
+	}
+	if ( $show_tel_fix ) {
+		$columns[] = array(
+			'name'    => 'user_phone_fix',
+			'title'   => __( 'Tel Fixe', 'amapress' ),
+			'visible' => false,
+			'data'    => array(
+				'_'    => 'user_phone_fix',
+				'sort' => 'user_phone_fix',
+			)
+		);
+	}
+	if ( $show_tel_mobile ) {
+		$columns[] = array(
+			'name'    => 'user_phone_mob',
+			'title'   => __( 'Tel Mobile', 'amapress' ),
+			'visible' => false,
+			'data'    => array(
+				'_'    => 'user_phone_mob',
+				'sort' => 'user_phone_mob',
+			)
+		);
+	}
+	if ( $show_email ) {
+		$columns[] = array(
+			'name'    => 'user_email',
+			'title'   => __( 'Email', 'amapress' ),
+			'visible' => false,
+			'data'    => array(
+				'_'    => 'user_email',
+				'sort' => 'user_email',
+			)
+		);
+	}
 
 	$data = array();
 
@@ -406,10 +420,10 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 				$data[] = array(
 					'user'           => $amapien->getDisplay( $atts ),
 					'user_name'      => $amapien->getDisplayName(),
-					'user_address'   => $amapien->getFormattedAdresse(),
-					'user_phone_fix' => $amapien->getTelTo( false, false, false, ', ' ),
-					'user_phone_mob' => $amapien->getTelTo( true, false, false, ', ' ),
-					'user_email'     => $amapien->getEmail(),
+					'user_address'   => ! $show_address ? '' : $amapien->getFormattedAdresse(),
+					'user_phone_fix' => ! $show_tel_fix ? '' : $amapien->getTelTo( false, false, false, ', ' ),
+					'user_phone_mob' => ! $show_tel_mobile ? '' : $amapien->getTelTo( true, false, false, ', ' ),
+					'user_email'     => ! $show_email ? '' : $amapien->getEmail(),
 					'lieu'           => $lieux_by_ids[ $lieu_id ]->getShortName(),
 					'role'           => $role['title'],
 				);
@@ -425,10 +439,10 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 					$data[] = array(
 						'user'           => $amapien->getDisplay( $atts ),
 						'user_name'      => $amapien->getDisplayName(),
-						'user_address'   => $amapien->getFormattedAdresse(),
-						'user_phone_fix' => $amapien->getTelTo( false, false, false, ', ' ),
-						'user_phone_mob' => $amapien->getTelTo( true, false, false, ', ' ),
-						'user_email'     => $amapien->getEmail(),
+						'user_address'   => ! $show_address ? '' : $amapien->getFormattedAdresse(),
+						'user_phone_fix' => ! $show_tel_fix ? '' : $amapien->getTelTo( false, false, false, ', ' ),
+						'user_phone_mob' => ! $show_tel_mobile ? '' : $amapien->getTelTo( true, false, false, ', ' ),
+						'user_email'     => ! $show_email ? '' : $amapien->getEmail(),
 						'lieu'           => $lieux_by_ids[ $lieu_id ]->getShortName(),
 						'role'           => $role['title'],
 					);
