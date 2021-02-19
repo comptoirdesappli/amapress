@@ -1154,6 +1154,13 @@ jQuery(function($) {
 				)
 			) ) );
 
+			if ( empty( $lieu_ids ) ) {
+				$adh = AmapressAdhesion_paiement::getForUser( $user_id, $date, false );
+				if ( $adh && $adh->getLieu() ) {
+					$lieu_ids = [ $adh->getLieuId() ];
+				}
+			}
+
 			$res = array_unique( $lieu_ids );
 			wp_cache_set( $key, $res );
 		}
