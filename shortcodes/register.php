@@ -895,6 +895,7 @@ function amapress_register_shortcodes() {
 				'show_tel_mobile' => __( '(Par défaut “force”) Afficher les numéros de portables des membres du collectif', 'amapress' ),
 				'show_adresse'    => __( '(Par défaut “default”) Afficher les adresses des membres du collectif', 'amapress' ),
 				'show_avatar'     => __( '(Par défaut “default”) Afficher les photos des membres du collectif', 'amapress' ),
+				'searchbox'       => __( '(Par défaut “true”) Afficher une barre de recherche', 'amapress' ),
 			]
 		] );
 	amapress_register_shortcode( 'user-info', 'amapress_user_info_shortcode' );
