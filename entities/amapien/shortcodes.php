@@ -452,127 +452,6 @@ function amapress_amapiens_role_list_shortcode( $atts ) {
 		}
 	}
 
-//    $used_user_ids = array();
-//    //referents producteurs
-////    $used_prods = array();
-//    foreach (AmapressContrats::get_contrats() as $contrat) {
-//        $prod = $contrat->getProducteur();
-////        if (in_array($prod->ID, $used_prods)) continue;
-//        $had_local_referents = false;
-//        foreach ($lieu_ids as $lieu_id) {
-//            if ($prod->getReferent($lieu_id) == null) continue;
-//            $had_local_referents = true;
-//            $lieu = AmapressLieu_distribution::getBy($lieu_id);
-//            $used_user_ids[] = $prod->getReferent($lieu_id)->ID;
-//            $data[] =
-//                array(
-//                    'user' => $prod->getReferent($lieu->ID)->getDisplay($atts),
-//                    'lieu' => $lieu->getShortName(),
-//                    'role' => sprintf(__('Référent %s', 'amapress'), $contrat->getTitle()),
-//                );
-//        }
-//        if (!$had_local_referents) {
-//            if ($prod->getReferent() != null) $used_user_ids[] = $prod->getReferent()->ID;
-//            foreach ($lieu_ids as $lieu_id) {
-//                if ($prod->getReferent() == null) continue;
-//                $lieu = AmapressLieu_distribution::getBy($lieu_id);
-//                $data[] =
-//                    array(
-//                        'user' => $prod->getReferent()->getDisplay($atts),
-//                        'lieu' => $lieu->getShortName(),
-//                        'role' => sprintf(__('Référent %s', 'amapress'), $contrat->getTitle()),
-//                    );
-//            }
-//        }
-//    }
-//
-//    //référent lieu
-//    foreach ($lieu_ids as $lieu_id) {
-//        $lieu = AmapressLieu_distribution::getBy($lieu_id);
-//        if ($lieu->getReferent() == null) continue;
-//        $used_user_ids[] = $lieu->getReferent()->ID;
-//        $data[] =
-//            array(
-//                'lieu' => $lieu->getShortName(),
-//                'user' => $lieu->getReferent()->getDisplay($atts),
-//                'role' => sprintf(__('Référent %s', 'amapress'), $lieu->getShortName()),
-//            );
-//    }
-//    //responsables
-//
-//    $terms = get_terms(array(
-//        'hide_empty' => false,
-//        'taxonomy' => AmapressUser::AMAP_ROLE,
-//        'fields' => 'all',
-//    ));
-//    /** @var WP_Term $term */
-//    foreach ($terms as $term) {
-//        $user_ids = array_map(function ($u) {
-//            return $u->ID;
-//        }, get_users(array(
-//            'meta_query' => array(
-//                'relation' => 'OR',
-//                array(
-//                    'key' => 'amapress_user_amap_roles',
-//                    'value' => $term->term_id,
-//                    'compare' => '=',
-//                ),
-//                array(
-//                    'key' => 'amapress_user_amap_roles',
-//                    'value' => '"' . $term->term_id . '"',
-//                    'compare' => 'like',
-//                )
-//            ))));
-//        foreach ($user_ids as $user_id) {
-////            if (in_array($user_id, $used_user_ids)) continue;
-//            foreach (AmapressUsers::get_user_lieu_ids($user_id) as $lieu_id) {
-//                if (!in_array($lieu_id, $lieu_ids)) continue;
-//                $lieu = AmapressLieu_distribution::getBy($lieu_id);
-//                $u = AmapressUser::getBy($user_id);
-//                $used_user_ids[] = $user_id;
-//                $data[] =
-//                    array(
-//                        'lieu' => $lieu->getShortName(),
-//                        'user' => $u->getDisplay($atts),
-//                        'role' => $term->name,
-//                    );
-//            }
-//        }
-//    }
-//
-////    var_dump($used_user_ids);
-//
-//    $query = array('meta_query' => array(
-//        'relation' => 'OR',
-//        array('key' => 'pw_user_status', 'compare' => 'NOT EXISTS'),
-//        array('key' => 'pw_user_status', 'value' => 'approved', 'compare' => '=')
-//    ),
-//        'order' => 'ASC',
-//        'orderby' => 'display_name',
-//    );
-//    $query['role__in'] = array('administrator', 'responsable_amap', 'coordinateur_amap', 'tresorier');
-//    $query['exclude'] = $used_user_ids;
-//    $users = get_users($query);
-//
-//    global $wp_roles;
-//
-//    foreach ($users as $user) {
-//        foreach (AmapressUsers::get_user_lieu_ids($user->ID) as $lieu_id) {
-//            if (!in_array($lieu_id, $lieu_ids)) continue;
-//            $lieu = AmapressLieu_distribution::getBy($lieu_id);
-//            $u = AmapressUser::getBy($user->ID);
-//            foreach ($u->getUser()->roles as $r) {
-//                $data[] =
-//                    array(
-//                        'lieu' => $lieu->getShortName(),
-//                        'user' => $u->getDisplay($atts),
-//                        'role' => translate_user_role($wp_roles->roles[$r]['name']),
-//                    );
-//            }
-//        }
-//    }
-
-
 	return amapress_get_datatable( 'amapiens-role-list', $columns, $data,
 		[
 			'nowrap'     => false,
@@ -606,9 +485,9 @@ function amapress_extern_user_inscription_shortcode( $atts, $content = null, $ta
 		'group'       => '',
 	), $atts );
 
-	$ret            = '';
-	$force_upper    = Amapress::toBool( $atts['force_upper'] );
-	$key            = $atts['key'];
+	$ret         = '';
+	$force_upper = Amapress::toBool( $atts['force_upper'] );
+	$key         = $atts['key'];
 	if ( amapress_can_access_admin() ) {
 		$sample_key = uniqid() . uniqid();
 		$url        = add_query_arg( 'key', $key, get_permalink() );
