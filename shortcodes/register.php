@@ -142,8 +142,8 @@ function amapress_register_shortcodes() {
 				'produits'    => __( 'Filtre de produits', 'amapress' ),
 				'cat'         => __( 'Filtre de catégories', 'amapress' ),
 				'cat__not_in' => __( 'Inverse filtre de catégories', 'amapress' ),
-				'if_empty'    => __( '(Par défaut “Pas encore de recette”) Texte à afficher quand il n\’y a pas de recettes à afficher', 'amapress' ),
-				'size'        => __( '(Par défaut “thumbnail”) Taille de l\’aperçu', 'amapress' ),
+				'if_empty'    => __( '(Par défaut “Pas encore de recette”) Texte à afficher quand il n\'y a pas de recettes à afficher', 'amapress' ),
+				'size'        => __( '(Par défaut “thumbnail”) Taille de l\'aperçu', 'amapress' ),
 				'searchbox'   => __( '(Par défaut “true”) Afficher une barre de recherche', 'amapress' ),
 			]
 		] );
@@ -155,8 +155,8 @@ function amapress_register_shortcodes() {
 				'recette'     => __( 'Filtre recettes', 'amapress' ),
 				'cat'         => __( 'Filtre catégories', 'amapress' ),
 				'cat__not_in' => __( 'Inverse filtre catégories', 'amapress' ),
-				'if_empty'    => __( '(Par défaut “Pas encore de produits”) Texte à afficher quand il n\’y a pas de recettes à afficher', 'amapress' ),
-				'size'        => __( '(Par défaut “thumbnail”) Taille de l\’aperçu', 'amapress' ),
+				'if_empty'    => __( '(Par défaut “Pas encore de produits”) Texte à afficher quand il n\'y a pas de recettes à afficher', 'amapress' ),
+				'size'        => __( '(Par défaut “thumbnail”) Taille de l\'aperçu', 'amapress' ),
 				'searchbox'   => __( '(Par défaut “true”) Afficher une barre de recherche', 'amapress' ),
 			]
 		] );
@@ -379,7 +379,7 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => __( 'Inscription d\'un amapien à la liste des intermittents', 'amapress' ),
 			'args' => [
-				'show_info' => '(Par défaut “yes”) Afficher les informations d\’inscription à la liste des intermittents',
+				'show_info' => '(Par défaut “yes”) Afficher les informations d\'inscription à la liste des intermittents',
 			]
 		] );
 	amapress_register_shortcode( 'intermittents-desinscription', 'amapress_intermittence_desinscription_shortcode',
@@ -407,12 +407,12 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => __( 'Afficheur de calendrier ICAL/ICS', 'amapress' ),
 			'args' => [
-				'header_left'   => __( '(Par défaut “prev,next today”) Option de personnalisation de l\’entête partie gauche, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
-				'header_center' => __( '(Par défaut “title”) Option de personnalisation de l\’entête partie centrale, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
-				'header_right'  => __( '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\’entête partie droite, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
+				'header_left'   => __( '(Par défaut “prev,next today”) Option de personnalisation de l\'entête partie gauche, voir <a href="https://fullcalendar.io/docs/header" target="_blank">Options de fullcalendar</a>', 'amapress' ),
+				'header_center' => __( '(Par défaut “title”) Option de personnalisation de l\'entête partie centrale, voir <a href="https://fullcalendar.io/docs/header" target="_blank">Options de fullcalendar</a>', 'amapress' ),
+				'header_right'  => __( '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\'entête partie droite, voir <a href="https://fullcalendar.io/docs/header" target="_blank">Options de fullcalendar</a>', 'amapress' ),
 				'min_time'      => __( '(Par défaut “08:00:00”) Heure minimale affichée', 'amapress' ),
 				'max_time'      => __( '(Par défaut “22:00:00”) Heure maximale affichée', 'amapress' ),
-				'default_view'  => __( '(Par défaut “listMonth”) Type d’affichage <a href=”https://fullcalendar.io/docs#main”>Option Views de fullcalendar</a>', 'amapress' ),
+				'default_view'  => __( '(Par défaut “listMonth”) Type d’affichage <a href="https://fullcalendar.io/docs#main" target="_blank">Option Views de fullcalendar</a>', 'amapress' ),
 				'url'           => __( 'Url du calendrier à afficher (ICS)', 'amapress' ),
 				'icon_size'     => __( '(Par défaut, 1em) Taille des icônes des évènements', 'amapress' ),
 			]
@@ -429,13 +429,13 @@ function amapress_register_shortcodes() {
 			'desc' => __( 'Calendrier de l\'amapien', 'amapress' ),
 			'args' => [
 				'since_days'    => __( '(Par défaut 30) Nombre de jours d\'historique de l\'agenda', 'amapress' ),
-				'header_left'   => __( '(Par défaut “prev,next today”) Option de personnalisation de l\’entête partie gauche, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
-				'header_center' => __( '(Par défaut “title”) Option de personnalisation de l\’entête partie centrale, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
-				'header_right'  => __( '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\’entête partie droite, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
+				'header_left'   => __( '(Par défaut “prev,next today”) Option de personnalisation de l\'entête partie gauche, voir <a href="https://fullcalendar.io/docs/header" target="_blank">Options de fullcalendar</a>', 'amapress' ),
+				'header_center' => __( '(Par défaut “title”) Option de personnalisation de l\'entête partie centrale, voir <a href="https://fullcalendar.io/docs/header" target="_blank">Options de fullcalendar</a>', 'amapress' ),
+				'header_right'  => __( '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\'entête partie droite, voir <a href="https://fullcalendar.io/docs/header" target="_blank">Options de fullcalendar</a>', 'amapress' ),
 				'min_time'      => __( '(Par défaut “08:00:00”) Heure minimale affichée', 'amapress' ),
 				'max_time'      => __( '(Par défaut “22:00:00”) Heure maximale affichée', 'amapress' ),
 				'icon_size'     => __( '(Par défaut, 1em) Taille des icônes des évènements', 'amapress' ),
-				'default_view'  => __( '(Par défaut “listMonth”) Type d’affichage <a href=”https://fullcalendar.io/docs#main”>Option Views de fullcalendar</a>', 'amapress' ),
+				'default_view'  => __( '(Par défaut “listMonth”) Type d’affichage <a href="https://fullcalendar.io/docs#main" target="_blank">Option Views de fullcalendar</a>', 'amapress' ),
 			]
 		] );
 	amapress_register_shortcode( 'amapress-public-agenda-viewer', function ( $atts ) {
@@ -453,13 +453,13 @@ function amapress_register_shortcodes() {
 			'desc' => __( 'Calendrier publique de l\'AMAP', 'amapress' ),
 			'args' => [
 				'since_days'    => __( '(Par défaut 30) Nombre de jours d\'historique de l\'agenda', 'amapress' ),
-				'header_left'   => __( '(Par défaut “prev,next today”) Option de personnalisation de l\’entête partie gauche, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
-				'header_center' => __( '(Par défaut “title”) Option de personnalisation de l\’entête partie centrale, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
-				'header_right'  => __( '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\’entête partie droite, voir <a href=”https://fullcalendar.io/docs/header” target=”_blank”>Options de fullcalendar</a>', 'amapress' ),
+				'header_left'   => __( '(Par défaut “prev,next today”) Option de personnalisation de l\'entête partie gauche, voir <a href="https://fullcalendar.io/docs/header" target="_blank">Options de fullcalendar</a>', 'amapress' ),
+				'header_center' => __( '(Par défaut “title”) Option de personnalisation de l\'entête partie centrale, voir <a href="https://fullcalendar.io/docs/header" target="_blank">Options de fullcalendar</a>', 'amapress' ),
+				'header_right'  => __( '(Par défaut “month,listMonth,listWeek”) Option de personnalisation de l\'entête partie droite, voir <a href="https://fullcalendar.io/docs/header" target="_blank">Options de fullcalendar</a>', 'amapress' ),
 				'min_time'      => __( '(Par défaut “08:00:00”) Heure minimale affichée', 'amapress' ),
 				'max_time'      => __( '(Par défaut “22:00:00”) Heure maximale affichée', 'amapress' ),
 				'icon_size'     => __( '(Par défaut, 1em) Taille des icônes des évènements', 'amapress' ),
-				'default_view'  => __( '(Par défaut “listMonth”) Type d’affichage <a href=”https://fullcalendar.io/docs#main”>Option Views de fullcalendar</a>', 'amapress' ),
+				'default_view'  => __( '(Par défaut “listMonth”) Type d’affichage <a href="https://fullcalendar.io/docs#main" target="_blank">Option Views de fullcalendar</a>', 'amapress' ),
 			]
 		] );
 
@@ -490,8 +490,8 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => __( 'Paniers proposés/échangés par un amapien', 'amapress' ),
 			'args' => [
-				'show_history' => __( '(Par défaut “false”) Afficher l\’historique des échanges de paniers de l\’amapien/intermittent', 'amapress' ),
-				'history_days' => __( '(Par défaut “180”) Nombre de jour de l\’historique', 'amapress' ),
+				'show_history' => __( '(Par défaut “false”) Afficher l\'historique des échanges de paniers de l\'amapien/intermittent', 'amapress' ),
+				'history_days' => __( '(Par défaut “180”) Nombre de jour de l\'historique', 'amapress' ),
 				'show_futur'   => __( '(Par défaut “true”) Afficher les échanges à venir', 'amapress' ),
 			]
 		] );
@@ -860,8 +860,8 @@ function amapress_register_shortcodes() {
 		[
 			'desc' => __( 'Paniers réservés par un intermittent', 'amapress' ),
 			'args' => [
-				'show_history' => __( '(Par défaut “false”)  Afficher l\’historique des échanges de paniers de l\’amapien/intermittent', 'amapress' ),
-				'history_days' => __( '(Par défaut “30”) Nombre de jour de l\’historique', 'amapress' ),
+				'show_history' => __( '(Par défaut “false”)  Afficher l\'historique des échanges de paniers de l\'amapien/intermittent', 'amapress' ),
+				'history_days' => __( '(Par défaut “30”) Nombre de jour de l\'historique', 'amapress' ),
 				'show_futur'   => __( '(Par défaut “true”) Afficher les échanges à venir', 'amapress' ),
 			]
 		] );
