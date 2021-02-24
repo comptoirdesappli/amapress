@@ -76,7 +76,11 @@ function amapress_register_entities_panier( $entities ) {
 				'query'             => function ( $postID ) {
 					$panier = AmapressPanier::getBy( $postID );
 
-					return 'post_type=amps_distribution&amapress_date=' . date( 'Y-m-d', $panier->getDate() );
+					if ( $panier->isDelayed() ) {
+						return 'post_type=amps_distribution&amapress_date=' . date( 'Y-m-d', $panier->getDateSubst() );
+					} else {
+						return 'post_type=amps_distribution&amapress_date=' . date( 'Y-m-d', $panier->getDate() );
+					}
 				}
 			),
 			'produits_selected' => array(
