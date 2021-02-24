@@ -836,12 +836,12 @@ function amapress_register_admin_bar_menu_items( $items ) {
 		$state_summary = amapress_get_state_summary();
 		if ( $state_summary['error'] > 0 ) {
 //			$cls_state  = 'amps-error';
-			$dash_state = '<span class="dashicons dashicons-warning" style="color: red"></span>';
+			$dash_state = '<span class="ab-icon-submenu dashicons-before dashicons-warning" style="color: red"></span>';
 		} else if ( $state_summary['warning'] > 0 ) {
-//			$cls_state  = 'amps-warning';
-			$dash_state = '<span class="dashicons dashicons-admin-tools" style="color: orange"></span>';
+//			$cls_state  = 'amps-warning';K
+			$dash_state = '<span class="ab-icon-submenu dashicons-before dashicons-admin-tools" style="color: orange"></span>';
 		} else {
-			$dash_state = '<span class="dashicons dashicons-yes"></span>';
+			$dash_state = '<span class="ab-icon-submenu dashicons-before dashicons-yes"></span>';
 		}
 	}
 
@@ -1182,10 +1182,10 @@ function amapress_register_admin_bar_menu_items( $items ) {
 					array(
 						'id'         => 'amapress_backup',
 						'title'      => ( 'inactive' == $backup_status || 'plugin_missing' == $backup_status ?
-								'<span class="dashicons dashicons-warning" style="color:red"></span>' :
+								'<span class="ab-icon-submenu dashicons-before dashicons-warning" style="color:red"></span>' :
 								( 'local' == $backup_status ?
-									'<span class="dashicons dashicons-warning" style="color:orange"></span>' :
-									'<span class="dashicons dashicons-yes" style="color: green"></span>' )
+									'<span class="ab-icon-submenu dashicons-before dashicons-warning" style="color:orange"></span>' :
+									'<span class="ab-icon-submenu dashicons-before dashicons-yes" style="color: green"></span>' )
 						                ) . __( 'Sauvegardes', 'amapress' ),
 						'capability' => 'manage_options',
 						'href'       => 'active' == amapress_is_plugin_active( 'updraftplus' ) ? admin_url( 'options-general.php?page=updraftplus' ) : admin_url( 'admin.php?page=amapress_state' ),
