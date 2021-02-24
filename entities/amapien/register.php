@@ -1251,6 +1251,20 @@ function amapress_register_admin_bar_menu_items( $items ) {
 		},
 		'href'      => admin_url( 'admin.php?page=amapress_help_page&tab=wiki' ),
 		'target'    => '_blank',
+		'items'     => [
+			array(
+				'id'     => 'amapress_wiki_help_link',
+				'title'  => '<span class="ab-icon-submenu dashicons-before dashicons-admin-site-alt"></span> ' . __( 'Wiki', 'amapress' ),
+				'href'   => 'https://wiki.amapress.fr/',
+				'target' => '_blank',
+			),
+			array(
+				'id'     => 'amapress_shorcodes_help_link',
+				'title'  => '<span class="ab-icon-submenu dashicons-before dashicons-shortcode"></span> ' . __( 'Shortcodes', 'amapress' ),
+				'href'   => admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ),
+				'target' => '_blank',
+			),
+		]
 	);
 
 	$items[] = array(
