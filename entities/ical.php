@@ -198,6 +198,7 @@ class Amapress_Agenda_ICAL_Export {
 			$desc              = $event->getAlt();
 			$categories        = $event->getCategory();
 			$css               = $event->getClass();
+			$cancelled         = $event->isCancelled();
 			$icon              = $event->getIcon();
 			$dtstamp           = self::toUTCString( current_time( 'timestamp' ) );                  //date stamp for now.
 			$created_date      = self::toUTCString( $event->getStartDate() );    //time event created
@@ -223,6 +224,9 @@ class Amapress_Agenda_ICAL_Export {
 			echo "CREATED:" . $created_date . "\n";
 			echo "DTSTART:" . $start_date . "\n";
 			echo "DTEND:" . $end_date . "\n";
+			if ( $cancelled ) {
+				echo "STATUS:CANCELLED\n";
+			}
 			echo "X-AMPS-CSS:" . self::ical_split( 'X-AMPS-CSS:', $css ) . "\n";
 			if ( ! empty( $icon ) && strpos( $icon, '/' ) !== false && strpos( $icon, '<' ) !== 0 ) {
 				echo "X-AMPS-ICON:" . self::ical_split( 'X-AMPS-ICON:', $icon ) . "\n";

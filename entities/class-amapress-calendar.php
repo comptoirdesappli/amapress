@@ -31,6 +31,7 @@ class Amapress_EventEntry {
 				'lieu'        => null,
 				'label'       => null,
 				'icon'        => null,
+				'cancelled'   => false,
 				'priority'    => 0,
 				'alt'         => null,
 				'href'        => null,
@@ -69,6 +70,10 @@ class Amapress_EventEntry {
 
 	public function getPriority() {
 		return $this->args['priority'];
+	}
+
+	public function isCancelled() {
+		return $this->args['cancelled'];
 	}
 
 	/** @return iAmapress_Event_Lieu */

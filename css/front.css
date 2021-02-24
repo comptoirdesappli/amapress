@@ -1057,3 +1057,20 @@ table.docspace_list tr.dir td:first-of-type a {
     display: block;
     text-align: center;
 }
+
+.fc .fc-list-item-title img, .fc .fc-title img {
+    box-shadow: none !important;
+}
+
+.agenda-distrib.cancelled .fc-list-item-title, .agenda-distrib.cancelled .fc-title {
+    text-decoration: line-through;
+    text-decoration-thickness: 0.2rem;
+}
+
+.evt-link.agenda-distrib.cancelled {
+    background: linear-gradient(to left top, transparent 47.75%, red 49.5%, red 50.5%, transparent 52.25%);
+}
+
+.evt-link.agenda-distrib.cancelled img {
+    opacity: 0.5;
+}

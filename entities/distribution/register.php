@@ -243,7 +243,7 @@ function amapress_register_entities_distribution( $entities ) {
 								'relation' => 'AND',
 								array(
 									'key'     => 'amapress_panier_contrat_instance',
-									'value'   => amapress_prepare_in( $dist->getContratIds() ),
+									'value'   => amapress_prepare_in( $dist->getContratIds( true ) ),
 									'compare' => 'IN',
 									'type'    => 'NUMERIC'
 								),
