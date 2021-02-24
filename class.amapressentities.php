@@ -1145,6 +1145,11 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'desc'    => 'Rappel collectif (avec tous les contrats livrés) ou individuel (avec le détails des livraisons pour chaque amapien) envoyé avant chaque distribution aux amapiens concernés',
 									'options' => amapress_distribution_all_amapiens_recall_options(),
 								),
+								__( 'Emails - A tous les amapiens à la distribution - Rappel 2', 'amapress' )  => array(
+									'id'      => 'amp_tab_recall_all_amapiens2',
+									'desc'    => 'Rappel collectif (avec tous les contrats livrés), par exemple pour annoncer le contenu des paniers Légumes, envoyé avant chaque distribution aux amapiens concernés',
+									'options' => amapress_distribution_all_amapiens2_recall_options(),
+								),
 								__( 'Emails - Envoi liste émargement Excel/PDF', 'amapress' )                  => array(
 									'id'      => 'amp_tab_recall_emarg',
 									'desc'    => 'Envoi de la lite d\'émargement à des membres du collectif avant chaque distribution',
