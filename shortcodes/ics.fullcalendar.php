@@ -24,6 +24,7 @@ function amapress_fullcalendar( $atts ) {
 			'max_time'      => '22:00:00',
 			'icon_size'     => '1em',
 			'default_view'  => 'listMonth',
+			'hidden_days'   => '',
 			'url'           => '',
 		],
 		$atts
@@ -42,6 +43,9 @@ function amapress_fullcalendar( $atts ) {
             $('#<?php echo $id; ?>').fullCalendar({
                 defaultView: '<?php echo esc_js( $atts['default_view'] ); ?>',
                 locale: '<?php echo esc_js( __( 'fr', 'amapress' ) ); ?>',
+                hiddenDays: <?php echo wp_json_encode(
+					empty( $atts['hidden_days'] ) ? [] : array_map( 'intval', explode( ',', $atts['hidden_days'] ) )
+				); ?>,
                 timezone: 'local',
                 header: {
                     left: '<?php echo esc_js( $atts['header_left'] ); ?>',
