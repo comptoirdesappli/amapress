@@ -822,6 +822,22 @@ function amapress_distribution_all_amapiens_recall_options() {
 			},
 		),
 		array(
+			'name' => __( 'Option d\'envoi', 'amapress' ),
+			'type' => 'heading',
+		),
+		array(
+			'id'      => 'distribution-amapiens-recall-send-indiv',
+			'name'    => __( 'Envoi individuel', 'amapress' ),
+			'type'    => 'checkbox',
+			'desc'    => __( 'Envoyer le détails des paniers individuellement à chaque amapien (voir section <a href="#amps_recall_dist_indiv">"Email individuel à chaque amapien"</a>) au lieu du rappel collectif ci-dessous (section <a href="#amps_recall_dist_all_amapiens">"Email collectif à tous les amapiens"</a>)', 'amapress' ),
+			'default' => false,
+		),
+		array(
+			'name' => __( 'Email collectif à tous les amapiens', 'amapress' ),
+			'type' => 'heading',
+			'id'   => 'amps_recall_dist_all_amapiens',
+		),
+		array(
 			'id'       => 'distribution-amapiens-recall-mail-subject',
 			'name'     => __( 'Objet de l\'email', 'amapress' ),
 			'sanitize' => false,
@@ -858,11 +874,9 @@ function amapress_distribution_all_amapiens_recall_options() {
 			'desc'         => __( 'Groupe(s) en copie', 'amapress' ),
 		),
 		array(
-			'id'      => 'distribution-amapiens-recall-send-indiv',
-			'name'    => __( 'Envoi individuel', 'amapress' ),
-			'type'    => 'checkbox',
-			'desc'    => __( 'Envoyer le détails des paniers individuellement à chaque amapien (au du rappel collectif ci-dessus)', 'amapress' ),
-			'default' => false,
+			'name' => __( 'Email individuel à chaque amapien', 'amapress' ),
+			'type' => 'heading',
+			'id'   => 'amps_recall_dist_indiv',
 		),
 		array(
 			'id'       => 'distribution-amapiens-indiv-recall-mail-subject',
