@@ -9,7 +9,7 @@
  * Plugin Name:         Amapress
  * Plugin URI:          https://github.com/comptoirdesappli/amapress
  * Description:         Plugin de Gestion & Communication pour les AMAP
- * Version:             0.97.80
+ * Version:             0.97.85
  * Requires             PHP: 5.6
  * Requires at least:   4.6
  * Author:              Comptoir des Applis
@@ -52,7 +52,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 110 );
-define( 'AMAPRESS_VERSION', '0.97.80' );
+define( 'AMAPRESS_VERSION', '0.97.85' );
 define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL', 60 );
 define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_LIMIT', 4 );
 
@@ -665,7 +665,12 @@ function amapress_global_init() {
 		$archivables_users    = get_users_count( 'amapress_role=archivable' );
 		$subject              = __( '[Archivage] Des éléments sont archivables', 'amapress' );
 		$message              = sprintf(
-			__( "Bonjour,\n\nDes éléments sont archivables :\n- <a href='%s'>%d contrat(s)</a> : %s\n- <a href='%s'>%d période(s) d'adhésion</a> : %s\n- <a href='%s'>%d comptes utilisateur</a>\n\nArchiver ces éléments permettra de nettoyer le site des anciens amapiens et de leurs informations.", 'amapress' ),
+			__( "Bonjour,\n\n
+Des éléments sont archivables :\n
+- <a href='%s'>%d contrat(s)</a> : %s\n
+- <a href='%s'>%d période(s) d'adhésion</a> : %s\n
+- <a href='%s'>%d comptes utilisateur</a>\n\n
+Archiver ces éléments permettra de nettoyer le site des anciens amapiens et de leurs informations.", 'amapress' ),
 			admin_url( 'admin.php?page=contrats_archives' ),
 			count( $archivables_contrats ),
 			implode( ', ', array_map( function ( $c ) {
@@ -676,8 +681,8 @@ function amapress_global_init() {
 			implode( ', ', array_map( function ( $c ) {
 				return $c->getTitle();
 			}, $archivables_periods ) ),
-			$archivables_users,
-			admin_url( 'users.php?amapress_role=archivable' )
+			admin_url( 'users.php?amapress_role=archivable' ),
+			$archivables_users
 		);
 		if ( ! empty( $message ) ) {
 			amapress_wp_mail( get_option( 'admin_email' ),
