@@ -280,9 +280,10 @@ add_action( 'amapress_recall_distrib_changes', function ( $args ) {
 		return;
 	}
 
-	$dist_id     = $dist->ID;
-	$contrat_ids = implode( ',', $dist->getContratIds() );
-	$query       = "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date";
+	$dist_id          = $dist->ID;
+	$contrat_ids      = implode( ',', $dist->getContratIds() );
+	$dist_date_filter = date_i18n( 'Y-m-d', $dist->getDate() );
+	$query            = "post_type=amps_adhesion&amapress_date=$dist_date_filter&amapress_contrat_inst=$contrat_ids|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date";
 
 	if ( $dist->getLieuSubstitutionId() > 0 && $dist->getLieuSubstitutionId() != $dist->getLieuId() ) {
 		$amapien_users = amapress_prepare_message_target_bcc( $query, sprintf( __( 'Amapiens de %s', 'amapress' ), $dist->getTitle() ), "distribution", true );
@@ -463,7 +464,8 @@ add_action( 'amapress_recall_missing_resp_distrib', function ( $args ) {
 	if ( empty( $contrat_ids ) ) {
 		return;
 	}
-	$query = "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date";
+	$dist_date_filter = date_i18n( 'Y-m-d', $dist->getDate() );
+	$query            = "post_type=amps_adhesion&amapress_date=$dist_date_filter&amapress_contrat_inst=$contrat_ids|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date";
 
 	$required_resps_count = AmapressDistributions::get_required_responsables( $dist_id );
 	$resps_count          = count( $dist->getResponsablesIds() );
@@ -765,9 +767,10 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 			}
 		}
 	} else {
-		$dist_id     = $dist->ID;
-		$contrat_ids = implode( ',', $dist->getContratIds() );
-		$query       = "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date";
+		$dist_id          = $dist->ID;
+		$contrat_ids      = implode( ',', $dist->getContratIds() );
+		$dist_date_filter = date_i18n( 'Y-m-d', $dist->getDate() );
+		$query            = "post_type=amps_adhesion&amapress_date=$dist_date_filter&amapress_contrat_inst=$contrat_ids|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date";
 
 		$amapien_users = amapress_prepare_message_target_bcc( $query,
 			sprintf( __( 'Amapiens de %s', 'amapress' ), $dist->getTitle() ), "distribution", true );
@@ -905,9 +908,10 @@ add_action( 'amapress_recall_amapiens_distrib2', function ( $args ) {
 
 	$is_test = isset( $args['is_test'] ) && $args['is_test'];
 
-	$dist_id     = $dist->ID;
-	$contrat_ids = implode( ',', $dist->getContratIds() );
-	$query       = "post_type=amps_adhesion&amapress_contrat_inst=$contrat_ids|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date";
+	$dist_id          = $dist->ID;
+	$contrat_ids      = implode( ',', $dist->getContratIds() );
+	$dist_date_filter = date_i18n( 'Y-m-d', $dist->getDate() );
+	$query            = "post_type=amps_adhesion&amapress_date=$dist_date_filter&amapress_contrat_inst=$contrat_ids|amapress_adhesion_adherent,amapress_adhesion_adherent2,amapress_adhesion_adherent3,amapress_adhesion_adherent4|amapress_post=$dist_id|amapress_distribution_date";
 
 	$amapien_users = amapress_prepare_message_target_bcc( $query,
 		sprintf( __( 'Amapiens de %s', 'amapress' ), $dist->getTitle() ), "distribution", true );
