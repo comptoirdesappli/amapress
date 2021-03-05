@@ -110,7 +110,7 @@ class AmapressSMTPMailingQueue {
 			} );
 		$ct      = array_filter( $headers,
 			function ( $h ) {
-				return false !== stripos( $h, __( 'Content-Type', 'amapress' ) );
+				return 0 === stripos( $h, 'Content-Type', 'amapress' );
 			} );
 		if ( empty( $ct ) && 'text/html' == apply_filters( 'wp_mail_content_type', 'text/plain' ) ) {
 			$headers[] = 'Content-Type: text/html; charset=UTF-8';
