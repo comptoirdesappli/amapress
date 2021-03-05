@@ -213,12 +213,17 @@ function amapress_send_message(
 		$from_dn = trim( str_replace( array( '"', "'", "\r", "\n" ), '', $from_dn ) );
 		$from_dn = '"' . $from_dn . '"';
 
-//        add_filter( 'wp_mail_content_type', 'amapress_wpmail_content_type' );
-		$headers[] = 'Content-Type: text/html; charset=UTF-8';
+		$reply_to_headers = array_filter( $headers,
+			function ( $h ) {
+				return 0 === stripos( $h, 'Reply-To' );
+			} );
+		$headers[]        = 'Content-Type: text/html; charset=UTF-8';
 		switch ( isset( $opt['send_mode'] ) ? $opt['send_mode'] : '' ) {
 			case "indiv":
 				$headers[] = "From: \"$from_dn\" <$from_email>";
-				$headers[] = "Reply-to: \"$from_dn\" <$reply_to_mail>";
+				if ( empty( $reply_to_headers ) ) {
+					$headers[] = "Reply-To: \"$from_dn\" <$reply_to_mail>";
+				}
 				/** @var AmapressUser $name */
 				foreach ( $emails_indiv as $email => $name ) {
 					$name_string = $name->getDisplayName();
@@ -234,7 +239,9 @@ function amapress_send_message(
 			case "to":
 				$to        = implode( ',', $emails );
 				$headers[] = "From: \"$from_dn\" <$from_email>";
-				$headers[] = "Reply-to: \"$from_dn\" <$reply_to_mail>";
+				if ( empty( $reply_to_headers ) ) {
+					$headers[] = "Reply-To: \"$from_dn\" <$reply_to_mail>";
+				}
 				if ( $current_user ) {
 					$headers[] = 'Cc: ' . $current_user->getUser()->user_email;
 				}
@@ -256,16 +263,18 @@ function amapress_send_message(
 //				break;
 			case "bcc":
 			default:
-				$to = "\"{$opt['target_name']}\" <$from_email>";
-				if ( $current_user ) {
-					$emails[] = $current_user->getEmail();
-				}
-				$headers[] = "From: \"$from_dn\" <$from_email>";
-				$headers[] = "Reply-to: \"$from_dn\" <$reply_to_mail>";
-				$headers[] = 'Bcc: ' . implode( ',', $emails );
-				$subject   = amapress_replace_mail_placeholders( $subject, $current_user, $entity );
-				$content   = amapress_replace_mail_placeholders( $content, $current_user, $entity );
-				amapress_wp_mail( $to, $subject, $content, $headers, $attachments, $cc, $bcc );
+			$to = "\"{$opt['target_name']}\" <$from_email>";
+			if ( $current_user ) {
+				$emails[] = $current_user->getEmail();
+			}
+			$headers[] = "From: \"$from_dn\" <$from_email>";
+			if ( empty( $reply_to_headers ) ) {
+				$headers[] = "Reply-To: \"$from_dn\" <$reply_to_mail>";
+			}
+			$headers[] = 'Bcc: ' . implode( ',', $emails );
+			$subject   = amapress_replace_mail_placeholders( $subject, $current_user, $entity );
+			$content   = amapress_replace_mail_placeholders( $content, $current_user, $entity );
+			amapress_wp_mail( $to, $subject, $content, $headers, $attachments, $cc, $bcc );
 		}
 
 		if ( isset( $opt['send_from_me'] ) && $opt['send_from_me'] ) {
