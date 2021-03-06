@@ -477,7 +477,7 @@ add_action( 'amapress_recall_contrat_openclose', function ( $args ) {
 	}
 
 	if ( 0 === strcasecmp( $contrat->getSubName(), 'test' ) ) {
-
+		return;
 	}
 
 	$today = Amapress::start_of_day( amapress_time() );
