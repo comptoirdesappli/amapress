@@ -476,6 +476,10 @@ add_action( 'amapress_recall_contrat_openclose', function ( $args ) {
 		return;
 	}
 
+	if ( 0 === strcasecmp( $contrat->getSubName(), 'test' ) ) {
+
+	}
+
 	$today = Amapress::start_of_day( amapress_time() );
 	if ( Amapress::start_of_day( $contrat->getDate_cloture() ) < $today ) {
 		echo '<p>' . __( 'Contrat clos', 'amapress' ) . '</p>';
@@ -1110,6 +1114,10 @@ function amapress_contrat_open_recall_options() {
 			},
 		),
 		array(
+			'type' => 'note',
+			'desc' => __( 'Les contrats dont le nom complémentaire est égal à "test" ne sont pas concernés par ces rappels', 'amapress' ),
+		),
+		array(
 			'id'      => 'contrat-open-recall-targets',
 			'name'    => __( 'Destinataires', 'amapress' ),
 			'type'    => 'radio',
@@ -1214,6 +1222,10 @@ function amapress_contrat_close_recall_options() {
 			'hook_args_generator' => function ( $option ) {
 				return amapress_get_contrats_cron( 'close' );
 			},
+		),
+		array(
+			'type' => 'note',
+			'desc' => __( 'Les contrats dont le nom complémentaire est égal à "test" ne sont pas concernés par ces rappels', 'amapress' ),
 		),
 		array(
 			'id'      => 'contrat-close-recall-targets',
