@@ -1157,42 +1157,42 @@ function amapress_register_shortcodes() {
 		] );
 
 	amapress_register_shortcode( 'display-if-logged', function ( $atts, $content = null ) {
-		return do_shortcode( '[display-if role=logged]' );
+		return do_shortcode( '[display-if role=logged]' . $content . '[/display-if]' );
 	},
 		[
 			'desc' => __( 'Affiche le contenu du shortcode si l\'amapien est connecté', 'amapress' ),
 			'args' => []
 		] );
 	amapress_register_shortcode( 'display-if-not-logged', function ( $atts, $content = null ) {
-		return do_shortcode( '[display-if role=not_logged]' );
+		return do_shortcode( '[display-if role=not_logged]' . $content . '[/display-if]' );
 	},
 		[
 			'desc' => __( 'Affiche le contenu du shortcode si l\'amapien n\'est pas connecté', 'amapress' ),
 			'args' => []
 		] );
 	amapress_register_shortcode( 'display-if-no-contrat', function ( $atts, $content = null ) {
-		return do_shortcode( '[display-if role=no_contrat]' );
+		return do_shortcode( '[display-if role=no_contrat]' . $content . '[/display-if]' );
 	},
 		[
 			'desc' => __( 'Affiche le contenu du shortcode si l\'amapien n\'a pas de contrat en cours', 'amapress' ),
 			'args' => []
 		] );
 	amapress_register_shortcode( 'display-if-intermittent', function ( $atts, $content = null ) {
-		return do_shortcode( '[display-if role=intermittent]' );
+		return do_shortcode( '[display-if role=intermittent]' . $content . '[/display-if]' );
 	},
 		[
 			'desc' => __( 'Affiche le contenu du shortcode si l\'amapien est intermittent', 'amapress' ),
 			'args' => []
 		] );
 	amapress_register_shortcode( 'display-if-responsable-distrib', function ( $atts, $content = null ) {
-		return do_shortcode( '[display-if role=responsable_distrib]' );
+		return do_shortcode( '[display-if role=responsable_distrib]' . $content . '[/display-if]' );
 	},
 		[
 			'desc' => __( 'Affiche le contenu du shortcode si l\'amapien est responsable de distribution cette semaine', 'amapress' ),
 			'args' => []
 		] );
 	amapress_register_shortcode( 'display-if-responsable-amap', function ( $atts, $content = null ) {
-		return do_shortcode( '[display-if role=responsable_amap]' );
+		return do_shortcode( '[display-if role=responsable_amap]' . $content . '[/display-if]' );
 	},
 		[
 			'desc' => __( 'Affiche le contenu du shortcode si l\'amapien a accès au Tableau de bord (responsables AMAP)', 'amapress' ),
