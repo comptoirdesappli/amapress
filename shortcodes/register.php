@@ -1147,7 +1147,7 @@ function amapress_register_shortcodes() {
 			}
 		}
 
-		return $show ? $content : '';
+		return $show ? do_shortcode( $content ) : '';
 	},
 		[
 			'desc' => __( 'Affiche le contenu du shortcode suivant une condition (connecté, non connecté, membre du collectif, intermittent, responsable de distribution, adhésion non réglée, adhésion, sans adhésion)', 'amapress' ),
