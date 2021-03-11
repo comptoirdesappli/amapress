@@ -483,12 +483,18 @@ class AmapressSMTPMailingQueue {
 		$phpmailer->Sender = $phpmailer->From;
 
 		// Set encryption type
-		$phpmailer->SMTPSecure = Amapress::getOption( 'mail_queue_encryption' );
-
+		$enc  = Amapress::getOption( 'mail_queue_encryption' );
 		$port = Amapress::getOption( 'mail_queue_smtp_port' );
+		if ( 465 == $port ) {
+			$enc = 'ssl';
+		} elseif ( 587 == $port ) {
+			$enc = 'tls';
+		}
+
 		// Set host
-		$phpmailer->Host = $host;
-		$phpmailer->Port = $port ? $port : 25;
+		$phpmailer->SMTPSecure = $enc;
+		$phpmailer->Host       = $host;
+		$phpmailer->Port       = $port ? $port : 25;
 
 		// Timeout
 		$timeout            = Amapress::getOption( 'mail_queue_smtp_timeout' );

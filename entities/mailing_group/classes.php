@@ -201,7 +201,15 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function getSmtpEncryption() {
-		return $this->getCustom( 'amapress_mailing_group_smtp_encryption', '' );
+		$enc  = $this->getCustom( 'amapress_mailing_group_smtp_encryption', '' );
+		$port = $this->getSmtpPort();
+		if ( 465 == $port ) {
+			$enc = 'ssl';
+		} elseif ( 587 == $port ) {
+			$enc = 'tls';
+		}
+
+		return $enc;
 	}
 
 	public function UseSmtpAuth() {
