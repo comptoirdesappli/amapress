@@ -492,11 +492,12 @@ class AmapressSMTPMailingQueueOriginal {
 
 						// Set authentication data
 						if ( $ml_grp->UseSmtpAuth() ) {
-							$phpmailer->SMTPAuth = true;
 							if ( ! empty( $ml_grp->getSmtpUserName() ) ) {
+								$phpmailer->SMTPAuth = true;
 								$phpmailer->Username = $ml_grp->getSmtpUserName();
 								$phpmailer->Password = $ml_grp->getSmtpPassword();
-							} else {
+							} elseif ( ! empty( $ml_grp->getUsername() ) ) {
+								$phpmailer->SMTPAuth = true;
 								$phpmailer->Username = $ml_grp->getUsername();
 								$phpmailer->Password = $ml_grp->getPassword();
 							}
