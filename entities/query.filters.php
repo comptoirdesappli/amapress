@@ -2211,6 +2211,7 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 				)
 			);
 			$all_user_ids_sql = amapress_prepare_in_sql( $all_user_ids );
+			$user_ids         = [];
 			foreach (
 				amapress_get_col_cached(
 					"SELECT DISTINCT $wpdb->usermeta.meta_value
@@ -2232,6 +2233,7 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids_sql)" ) as $user_id
 				)
 			);
 			$all_user_ids_sql = amapress_prepare_in_sql( $all_user_ids );
+			$user_ids         = [];
 			foreach (
 				amapress_get_col_cached(
 					"SELECT DISTINCT $wpdb->usermeta.meta_value
