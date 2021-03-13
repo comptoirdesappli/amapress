@@ -113,7 +113,7 @@ class TitanEntity {
 			$this->post = get_post( $this->post_id );
 		}
 		$customs = get_post_custom( $this->post_id );
-		if ( empty( $customs ) ) {
+		if ( empty( $customs ) || is_wp_error( $customs ) ) {
 			$customs = array();
 		}
 //        if (!is_array($customs)) {
