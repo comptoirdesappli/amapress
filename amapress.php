@@ -256,6 +256,9 @@ function amapress_exception_error_handler( $errno, $errstr, $errfile, $errline, 
 	if ( strpos( $errstr, 'Load_Resend_Welcome_Email' ) !== false ) {
 		return true;
 	}
+	if ( strpos( $errstr, 'autoptimize_imgopt_number_field_7' ) !== false ) {
+		return true;
+	}
 
 	if ( WP_DEBUG || ini_get( 'log_errors' ) ) {
 		$message = sprintf( __( '%s in %s on line %s, backtrace: %s, url: %s, user: %s', 'amapress' ),
