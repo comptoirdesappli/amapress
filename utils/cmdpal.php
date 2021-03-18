@@ -6,12 +6,12 @@ function amapress_command_palette_menu_items( $items ) {
 			continue;
 		}
 
-		$page_id    = $item['id'];
-		$page_url   = admin_url( 'admin.php?page=' . $page_id );
-		$capability = 'read';
+		$page_id           = $item['id'];
+		$page_url          = admin_url( 'admin.php?page=' . $page_id );
+		$parent_capability = 'read';
 //		$icon       = '';
 		if ( ! empty( $item['settings']['capability'] ) ) {
-			$capability = $item['settings']['capability'];
+			$parent_capability = $item['settings']['capability'];
 		}
 //		if ( ! empty( $item['settings']['icon'] ) ) {
 //			$icon = $item['settings']['icon'];
@@ -43,6 +43,8 @@ function amapress_command_palette_menu_items( $items ) {
 			foreach ( $item['tabs'] as $tab_name => $tab ) {
 				if ( ! empty( $tab['capability'] ) ) {
 					$capability = $tab['capability'];
+				} else {
+					$capability = $parent_capability;
 				}
 //				if ( ! empty( $tab['icon'] ) ) {
 //					$icon = $tab['icon'];
@@ -84,6 +86,8 @@ function amapress_command_palette_menu_items( $items ) {
 
 				if ( ! empty( $subitem['settings']['capability'] ) ) {
 					$capability = $subitem['settings']['capability'];
+				} else {
+					$capability = $parent_capability;
 				}
 //				if ( ! empty( $subitem['settings']['icon'] ) ) {
 //					$icon = $subitem['settings']['icon'];
@@ -115,6 +119,8 @@ function amapress_command_palette_menu_items( $items ) {
 					foreach ( $subitem['tabs'] as $tab_name => $tab ) {
 						if ( ! empty( $tab['capability'] ) ) {
 							$capability = $tab['capability'];
+						} else {
+							$capability = $parent_capability;
 						}
 //						if ( ! empty( $tab['icon'] ) ) {
 //							$icon = $tab['icon'];
