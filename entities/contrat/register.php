@@ -2051,6 +2051,8 @@ jQuery(function($) {
 jQuery(function($) {
     $("input[name^=amapress_contrat_instance_paiements]").each(function() {
         var $this = $(this);
+        if ($this.attr("name") != "amapress_contrat_instance_paiements[]")
+            return;
         var $chqrep = $("#chq-rep-" + $this.attr("value"));
         var handleRepState = function() {
             if ($this.is(":checked")) {
