@@ -406,11 +406,11 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 			if ( is_wp_error( $value ) ) {
 				return $value;
 			}
-			$v = strtolower( trim( $value ) );
+			$v = strtolower( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $value ) ) ) );
 			if ( is_array( $settings['options'] ) && ! array_key_exists( $v, $settings['options'] ) ) {
 				$labels = array_combine(
 					array_map( function ( $a ) {
-						return strtolower( $a );
+						return strtolower( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $a ) ) ) );
 					}, array_values( $settings['options'] ) ),
 					array_keys( $settings['options'] ) );
 				if ( ! array_key_exists( $v, $labels ) ) {
@@ -539,13 +539,13 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 			$vs   = trim( strtolower( trim( $value ) ), ',' );
 			$vs   = array_map( function ( $v ) use ( $value, $label, $settings ) {
 				if ( is_string( $v ) ) {
-					$v = trim( $v );
+					$v = strtolower( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $v ) ) ) );
 				}
 
 				if ( is_array( $settings['options'] ) && ! array_key_exists( $v, $settings['options'] ) ) {
 					$labels = array_combine(
 						array_map( function ( $a ) {
-							return trim( strtolower( $a ) );
+							return strtolower( wptexturize( trim( \ForceUTF8\Encoding::toLatin1( $a ) ) ) );
 						}, array_values( $settings['options'] ) ),
 						array_keys( $settings['options'] ) );
 					if ( ! array_key_exists( $v, $labels ) ) {
