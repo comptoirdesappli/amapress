@@ -4332,6 +4332,25 @@ class Amapress {
 		return self::get_page_with_shortcode_href( 'inscription-en-ligne', 'amp_preinscr_href' );
 	}
 
+	public static function formatPaymentType( $type ) {
+		switch ( $type ) {
+			case 'chq':
+				return __( 'Chèque', 'amapress' );
+			case 'esp':
+				return __( 'Espèces', 'amapress' );
+			case 'stp':
+				return __( 'Paiement en ligne (Stripe)', 'amapress' );
+			case 'vir':
+				return __( 'Virement', 'amapress' );
+			case 'mon':
+				return __( 'Monnaie locale', 'amapress' );
+			case 'dlv':
+				return 'A la livraison';
+			case 'prl':
+				return __( 'Prélèvement', 'amapress' );
+		}
+	}
+
 	public static function formatPrice(
 		$number, $with_unit = false
 	) {

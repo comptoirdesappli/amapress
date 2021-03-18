@@ -106,22 +106,7 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 	}
 
 	public function getTypeFormatted() {
-		switch ( $this->getType() ) {
-			case 'chq':
-				return __( 'Chèque', 'amapress' );
-			case 'esp':
-				return __( 'Espèces', 'amapress' );
-			case 'stp':
-				return __( 'Paiement en ligne (Stripe)', 'amapress' );
-			case 'vir':
-				return __( 'Virement', 'amapress' );
-			case 'mon':
-				return __( 'Monnaie locale', 'amapress' );
-			case 'dlv':
-				return 'A la livraison';
-			case 'prl':
-				return __( 'Prélèvement', 'amapress' );
-		}
+		return Amapress::formatPaymentType( $this->getType() );
 	}
 
 	public function getBanque() {

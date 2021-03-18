@@ -87,22 +87,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 	}
 
 	public function getMainPaiementTypeFormatted() {
-		switch ( $this->getMainPaiementType() ) {
-			case 'chq':
-				return __( 'Chèque', 'amapress' );
-			case 'esp':
-				return __( 'Espèces', 'amapress' );
-			case 'stp':
-				return __( 'Paiement en ligne (Stripe)', 'amapress' );
-			case 'vir':
-				return __( 'Virement', 'amapress' );
-			case 'mon':
-				return __( 'Monnaie locale', 'amapress' );
-			case 'dlv':
-				return 'A la livraison';
-			case 'prl':
-				return __( 'Prélèvement', 'amapress' );
-		}
+		return Amapress::formatPaymentType( $this->getMainPaiementType() );
 	}
 
 	public function isForIntermittent() {
