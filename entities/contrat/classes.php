@@ -2654,16 +2654,42 @@ class AmapressContrat_instance extends TitanEntity {
 				'lieu_all_inscriptions' => count( $date_inscriptions )
 			];
 
+			foreach ( $date_inscriptions as $date_inscription ) {
+				$k = 'lieu_all_' . $date_inscription->getMainPaiementType() . '_c';
+				if ( empty( $line[ $k ] ) ) {
+					$line[ $k ] = 0;
+				}
+				$line[ $k ] += 1;
+
+				$k = 'lieu_all_' . $date_inscription->getMainPaiementType() . '_p';
+				if ( empty( $line[ $k ] ) ) {
+					$line[ $k ] = 0;
+				}
+				$line[ $k ] += $date_inscription->getContrat_quantites_Price( $date );
+			}
 
 			if ( count( $lieux ) > 1 ) {
 				foreach ( $lieux as $lieu_key => $lieu_name ) {
-					$lieu_id                                      = intval( $lieu_key );
+					$lieu_id = intval( $lieu_key );
+					/** @var AmapressAdhesion[] $lieu_inscriptions */
 					$lieu_inscriptions                            = array_filter( $date_inscriptions,
 						function ( $inscription ) use ( $lieu_id ) {
 							/** @var AmapressAdhesion $inscription */
 							return $inscription->getLieuId() == $lieu_id;
 						} );
 					$line[ 'lieu_' . $lieu_id . '_inscriptions' ] = count( $lieu_inscriptions );
+					foreach ( $lieu_inscriptions as $lieu_inscription ) {
+						$k = 'lieu_' . $lieu_id . '_' . $lieu_inscription->getMainPaiementType() . '_c';
+						if ( empty( $line[ $k ] ) ) {
+							$line[ $k ] = 0;
+						}
+						$line[ $k ] += 1;
+						$k          = 'lieu_' . $lieu_id . '_' . $lieu_inscription->getMainPaiementType() . '_p';
+						if ( empty( $line[ $k ] ) ) {
+							$line[ $k ] = 0;
+						}
+						$line[ $k ] += $lieu_inscription->getContrat_quantites_Price( $date );
+					}
 
 					$lieu_price = 0;
 					foreach ( $quantites as $quantite ) {

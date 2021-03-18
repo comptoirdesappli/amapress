@@ -2203,6 +2203,7 @@ function amapress_producteurs_finances_custom() {
 		[
 			'group_date_by'        => isset( $_GET['date_by'] ) ? $_GET['date_by'] : 'none',
 			'group_by'             => isset( $_GET['by'] ) ? $_GET['by'] : 'date',
+			'show_pmt_types'       => isset( $_GET['show_pmt_types'] ),
 			'show_adherents'       => isset( $_GET['show_adherents'] ),
 			'show_adherents_count' => ! isset( $_GET['show_adherents'] )
 		] );
@@ -2224,6 +2225,7 @@ function amapress_get_producteurs_finances_datatable(
 	$options = wp_parse_args(
 		$options,
 		array(
+			'show_pmt_types'       => false,
 			'show_adherents'       => false,
 			'show_adherents_count' => true,
 			'show_empty_lines'     => false,
@@ -2238,6 +2240,7 @@ function amapress_get_producteurs_finances_datatable(
 		$group_date_by = 'none';
 	}
 	$show_adherents_count = $options['show_adherents_count'];
+	$show_pmt_types       = $options['show_pmt_types'];
 	$show_adherents       = $options['show_adherents'];
 	$show_empty_lines     = $options['show_empty_lines'];
 
@@ -2283,15 +2286,9 @@ function amapress_get_producteurs_finances_datatable(
 			)
 		);
 	}
-	$columns[] = array(
-		'title' => __( 'Total', 'amapress' ),
-		'data'  => array(
-			'_'    => 'price_d',
-			'sort' => 'price',
-		)
-	);
 
-	$data = [];
+	$data          = [];
+	$all_pmt_types = [ 'chq', 'esp', 'vir', 'stp', 'dlv', 'mon', 'prl' ];
 	if ( $show_adherents ) {
 		foreach ( $contrat_instances as $contrat_instance ) {
 			$inscriptions = AmapressContrats::get_all_adhesions( $contrat_instance->getID() );
@@ -2314,6 +2311,8 @@ function amapress_get_producteurs_finances_datatable(
 					$row['lieu']     = $inscription->getLieu()->getShortName();
 					$row['adherent'] = sprintf( __( '%s<br/>(%s)', 'amapress' ),
 						$inscription->getAdherent()->getSortableDisplayName(), $inscription->getAdherent()->getEmail() );
+
+					$row['pmt'] = Amapress::formatPaymentType( $inscription->getMainPaiementType() );
 
 					$total_amount = 0;
 					foreach ( $inscription->getContrat_quantites( $date ) as $q ) {
@@ -2338,10 +2337,10 @@ function amapress_get_producteurs_finances_datatable(
 						$row['date']      = date_i18n( 'd/m/Y', $date );
 						$row['date_sort'] = date( 'Y-m-d', $date );
 					}
-					$key = $row['date_sort'] . $row['prod'] . $row['adherent'] . $row['lieu'];
+					$key = $row['date_sort'] . $row['prod'] . $row['adherent'] . $row['lieu'] . ( $show_pmt_types ? $row['pmt'] : '' );
 					if ( isset( $data[ $key ] ) ) {
 						foreach ( $row as $k => $v ) {
-							if ( 'prod' == $k || 'adherent' == $k || 'lieu' == $k || 'date' == $k || 'date_sort' == $k ) {
+							if ( 'prod' == $k || 'adherent' == $k || 'lieu' == $k || 'date' == $k || 'date_sort' == $k || 'pmt' == $k ) {
 								continue;
 							}
 							if ( is_string( $v ) ) {
@@ -2375,6 +2374,11 @@ function amapress_get_producteurs_finances_datatable(
 				$row['price']   = $date_stat['lieu_all_p'];
 
 				$row['all_adhs'] = $date_stat['lieu_all_inscriptions'];
+
+				foreach ( $all_pmt_types as $pmt ) {
+					$row[ 'pmt_' . $pmt ] = ! empty( $date_stat[ 'lieu_all_' . $pmt . '_p' ] ) ?
+						$date_stat[ 'lieu_all_' . $pmt . '_p' ] : 0;
+				}
 
 				if ( 'quarter' == $group_date_by ) {
 					$quarter          = ceil( intval( date( 'n', $real_date ) ) / 3 );
@@ -2410,7 +2414,46 @@ function amapress_get_producteurs_finances_datatable(
 			}
 		}
 	}
-	$data     = array_values( $data );
+	$data           = array_values( $data );
+	$used_pmt_types = [];
+	foreach ( $data as $k => $v ) {
+		foreach ( $all_pmt_types as $pmt ) {
+			if ( ! empty( $v[ 'pmt_' . $pmt ] ) && ! in_array( $pmt, $used_pmt_types ) ) {
+				$used_pmt_types[] = $pmt;
+			}
+			$data[ $k ][ 'pmt_' . $pmt . '_p' ] = Amapress::formatPrice( $v[ 'pmt_' . $pmt ], true );
+		}
+	}
+
+	if ( $show_pmt_types ) {
+		if ( $show_adherents ) {
+			$columns[] = array(
+				'title' => __( 'Type règl.', 'amapress' ),
+				'data'  => array(
+					'_'    => 'pmt',
+					'sort' => 'pmt',
+				)
+			);
+		} else {
+			foreach ( $used_pmt_types as $pmt ) {
+				$columns[] = array(
+					'title' => Amapress::formatPaymentType( $pmt ),
+					'data'  => array(
+						'_'    => 'pmt_' . $pmt . '_p',
+						'sort' => 'pmt_' . $pmt,
+					)
+				);
+			}
+		}
+	}
+	$columns[] = array(
+		'title' => __( 'Total', 'amapress' ),
+		'data'  => array(
+			'_'    => 'price_d',
+			'sort' => 'price',
+		)
+	);
+
 	$group_by = ! empty( $options['group_by'] ) ? $options['group_by'] : 'date';
 	if ( 'date' == $group_by ) {
 		usort( $data, function ( $a, $b ) {
@@ -2518,6 +2561,13 @@ function amapress_get_producteurs_finances_datatable(
 			            __( 'Masquer les adhérents', 'amapress' ) ) :
 		            Amapress::makeLink( add_query_arg( 'show_adherents', 'T' ),
 			            __( 'Afficher les adhérents', 'amapress' ) ) ) .
+	            '</p><hr/>';
+	$filters .= '<p>' .
+	            ( $show_pmt_types ?
+		            Amapress::makeLink( remove_query_arg( 'show_pmt_types' ),
+			            __( 'Masquer les types de règlements', 'amapress' ) ) :
+		            Amapress::makeLink( add_query_arg( 'show_pmt_types', 'T' ),
+			            __( 'Afficher les types de règlements', 'amapress' ) ) ) .
 	            '</p><hr/>';
 	$filters .= '<p>' .
 	            Amapress::wrapIf(
