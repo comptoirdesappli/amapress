@@ -651,7 +651,14 @@ class AmapressContrat_instance extends TitanEntity {
 
 	/** @return AmapressContrat_instance[] */
 	public function canSelfContratsCondition() {
-		return $this->getCustomAsEntityArray( 'amapress_contrat_instance_self_contrats', 'AmapressContrat_instance' );
+		return array_filter(
+			$this->getCustomAsEntityArray( 'amapress_contrat_instance_self_contrats',
+				'AmapressContrat_instance' ),
+			function ( $c ) {
+				/** @var AmapressContrat_instance $c */
+				return $c->ID != $this->ID;
+			}
+		);
 	}
 
 	public function canSelfEdit() {
