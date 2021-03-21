@@ -131,12 +131,17 @@ class TitanEntity {
 	public static function prepare_custom_field_value( $value ) {
 		if ( is_array( $value ) ) {
 			if ( count( $value ) > 1 ) {
-				return $value;
+				$ret = $value;
 			} else {
-				return maybe_unserialize( $value[0] );
+				$ret = maybe_unserialize( $value[0] );
 			}
 		} else {
-			return maybe_unserialize( $value );
+			$ret = maybe_unserialize( $value );
+		}
+		if ( is_wp_error( $ret ) ) {
+			return null;
+		} else {
+			return $ret;
 		}
 	}
 
