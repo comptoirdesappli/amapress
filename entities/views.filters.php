@@ -67,7 +67,8 @@ function amapress_views_process( $views, $pt ) {
 	foreach ( $t['views'] as $k => $v ) {
 		if ( $k == 'exp_csv' ) {
 			if ( $v !== false ) {
-				$views[ $k ] = amapress_add_view_export_csv( $v, $pt == 'user' );
+				$views[ $k . '_vis' ] = amapress_add_view_export_csv( $v, $pt == 'user', true );
+				$views[ $k ]          = amapress_add_view_export_csv( $v, $pt == 'user' );
 			}
 		} else if ( $k == 'remove' && is_array( $v ) ) {
 			foreach ( $v as $vv ) {
@@ -758,15 +759,17 @@ function amapress_add_view_button( &$arr, $id, $query, $title, $user = false, $s
 	$arr[ $id ] = $btn;
 }
 
-function amapress_add_view_export_csv( $name = null, $is_user = false ) {
+function amapress_add_view_export_csv( $name = null, $is_user = false, $visible_columns = false ) {
 	$name = is_string( $name ) ? $name : null;
 	if ( $is_user ) {
-		$url = AmapressExport_Users::get_export_url( $name );
+		$url = AmapressExport_Users::get_export_url( $name,
+			$visible_columns ? 'visible' : null );
 	} else {
-		$url = AmapressExport_Posts::get_export_url( $name );
+		$url = AmapressExport_Posts::get_export_url( $name,
+			null, $visible_columns ? 'visible' : null );
 	}
 
-	return "<a href='$url'>" . __( 'Exporter', 'amapress' ) . " <span class='dashicons dashicons-external'></span></a>";
+	return "<a href='$url'>" . ( $visible_columns ? __( 'Exporter (colonnes)', 'amapress' ) : __( 'Exporter', 'amapress' ) ) . " <span class='dashicons dashicons-external'></span></a>";
 }
 
 function amapress_generate_view_button( $query, $title, $user = false, $show_zero = false ) {

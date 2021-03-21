@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-add_action( 'amapress_init', 'amapress_csv_export' );
+add_action( 'current_screen', 'amapress_csv_export' );
 function amapress_csv_export() {
 	AmapressExport_Users::generate_csv();
 	AmapressExport_Posts::generate_csv();
