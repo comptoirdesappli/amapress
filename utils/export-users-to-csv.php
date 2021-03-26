@@ -80,6 +80,27 @@ class AmapressExport_Users {
 		$title = null,
 		$columns = 'all'
 	) {
+		$data = self::generate_export_data( $query_string, $base_export_name, $title, $columns );
+
+		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
+
+		$objPHPExcel = new PHPExcel();
+		$objPHPExcel->getProperties()->setCreator( "Amapress" )
+		            ->setLastModifiedBy( "Amapress" )
+		            ->setTitle( ! empty( $title ) ? $title : $data['export_name'] );
+		$objPHPExcel->setActiveSheetIndex( 0 )->fromArray( array_merge( $data['csv_headers'], $data['csv_data'] ) );
+		$objPHPExcel->getActiveSheet()->setTitle( $data['export_name'] );
+		$objPHPExcel->setActiveSheetIndex( 0 );
+
+		return $objPHPExcel;
+	}
+
+	public static function generate_export_data(
+		$query_string,
+		$base_export_name = null,
+		$title = null,
+		$columns = 'all'
+	) {
 		$args = array(
 			'fields'         => 'all_with_meta',
 			'posts_per_page' => - 1,
@@ -92,7 +113,7 @@ class AmapressExport_Users {
 
 		$users = get_users( $args );
 
-		$name = ! empty( $base_export_name ) ? $base_export_name : 'users';
+		$export_name = ! empty( $base_export_name ) ? $base_export_name : 'users';
 
 		$exclude_data = apply_filters( 'amapress_users_export_exclude_data', array(
 			'user_pass',
@@ -119,8 +140,8 @@ class AmapressExport_Users {
 		$meta_keys = $wpdb->get_results( "SELECT distinct(meta_key) FROM $wpdb->usermeta" );
 		$meta_keys = wp_list_pluck( $meta_keys, 'meta_key' );
 		$fields    = array_merge( $data_keys, $meta_keys );
-		$fields    = apply_filters( "amapress_users_export_fields", $fields, $name );
-		$fields    = apply_filters( "amapress_{$name}_export_fields", $fields, $name );
+		$fields    = apply_filters( "amapress_users_export_fields", $fields, $export_name );
+		$fields    = apply_filters( "amapress_{$export_name}_export_fields", $fields, $export_name );
 
 		$include_data = [];
 		if ( 'visible' == $columns ) {
@@ -165,9 +186,7 @@ class AmapressExport_Users {
 			}
 		}
 
-		$csv_data   = array();
-		$csv_data[] = $headers;
-
+		$csv_data = array();
 		/** @var WP_User $user */
 		foreach ( $users as $user ) {
 			$data = array();
@@ -183,16 +202,49 @@ class AmapressExport_Users {
 			$csv_data[] = $data;
 		}
 
-		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
+		return [
+			'header_ids'  => $header_ids,
+			'csv_headers' => $headers,
+			'csv_data'    => $csv_data,
+			'export_name' => $export_name,
+			'args'        => $args,
+			'query'       => implode( '&', array_map( function ( $k, $v ) {
+				return "$k=$v";
+			}, array_keys( $args ), array_values( $args ) ) ),
+		];
+	}
 
-		$objPHPExcel = new PHPExcel();
-		$objPHPExcel->getProperties()->setCreator( "Amapress" )
-		            ->setLastModifiedBy( "Amapress" )
-		            ->setTitle( ! empty( $title ) ? $title : $name );
-		$objPHPExcel->setActiveSheetIndex( 0 )->fromArray( $csv_data );
-		$objPHPExcel->getActiveSheet()->setTitle( $name );
-		$objPHPExcel->setActiveSheetIndex( 0 );
+	public static function generate_datatable_data(
+		$query_string,
+		$base_export_name = null,
+		$title = null,
+		$columns = 'all'
+	) {
+		$data = self::generate_export_data( $query_string, $base_export_name, $title, $columns );
 
-		return $objPHPExcel;
+		$header_ids = $data['header_ids'];
+
+		$data_columns = [];
+		$data_rows    = [];
+		foreach ( array_combine( $header_ids, $data['csv_headers'] ) as $k => $v ) {
+			$data_columns[] = array(
+				'title' => $v,
+				'data'  => $k,
+			);
+		}
+		foreach ( $data['csv_data'] as $csv_row ) {
+			$data_row = [];
+			$i        = 0;
+			foreach ( $csv_row as $col_data ) {
+				$data_row[ $header_ids[ $i ] ] = $col_data;
+				$i                             += 1;
+			}
+			$data_rows[] = $data_row;
+		}
+
+		return [
+			'columns' => $data_columns,
+			'data'    => $data_rows,
+		];
 	}
 }

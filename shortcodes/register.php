@@ -1590,5 +1590,96 @@ function amapress_register_shortcodes() {
 				'adhesion_shift_weeks' => sprintf( __( '(Configurable dans %s) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion', 'amapress' ), $contrats_conf_link ),
 			]
 		] );
+
+	amapress_register_shortcode( 'amapress-backoffice-view', function ( $atts, $content ) {
+		$atts = shortcode_atts( [
+			'logged'  => 'true',
+			'users'   => 'false',
+			'query'   => '',
+			'columns' => 'all',
+			'view'    => 'responsive',
+			'order'   => '0',
+		], $atts );
+		if ( ! amapress_is_user_logged_in() && Amapress::toBool( $atts['logged'] ) ) {
+			return '';
+		}
+
+		$atts['query'] = urlencode( $atts['query'] );
+		$url           = admin_url( 'admin-post.php' );
+		$url           = add_query_arg( $atts, $url );
+		$url           = add_query_arg( 'hash', amapress_sha_secret( 'amps_export_data' . $atts['query'] . $atts['columns'] ), $url );
+		$url           = add_query_arg( 'action', 'export_datatable', $url );
+		$id            = 'amp-bo-view-' . uniqid() . '-wrapper';
+
+		return '<div id="' . $id . '"></div>
+<script type="application/javascript">
+	jQuery(function($) {
+	    var url = ' . wp_json_encode( $url ) . ';
+	    var id = ' . wp_json_encode( $id ) . ';
+	    $.get(url, function(res) { $("#" + id).html(res);})
+	})
+</script>';
+
+	},
+		[
+			'desc' => __( 'Affiche les données d\'une requête sur les inscriptions/contrats/adhésions/producteurs... ou comptes utilisateurs', 'amapress' ),
+			'args' => [
+				'logged'  => '(Par défaut "true") Uniquement pour utilisateur connecté',
+				'users'   => '(Par défaut "false") Requête sur les comptes utilisateurs',
+				'query'   => '(Par défaut "") Requête de sélection des données à afficher',
+				'columns' => '(Par défaut "all") Colonnes à afficher',
+				'order'   => '(Par défaut 0) Colonnes triée par défaut',
+				'view'    => '(Par défaut "responsive") Type de vue "none" (pleine largeur), "responsive" (collapsing de colonnes), "scroll"',
+			]
+		] );
 }
 
+
+add_action( 'admin_post_export_datatable', 'amapress_admin_post_export_datatable' );
+add_action( 'admin_post_nopriv_export_datatable', 'amapress_admin_post_export_datatable' );
+function amapress_admin_post_export_datatable() {
+	$atts = shortcode_atts( [
+		'logged'  => 'true',
+		'users'   => 'false',
+		'view'    => 'responsive',
+		'order'   => '0',
+		'query'   => '',
+		'columns' => 'all',
+	], $_REQUEST );
+	if ( ! isset( $_REQUEST['hash'] )
+	     || $_REQUEST['hash'] != amapress_sha_secret( 'amps_export_data' . urlencode( $atts['query'] ) . $atts['columns'] ) ) {
+		wp_die( __( 'Accès invalide', 'amapress' ) );
+	}
+	if ( ! amapress_is_user_logged_in() && Amapress::toBool( $atts['logged'] ) ) {
+		return '';
+	}
+
+	if ( Amapress::toBool( $atts['users'] ) ) {
+		$data = AmapressExport_Users::generate_datatable_data(
+			$atts['query'],
+			null, null,
+			$atts['columns']
+		);
+	} else {
+		$data = AmapressExport_Posts::generate_datatable_data(
+			$atts['query'],
+			null, null,
+			$atts['columns']
+		);
+	}
+
+	echo amapress_get_datatable( 'amp-bo-view-' . uniqid(),
+		$data['columns'], $data['data'],
+		array(
+			'paging'     => true,
+			'responsive' => 'responsive' == $atts['view'],
+			'scrollX'    => 'scroll' == $atts['view'],
+			'order'      => [
+				[ intval( $atts['order'] ), 'asc' ]
+			]
+		),
+		array(
+			Amapress::DATATABLES_EXPORT_EXCEL,
+			Amapress::DATATABLES_EXPORT_PRINT
+		) );
+}

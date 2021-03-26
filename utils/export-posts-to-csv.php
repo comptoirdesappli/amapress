@@ -79,17 +79,28 @@ class AmapressExport_Posts {
 		}
 	}
 
-	/**
-	 * @param $export_name
-	 * @param $wpdb
-	 * @param $args
-	 * @param $pt
-	 * @param $posts
-	 * @param $filename
-	 *
-	 * @return PHPExcel
-	 */
 	public static function generate_phpexcel_sheet(
+		$query_string,
+		$base_export_name = null,
+		$title = null,
+		$columns = 'all'
+	) {
+		$data = self::generate_export_data( $query_string, $base_export_name, $title, $columns );
+
+		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
+
+		$objPHPExcel = new PHPExcel();
+		$objPHPExcel->getProperties()->setCreator( "Amapress" )
+		            ->setLastModifiedBy( "Amapress" )
+		            ->setTitle( ! empty( $title ) ? $title : $data['export_name'] );
+		$objPHPExcel->setActiveSheetIndex( 0 )->fromArray( array_merge( $data['csv_headers'], $data['csv_data'] ) );
+		$objPHPExcel->getActiveSheet()->setTitle( $data['export_name'] );
+		$objPHPExcel->setActiveSheetIndex( 0 );
+
+		return $objPHPExcel;
+	}
+
+	public static function generate_export_data(
 		$query_string,
 		$base_export_name = null,
 		$title = null,
@@ -194,11 +205,8 @@ class AmapressExport_Posts {
 			}
 		}
 
-		$csv_data   = array();
-		$csv_data[] = $headers;
-
-		$posts = get_posts( $args );
-
+		$csv_data = array();
+		$posts    = get_posts( $args );
 		foreach ( $posts as $post ) {
 			$data = array();
 			foreach ( $fields as $field ) {
@@ -214,16 +222,49 @@ class AmapressExport_Posts {
 			$csv_data[] = $data;
 		}
 
-		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
+		return [
+			'header_ids'  => $header_ids,
+			'csv_headers' => $headers,
+			'csv_data'    => $csv_data,
+			'export_name' => $export_name,
+			'args'        => $args,
+			'query'       => implode( '&', array_map( function ( $k, $v ) {
+				return "$k=$v";
+			}, array_keys( $args ), array_values( $args ) ) ),
+		];
+	}
 
-		$objPHPExcel = new PHPExcel();
-		$objPHPExcel->getProperties()->setCreator( "Amapress" )
-		            ->setLastModifiedBy( "Amapress" )
-		            ->setTitle( ! empty( $title ) ? $title : $export_name );
-		$objPHPExcel->setActiveSheetIndex( 0 )->fromArray( $csv_data );
-		$objPHPExcel->getActiveSheet()->setTitle( $export_name );
-		$objPHPExcel->setActiveSheetIndex( 0 );
+	public static function generate_datatable_data(
+		$query_string,
+		$base_export_name = null,
+		$title = null,
+		$columns = 'all'
+	) {
+		$data = self::generate_export_data( $query_string, $base_export_name, $title, $columns );
 
-		return $objPHPExcel;
+		$header_ids = $data['header_ids'];
+
+		$data_columns = [];
+		$data_rows    = [];
+		foreach ( array_combine( $header_ids, $data['csv_headers'] ) as $k => $v ) {
+			$data_columns[] = array(
+				'title' => $v,
+				'data'  => $k,
+			);
+		}
+		foreach ( $data['csv_data'] as $csv_row ) {
+			$data_row = [];
+			$i        = 0;
+			foreach ( $csv_row as $col_data ) {
+				$data_row[ $header_ids[ $i ] ] = $col_data;
+				$i                             += 1;
+			}
+			$data_rows[] = $data_row;
+		}
+
+		return [
+			'columns' => $data_columns,
+			'data'    => $data_rows,
+		];
 	}
 }
