@@ -1102,6 +1102,7 @@ function amapress_register_shortcodes() {
 		$atts = shortcode_atts(
 			array(
 				'role' => 'logged',
+				'key'  => '',
 			), $atts
 		);
 		$show = false;
@@ -1137,6 +1138,9 @@ function amapress_register_shortcodes() {
 					$adh  = AmapressAdhesion_paiement::getForUser( amapress_current_user_id() );
 					$show = $show || ( $adh && $adh->isNotReceived() );
 					break;
+				case 'key':
+					$show = $show || ! empty( $atts['key'] );
+					break;
 				default:
 					if ( strpos( $role, 'contrat_' ) === 0 ) {
 						$contrat_id = Amapress::resolve_post_id( substr( $role, 8 ), AmapressContrat::INTERNAL_POST_TYPE );
@@ -1147,28 +1151,51 @@ function amapress_register_shortcodes() {
 			}
 		}
 
+		if ( ! empty( $atts['key'] ) ) {
+			if ( empty( $_GET['key'] ) || $_GET['key'] != $atts['key'] ) {
+				$show = false;
+			}
+		}
+
 		return $show ? do_shortcode( $content ) : '';
 	},
 		[
 			'desc' => __( 'Affiche le contenu du shortcode suivant une condition (connecté, non connecté, membre du collectif, intermittent, responsable de distribution, adhésion non réglée, adhésion, sans adhésion)', 'amapress' ),
 			'args' => [
-				'role' => __( '(Par défaut "logged") Afficher le contenu de ce shortcode uniquement si l\'amapien est dans un des rôles suivants : logged, not_logged, intermittent, no_contrat, no_adhesion, adhesion, adhesion_nok, responsable_distrib (est responsable de distribution cette semaine), responsable_amap (peut accéder au Tableau de Bord), contrat_xxx (a un contrat xxx)', 'amapress' )
+				'role' => __( '(Par défaut "logged") Afficher le contenu de ce shortcode uniquement si l\'amapien est dans un des rôles suivants : logged, not_logged, intermittent, no_contrat, no_adhesion, adhesion, adhesion_nok, responsable_distrib (est responsable de distribution cette semaine), responsable_amap (peut accéder au Tableau de Bord), contrat_xxx (a un contrat xxx), key (utilise uniquement la clé secrète)', 'amapress' ),
+				'key'  => sprintf( __( '(Par défaut "", sans clé) Protège également le contenu avec une clé secrète (par ex, %s) ; pour protéger uniquement par clé, utiliser role=key', 'amapress' ), uniqid() . uniqid() ),
 			]
 		] );
 
 	amapress_register_shortcode( 'display-if-logged', function ( $atts, $content = null ) {
-		return do_shortcode( '[display-if role=logged]' . $content . '[/display-if]' );
+		$atts = shortcode_atts(
+			array(
+				'key' => '',
+			), $atts
+		);
+
+		return do_shortcode( '[display-if role=logged key="' . $atts['key'] . '"]' . $content . '[/display-if]' );
 	},
 		[
 			'desc' => __( 'Affiche le contenu du shortcode si l\'amapien est connecté', 'amapress' ),
-			'args' => []
+			'args' => [
+				'key' => sprintf( __( '(Par défaut "", sans clé) Protège également le contenu avec une clé secrète (par ex, %s) ; pour protéger uniquement par clé, utiliser role=key', 'amapress' ), uniqid() . uniqid() ),
+			]
 		] );
 	amapress_register_shortcode( 'display-if-not-logged', function ( $atts, $content = null ) {
-		return do_shortcode( '[display-if role=not_logged]' . $content . '[/display-if]' );
+		$atts = shortcode_atts(
+			array(
+				'key' => '',
+			), $atts
+		);
+
+		return do_shortcode( '[display-if role=not_logged key="' . $atts['key'] . '"]' . $content . '[/display-if]' );
 	},
 		[
 			'desc' => __( 'Affiche le contenu du shortcode si l\'amapien n\'est pas connecté', 'amapress' ),
-			'args' => []
+			'args' => [
+				'key' => sprintf( __( '(Par défaut "", sans clé) Protège également le contenu avec une clé secrète (par ex, %s) ; pour protéger uniquement par clé, utiliser role=key', 'amapress' ), uniqid() . uniqid() ),
+			]
 		] );
 	amapress_register_shortcode( 'display-if-no-contrat', function ( $atts, $content = null ) {
 		return do_shortcode( '[display-if role=no_contrat]' . $content . '[/display-if]' );
