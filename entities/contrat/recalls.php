@@ -14,6 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 function amapress_get_contrats_cron( $type ) {
 	$ret = [];
 	foreach ( AmapressContrats::get_active_contrat_instances() as $contrat ) {
+		if ( 0 === strcasecmp( $contrat->getSubName(), 'test' ) ) {
+			continue;
+		}
 		switch ( $type ) {
 			case 'open':
 				if ( $contrat->canSelfSubscribe() ) {
