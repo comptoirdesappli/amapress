@@ -3093,7 +3093,8 @@ class AmapressContrat_quantite extends TitanEntity {
 			}
 		}
 
-		$options = array();
+		$options      = array();
+		$options['0'] = $this->formatValue( 0 );
 		foreach ( explode( ';', $confs ) as $conf ) {
 			$m     = array();
 			$float = '(?:\d+(?:[,\.]\d+)?)';
