@@ -42,7 +42,19 @@ class AmapressExport_Posts {
 				$_REQUEST['amapress_export_columns'] : 'all';
 			$amapress_export_name    = isset( $_REQUEST['amapress_export_name'] ) ?
 				$_REQUEST['amapress_export_name'] : $pt;
-			$objPHPExcel             = self::generate_phpexcel_sheet(
+
+			if ( 'shortcode' == $_REQUEST['amapress_export'] ) {
+				$data = self::generate_export_data(
+					$args, $amapress_export_name,
+					null,
+					$amapress_export_columns );
+				echo '<p>' . __( 'Shortcode correspondant à la vue actuelle :', 'amapress' ) . '</p><pre style="white-space: pre-wrap;word-break: break-all">' .
+				     '[amapress-backoffice-view view="scroll" logged="true" query="' . $data['query'] . '" columns="' . implode( ',', $data['header_ids'] ) . '"]' .
+				     '</pre>';
+				die();
+			}
+
+			$objPHPExcel = self::generate_phpexcel_sheet(
 				$args, $amapress_export_name,
 				null,
 				$amapress_export_columns
@@ -126,7 +138,7 @@ class AmapressExport_Posts {
 
 		global $wpdb;
 
-		$data_keys        = array(
+		$data_keys = array(
 			'ID',
 			'post_author',
 			'post_name',

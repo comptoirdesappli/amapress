@@ -69,6 +69,19 @@ function amapress_views_process( $views, $pt ) {
 			if ( $v !== false ) {
 				$views[ $k . '_vis' ] = amapress_add_view_export_csv( $v, $pt == 'user', true );
 				$views[ $k ]          = amapress_add_view_export_csv( $v, $pt == 'user' );
+				if ( amapress_current_user_can( 'administrator' ) ) {
+					$url = add_query_arg(
+						[
+							'amapress_export'         => 'shortcode',
+							'amapress_export_columns' => 'visible',
+						] );
+					if ( $pt == 'user' ) {
+						$url = wp_nonce_url( $url, 'amapress-export-users-users-page_export', '_wpnonce-amapress-export-users-users-page_export' );
+					} else {
+						$url = wp_nonce_url( $url, 'amapress-export-posts-posts-page_export', '_wpnonce-amapress-export-posts-posts-page_export' );
+					}
+					$views['gen_exp_shc'] = "<a href='$url' target='_blank'>" . __( 'Générer shortcode', 'amapress' ) . " <span class='dashicons dashicons-admin-tools'></span></a>";
+				}
 			}
 		} else if ( $k == 'remove' && is_array( $v ) ) {
 			foreach ( $v as $vv ) {

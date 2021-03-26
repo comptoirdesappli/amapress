@@ -39,6 +39,16 @@ class AmapressExport_Users {
 			$amapress_export_name    = isset( $_REQUEST['amapress_export_name'] ) ? isset( $_REQUEST['amapress_export_name'] ) : 'users';
 			$args                    = wp_parse_args( $_SERVER['QUERY_STRING'] );
 
+			if ( 'shortcode' == $_REQUEST['amapress_export'] ) {
+				$data = self::generate_export_data(
+					$args, $amapress_export_name,
+					null,
+					$amapress_export_columns );
+				echo '<p>' . __( 'Shortcode correspondant à la vue actuelle :', 'amapress' ) . '</p><pre style="white-space: pre-wrap;word-break: break-all">' .
+				     '[amapress-backoffice-view view="scroll" logged="true" query="' . $data['query'] . '" columns="' . implode( ',', $data['header_ids'] ) . '"]' .
+				     '</pre>';
+				die();
+			}
 			$objPHPExcel = self::generate_phpexcel_sheet(
 				$args, $amapress_export_name,
 				null,
