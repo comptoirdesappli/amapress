@@ -11,6 +11,9 @@ class Phptemplate_withnewline extends \PhpOffice\PhpWord\TemplateProcessor {
 	}
 
 	private static function extractText( $obj, $nested = 0 ) {
+		if ( null == $obj ) {
+			return '';
+		}
 		$txt = "";
 		if ( method_exists( $obj, 'getSections' ) ) {
 			foreach ( $obj->getSections() as $section ) {
