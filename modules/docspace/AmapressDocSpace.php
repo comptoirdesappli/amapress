@@ -83,7 +83,7 @@ class AmapressDocSpace {
 
 		$url             = admin_url( 'admin-ajax.php' );
 		$nonce_files     = wp_nonce_field( 'amp_upload_file', 'amp_upload_file_nonce', true, false );
-		$sanitized_name  = sanitize_html_class( $this->name );
+		$sanitized_name  = preg_replace( '/[^a-z0-9]/', '', strtolower( $this->name ) );
 		$space_name      = esc_html( $this->name );
 		$get_list_url    = add_query_arg( 'action', 'amp_docspace_list_' . $this->name, $url );
 		$remove_file_url = add_query_arg( 'action', 'amp_docspace_remove_' . $this->name, $url );
