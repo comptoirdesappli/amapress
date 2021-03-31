@@ -679,6 +679,44 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function isFull( $contrat_quantite_id = null, $lieu_id = null, $date = null ) {
+		if ( $this->isPanierVariable() ) {
+			if ( null == $contrat_quantite_id && null == $date ) {
+				$is_full   = true;
+				$had_value = false;
+				foreach ( $this->getRemainingDates() as $remaining_date ) {
+					foreach ( $this->getContrat_quantites( $remaining_date ) as $quantite ) {
+						$had_value = true;
+						if ( ! $this->isFull( $quantite->ID, $lieu_id, $remaining_date ) ) {
+							$is_full = false;
+							break;
+						}
+					}
+				}
+
+				if ( $had_value ) {
+					return $is_full;
+				}
+			} elseif ( null == $date ) {
+				$is_full   = true;
+				$had_value = false;
+				foreach ( $this->getRemainingDates() as $remaining_date ) {
+					$had_value = true;
+					if ( ! $this->isFull( $contrat_quantite_id, $lieu_id, $remaining_date ) ) {
+						$is_full = false;
+						break;
+					}
+				}
+
+				if ( $had_value ) {
+					return $is_full;
+				}
+			}
+		}
+
+		return 0 == $this->getRemainingQuantiteForMax( $contrat_quantite_id, $lieu_id, $date );
+	}
+
+	public function getRemainingQuantiteForMax( $contrat_quantite_id = null, $lieu_id = null, $date = null ) {
 		$use_equiv      = $this->getMaxUseEquivalentQuant();
 		$max_adhs       = $this->getMax_adherents();
 		$max_quant_adhs = 0;
@@ -693,25 +731,57 @@ class AmapressContrat_instance extends TitanEntity {
 
 			$adhs_count = 0;
 			foreach ( $adhs as $adh ) {
-				if ( $use_equiv ) {
-					foreach ( $adh->getContrat_quantites( null ) as $q ) {
-						$adhs_count += $q->getQuantite();
+				if ( $this->isPanierVariable() ) {
+					if ( $use_equiv ) {
+						foreach ( $adh->getContrat_quantites( $date ) as $q ) {
+							if ( null == $contrat_quantite_id || $q->getId() == $contrat_quantite_id ) {
+								$adhs_count += $q->getQuantite();
+							}
+						}
+					} else {
+						foreach ( $adh->getContrat_quantites( $date ) as $q ) {
+							if ( null == $contrat_quantite_id || $q->getId() == $contrat_quantite_id ) {
+								$adhs_count += $q->getFactor();
+							}
+						}
 					}
 				} else {
-					$adhs_count += 1;
+					if ( $use_equiv ) {
+						foreach ( $adh->getContrat_quantites( null ) as $q ) {
+							if ( null == $contrat_quantite_id || $q->getId() == $contrat_quantite_id ) {
+								$adhs_count += $q->getQuantite();
+							}
+						}
+					} else {
+						foreach ( $adh->getContrat_quantites( null ) as $q ) {
+							if ( null == $contrat_quantite_id || $q->getId() == $contrat_quantite_id ) {
+								$adhs_count += $q->getFactor();
+							}
+						}
+					}
 				}
 			}
 
-			if ( $max_adhs > 0 && $adhs_count >= $max_adhs ) {
-				return true;
+			if ( $max_adhs > 0 ) {
+				return ( $max_adhs - $adhs_count ) < 0 ? 0 : $max_adhs - $adhs_count;
 			}
 
-			if ( $max_quant_adhs > 0 && $adhs_count >= $max_quant_adhs ) {
-				return true;
+			if ( $max_quant_adhs > 0 ) {
+				return ( $max_quant_adhs - $adhs_count ) < 0 ? 0 : $max_quant_adhs - $adhs_count;
+			}
+
+			if ( $contrat_quantite_id ) {
+				if ( $max_quant_adhs > 0 ) {
+					return $max_quant_adhs;
+				}
+			} else {
+				if ( $max_adhs > 0 ) {
+					return $max_adhs;
+				}
 			}
 		}
 
-		return false;
+		return - 1;
 	}
 
 	public function getAdherentsCount( $contrat_quantite_id = null, $lieu_id = null, $date = null ) {
@@ -3083,7 +3153,7 @@ class AmapressContrat_quantite extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_quantite_quantite_config' );
 	}
 
-	public function getQuantiteOptions() {
+	public function getQuantiteOptions( $max = - 1 ) {
 		$confs = $this->getQuantiteConfig();
 		if ( empty( $confs ) ) {
 			if ( $this->getContrat_instance()->isPanierVariable() ) {
@@ -3111,9 +3181,11 @@ class AmapressContrat_quantite extends TitanEntity {
 				$incr              = $incr / $incr_unit_factor;
 
 				for ( $i = $start; $i <= $stop; $i += $incr ) {
-					if ( ( $i > 0 ) || ( $this->getContrat_instance()->isPanierVariable() && $i >= 0 ) ) {
-						$k             = strval( $i );
-						$options[ $k ] = $this->formatValue( $i );
+					if ( $max < 0 || $i <= $max ) {
+						if ( ( $i > 0 ) || ( $this->getContrat_instance()->isPanierVariable() && $i >= 0 ) ) {
+							$k             = strval( $i );
+							$options[ $k ] = $this->formatValue( $i );
+						}
 					}
 				}
 			}

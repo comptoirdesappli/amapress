@@ -1364,9 +1364,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 	            <?php } ?>
             </table>
             <div>
-				<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
+		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
             </div>
-			<?php if ( $max_cofoyers >= 1 ) { ?>
+	        <?php if ( $max_cofoyers >= 1 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
                         <th colspan="2"><?php _e( 'Membre du foyer 1 / Conjoint', 'amapress' ) ?>
@@ -3549,25 +3549,22 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					}
 					$has_groups = true;
 				}
-				$row     = array(
+				$row        = array(
 					'produit'       => '<span class="panier-mod-produit-label">' . esc_html( $quant->getTitle() ) . ( ! empty( $quant->getDescription() ) ? '<br/><em>' . esc_html( $quant->getDescription() ) . '</em>' : '' ) . '</span>',
 					'prix_unitaire' => esc_html( $quant->getPrix_unitaireDisplay() ),
 				);
-				$options = $quant->getQuantiteOptions();
-				if ( ! isset( $options['0'] ) ) {
-					$options = [ '0' => '0' ] + $options;
-				}
 				$price_unit = esc_attr( $quant->getPrix_unitaire() );
 				foreach ( $dates as $date ) {
-					$ed = '';
-					$ed .= "<select style='max-width: none;min-width: 0' data-grp-class='$grp_class_name' data-price='0' data-price-unit='$price_unit' name='panier_vars[$date][{$quant->ID}]' id='panier_vars-$date-{$quant->ID}' class='quant-var $quant_cmd $grp_class_name'>";
-					$ed .= tf_parse_select_options( $options,
+					$options = $quant->getQuantiteOptions( $contrat->getRemainingQuantiteForMax( $quant->ID, $lieu_id, $date ) );
+					$ed      = '';
+					$ed      .= "<select style='max-width: none;min-width: 0' data-grp-class='$grp_class_name' data-price='0' data-price-unit='$price_unit' name='panier_vars[$date][{$quant->ID}]' id='panier_vars-$date-{$quant->ID}' class='quant-var $quant_cmd $grp_class_name'>";
+					$ed      .= tf_parse_select_options( $options,
 						$edit_inscription
 							? $edit_inscription->getContrat_quantite_factor( $quant->ID, $date )
 							: null,
 						false );
-					$ed .= '</select>';
-					$ed .= '<a title="' . esc_attr__( 'Recopier la même quantité sur les dates suivantes', 'amapress' ) . '" href="#" class="quant-var-recopier">&gt;</a>';
+					$ed      .= '</select>';
+					$ed      .= '<a title="' . esc_attr__( 'Recopier la même quantité sur les dates suivantes', 'amapress' ) . '" href="#" class="quant-var-recopier">&gt;</a>';
 					if ( ! $quant->isInDistributionDates( $date ) ) {
 						$ed = '<span class="contrat_panier_vars-na">' . __( 'NA', 'amapress' ) . '</span>';
 					}
@@ -3676,7 +3673,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				if ( $contrat->isQuantiteVariable() ) {
 					$quant_var_editor .= "<select  style='max-width: none;min-width: 0' id='$id_factor' class='quant-factor' data-quant-id='$id_quant' data-price-id='$id_price' data-price-unit='$price' name='factors[{$quantite->ID}]' style='display: inline-block'>";
 					$quant_var_editor .= tf_parse_select_options(
-						$quantite->getQuantiteOptions(),
+						$quantite->getQuantiteOptions( $contrat->getRemainingQuantiteForMax( $quantite->ID, $lieu_id ) ),
 						$edit_inscription
 							? $edit_inscription->getContrat_quantite_factor( $quantite->ID )
 							: null,
@@ -4420,7 +4417,16 @@ $paiements_dates
 			$quantite_variables = $quants;
 			foreach ( $quants as $q_dt => $q_p ) {
 				foreach ( $q_p as $q_id => $q_v ) {
-					$any_full = $any_full || $contrat->isFull( $q_id );
+					$f        = floatval( $q_v );
+					$any_full = $any_full || $contrat->isFull( $q_id, $lieu_id, $q_dt );
+					if ( ! $any_full ) {
+						$remaining_quants = $contrat->getRemainingQuantiteForMax( $q_id, $lieu_id, $q_dt );
+						if ( $remaining_quants >= 0 ) {
+							if ( $f > $remaining_quants ) {
+								$any_full = true;
+							}
+						}
+					}
 				}
 			}
 		} else {
@@ -4431,6 +4437,14 @@ $paiements_dates
 				$f              = floatval( $q['f'] );
 				if ( abs( $f - 1.0 ) > 0.001 ) {
 					$quantite_factors[ strval( $q_id ) ] = $f;
+				}
+				if ( ! $any_full ) {
+					$remaining_quants = $contrat->getRemainingQuantiteForMax( $q_id, $lieu_id, $q_dt );
+					if ( $remaining_quants >= 0 ) {
+						if ( $f > $remaining_quants ) {
+							$any_full = true;
+						}
+					}
 				}
 			}
 		}
