@@ -2198,7 +2198,17 @@ function amapress_get_contrat_quantite_datatable(
 }
 
 function amapress_producteurs_finances_custom() {
-	return amapress_get_producteurs_finances_datatable( null,
+	$date = null;
+	if ( isset( $_GET['date'] ) ) {
+		$date = DateTime::createFromFormat( 'Y-m-d', $_GET['date'] );
+		if ( $date ) {
+			$date = $date->getTimestamp();
+		} else {
+			$date = null;
+		}
+	}
+
+	return amapress_get_producteurs_finances_datatable( $date,
 		isset( $_GET['contrat_id'] ) ? [ intval( $_GET['contrat_id'] ) ] : null,
 		[
 			'group_date_by'        => isset( $_GET['date_by'] ) ? $_GET['date_by'] : 'none',
@@ -2219,7 +2229,7 @@ function amapress_get_producteurs_finances_datatable(
 			return AmapressContrat_instance::getBy( $id );
 		}, $contrat_instance_ids );
 	} else {
-		$contrat_instances = AmapressContrats::get_active_contrat_instances( null, $date );
+		$contrat_instances = AmapressContrats::get_active_contrat_instances( null, $date, true );
 	}
 
 	$options = wp_parse_args(
@@ -2534,7 +2544,7 @@ function amapress_get_producteurs_finances_datatable(
 	$contrat_instances_ids = array_map( function ( $c ) {
 		return $c->ID;
 	}, $contrat_instances );
-	$all_contrat_instances = AmapressContrats::get_active_contrat_instances( null, $date );
+	$all_contrat_instances = AmapressContrats::get_active_contrat_instances( null, $date, true );
 	usort( $all_contrat_instances, function ( $a, $b ) {
 		/** @var AmapressContrat_instance $a */
 		/** @var AmapressContrat_instance $b */
@@ -2544,16 +2554,46 @@ function amapress_get_producteurs_finances_datatable(
 			return $a->getDate_debut() < $b->getDate_debut() ? - 1 : 1;
 		}
 	} );
-	$filters = '<p>' .
-	           implode( ' | ',
-		           array_map( function ( $contrat ) use ( $contrat_instances_ids ) {
-			           /** @var AmapressContrat_instance $contrat */
-			           return Amapress::wrapIf(
-				           Amapress::makeLink( add_query_arg( 'contrat_id', $contrat->ID ), $contrat->getTitle() ),
-				           in_array( $contrat->ID, $contrat_instances_ids ) );
-		           }, $all_contrat_instances )
-	           )
-	           . '</p><hr/>';
+	$filters = '';
+	$filters .= '<p>' .
+	            implode( ' | ', array_map( function ( $years ) {
+		            if ( null !== $years ) {
+			            $dt = Amapress::start_of_year( amapress_time() );
+			            if ( $years ) {
+				            $dt = Amapress::add_a_year( $dt, $years );
+			            }
+			            $url_dt = date_i18n( 'Y-m-d', $dt );
+			            $url    = add_query_arg( 'date', $url_dt );
+
+			            $lnk = Amapress::makeLink(
+				            $url,
+				            sprintf( __( 'Depuis le %s', 'amapress' ), date_i18n( 'd/m/Y', $dt ) ) );
+
+			            return Amapress::wrapIf(
+				            $lnk,
+				            ! empty( $_GET['date'] ) && $_GET['date'] == $url_dt );
+		            } else {
+			            $lnk = Amapress::makeLink(
+				            remove_query_arg( 'date' ),
+				            __( 'Période en cours', 'amapress' ) );
+
+			            return Amapress::wrapIf(
+				            $lnk,
+				            empty( $_GET['date'] ) );
+		            }
+	            }, [ null, 0, - 1, - 2, - 3 ] ) )
+	            . '</p><hr/>';
+
+	$filters .= '<p>' .
+	            implode( ' | ',
+		            array_map( function ( $contrat ) use ( $contrat_instances_ids ) {
+			            /** @var AmapressContrat_instance $contrat */
+			            return Amapress::wrapIf(
+				            Amapress::makeLink( add_query_arg( 'contrat_id', $contrat->ID ), $contrat->getTitle() ),
+				            in_array( $contrat->ID, $contrat_instances_ids ) );
+		            }, $all_contrat_instances )
+	            )
+	            . '</p><hr/>';
 
 	$filters .= '<p>' .
 	            ( $show_adherents ?

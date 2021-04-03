@@ -585,6 +585,14 @@ class Amapress {
 		return strtotime( "+{$months} month", $date );
 	}
 
+	public static function add_a_year( $date, $years = 1 ) {
+		if ( $years < 0 ) {
+			return strtotime( "{$years} year", $date );
+		} else {
+			return strtotime( "+{$years} year", $date );
+		}
+	}
+
 	public static function remove_a_year( $date ) {
 		return strtotime( '-1 year', $date );
 	}
