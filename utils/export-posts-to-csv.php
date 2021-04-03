@@ -105,7 +105,7 @@ class AmapressExport_Posts {
 		$objPHPExcel->getProperties()->setCreator( "Amapress" )
 		            ->setLastModifiedBy( "Amapress" )
 		            ->setTitle( ! empty( $title ) ? $title : $data['export_name'] );
-		$objPHPExcel->setActiveSheetIndex( 0 )->fromArray( array_merge( $data['csv_headers'], $data['csv_data'] ) );
+		$objPHPExcel->setActiveSheetIndex( 0 )->fromArray( array_merge( [ $data['csv_headers'] ], $data['csv_data'] ) );
 		$objPHPExcel->getActiveSheet()->setTitle( $data['export_name'] );
 		$objPHPExcel->setActiveSheetIndex( 0 );
 
@@ -138,7 +138,7 @@ class AmapressExport_Posts {
 
 		global $wpdb;
 
-		$data_keys = array(
+		$data_keys        = array(
 			'ID',
 			'post_author',
 			'post_name',

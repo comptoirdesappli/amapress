@@ -98,7 +98,7 @@ class AmapressExport_Users {
 		$objPHPExcel->getProperties()->setCreator( "Amapress" )
 		            ->setLastModifiedBy( "Amapress" )
 		            ->setTitle( ! empty( $title ) ? $title : $data['export_name'] );
-		$objPHPExcel->setActiveSheetIndex( 0 )->fromArray( array_merge( $data['csv_headers'], $data['csv_data'] ) );
+		$objPHPExcel->setActiveSheetIndex( 0 )->fromArray( array_merge( [ $data['csv_headers'] ], $data['csv_data'] ) );
 		$objPHPExcel->getActiveSheet()->setTitle( $data['export_name'] );
 		$objPHPExcel->setActiveSheetIndex( 0 );
 
