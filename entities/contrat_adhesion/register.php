@@ -1899,8 +1899,9 @@ function amapress_get_contrat_quantite_datatable(
 
 						if ( 'quarter' == $group_by ) {
 							$quarter          = ceil( intval( date( 'n', $final_date ) ) / 3 );
-							$row['date']      = "T$quarter";
-							$row['date_sort'] = "T$quarter";
+							$year             = date( 'Y', $final_date );
+							$row['date']      = "T$quarter/$year";
+							$row['date_sort'] = "$year-T$quarter";
 						} elseif ( 'month' == $group_by ) {
 							$row['date']      = date_i18n( 'm/Y', $final_date );
 							$row['date_sort'] = date( 'Y-m', $final_date );
