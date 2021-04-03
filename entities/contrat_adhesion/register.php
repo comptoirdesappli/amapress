@@ -2338,8 +2338,9 @@ function amapress_get_producteurs_finances_datatable(
 
 					if ( 'quarter' == $group_date_by ) {
 						$quarter          = ceil( intval( date( 'n', $date ) ) / 3 );
-						$row['date']      = "T$quarter";
-						$row['date_sort'] = "T$quarter";
+						$year             = date( 'Y', $date );
+						$row['date']      = "T$quarter/$year";
+						$row['date_sort'] = "$year-T$quarter";
 					} elseif ( 'month' == $group_date_by ) {
 						$row['date']      = date_i18n( 'm/Y', $date );
 						$row['date_sort'] = date( 'Y-m', $date );
@@ -2392,8 +2393,9 @@ function amapress_get_producteurs_finances_datatable(
 
 				if ( 'quarter' == $group_date_by ) {
 					$quarter          = ceil( intval( date( 'n', $real_date ) ) / 3 );
-					$row['date']      = "T$quarter";
-					$row['date_sort'] = "T$quarter";
+					$year             = date( 'Y', $real_date );
+					$row['date']      = "T$quarter/$year";
+					$row['date_sort'] = "$year-T$quarter";
 				} elseif ( 'month' == $group_date_by ) {
 					$row['date']      = date_i18n( 'm/Y', $real_date );
 					$row['date_sort'] = date( 'Y-m', $real_date );
