@@ -132,6 +132,21 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 					return $pmt->getAdhesion()->getAdherent()->getUser()->first_name;
 				}
 			),
+			'producteur'         => array(
+				'name'   => __( 'Producteur', 'amapress' ),
+				'type'   => 'custom',
+				'hidden' => true,
+				'column' => function ( $post_id ) {
+					$paiement = AmapressAmapien_paiement::getBy( $post_id );
+					if ( ! $paiement || ! $paiement->getAdhesion() ) {
+						return '';
+					}
+
+					return Amapress::makeLink(
+						$paiement->getAdhesion()->getContrat_instance()->getAdminEditLink(),
+						$paiement->getAdhesion()->getContrat_instance()->getProperty( 'producteur.ferme' ) );
+				},
+			),
 			'contrat'            => array(
 				'name'       => __( 'Contrat', 'amapress' ),
 				'type'       => 'custom',
@@ -156,7 +171,8 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 							return strcmp( $a->getTitle(), $b->getTitle() );
 						} );
 						foreach ( $contrats as $contrat ) {
-							$ret[ strval( $contrat->ID ) ] = $contrat->getTitle();
+							$ret[ strval( $contrat->ID ) ] = sprintf( '%s / %s',
+								$contrat->getTitle(), $contrat->getProperty( 'producteur.ferme' ) );
 						}
 
 						return $ret;
