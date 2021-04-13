@@ -125,6 +125,7 @@ function amapress_recall_contrat_quantites( $args, $num = '' ) {
 						'show_contact_producteur' => false,
 						'show_price'              => $contrat->isPanierVariable() && $show_price_modulables,
 						'no_script'               => true,
+						'show_adherents'          => false,
 						'for_placeholder'         => true,
 					] );
 			$replacements['producteur_paniers_quantites_text']    = amapress_get_contrat_quantite_datatable(
@@ -134,6 +135,7 @@ function amapress_recall_contrat_quantites( $args, $num = '' ) {
 				'show_price'              => $contrat->isPanierVariable() && $show_price_modulables,
 				'mode'                    => 'text',
 				'no_script'               => true,
+				'show_adherents'          => false,
 				'for_placeholder'         => true,
 			] );
 
@@ -143,6 +145,7 @@ function amapress_recall_contrat_quantites( $args, $num = '' ) {
 					'show_contact_producteur' => false,
 					'show_price'              => true,
 					'no_script'               => true,
+					'show_adherents'          => false,
 					'for_placeholder'         => true,
 				] );
 			$replacements['producteur_paniers_quantites_prix_group'] = $tbl_style . amapress_get_contrat_quantite_datatable(
@@ -152,6 +155,7 @@ function amapress_recall_contrat_quantites( $args, $num = '' ) {
 					'show_price'              => true,
 					'no_script'               => true,
 					'for_placeholder'         => true,
+					'show_adherents'          => false,
 					'group_by_group'          => true,
 				] );
 			$replacements['producteur_paniers_quantites_text_prix']  = amapress_get_contrat_quantite_datatable(
@@ -161,6 +165,7 @@ function amapress_recall_contrat_quantites( $args, $num = '' ) {
 				'show_price'              => true,
 				'mode'                    => 'text',
 				'no_script'               => true,
+				'show_adherents'          => false,
 				'for_placeholder'         => true,
 			] );
 
@@ -610,6 +615,7 @@ add_action( 'amapress_recall_contrat_recap_cloture', function ( $args ) {
 			'show_price'              => $contrat_instance->isPanierVariable(),
 			'no_script'               => true,
 			'for_placeholder'         => true,
+			'show_adherents'          => false,
 			'show_all_dates'          => true,
 		] );
 
@@ -620,6 +626,7 @@ add_action( 'amapress_recall_contrat_recap_cloture', function ( $args ) {
 			'show_price'              => true,
 			'no_script'               => true,
 			'for_placeholder'         => true,
+			'show_adherents'          => false,
 			'show_all_dates'          => true,
 		] );
 	$replacements['producteur_paniers_quantites_prix_group'] = $tbl_style . amapress_get_contrat_quantite_datatable(
@@ -630,6 +637,7 @@ add_action( 'amapress_recall_contrat_recap_cloture', function ( $args ) {
 			'no_script'               => true,
 			'for_placeholder'         => true,
 			'show_all_dates'          => true,
+			'show_adherents'          => false,
 			'group_by_group'          => true,
 		] );
 
