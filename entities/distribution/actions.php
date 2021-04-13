@@ -426,12 +426,13 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 				$total_quants_totals[ $contrat_instance_id ] = 0;
 			}
 			foreach ( $adh->getContrat_quantites( $dist->getDate() ) as $q ) {
-				if ( empty( $total_quants[ $contrat_instance_id ][ $q->getCode() ] ) ) {
-					$total_quants[ $contrat_instance_id ][ $q->getCode() ] = 0;
+				$code = $q->getContratQuantite()->getCode();
+				if ( empty( $total_quants[ $contrat_instance_id ][ $code ] ) ) {
+					$total_quants[ $contrat_instance_id ][ $code ] = 0;
 				}
 
-				$total_quants[ $contrat_instance_id ][ $q->getCode() ] += $q->getFactor();
-				$contrat_total_quants                                  += $q->getQuantite();
+				$total_quants[ $contrat_instance_id ][ $code ] += $q->getFactor();
+				$contrat_total_quants                          += $q->getQuantite();
 			}
 
 			$total_quants_totals[ $contrat_instance_id ] += $contrat_total_quants;
