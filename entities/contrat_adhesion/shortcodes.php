@@ -2735,18 +2735,22 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							return false;
 						}
 					}
-					$dates                = array_values( $contrat->getListe_dates() );
+					$dates           = array_values( $contrat->getListe_dates() );
+					$allow_all_dates = Amapress::toBool( $atts['allow_inscription_all_dates'] );
+					if ( $contrat->isPanierVariable() ) {
+						$allow_all_dates = true;
+					}
 					$dates_before_cloture = array_filter( $dates, function ( $d ) use ( $contrat ) {
 						$real_date = $contrat->getRealDateForDistribution( $d );
 
 						return Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() );
 					} );
-					$dates                = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours, $dates_before_cloture ) {
+					$dates                = array_filter( $dates, function ( $d ) use ( $contrat, $allow_all_dates, $before_close_hours, $dates_before_cloture ) {
 						$real_date   = $contrat->getRealDateForDistribution( $d );
 						$close_hours = $contrat->getCloseHours( $before_close_hours );
 
 						return ( Amapress::start_of_day( $real_date ) - $close_hours * HOUR_IN_SECONDS ) > amapress_time()
-						       && ( empty( $dates_before_cloture ) || Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() ) );
+						       && ( $allow_all_dates || empty( $dates_before_cloture ) || Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() ) );
 					} );
 
 					return ! empty( $dates );
