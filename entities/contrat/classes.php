@@ -2846,6 +2846,23 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_archived', 0 );
 	}
 
+	public function cleanArchived() {
+		$cnt            = 0;
+		$archives_infos = $this->getArchiveInfo();
+		if ( empty( $archives_infos ) ) {
+			return $cnt;
+		}
+
+		foreach ( array_keys( $archives_infos ) as $key ) {
+			if ( 0 === strpos( $key, 'file_' ) ) {
+				@unlink( Amapress::getArchivesDir() . '/' . $archives_infos[ $key ] );
+				$cnt += 1;
+			}
+		}
+
+		return $cnt;
+	}
+
 	public function archive() {
 		if ( ! $this->canBeArchived() ) {
 			return false;

@@ -310,6 +310,10 @@ function amapress_register_entities_contrat( $entities ) {
 					echo '<a href="' . admin_url( 'admin-post.php?action=archives_inscriptions&type=group_date&contrat=' . $post->ID ) . '">' . __( 'Livraisons par dates (XLSX)', 'amapress' ) . '</a>,';
 					echo '<a href="' . admin_url( 'admin-post.php?action=archives_inscriptions&type=adherents_date&contrat=' . $post->ID ) . '">' . __( 'Livraisons par adhérents (XLSX)', 'amapress' ) . '</a>,';
 					echo '</p>';
+					echo '<h4>' . __( 'SUPPRIMER ARCHIVES', 'amapress' ) . '</h4>';
+					echo '<p>';
+					echo '<a href="' . admin_url( 'admin-post.php?action=archives_inscriptions&type=delete_all&contrat=' . $post->ID ) . '">' . __( 'Supprimer totalement les archives', 'amapress' ) . '</a>,';
+					echo '</p>';
 				}
 			}
 

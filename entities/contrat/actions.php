@@ -114,6 +114,11 @@ add_action( 'admin_post_archives_inscriptions', function () {
 		return;
 	}
 
+	if ( 'delete_all' == $type ) {
+		$contrat_instance->cleanArchived();
+		wp_die( __( 'Archives supprimées', 'amapress' ) );
+	}
+
 	if ( isset( $archives_infos["file_$type"] ) ) {
 		Amapress::sendDocumentFile(
 			Amapress::getArchivesDir() . '/' . $archives_infos["file_$type"],

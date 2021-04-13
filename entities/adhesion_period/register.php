@@ -46,6 +46,10 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				echo '<a href="' . admin_url( 'admin-post.php?action=archives_adhesions&period=' . $post->ID ) . '">' . __( 'Adhésions (XLSX)', 'amapress' ) . '</a>, ';
 				echo '<a href="' . admin_url( 'admin-post.php?action=archives_adhesions&type=paiements&period=' . $post->ID ) . '">' . __( 'Adhésions (Répartition) (XLSX)', 'amapress' ) . '</a>,';
 				echo '</p>';
+				echo '<h4>' . __( 'SUPPRIMER ARCHIVES', 'amapress' ) . '</h4>';
+				echo '<p>';
+				echo '<a href="' . admin_url( 'admin-post.php?action=archives_adhesions&type=delete_all&period=' . $post->ID ) . '">' . __( 'Supprimer totalement les archives', 'amapress' ) . '</a>,';
+				echo '</p>';
 			}
 		},
 		'row_actions'      => array(
