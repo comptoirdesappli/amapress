@@ -1484,6 +1484,245 @@ function amapress_get_contrat_quantite_xlsx(
 	];
 }
 
+/**
+ * @param AmapressDistribution $dist
+ */
+function amapress_get_distribution_quantite_datatable(
+	$dist,
+	$for_pdf = false, $with_prices = false, $show_phone = false, $show_address = false, $show_emails = false
+) {
+	$columns_no_price = array(
+		array(
+			'title' => __( 'Nom', 'amapress' ),
+			'data'  => array(
+				'_'    => 'last_name',
+				'sort' => 'last_name',
+			)
+		),
+		array(
+			'title' => __( 'Prénom', 'amapress' ),
+			'data'  => array(
+				'_'    => 'first_name',
+				'sort' => 'first_name',
+			)
+		),
+
+	);
+	if ( $show_address ) {
+		$columns_no_price[] = array(
+			'title' => __( 'Adresse', 'amapress' ),
+			'data'  => array(
+				'_'    => 'adresse_full',
+				'sort' => 'adresse_ville',
+			)
+		);
+	}
+	if ( $show_emails ) {
+		$columns_no_price[] = array(
+			'title' => __( 'Email', 'amapress' ),
+			'data'  => array(
+				'_'    => 'email',
+				'sort' => 'email',
+			)
+		);
+	}
+	if ( $show_phone ) {
+		$columns_no_price[] = array(
+			'title' => __( 'Téléphone', 'amapress' ),
+			'data'  => array(
+				'_'    => 'tel',
+				'sort' => 'tel',
+			)
+		);
+	}
+	$columns_no_price[]   = array(
+		'title' => __( 'Producteur', 'amapress' ),
+		'data'  => array(
+			'_'    => 'prod',
+			'sort' => 'prod',
+		)
+	);
+	$columns_no_price[]   = array(
+		'title' => __( 'Description', 'amapress' ),
+		'data'  => array(
+			'_'    => 'desc',
+			'sort' => 'desc',
+		)
+	);
+	$columns_no_price[]   = array(
+		'title' => __( 'Quantité', 'amapress' ),
+		'data'  => array(
+			'_'    => 'fact',
+			'sort' => 'fact',
+		)
+	);
+	$columns_with_price   = array_merge( $columns_no_price );
+	$columns_with_price[] = array(
+		'title' => __( 'Total', 'amapress' ),
+		'data'  => array(
+			'_'    => 'total_d',
+			'sort' => 'total',
+		)
+	);
+
+	$query                           = array(//        'status' => 'to_exchange',
+	);
+	$query['contrat_instance_id']    = $dist->getContratIds();
+	$query['lieu_id']                = $dist->getLieuId();
+	$query['date']                   = $dist->getDate();
+	$users_ids_paniers_intermittents = array_map( function ( $p ) {
+		/** @var AmapressIntermittence_panier $p */
+		return $p->getAdherent()->ID;
+	}, AmapressPaniers::getPanierIntermittents( $query ) );
+
+	$allow_partial_coadh = Amapress::hasPartialCoAdhesion();
+	$date                = $dist->getDate();
+	$all_adhs            = AmapressContrats::get_active_adhesions( $dist->getContratIds(),
+		null, $dist->getLieuId(), $date, true, false );
+	$adhesions           = array_group_by(
+		$all_adhs,
+		function ( $adh ) use ( $date, $allow_partial_coadh ) {
+			/** @var AmapressAdhesion $adh */
+			if ( ! $adh->getAdherentId() ) {
+				return '';
+			}
+			$user = $adh->getAdherent()->getUser();
+			if ( $allow_partial_coadh ) {
+				$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID, false, $date, $adh->getContrat_instanceId() ) );
+			} else {
+				$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID, false, $date ) );
+			}
+
+			return implode( '_', $user_ids );
+		} );
+	$data                = [];
+	foreach ( $adhesions as $user_ids => $adhs ) {
+		$user_ids            = explode( '_', $user_ids );
+		$panier_intermittent = '';
+		foreach ( $user_ids as $user_id ) {
+			if ( in_array( $user_id, $users_ids_paniers_intermittents ) ) {
+				$panier_intermittent = '*';
+			}
+		}
+		$users = array_map( function ( $user_id ) {
+			return amapress_get_user_by_id_or_archived( intval( $user_id ) );
+		}, $user_ids );
+
+		$base_row               = [];
+		$base_row['first_name'] = implode( ' / ', array_map( function ( $user ) {
+				return $user->first_name;
+			}, $users ) ) . $panier_intermittent;
+		$base_row['last_name']  = implode( ' / ', array_map( function ( $user ) use ( $for_pdf ) {
+			$val = ! empty( $user->last_name ) ? $user->last_name : $user->display_name;
+			if ( ! $for_pdf && current_user_can( 'edit_users' ) ) {
+				$val = Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $user->ID ), $val, true, true );
+			}
+			$adh = AmapressUser::getBy( $user );
+			if ( ! empty( $adh->getAdditionalCoAdherents() ) ) {
+				$val .= ' / ' . esc_html( $adh->getAdditionalCoAdherents() );
+			}
+
+			return $val;
+		}, $users ) );
+		if ( $for_pdf ) {
+			$base_row['last_name'] = '<span style="font-family: zapfdingbats">q</span>&nbsp;' . $base_row['last_name'];
+		}
+		if ( $show_phone ) {
+			$phones = array_unique( array_map( function ( $user ) use ( $for_pdf ) {
+				$adh = AmapressUser::getBy( $user );
+
+				return $adh->getTelTo( true, false, $for_pdf ) . ( ! empty( $adh->getAdditionalCoAdherentsInfos() ) ? ' / ' . esc_html( $adh->getAdditionalCoAdherentsInfos() ) : '' );
+			}, $users ) );
+			$phones = array_filter( $phones, function ( $s ) {
+				return ! empty( trim( $s ) );
+			} );
+			if ( $for_pdf && ! empty( $phones ) ) {
+				$phones = [ array_shift( $phones ) ];
+			}
+			$base_row['tel'] = implode( ' / ', $phones );
+		}
+		if ( $show_emails ) {
+			$base_row['email'] = implode( '<br/>', array_map( function ( $user ) {
+				$adh = AmapressUser::getBy( $user );
+
+				return implode( ',', $adh->getAllEmails() );
+			}, $users ) );
+		}
+		if ( $show_address ) {
+			$base_row['adresse_full'] = implode( '<br/>', array_map( function ( $user ) {
+				$adh = AmapressUser::getBy( $user );
+
+				return $adh->getAdresse();
+			}, $users ) );
+
+			$base_row['adresse_ville'] = implode( '<br/>', array_map( function ( $user ) {
+				$adh = AmapressUser::getBy( $user );
+
+				return $adh->getVille();
+			}, $users ) );
+		}
+		$base_row['check'] = '<span style="display: inline-block; width: 32px">&#xA0;</span>';
+
+		foreach ( $adhs as $adh ) {
+			/** @var AmapressAdhesion $adh */
+			if ( $adh->getContrat_instance()->isPanierVariable() ) {
+				$paniers = $adh->getPaniersVariables();
+				foreach ( AmapressContrats::get_contrat_quantites( $adh->getContrat_instanceId() ) as $quant ) {
+					if ( ! empty( $paniers[ $date ][ $quant->ID ] ) ) {
+						$row            = array_merge( $base_row );
+						$row['prod']    = $adh->getContrat_instance()->getModel()->getTitle()
+						                  . '<br />'
+						                  . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
+						$row['desc']    = $quant->getTitle();
+						$row['fact']    = $paniers[ $date ][ $quant->ID ];
+						$price          = $paniers[ $date ][ $quant->ID ] * $quant->getPrix_unitaire();
+						$row['total_d'] = Amapress::formatPrice( $price, true );
+						$row['total']   = $price;
+						$data[]         = $row;
+					}
+				}
+			} else {
+				foreach ( $adh->getContrat_quantites( $date ) as $quant ) {
+					$row            = array_merge( $base_row );
+					$row['prod']    = $adh->getContrat_instance()->getModel()->getTitle()
+					                  . '<br />'
+					                  . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
+					$row['desc']    = $quant->getTitleWithoutFactor();
+					$row['fact']    = $quant->getFactor();
+					$row['total_d'] = Amapress::formatPrice( $quant->getPrice(), true );
+					$row['total']   = $quant->getPrice();
+					$data[]         = $row;
+				}
+			}
+		}
+	}
+
+	usort( $data, function ( $a, $b ) {
+		$ret = strcasecmp( wp_strip_all_tags( $a['last_name'] ), wp_strip_all_tags( $b['last_name'] ) );
+		if ( 0 == $ret ) {
+			$ret = strcasecmp( wp_strip_all_tags( $a['prod'] ), wp_strip_all_tags( $b['prod'] ) );
+		}
+		if ( 0 == $ret ) {
+			$ret = strcasecmp( wp_strip_all_tags( $a['desc'] ), wp_strip_all_tags( $b['desc'] ) );
+		}
+
+		return $ret;
+	} );
+
+	$dt_options = array(
+		'paging'       => false,
+		'init_as_html' => true,
+		'no_script'    => true,
+		'bSort'        => false,
+		'empty_desc'   => __( 'Pas de livraison', 'amapress' ),
+	);
+
+	return amapress_get_datatable(
+		'dist-recap-emarg-' . $dist->ID,
+		$with_prices ? $columns_with_price : $columns_no_price, $data,
+		$dt_options );
+}
+
 function amapress_get_contrat_quantite_datatable(
 	$contrat_instance_id,
 	$lieu_id = null,

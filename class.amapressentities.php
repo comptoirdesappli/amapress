@@ -1206,7 +1206,14 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 										array(
 											'id'      => 'liste-emargement-disable-liste',
 											'name'    => __( 'Masquer la liste d\'émargement', 'amapress' ),
-											'desc'    => __( 'Pour une amap qui n\'a que des paniers modulables, la liste d\'émargement est inutile car elle ne contient que des Var.', 'amapress' ),
+											'desc'    => __( 'Masquer la liste d\'émargement (Contrats livrés en colonne)', 'amapress' ),
+											'type'    => 'checkbox',
+											'default' => false,
+										),
+										array(
+											'id'      => 'liste-emargement-detailed-liste',
+											'name'    => __( 'Liste d\'émargement pour commandes', 'amapress' ),
+											'desc'    => __( 'Afficher le détails des livraisons par amapien à la place de liste d\'émargement (Contrats livrés en colonne)', 'amapress' ),
 											'type'    => 'checkbox',
 											'default' => false,
 										),

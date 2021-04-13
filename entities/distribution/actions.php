@@ -619,21 +619,27 @@ line-height: 1.1;
 		if ( ! $for_pdf ) {
 			echo '<h3 class="liste-emargement">' . __( 'Liste', 'amapress' ) . '</h3>';
 		}
-		amapress_echo_datatable( 'liste-emargement', $columns, $liste,
-			array(
-				'paging'       => false,
-				'searching'    => false,
-				'nowrap'       => false,
-				'responsive'   => false,
-				'init_as_html' => true,
-				'no_script'    => $for_pdf,
-				'aaSorting'    => [ [ 0, 'asc' ] ]
-			),
-			( empty( $dist_slots_conf ) || isset( $_GET['for_export'] ) ) ?
+		$show_detailed_list = Amapress::getOption( 'liste-emargement-detailed-liste' );
+		if ( $show_detailed_list ) {
+			echo amapress_get_distribution_quantite_datatable( $dist, $for_pdf, false, $show_phone, $show_address, $show_emails );
+
+		} else {
+			amapress_echo_datatable( 'liste-emargement', $columns, $liste,
 				array(
-					Amapress::DATATABLES_EXPORT_EXCEL
-				) : array()
-		);
+					'paging'       => false,
+					'searching'    => false,
+					'nowrap'       => false,
+					'responsive'   => false,
+					'init_as_html' => true,
+					'no_script'    => $for_pdf,
+					'aaSorting'    => [ [ 0, 'asc' ] ]
+				),
+				( empty( $dist_slots_conf ) || isset( $_GET['for_export'] ) ) ?
+					array(
+						Amapress::DATATABLES_EXPORT_EXCEL
+					) : array()
+			);
+		}
 		if ( $show_sums ) {
 			foreach ( $all_contrat_instances as $contrat ) {
 				if ( empty( $total_quants[ $contrat->ID ] ) ) {
