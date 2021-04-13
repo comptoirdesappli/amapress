@@ -109,6 +109,24 @@ class Amapress {
 				update_option( 'amapress_intermittent_migrated', 1 );
 			}
 
+			$amapress_init_adh_terms = get_option( 'amapress_init_adh_terms' );
+			if ( ! $amapress_init_adh_terms ) {
+				foreach (
+					array(
+						'adhesion_amap_term'        => __( 'Adhésion AMAP', 'amapress' ),
+						'adhesion_reseau_amap_term' => __( 'Adhésion Réseau AMAP', 'amapress' ),
+					) as $k => $v
+				) {
+					if ( ! term_exists( $v, 'amps_paiement_category' ) ) {
+						$t = wp_insert_term( $v, 'amps_paiement_category' );
+					} else {
+						$t = term_exists( $v, 'amps_paiement_category' );
+					}
+					Amapress::setOption( $k, $t['term_id'] );
+				}
+				update_option( 'amapress_init_adh_terms', 1 );
+			}
+
 //            update_option('amapress_amap_role_migrated', 0);
 			$amap_role_migrated = get_option( 'amapress_amap_role_migrated' );
 			if ( ! $amap_role_migrated ) {
@@ -1633,25 +1651,6 @@ class Amapress {
 				'assign_terms' => 'edit_posts',
 			),
 		) );
-
-		if ( Amapress::isBackOfficePage() ) {
-			foreach (
-				array(
-					'adhesion_amap_term'        => __( 'Adhésion AMAP', 'amapress' ),
-					'adhesion_reseau_amap_term' => __( 'Adhésion Réseau AMAP', 'amapress' ),
-				) as $k => $v
-			) {
-				$adhesion_term = intval( Amapress::getOption( $k ) );
-				if ( empty( $adhesion_term ) ) { // || ! term_exists( $adhesion_term, 'amps_paiement_category' ) ) {
-					if ( ! term_exists( $v, 'amps_paiement_category' ) ) {
-						Amapress::setOption( $k, wp_insert_term( $v, 'amps_paiement_category' ) );
-					} else {
-						$t = term_exists( $v, 'amps_paiement_category' );
-						Amapress::setOption( $k, $t['term_id'] );
-					}
-				}
-			}
-		}
 	}
 
 	public static function toBool( $var ) {
