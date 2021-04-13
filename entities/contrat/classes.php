@@ -60,6 +60,11 @@ class AmapressContrat extends TitanEntity {
 		return wpautop( stripslashes( $this->getCustom( 'amapress_contrat_instr_distrib' ) ) );
 	}
 
+	/** @return string */
+	public function getCode() {
+		return $this->getCustom( 'amapress_contrat_code', $this->getTitle() );
+	}
+
 	/** @return AmapressProducteur */
 	public function getProducteur() {
 		return $this->getCustomAsEntity( 'amapress_contrat_producteur', 'AmapressProducteur' );

@@ -162,6 +162,14 @@ function amapress_register_entities_contrat( $entities ) {
 				'orderby'      => 'display_name',
 				'order'        => 'ASC',
 			),
+			'code'          => array(
+				'name'           => __( 'Code', 'amapress' ),
+				'group'          => __( 'Liste émargement', 'amapress' ),
+				'type'           => 'text',
+				'desc'           => __( 'Code de la production pour la liste d\'émargement (par défaut, titre de cette production)', 'amapress' ),
+				'show_column'    => true,
+				'col_def_hidden' => true,
+			),
 			'contrats'      => array(
 				'name'            => __( 'Contrats', 'amapress' ),
 				'show_column'     => true,
