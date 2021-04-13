@@ -2673,6 +2673,10 @@ function amapress_get_producteurs_finances_datatable(
 			if ( ! empty( $v[ 'pmt_' . $pmt ] ) && ! in_array( $pmt, $used_pmt_types ) ) {
 				$used_pmt_types[] = $pmt;
 			}
+			if ( ! isset( $v[ 'pmt_' . $pmt ] ) ) {
+				$data[ $k ][ 'pmt_' . $pmt ] = 0;
+				$v[ 'pmt_' . $pmt ]          = 0;
+			}
 			$data[ $k ][ 'pmt_' . $pmt . '_p' ] = Amapress::formatPrice( $v[ 'pmt_' . $pmt ], true );
 		}
 	}
