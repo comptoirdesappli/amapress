@@ -317,7 +317,12 @@ function amapress_paiements_count_editor( $post_id ) {
 		$cheques_options = $adhesion->getPossibleChequeOptions();
 		$ret             .= '<div>' . sprintf( __( '<strong>Montant :</strong> %s</div>
 				 <div><strong>Livraisons (%s dates / %s distributions)</strong> : %s</div>
-                 <div><strong>Chèques prévus :</strong> %s', 'amapress' ), sprintf( __( '%.2f€', 'amapress' ), $amount ), count( $remaining_dates ), $adhesion->getRemainingDatesWithFactors(), $adhesion->getProperty( 'dates_distribution_par_mois' ), implode( ', ', $cheques_options ) ) . '</div>';
+                 <div><strong>Chèques prévus :</strong> %s', 'amapress' ),
+				sprintf( __( '%.2f€', 'amapress' ), $amount ),
+				count( $remaining_dates ),
+				$adhesion->getRemainingDatesWithFactors(),
+				$adhesion->getProperty( 'dates_distribution_par_mois' ),
+				implode( '<strong> OU </strong>', $cheques_options ) ) . '</div>';
 		if ( $adhesion->getContrat_instance()->getAllow_Cash() ) {
 			$ret .= '<div><strong>' . __( 'Règlement en espèces autorisé', 'amapress' ) . '</strong></div>';
 		}
