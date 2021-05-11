@@ -4830,7 +4830,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
                     if (priceW > 0) return true;
                     return false;
                 },
-                "<?php echo esc_js( __( 'Le montant total doit être supérieur à {0}€<br/>', 'amapress' ) ); ?>"
+                "<?php echo esc_js( __( 'Le montant total doit être supérieur à {0}€', 'amapress' ) ); ?>"
             );
 
             jQuery('.don-input').change(function () {
