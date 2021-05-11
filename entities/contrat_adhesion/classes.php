@@ -2000,20 +2000,18 @@ class AmapressAdhesion extends TitanEntity {
 			return [ $this->getChequeOptions() ];
 		} elseif ( $this->getContrat_instance()->getPayByMonth() ) {
 			$cheques_options = [];
-			if ( ! $this->getContrat_instance()->getPayByMonthOnly() && in_array( 1, $this->getContrat_instance()->getPossiblePaiements() ) ) {
+			if ( ! $this->getContrat_instance()->getPayByMonthOnly() ) {
 				$cheques_options[] = sprintf( __( '1 %s de %0.2f €', 'amapress' ),
 					'prl' == $this->getMainPaiementType() ? __( 'prélèvement', 'amapress' ) : __( 'chèque', 'amapress' ),
 					$amount );
 			}
-			$by_months = $this->getTotalAmountByMonth();
-			if ( in_array( count( $by_months ), $this->getContrat_instance()->getPossiblePaiements() ) ) {
-				$cheques_options[] = implode( ' ; ', array_map( function ( $month, $month_amount ) {
-					return sprintf( __( '%s: 1 %s de %0.2f €', 'amapress' ),
-						'prl' == $this->getMainPaiementType() ? __( 'prélèvement', 'amapress' ) : __( 'chèque', 'amapress' ),
-						$month,
-						$month_amount );
-				}, array_keys( $by_months ), array_values( $by_months ) ) );
-			}
+			$by_months         = $this->getTotalAmountByMonth();
+			$cheques_options[] = implode( ' ; ', array_map( function ( $month, $month_amount ) {
+				return sprintf( __( '%s: 1 %s de %0.2f €', 'amapress' ),
+					'prl' == $this->getMainPaiementType() ? __( 'prélèvement', 'amapress' ) : __( 'chèque', 'amapress' ),
+					$month,
+					$month_amount );
+			}, array_keys( $by_months ), array_values( $by_months ) ) );
 		} else {
 			$cheques_options = array_map( function ( $v ) use ( $amount ) {
 				$option = $this->getContrat_instance()->getChequeOptionsForTotal(

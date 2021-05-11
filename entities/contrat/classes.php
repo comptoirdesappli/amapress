@@ -2010,16 +2010,14 @@ class AmapressContrat_instance extends TitanEntity {
 			$amount                        = $quant->getPrix_unitaire() * $remaining_distrib_sum;
 			if ( $this->getPayByMonth() ) {
 				$by_months = $this->getDatesByMonth();
-				if ( ! $this->getPayByMonthOnly() && in_array( 1, $this->getPossiblePaiements() ) ) {
+				if ( ! $this->getPayByMonthOnly() ) {
 					$paiements[] = sprintf( __( "1 chèque de %0.2f €", 'amapress' ), $amount );
 				}
-				if ( in_array( count( $by_months ), $this->getPossiblePaiements() ) ) {
-					$paiements[] = implode( ' ; ', array_map( function ( $month, $month_count ) {
-						return sprintf( __( "%s: 1 chèque pour %d distributions", 'amapress' ),
-							$month,
-							$month_count );
-					}, array_keys( $by_months ), array_values( $by_months ) ) );
-				}
+				$paiements[] = implode( ' ; ', array_map( function ( $month, $month_count ) {
+					return sprintf( __( "%s: 1 chèque pour %d distributions", 'amapress' ),
+						$month,
+						$month_count );
+				}, array_keys( $by_months ), array_values( $by_months ) ) );
 			} else {
 				foreach ( $this->getPossiblePaiements() as $nb_cheque ) {
 					$ch = $this->getChequeOptionsForTotal( $nb_cheque, $amount );
@@ -2032,16 +2030,14 @@ class AmapressContrat_instance extends TitanEntity {
 			if ( $this->getAllow_Prelevement() ) {
 				if ( $this->getPayByMonth() ) {
 					$by_months = $this->getDatesByMonth();
-					if ( ! $this->getPayByMonthOnly() && in_array( 1, $this->getPossiblePaiements() ) ) {
+					if ( ! $this->getPayByMonthOnly() ) {
 						$paiements[] = sprintf( __( "1 prélèvement de %0.2f €", 'amapress' ), $amount );
 					}
-					if ( in_array( count( $by_months ), $this->getPossiblePaiements() ) ) {
-						$paiements[] = implode( ' ; ', array_map( function ( $month, $month_count ) {
-							return sprintf( __( "%s: 1 prélèvement pour %d distributions", 'amapress' ),
-								$month,
-								$month_count );
-						}, array_keys( $by_months ), array_values( $by_months ) ) );
-					}
+					$paiements[] = implode( ' ; ', array_map( function ( $month, $month_count ) {
+						return sprintf( __( "%s: 1 prélèvement pour %d distributions", 'amapress' ),
+							$month,
+							$month_count );
+					}, array_keys( $by_months ), array_values( $by_months ) ) );
 				} else {
 					foreach ( $this->getPossiblePaiements() as $nb_cheque ) {
 						$ch = $this->getChequeOptionsForTotal( $nb_cheque, $amount,
