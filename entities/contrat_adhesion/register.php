@@ -3671,6 +3671,23 @@ add_filter( 'amapress_can_edit_adhesion', function ( $can, $post_id ) {
 
 			return false;
 		}
+		if ( amapress_is_current_user_producteur() ) {
+			$adhesion = AmapressAdhesion::getBy( $post_id );
+			if ( $adhesion ) {
+				$prod_ids = AmapressProducteur::getAllIdsByUser( amapress_current_user_id() );
+				foreach ( $prod_ids as $prod_id ) {
+					foreach ( AmapressContrats::get_contrats( $prod_id, false, false ) as $contrat ) {
+						foreach ( AmapressContrats::get_all_contrat_instances_by_contrat_ids( $contrat->ID ) as $contrat_instance_id ) {
+							if ( $contrat_instance_id == $adhesion->getContrat_instanceId() ) {
+								return $can;
+							}
+						}
+					}
+				}
+			}
+
+			return false;
+		}
 	}
 
 	return $can;

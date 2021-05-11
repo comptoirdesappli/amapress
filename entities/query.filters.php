@@ -259,6 +259,38 @@ function amapress_filter_posts( WP_Query $query ) {
 				'compare' => 'IN',
 				'type'    => 'NUMERIC'
 			);
+		} else if ( $pt == 'contrat_paiement' ) {
+			$prod_ids             = AmapressProducteur::getAllIdsByUser( amapress_current_user_id() );
+			$contrat_instance_ids = [];
+			foreach ( $prod_ids as $prod_id ) {
+				foreach ( AmapressContrats::get_contrats( $prod_id, false, false ) as $contrat ) {
+					foreach ( AmapressContrats::get_all_contrat_instances_by_contrat_ids( $contrat->ID ) as $contrat_instance_id ) {
+						$contrat_instance_ids[] = $contrat_instance_id;
+					}
+				}
+			}
+			$meta[] = array(
+				'key'     => "amapress_{$pt}_contrat_instance",
+				'value'   => amapress_prepare_in( $contrat_instance_ids ),
+				'compare' => 'IN',
+				'type'    => 'NUMERIC'
+			);
+		} else if ( $pt == 'adhesion' ) {
+			$prod_ids             = AmapressProducteur::getAllIdsByUser( amapress_current_user_id() );
+			$contrat_instance_ids = [];
+			foreach ( $prod_ids as $prod_id ) {
+				foreach ( AmapressContrats::get_contrats( $prod_id, false, false ) as $contrat ) {
+					foreach ( AmapressContrats::get_all_contrat_instances_by_contrat_ids( $contrat->ID ) as $contrat_instance_id ) {
+						$contrat_instance_ids[] = $contrat_instance_id;
+					}
+				}
+			}
+			$meta[] = array(
+				'key'     => "amapress_{$pt}_contrat_instance",
+				'value'   => amapress_prepare_in( $contrat_instance_ids ),
+				'compare' => 'IN',
+				'type'    => 'NUMERIC'
+			);
 		} else if ( $pt == 'panier' ) {
 			$prod_ids             = AmapressProducteur::getAllIdsByUser( amapress_current_user_id() );
 			$contrat_instance_ids = [];

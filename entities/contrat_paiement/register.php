@@ -419,6 +419,24 @@ add_filter( 'amapress_can_edit_contrat_paiement', function ( $can, $post_id ) {
 
 			return false;
 		}
+
+		if ( amapress_is_current_user_producteur() ) {
+			$paiement = AmapressAmapien_paiement::getBy( $post_id );
+			if ( $paiement && $paiement->getAdhesion() ) {
+				$prod_ids = AmapressProducteur::getAllIdsByUser( amapress_current_user_id() );
+				foreach ( $prod_ids as $prod_id ) {
+					foreach ( AmapressContrats::get_contrats( $prod_id, false, false ) as $contrat ) {
+						foreach ( AmapressContrats::get_all_contrat_instances_by_contrat_ids( $contrat->ID ) as $contrat_instance_id ) {
+							if ( $contrat_instance_id == $paiement->getAdhesion()->getContrat_instanceId() ) {
+								return $can;
+							}
+						}
+					}
+				}
+			}
+
+			return false;
+		}
 	}
 
 	return $can;

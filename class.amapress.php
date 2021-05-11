@@ -925,18 +925,18 @@ class Amapress {
 //			'delete'  => false,
 //			'publish' => false,
 //		) );
-//		self::add_post_role( 'producteur', 'contrat_paiement', 'contrat_paiements', array(
-//			'read'    => true,
-//			'edit'    => true,
-//			'delete'  => false,
-//			'publish' => false,
-//		) );
-//		self::add_post_role( 'producteur', 'adhesion', 'adhesions', array(
-//			'read'    => true,
-//			'edit'    => true,
-//			'delete'  => false,
-//			'publish' => false,
-//		) );
+		self::add_post_role( 'producteur', 'contrat_paiement', 'contrat_paiements', array(
+			'read'    => true,
+			'edit'    => true,
+			'delete'  => false,
+			'publish' => false,
+		) );
+		self::add_post_role( 'producteur', 'adhesion', 'adhesions', array(
+			'read'    => true,
+			'edit'    => true,
+			'delete'  => false,
+			'publish' => false,
+		) );
 		self::add_post_role( 'producteur', 'visite', 'visites', array(
 			'read'    => true,
 			'edit'    => true,
@@ -955,6 +955,10 @@ class Amapress {
 		$r = get_role( 'producteur' );
 		$r->add_cap( 'upload_files' );
 		$r->add_cap( 'manage_contenu' );
+		$r->add_cap( 'manage_contrats' );
+		$r->add_cap( 'manage_events' );
+		$r->add_cap( 'manage_amapiens' );
+		$r->add_cap( 'manage_amapien_contrat' );
 		if ( class_exists( 'bbPress' ) ) {
 //            $caps = bbp_get_caps_for_role(bbp_get_keymaster_role());
 //            $caps = bbp_get_caps_for_role(bbp_get_moderator_role());
