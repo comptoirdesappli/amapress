@@ -1058,6 +1058,11 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 			}
 			$ret .= '</div>';
 		}
+		if ( TitanFrameworkOption::isOnEditScreen() ) {
+			$ret .= '<p>' . __( 'Voir le contrat ', 'amapress' ) . Amapress::makeLink(
+					$contrat_instance->getAdminEditLink(), $contrat_instance->getTitle(),
+					true, true ) . '</p>';
+		}
 	}
 	if ( ! $had_contrat ) {
 		$ret .= '<p class="adhesion-date-error">' . sprintf( __( 'La date de début (%s) est en dehors des dates du contrat associé', 'amapress' ), esc_html( date_i18n( 'd/m/Y', $date_debut ) ) ) . '</p>';
