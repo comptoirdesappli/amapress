@@ -308,11 +308,13 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 	}
 
 
-	public static function getAllActiveByUserId( $date = null ) {
-		$key = "amapress_AmapressAdhesionPaiement_getAllActiveByUserId_{$date}";
+	public static function getAllActiveByUserId( $date = null, $adhesion_period_id = null ) {
+		$key = "amapress_AmapressAdhesionPaiement_getAllActiveByUserId_{$date}_{$adhesion_period_id}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
-			$period    = AmapressAdhesionPeriod::getCurrent( $date );
+			$period    = $adhesion_period_id ?
+				AmapressAdhesionPeriod::getBy( $adhesion_period_id ) :
+				AmapressAdhesionPeriod::getCurrent( $date );
 			$period_id = $period ? $period->ID : 0;
 			$res       = array_group_by( array_map(
 				function ( $p ) {
@@ -416,8 +418,16 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 	}
 
 	/** @return AmapressAdhesion_paiement */
-	public static function getForUser( $user_id, $date = null, $create = true ) {
-		$adhs = AmapressAdhesion_paiement::getAllActiveByUserId( $date );
+	public static function getForUser( $user_id, $date_or_period = null, $create = true ) {
+		/** @var AmapressAdhesionPeriod $date_period */
+		$date_period = null;
+		$date        = $date_or_period;
+		if ( is_a( $date_or_period, 'AmapressAdhesionPeriod' ) ) {
+			$date_period = $date_or_period;
+			$date        = $date_period->getDate_debut();
+		}
+
+		$adhs = self::getAllActiveByUserId( $date, $date_period ? $date_period->ID : null );
 		if ( empty( $adhs[ $user_id ] ) ) {
 			$user_ids = AmapressContrats::get_related_users( $user_id,
 				true, null, null, true, false,
@@ -433,7 +443,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			if ( ! $create ) {
 				return null;
 			}
-			$adh_period = AmapressAdhesionPeriod::getCurrent( $date );
+			$adh_period = $date_period ? $date_period : AmapressAdhesionPeriod::getCurrent( $date );
 			if ( empty( $adh_period ) ) {
 				return null;
 			}
