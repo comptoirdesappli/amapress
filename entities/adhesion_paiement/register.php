@@ -315,7 +315,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'group'          => __( '4/ HelloAsso', 'amapress' ),
 				'custom'         => function ( $post_id ) {
 					$adh_pmt = AmapressAdhesion_paiement::getBy( $post_id );
-					if ( ! $adh_pmt->isHelloAsso() ) {
+					if ( ! $adh_pmt->isHelloAsso() || empty( $adh_pmt->getHelloAssoUrl() ) ) {
 						return 'NA';
 					}
 
@@ -324,7 +324,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'column'         => function ( $post_id ) {
 					$adh_pmt = AmapressAdhesion_paiement::getBy( $post_id );
 					$adh_pmt = AmapressAdhesion_paiement::getBy( $post_id );
-					if ( ! $adh_pmt->isHelloAsso() ) {
+					if ( ! $adh_pmt->isHelloAsso() || empty( $adh_pmt->getHelloAssoUrl() ) ) {
 						return '';
 					}
 
@@ -332,7 +332,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				},
 				'export'         => function ( $post_id ) {
 					$adh_pmt = AmapressAdhesion_paiement::getBy( $post_id );
-					if ( ! $adh_pmt->isHelloAsso() ) {
+					if ( ! $adh_pmt->isHelloAsso() || empty( $adh_pmt->getHelloAssoUrl() ) ) {
 						return '';
 					}
 
