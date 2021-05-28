@@ -422,6 +422,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'show_adherents_infos'                => 'true',
 			'show_details_button'                 => 'false',
 			'allow_adhesion_lieu'                 => 'false',
+			'custom_checks_label'                 => '',
 			'allow_adhesion_message'              => 'false',
 			'allow_coadherents_access'            => 'true',
 			'allow_coadherents_inscription'       => 'true',
@@ -1936,14 +1937,21 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$ret .= '<label for="adh-lieu-none"><input class="required" name="amapress_adhesion_lieu" value="none" type="radio" id="adh-lieu-none" /> ' . __( 'Aucun', 'amapress' ) . '</label>';
 			$ret .= '</div>';
 		}
+		$custom_checks = '';
 		for ( $custom_check_ix = 1; $custom_check_ix < 4; $custom_check_ix ++ ) {
 			$custom_check = $adh_period->getCustomCheck( $custom_check_ix );
 			if ( ! empty( $custom_check ) ) {
-				$ret .= '<label for="adh-custom-' . $custom_check_ix . '">
+				$custom_checks .= '<label for="adh-custom-' . $custom_check_ix . '">
 <input name="amapress_adhesion_custom_check' . $custom_check_ix . '" value="1" type="checkbox" id="adh-custom-' . $custom_check_ix . '" /> ' .
-				        strip_tags( wp_unslash( $custom_check ), '<em><i><strong><b><br><a>' ) . '</label>';
+				                  strip_tags( wp_unslash( $custom_check ), '<em><i><strong><b><br><a>' ) . '</label>';
 			}
 		}
+		if ( ! empty( $custom_checks ) ) {
+			$ret .= '<p class="amps-custom-checks-label">' .
+			        ( ! empty( $atts['custom_checks_label'] ) ? $atts['custom_checks_label'] : __( 'Options : ', 'amapress' ) ) .
+			        '</p>' . $custom_checks;
+		}
+
 		if ( Amapress::toBool( $atts['allow_adhesion_message'] ) ) {
 			$ret .= '<div>';
 			$ret .= '<label for="adh-message" style="display: block">' . __( 'Message personnel :', 'amapress' ) . '</label><br/>
