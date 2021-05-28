@@ -38,7 +38,7 @@ class TitanFrameworkOptionCustom extends TitanFrameworkOption {
 		if ( $save && is_callable( $save, false ) ) {
 			return call_user_func( $save, $postID, $this );
 		} else {
-			return false;
+			return true;
 		}
 	}
 
