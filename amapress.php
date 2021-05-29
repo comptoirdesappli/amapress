@@ -77,7 +77,7 @@ function amapress_ensure_no_cache() {
 require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
 
 function amapress_get_github_updater_url() {
-	return is_multisite() ? network_admin_url( 'settings.php?page=github-updater' ) : admin_url( 'options-general.php?page=github-updater' );
+	return is_multisite() ? network_admin_url( 'settings.php?page=git-updater' ) : admin_url( 'options-general.php?page=git-updater' );
 }
 
 function amapress_is_demo_email_address( $email ) {
@@ -1605,7 +1605,7 @@ add_action( 'admin_init', function () {
 	if ( current_user_can( 'manage_options' ) && ( ! wp_doing_ajax() ) ) {
 		$dir_name = basename( dirname( __FILE__ ) );
 		if ( 'amapress' != $dir_name ) {
-			amapress_add_admin_notice( sprintf( __( 'Le nom du dossier d\'Amapress doit être "amapress" pour le bon fonctionnement de la mise à jour par GitHub Updater (actuellement, %s. Merci de renommer "%s" et de réactiver Amapress', 'amapress' ), $dir_name, dirname( __FILE__ ) ),
+			amapress_add_admin_notice( sprintf( __( 'Le nom du dossier d\'Amapress doit être "amapress" pour le bon fonctionnement de la mise à jour par Git Updater (actuellement, %s. Merci de renommer "%s" et de réactiver Amapress', 'amapress' ), $dir_name, dirname( __FILE__ ) ),
 				'error', false );
 		}
 

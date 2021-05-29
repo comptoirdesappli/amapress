@@ -63,9 +63,8 @@ Première *configuration* : aller dans **Tableau de bord>État d'Amapress** : ht
 * Intégration du plugin de file d'envoi de message [SMTP Mailing Queue](https://github.com/Birmania/smtp-mailing-queue)
 * [PHPQRCode](https://sourceforge.net/projects/phpqrcode/)
 * [Custom Post Status](https://gist.github.com/rands0n/6174c471f2d1e24eefdc)
-* [Install GitHub Updater](https://github.com/mgibbs189/install-github-updater)
 * [Notification de mises à jour](https://github.com/l3rady/wp-updates-notifier)
-* [Github Updater](https://github.com/afragen/github-updater) : mise à jour d'Amapress via GitHub
+* [Git Updater](https://github.com/afragen/git-updater) : mise à jour d'Amapress via GitHub
 * [Google Sitemaps from Chesio](https://github.com/chesio/google-sitemap-generator) : référencement
 * [PWA](https://github.com/GoogleChromeLabs/pwa-wp) : transformation du site en application mobile
 * [Attributs personnalisés dans l'éditeur de menu](https://github.com/ineagu/wp-menu-item-custom-fields)

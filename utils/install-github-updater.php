@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Install GitHub Updater
+ * Install Git Updater
  * Derived from WP Install Dependencies
  * <https://github.com/afragen/wp-install-dependencies>
  *
@@ -14,21 +14,20 @@ defined( 'ABSPATH' ) or exit;
 
 if ( ! class_exists( 'Install_GitHub_Updater' ) ) {
 
-    class Install_GitHub_Updater
-    {
+	class Install_GitHub_Updater {
 
-        public $message = array();
-        public $slug = 'github-updater/github-updater.php';
-        public $zip = 'https://github.com/afragen/github-updater/archive/master.zip';
+		public $message = array();
+		public $slug = 'git-updater/git-updater.php';
+		public $zip = 'https://github.com/afragen/git-updater/archive/master.zip';
 
 
-        function __construct() {
-            add_action( 'admin_init', array( $this, 'admin_init' ) );
-            add_action( 'admin_footer', array( $this, 'admin_footer' ) );
-            add_action( 'admin_notices', array( $this, 'admin_notices' ) );
-            add_action( 'network_admin_notices', array( $this, 'admin_notices' ) );
-            add_action( 'wp_ajax_github_updater', array( $this, 'ajax_router' ) );
-        }
+		function __construct() {
+			add_action( 'admin_init', array( $this, 'admin_init' ) );
+			add_action( 'admin_footer', array( $this, 'admin_footer' ) );
+			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+			add_action( 'network_admin_notices', array( $this, 'admin_notices' ) );
+			add_action( 'wp_ajax_github_updater', array( $this, 'ajax_router' ) );
+		}
 
 
         /**
@@ -41,11 +40,14 @@ if ( ! class_exists( 'Install_GitHub_Updater' ) ) {
 
             if ( $this->is_installed() ) {
                 if ( ! is_plugin_active( $this->slug ) ) {
-                    $this->message = array( 'action' => 'activate', 'text' => __( 'Please activate the GitHub Updater plugin.' ) );
+	                $this->message = array(
+		                'action' => 'activate',
+		                'text'   => __( 'Please activate the Git Updater plugin.' )
+	                );
                 }
             }
             else {
-                $this->message = array( 'action' => 'install', 'text' => __( 'The GitHub Updater plugin is required.' ) );
+	            $this->message = array( 'action' => 'install', 'text' => __( 'The Git Updater plugin is required.' ) );
             }
         }
 
@@ -55,30 +57,30 @@ if ( ! class_exists( 'Install_GitHub_Updater' ) ) {
          */
         function admin_footer() {
         ?>
-        <script>
-        (function($) {
-            $(function() {
-                $(document).on('click', '.ghu-button', function() {
-                    var $this = $(this);
-                    $('.github-updater p').html('Running...');
-                    $.post(ajaxurl, {
-                        action: 'github_updater',
-                        method: $this.attr('data-action')
-                    }, function(response) {
-                        $('.github-updater p').html(response);
-                    });
-                });
+            <script>
+                (function ($) {
+                    $(function () {
+                        $(document).on('click', '.ghu-button', function () {
+                            var $this = $(this);
+                            $('.git-updater p').html('Running...');
+                            $.post(ajaxurl, {
+                                action: 'github_updater',
+                                method: $this.attr('data-action')
+                            }, function (response) {
+                                $('.git-updater p').html(response);
+                            });
+                        });
 
-                $(document).on('click', '.github-updater .notice-dismiss', function() {
-                    $.post(ajaxurl, {
-                        action: 'github_updater',
-                        method: 'dismiss'
+                        $(document).on('click', '.git-updater .notice-dismiss', function () {
+                            $.post(ajaxurl, {
+                                action: 'github_updater',
+                                method: 'dismiss'
+                            });
+                        });
                     });
-                });
-            });
-        })(jQuery);
-        </script>
-        <?php
+                })(jQuery);
+            </script>
+	        <?php
         }
 
 
@@ -133,13 +135,13 @@ if ( ! class_exists( 'Install_GitHub_Updater' ) ) {
                 return $result;
             }
 
-            return array( 'status' => 'ok', 'message' => __( 'GitHub Updater has been installed and activated.' ) );
+	        return array( 'status' => 'ok', 'message' => __( 'Git Updater has been installed and activated.' ) );
         }
 
 
-        /**
-         * Rename the plugin folder to "github-updater"
-         */
+		/**
+		 * Rename the plugin folder to "git-updater"
+		 */
         function upgrader_source_selection( $source, $remote_source ) {
             global $wp_filesystem;
             $new_source = trailingslashit( $remote_source ) . dirname( $this->slug );
@@ -158,7 +160,7 @@ if ( ! class_exists( 'Install_GitHub_Updater' ) ) {
                 return array( 'status' => 'error', 'message' => $result->get_error_message() );
             }
 
-            return array( 'status' => 'ok', 'message' => __( 'GitHub Updater has been activated.' ) );
+	        return array( 'status' => 'ok', 'message' => __( 'Git Updater has been activated.' ) );
         }
 
 
@@ -180,8 +182,8 @@ if ( ! class_exists( 'Install_GitHub_Updater' ) ) {
                 $notice = $this->message['text'];
                 $notice .= ' <a href="javascript:;" class="ghu-button" data-action="' . $action . '">' . ucfirst( $action ) . ' Now &raquo;</a>';
         ?>
-            <div class="updated notice is-dismissible github-updater">
-                <p><?php echo $notice; ?></p>
+                <div class="updated notice is-dismissible git-updater">
+                    <p><?php echo $notice; ?></p>
             </div>
         <?php
             }

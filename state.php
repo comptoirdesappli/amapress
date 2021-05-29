@@ -312,23 +312,23 @@ function amapress_get_state() {
 	}
 
 	if ( ! defined( 'FREE_PAGES_PERSO' ) ) {
-		$github_updater = get_option( 'github_updater' );
+		$github_updater = get_option( 'git_updater' );
 		if ( is_multisite() ) {
-			$github_updater = get_site_option( 'github_updater' );
+			$github_updater = get_site_option( 'git_updater' );
 		}
 		if ( empty( $github_updater ) ) {
 			$state['05_config'][] = amapress_get_check_state(
 				'error',
-				__( 'L\'extension GitHub Updater est requis pour la bonne mise à jour d\'Amapress', 'amapress' ),
-				__( 'Veuillez utiliser l\'installateur automatique qui est affiché en haut du <a target="_blank" href="', 'amapress' ) . admin_url( 'index.php' ) . '">tableau de bord</a> ou suivre la <a target="_blank" href="https://github.com/afragen/github-updater/wiki/Installation">procédure d\'installation manuelle</a>',
+				__( 'L\'extension Git Updater est requis pour la bonne mise à jour d\'Amapress', 'amapress' ),
+				__( 'Veuillez utiliser l\'installateur automatique qui est affiché en haut du <a target="_blank" href="', 'amapress' ) . admin_url( 'index.php' ) . '">tableau de bord</a> ou suivre la <a target="_blank" href="https://github.com/afragen/git-updater/wiki/Installation">procédure d\'installation manuelle</a>',
 				''
 			);
 		} elseif ( empty( $github_updater['github_access_token'] ) ) {
 			$state['05_config'][] = amapress_get_check_state(
 				'error',
-				__( 'Un jeton d\'accès GitHub (Personal Access Token) pour l\'extension GitHub Updater est requis pour la bonne mise à jour d\'Amapress', 'amapress' ),
-				__( 'Veuillez créer un Personal Access Token en suivant ce <a target="_blank" href="https://github.com/afragen/github-updater/wiki/Messages#personal-github-access-token">lien</a>', 'amapress' ),
-				admin_url( 'options-general.php?page=github-updater&tab=github_updater_settings&subtab=github' )
+				__( 'Un jeton d\'accès GitHub (Personal Access Token) pour l\'extension Git Updater est requis pour la bonne mise à jour d\'Amapress', 'amapress' ),
+				__( 'Veuillez créer un Personal Access Token en suivant ce <a target="_blank" href="https://github.com/afragen/git-updater/wiki/Messages#personal-github-access-token">lien</a>', 'amapress' ),
+				admin_url( 'options-general.php?page=git-updater&tab=git_updater_settings&subtab=github' )
 			);
 		}
 	}
@@ -2775,7 +2775,7 @@ function amapress_echo_and_check_amapress_state_page() {
 		}
 
 
-		echo '<p><a href="' . esc_attr( amapress_get_github_updater_url() ) . '" target="_blank">' . __( 'Rafraichir le cache Github Updater', 'amapress' ) . '</a> / <a href="' . esc_attr( admin_url( 'plugins.php' ) ) . '" target="_blank">' . __( 'Voir les extensions installées', 'amapress' ) . '</a></p>';
+		echo '<p><a href="' . esc_attr( amapress_get_github_updater_url() ) . '" target="_blank">' . __( 'Rafraichir le cache Git Updater', 'amapress' ) . '</a> / <a href="' . esc_attr( admin_url( 'plugins.php' ) ) . '" target="_blank">' . __( 'Voir les extensions installées', 'amapress' ) . '</a></p>';
 		echo '<p><a href="' . esc_attr( add_query_arg( 'phpinfo', 'T' ) ) . '" target="_blank">' . __( 'Afficher PHP Infos', 'amapress' ) . '</a></p>';
 		echo '<p><a href="' . esc_attr( add_query_arg( 'wp_db_stats', 'T' ) ) . '" target="_blank">' . __( 'Afficher Stats WP_DB', 'amapress' ) . '</a></p>';
 	}
@@ -2900,14 +2900,14 @@ function amapress_get_state_summary() {
 }
 
 add_action( 'pre_current_active_plugins', function ( $plugins ) {
-	echo '<p><a href="' . esc_attr( amapress_get_github_updater_url() ) . '" target="_blank">' . __( 'Rafraichir le cache Github Updater', 'amapress' ) . '</a></p>';
+	echo '<p><a href="' . esc_attr( amapress_get_github_updater_url() ) . '" target="_blank">' . __( 'Rafraichir le cache Git Updater', 'amapress' ) . '</a></p>';
 } );
 
 add_action( 'admin_init', function ( $plugins ) {
 	global $pagenow;
 	if ( 'update-core.php' == $pagenow ) {
 		amapress_add_admin_notice(
-			'<a href="' . esc_attr( amapress_get_github_updater_url() ) . '" target="_blank">' . __( 'Rafraichir le cache Github Updater', 'amapress' ) . '</a>',
+			'<a href="' . esc_attr( amapress_get_github_updater_url() ) . '" target="_blank">' . __( 'Rafraichir le cache Git Updater', 'amapress' ) . '</a>',
 			'info', false, false
 		);
 	}

@@ -76,7 +76,7 @@ if ( ! class_exists( 'Amapress_Install_Plugin_From_GitHub' ) ) {
 
 
 		/**
-		 * Rename the plugin folder to "github-updater"
+		 * Rename the plugin folder to "git-updater"
 		 */
 		function upgrader_source_selection( $source, $remote_source ) {
 			/** @var WP_Filesystem_Base $wp_filesystem */
