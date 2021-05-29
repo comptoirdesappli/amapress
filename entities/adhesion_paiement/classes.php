@@ -1070,7 +1070,8 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		$send_adherent_confirm,
 		$send_tresoriers_notif,
 		$notify_email = '',
-		$throw_invalid_bulletin = false
+		$throw_invalid_bulletin = false,
+		$send_bulletin = true
 	) {
 		$tresoriers = [];
 		foreach ( get_users( "role=tresorier" ) as $tresorier ) {
@@ -1090,11 +1091,14 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 			$mail_content = amapress_replace_mail_placeholders( $mail_content, $this->getUser(), $this );
 
 			$attachments = [];
-			try {
-				$doc_file = $this->generateBulletinDoc( false );
-			} catch ( Exception $ex ) {
-				if ( $throw_invalid_bulletin ) {
-					wp_die( __( 'Impossible de générer le bulletin d\'adhésion. Merci de réessayer en appuyant sur F5', 'amapress' ) );
+			$doc_file    = null;
+			if ( $send_bulletin ) {
+				try {
+					$doc_file = $this->generateBulletinDoc( false );
+				} catch ( Exception $ex ) {
+					if ( $throw_invalid_bulletin ) {
+						wp_die( __( 'Impossible de générer le bulletin d\'adhésion. Merci de réessayer en appuyant sur F5', 'amapress' ) );
+					}
 				}
 			}
 			if ( ! empty( $doc_file ) ) {

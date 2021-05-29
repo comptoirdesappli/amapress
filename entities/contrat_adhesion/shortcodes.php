@@ -397,6 +397,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'address_required'                    => 'false',
 			'check_principal'                     => 'true',
 			'adhesion'                            => $is_adhesion_mode || $is_inscription_mode ? 'true' : 'false',
+			'send_adhesion_bulletin'              => 'true',
 			'send_adhesion_confirm'               => 'true',
 			'send_contrat_confirm'                => 'true',
 			'send_referents'                      => 'true',
@@ -2108,7 +2109,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			Amapress::toBool( $atts['send_adhesion_confirm'] ),
 			Amapress::toBool( $atts['send_tresoriers'] ),
 			$notify_email,
-			true
+			true,
+			Amapress::toBool( $atts['send_adhesion_bulletin'] )
 		);
 
 		$step_name = esc_html( wp_unslash( Amapress::getOption(
