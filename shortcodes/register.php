@@ -1547,6 +1547,7 @@ function amapress_register_shortcodes() {
 		$atts = shortcode_atts(
 			array(
 				'adhesion_shift_weeks' => intval( Amapress::getOption( 'adhesion_shift_weeks' ) ),
+				'category'             => '',
 				'form_type'            => 'form',
 				'show_period'          => 'true',
 				'show_adherent_info'   => 'true',
@@ -1555,7 +1556,7 @@ function amapress_register_shortcodes() {
 
 		$date = Amapress::add_a_week( amapress_time(), intval( $atts['adhesion_shift_weeks'] ) );
 
-		$period_adhesion = AmapressAdhesionPeriod::getCurrent( $date );
+		$period_adhesion = AmapressAdhesionPeriod::getCurrent( $date, $atts['category'] );
 		if ( ! $period_adhesion ) {
 			return __( 'Adhésions closes', 'amapress' );
 		}
@@ -1611,6 +1612,7 @@ function amapress_register_shortcodes() {
 				'show_period'          => __( '(true par défaut) Afficher le nom de la période d\'adhésion du formulaire', 'amapress' ),
 				'show_adherent_info'   => __( '(true par défaut) Afficher les infos de l\'utilisateur connecté', 'amapress' ),
 				'form_type'            => __( '(form par défaut) Type de formulaire à afficher (form: Formulaire, thumb: Vignette, thumbhori: Vignette horizontale, button: Bouton)', 'amapress' ),
+				'category'             => __( '("" par défaut) Filtre par catégorie d\'adhésion', 'amapress' ),
 				'adhesion_shift_weeks' => sprintf( __( '(Configurable dans %s) Nombre de semaines de décalage entre le début des contrats et la période d\'Adhésion', 'amapress' ), $contrats_conf_link ),
 			]
 		] );
