@@ -133,6 +133,10 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		return $this->getCustom( 'amapress_adhesion_paiement_banque' );
 	}
 
+	public function getEmetteur() {
+		return $this->getCustom( 'amapress_adhesion_paiement_emetteur' );
+	}
+
 	public function getAmount( $type = null ) {
 		$this->ensure_init();
 
@@ -220,6 +224,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 					$this->getMainPaiementTypeFormatted(),
 					$this->getStatusDisplay(),
 					( ! empty( $this->getBanque() ) ? $this->getBanque() . ' - ' : '' ) .
+					( ! empty( $this->getEmetteur() ) ? $this->getEmetteur() . ' - ' : '' ) .
 					( ! empty( $this->getNumero() ) ? $this->getNumero() : __( '-non renseigné-', 'amapress' ) ),
 					$price
 				);
@@ -896,6 +901,12 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 				'desc' => __( 'Banque du chèque', 'amapress' ),
 				'func' => function ( AmapressAdhesion_paiement $adh ) {
 					return $adh->getBanque();
+				}
+			];
+			$ret['paiement_emetteur'] = [
+				'desc' => __( 'Emetteur du chèque', 'amapress' ),
+				'func' => function ( AmapressAdhesion_paiement $adh ) {
+					return $adh->getEmetteur();
 				}
 			];
 			$ret['paiements_mention'] = [

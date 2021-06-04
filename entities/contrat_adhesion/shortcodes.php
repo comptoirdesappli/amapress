@@ -2010,6 +2010,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		if ( $adh_period->getAllowAmapienInputPaiementsDetails() ) {
 			$ret .= '<p><label for="amapress_adhesion_paiement_numero">' . esc_html( wp_unslash( Amapress::getOption( 'online_subscription_adh_num_label' ) ) ) . '</label><input type="text" id="amapress_adhesion_paiement_numero" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_numero"/></p>';
 			$ret .= '<p><label for="amapress_adhesion_paiement_banque">' . __( 'Banque :', 'amapress' ) . '</label><input type="text" id="amapress_adhesion_paiement_banque" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_banque"/></p>';
+			$ret .= '<p><label for="amapress_adhesion_paiement_emetteur">' . __( 'Emetteur :', 'amapress' ) . '</label><input type="text" id="amapress_adhesion_paiement_emetteur" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_emetteur"/></p>';
 		}
 		$ret .= '<input type="submit" class="btn btn-default btn-assist-adh" value="' . esc_attr__( 'Valider', 'amapress' ) . '"/>';
 		$ret .= '</form>';
@@ -2063,6 +2064,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		if ( isset( $_REQUEST['amapress_adhesion_paiement_numero'] ) ) {
 			update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_numero', sanitize_text_field( $_REQUEST['amapress_adhesion_paiement_numero'] ) );
+		}
+		if ( isset( $_REQUEST['amapress_adhesion_paiement_emetteur'] ) ) {
+			update_post_meta( $adh_paiement->ID, 'amapress_adhesion_paiement_emetteur', sanitize_text_field( $_REQUEST['amapress_adhesion_paiement_emetteur'] ) );
 		}
 		if ( isset( $_REQUEST['amapress_adhesion_paiement_pmt_type'] ) ) {
 			$pmt_type = sanitize_key( $_REQUEST['amapress_adhesion_paiement_pmt_type'] );

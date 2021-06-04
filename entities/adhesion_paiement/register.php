@@ -289,6 +289,13 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'group'      => __( '3/ Règlement', 'amapress' ),
 				'searchable' => true,
 			),
+			'emetteur'           => array(
+				'name'       => __( 'Emetteur', 'amapress' ),
+				'type'       => 'text',
+				'desc'       => __( 'Emetteur du règlement', 'amapress' ),
+				'group'      => __( '3/ Règlement', 'amapress' ),
+				'searchable' => true,
+			),
 			'categ_editor'       => array(
 				'name'       => __( 'Répartition', 'amapress' ),
 				'type'       => 'custom',

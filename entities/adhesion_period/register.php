@@ -199,7 +199,7 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'required'    => true,
 				'default'     => true,
 				'show_column' => false,
-				'desc'        => __( 'Permettre aux amapiens de renseigner les numéros des chèques dans l’assistant d\'adhésion en ligne', 'amapress' ),
+				'desc'        => __( 'Permettre aux amapiens de renseigner les numéros des chèques, la banque et l\'émetteur dans l’assistant d\'adhésion en ligne', 'amapress' ),
 			),
 			'custom_check1'    => array(
 				'name'           => AMAPRESS_ADHESION_PERIOD_CHECK1,
