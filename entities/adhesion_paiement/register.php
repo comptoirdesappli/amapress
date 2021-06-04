@@ -974,7 +974,7 @@ function amapress_process_helloasso_order( $order ) {
 					delete_user_meta( $user_id, 'pw_user_status' );
 					delete_transient( 'new_user_approve_user_statuses' );
 
-					$pmt = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period, false );
+					$pmt = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period );
 					if ( $pmt && $pmt->isHelloAsso() && $pmt->getNumero() != $numero ) {
 						$existing_adhesions[] = $pmt;
 					}
@@ -1099,7 +1099,7 @@ function amapress_create_user_and_adhesion_assistant( $post_id, TitanFrameworkOp
 		echo '<p><strong>' . __( 'Ses adhésions :', 'amapress' ) . '</strong></p>';
 		echo '<ul style="list-style-type: circle">';
 		foreach ( $periods as $period ) {
-			$adh = AmapressAdhesion_paiement::getForUser( $user->ID, $period, false );
+			$adh = AmapressAdhesion_paiement::getForUser( $user->ID, $period );
 			echo '<li style="margin-left: 35px">';
 			echo esc_html( $period->getTitle() ) . __( ' : ', 'amapress' );
 			if ( $adh ) {

@@ -62,7 +62,7 @@ function amapress_all_paniers_intermittents_shortcode( $atts ) {
 			return ( sprintf( __( 'Aucune période d\'adhésion n\'est configurée au %s', 'amapress' ), date_i18n( 'd/m/Y' ) ) );
 		}
 
-		$adh_paiement = AmapressAdhesion_paiement::getForUser( amapress_current_user_id(), null, false );
+		$adh_paiement = AmapressAdhesion_paiement::getForUser( amapress_current_user_id() );
 		if ( empty( $adh_paiement ) || ( $check_adhesion_received && $adh_paiement->isNotReceived() ) ) {
 			return wp_unslash( Amapress::getOption( 'online_subscription_inter_req_adhesion' ) );
 		}

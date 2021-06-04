@@ -1155,7 +1155,7 @@ jQuery(function($) {
 			) ) );
 
 			if ( empty( $lieu_ids ) ) {
-				$adh = AmapressAdhesion_paiement::getForUser( $user_id, $date, false );
+				$adh = AmapressAdhesion_paiement::getForUser( $user_id, $date );
 				if ( $adh && $adh->getLieu() ) {
 					$lieu_ids = [ $adh->getLieuId() ];
 				}

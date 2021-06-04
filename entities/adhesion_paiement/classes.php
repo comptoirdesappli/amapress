@@ -418,7 +418,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 	}
 
 	/** @return AmapressAdhesion_paiement */
-	public static function getForUser( $user_id, $date_or_period = null, $create = true ) {
+	public static function getForUser( $user_id, $date_or_period = null, $create = false ) {
 		/** @var AmapressAdhesionPeriod $date_period */
 		$date_period = null;
 		$date        = $date_or_period;

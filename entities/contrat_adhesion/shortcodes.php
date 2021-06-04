@@ -1125,7 +1125,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				return ( sprintf( __( 'Aucune période d\'adhésion n\'est configurée au %s', 'amapress' ), date_i18n( 'd/m/Y', $adh_period_date ) ) );
 			}
 
-			$adh_paiement = AmapressAdhesion_paiement::getForUser( $user->ID, $adh_period_date, false );
+			$adh_paiement = AmapressAdhesion_paiement::getForUser( $user->ID, $adh_period_date );
 			if ( ! empty( $adh_paiement ) ) {
 				if ( $check_adhesion_received && $adh_paiement->isNotReceived() ) {
 					ob_clean();
@@ -1280,7 +1280,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 		}
 
-		$adh_pmt = $user ? AmapressAdhesion_paiement::getForUser( $user->ID, $adh_period_date, false ) : null;
+		$adh_pmt                       = $user ? AmapressAdhesion_paiement::getForUser( $user->ID, $adh_period_date ) : null;
 		?>
         <h4>
 			<?php
@@ -1856,7 +1856,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$activate_adhesion = false;
 		}
 
-		$adh_pmt = $user_id ? AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false ) : null;
+		$adh_pmt = $user_id ? AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date ) : null;
 		?>
         <h4>
 			<?php
@@ -1896,7 +1896,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		$user_id = intval( $_REQUEST['user_id'] );
 
-		$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false );
+		$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date );
 		if ( $adh_paiement ) {
 			ob_clean();
 
@@ -2033,7 +2033,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			return ( sprintf( __( 'Aucune période d\'adhésion n\'est configurée au %s', 'amapress' ), date_i18n( 'd/m/Y', $adh_period_date ) ) );
 		}
 
-		$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date );
+		$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, true );
 
 		delete_user_meta( $user_id, 'amapress_user_no_renew' );
 		delete_user_meta( $user_id, 'amapress_user_no_renew_reason' );
@@ -2255,7 +2255,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					return ( sprintf( __( 'Aucune période d\'adhésion n\'est configurée au %s', 'amapress' ), date_i18n( 'd/m/Y', $adh_period_date ) ) );
 				}
 
-				$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, false );
+				$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date );
 
 				if ( empty( $adh_paiement ) ) {
 					if ( ! $activate_adhesion ) {
