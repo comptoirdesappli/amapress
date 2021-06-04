@@ -61,12 +61,10 @@ add_action(
 		$scripts->caching_routes()->register(
 			'^(' . preg_quote( $upload_dir['baseurl'], '/' ) . ').*\.(png|gif|jpg|jpeg|svg|webp)(\?.*)?$',
 			array(
-				'strategy'  => \WP_Service_Worker_Caching_Routes::STRATEGY_CACHE_FIRST,
-				'cacheName' => 'uploads',
-				'plugins'   => array(
-					'expiration' => array(
-						'maxAgeSeconds' => MONTH_IN_SECONDS,
-					),
+				'strategy'   => \WP_Service_Worker_Caching_Routes::STRATEGY_CACHE_FIRST,
+				'cacheName'  => 'uploads',
+				'expiration' => array(
+					'maxAgeSeconds' => MONTH_IN_SECONDS,
 				),
 			)
 		);
