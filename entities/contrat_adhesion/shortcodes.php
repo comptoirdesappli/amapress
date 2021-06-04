@@ -414,6 +414,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'notify_email'                        => '',
 			'max_produit_label_width'             => '10em',
 			'paiements_info_required'             => 'false',
+			'paiements_numero_required'           => 'false',
 			'paniers_modulables_editor_height'    => 350,
 			'send_welcome'                        => 'true',
 			'edit_names'                          => 'true',
@@ -480,6 +481,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 
 	$amapien                             = null;
 	$paiements_info_required             = Amapress::toBool( $atts['paiements_info_required'] );
+	$paiements_numero_required           = Amapress::toBool( $atts['paiements_numero_required'] );
 	$force_upper                         = Amapress::toBool( $atts['force_upper'] );
 	$allow_trombi_decline                = Amapress::toBool( $atts['allow_trombi_decline'] );
 	$allow_classic_adhesion              = Amapress::toBool( $atts['allow_classic_adhesion'] );
@@ -2008,7 +2010,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		$ret .= '</p>';
 		if ( $adh_period->getAllowAmapienInputPaiementsDetails() ) {
-			$ret .= '<p><label for="amapress_adhesion_paiement_numero">' . esc_html( wp_unslash( Amapress::getOption( 'online_subscription_adh_num_label' ) ) ) . '</label><input type="text" id="amapress_adhesion_paiement_numero" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_numero"/></p>';
+			$ret .= '<p><label for="amapress_adhesion_paiement_numero">' . esc_html( wp_unslash( Amapress::getOption( 'online_subscription_adh_num_label' ) ) ) . '</label><input type="text" id="amapress_adhesion_paiement_numero" class="' . ( $paiements_numero_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_numero"/></p>';
 			$ret .= '<p><label for="amapress_adhesion_paiement_banque">' . __( 'Banque :', 'amapress' ) . '</label><input type="text" id="amapress_adhesion_paiement_banque" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_banque"/></p>';
 			$ret .= '<p><label for="amapress_adhesion_paiement_emetteur">' . __( 'Emetteur :', 'amapress' ) . '</label><input type="text" id="amapress_adhesion_paiement_emetteur" class="' . ( $paiements_info_required ? 'required' : '' ) . '" name="amapress_adhesion_paiement_emetteur"/></p>';
 		}
@@ -4250,6 +4252,7 @@ jQuery(function($) {
 				Amapress::setFilterForReferent( false );
 				$edit_all_paiements = $edit_inscription ? $edit_inscription->getAllPaiements() : null;
 				Amapress::setFilterForReferent( true );
+				$req_num                    = ( $paiements_numero_required ? 'required' : '' );
 				$req                        = ( $paiements_info_required ? 'required' : '' );
 				$pay_by_month_months        = [];
 				$pay_by_month_encaiss_dates = [];
@@ -4327,7 +4330,7 @@ $paiements_dates
 					}
 					echo "<tr style='display: none'>
 <td>$select</td>
-<td><input type='text' id='pmt-$i-num' name='pmt[$i][num]' class='$req' value='$paiement_num' /></td>
+<td><input type='text' id='pmt-$i-num' name='pmt[$i][num]' class='$req_num' value='$paiement_num' /></td>
 <td><input type='text' id='pmt-$i-banque' name='pmt[$i][banque]' class='$req' value='$paiement_banque' /></td>
 <td><input type='text' id='pmt-$i-emetteur' name='pmt[$i][emetteur]' class='$req' value='$paiement_emetteur' /></td>
 <td class='amps-pmt-amount'></td>
