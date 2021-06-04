@@ -270,9 +270,10 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		$key = "amapress_AmapressAdhesionPaiement_getAllActiveAndFutureByUserId_{$date}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
-			$period    = AmapressAdhesionPeriod::getCurrent( $date );
-			$period_id = $period ? $period->ID : 0;
-			$res       = array_group_by( array_map(
+			$adh_per_ids = array_map( function ( $p ) {
+				return $p->ID;
+			}, AmapressAdhesionPeriod::getAllCurrent() );
+			$res         = array_group_by( array_map(
 				function ( $p ) {
 					return new AmapressAdhesion_paiement( $p );
 				},
@@ -285,24 +286,21 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 								'relation' => 'OR',
 								array(
 									'key'     => 'amapress_adhesion_paiement_period',
-									'value'   => $period_id,
-									'compare' => '=',
+									'value'   => amapress_prepare_in( $adh_per_ids ),
+									'compare' => 'IN',
+									'type'    => 'NUMERIC',
 								),
 								array(
 									'key'     => 'amapress_adhesion_paiement_date',
 									'compare' => '>=',
-									'value'   => ( $period ? $period->getDate_debut() : Amapress::start_of_day( amapress_time() ) ),
+									'value'   => Amapress::start_of_day( amapress_time() ),
 								),
 							),
 						),
 					)
 				) ),
-				function ( $p ) use ( $period ) {
+				function ( $p ) {
 					/** @var AmapressAdhesion_paiement $p */
-//					if ( $period && ! $p->getPeriodId() ) {
-//						update_post_meta( $p->ID, 'amapress_adhesion_paiement_period', $period->ID );
-//					}
-
 					return $p->getUserId();
 				}
 			);
@@ -317,11 +315,12 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		$key = "amapress_AmapressAdhesionPaiement_getAllActiveByUserId_{$date}_{$adhesion_period_id}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
-			$period    = $adhesion_period_id ?
-				AmapressAdhesionPeriod::getBy( $adhesion_period_id ) :
-				AmapressAdhesionPeriod::getCurrent( $date );
-			$period_id = $period ? $period->ID : 0;
-			$res       = array_group_by( array_map(
+			$period_ids = $adhesion_period_id ?
+				[ $adhesion_period_id ] :
+				array_map( function ( $p ) {
+					return $p->ID;
+				}, AmapressAdhesionPeriod::getAllCurrent( $date ) );
+			$res        = array_group_by( array_map(
 				function ( $p ) {
 					return new AmapressAdhesion_paiement( $p );
 				},
@@ -333,8 +332,9 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 //							'relation' => 'OR',
 							array(
 								'key'     => 'amapress_adhesion_paiement_period',
-								'value'   => $period_id,
-								'compare' => '=',
+								'value'   => amapress_prepare_in( $period_ids ),
+								'compare' => 'IN',
+								'type'    => 'NUMERIC',
 							),
 //							array(
 //								'key'     => 'amapress_adhesion_paiement_period',
@@ -343,12 +343,8 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 						),
 					)
 				) ),
-				function ( $p ) use ( $period ) {
+				function ( $p ) {
 					/** @var AmapressAdhesion_paiement $p */
-//					if ( $period && ! $p->getPeriodId() ) {
-//						update_post_meta( $p->ID, 'amapress_adhesion_paiement_period', $period->ID );
-//					}
-
 					return $p->getUserId();
 				}
 			);

@@ -1135,14 +1135,16 @@ function amapress_filter_posts( WP_Query $query ) {
 					)
 				) );
 			} else if ( $pt == AmapressAdhesion_paiement::POST_TYPE ) {
-				$adh_per    = AmapressAdhesionPeriod::getCurrent();
-				$adh_per_id = $adh_per ? $adh_per->ID : 0;
+				$adh_per_ids = array_map( function ( $p ) {
+					return $p->ID;
+				}, AmapressAdhesionPeriod::getAllCurrent() );
 				amapress_add_meta_query( $query, array(
 					array(
 						array(
 							'key'     => 'amapress_adhesion_paiement_period',
-							'value'   => $adh_per_id,
-							'compare' => '=',
+							'value'   => amapress_prepare_in( $adh_per_ids ),
+							'compare' => 'IN',
+							'type'    => 'NUMERIC',
 						),
 					)
 				) );
@@ -2134,8 +2136,10 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 		if ( $amapress_adhesion == 'nok' ) {
 			$min_date = amapress_time();
 			$max_date = amapress_time();
-			$period   = AmapressAdhesionPeriod::getCurrent();
-			if ( ! $period ) {
+			$periods  = implode( ',', amapress_prepare_in( array_map( function ( $p ) {
+				$p->ID;
+			}, AmapressAdhesionPeriod::getAllCurrent() ) ) );
+			if ( empty( $periods ) ) {
 				$contrats = AmapressContrats::get_active_contrat_instances();
 				foreach ( $contrats as $c ) {
 					if ( $min_date > $c->getDate_debut() ) {
@@ -2156,7 +2160,7 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_date'
                                                    AND amps_pm_contrat.meta_value BETWEEN %d AND %d)", intval( $min_date ), intval( $max_date ) );
 			} else {
-				$where .= $wpdb->prepare( " AND $wpdb->users.ID IN (SELECT amps_pmach.meta_value
+				$where .= " AND $wpdb->users.ID IN (SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta as amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
                                                    INNER JOIN $wpdb->postmeta as amps_pm_status ON amps_pm_status.post_id = amps_pmach.post_id
@@ -2165,13 +2169,15 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
                                                    AND amps_pmach.meta_value IS NOT NULL
                                                    AND ( ( amps_pm_status.meta_key = 'amapress_adhesion_paiement_status' AND amps_pm_status.meta_value = 'not_received' ) )
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_period'
-                                                   AND amps_pm_contrat.meta_value = %d)", $period->ID );
+                                                   AND amps_pm_contrat.meta_value IN ({$periods}))";
 			}
 		} elseif ( $amapress_adhesion == 'ok' ) {
 			$min_date = amapress_time();
 			$max_date = amapress_time();
-			$period   = AmapressAdhesionPeriod::getCurrent();
-			if ( ! $period ) {
+			$periods  = implode( ',', amapress_prepare_in( array_map( function ( $p ) {
+				$p->ID;
+			}, AmapressAdhesionPeriod::getAllCurrent() ) ) );
+			if ( empty( $periods ) ) {
 				$contrats = AmapressContrats::get_active_contrat_instances();
 				foreach ( $contrats as $c ) {
 					if ( $min_date > $c->getDate_debut() ) {
@@ -2192,7 +2198,7 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_date'
                                                    AND amps_pm_contrat.meta_value BETWEEN %d AND %d)", intval( $min_date ), intval( $max_date ) );
 			} else {
-				$where .= $wpdb->prepare( " AND $wpdb->users.ID IN (SELECT amps_pmach.meta_value
+				$where .= " AND $wpdb->users.ID IN (SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta as amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
                                                    INNER JOIN $wpdb->postmeta as amps_pm_status ON amps_pm_status.post_id = amps_pmach.post_id
@@ -2201,13 +2207,15 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
                                                    AND amps_pmach.meta_value IS NOT NULL
                                                    AND ( ( amps_pm_status.meta_key = 'amapress_adhesion_paiement_status' AND amps_pm_status.meta_value != 'not_received' ) )
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_period'
-                                                   AND amps_pm_contrat.meta_value = %d)", $period->ID );
+                                                   AND amps_pm_contrat.meta_value IN ({$periods}))";
 			}
 		} elseif ( $amapress_adhesion == 'all' ) {
 			$min_date = amapress_time();
 			$max_date = amapress_time();
-			$period   = AmapressAdhesionPeriod::getCurrent();
-			if ( ! $period ) {
+			$periods  = implode( ',', amapress_prepare_in( array_map( function ( $p ) {
+				$p->ID;
+			}, AmapressAdhesionPeriod::getAllCurrent() ) ) );
+			if ( empty( $periods ) ) {
 				$contrats = AmapressContrats::get_active_contrat_instances();
 				foreach ( $contrats as $c ) {
 					if ( $min_date > $c->getDate_debut() ) {
@@ -2226,14 +2234,14 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_date'
                                                    AND amps_pm_contrat.meta_value BETWEEN %d AND %d)", intval( $min_date ), intval( $max_date ) );
 			} else {
-				$where .= $wpdb->prepare( " AND $wpdb->users.ID IN (SELECT amps_pmach.meta_value
+				$where .= " AND $wpdb->users.ID IN (SELECT amps_pmach.meta_value
                                                    FROM $wpdb->postmeta as amps_pmach
                                                    INNER JOIN $wpdb->postmeta as amps_pm_contrat ON amps_pm_contrat.post_id = amps_pmach.post_id
                                                    INNER JOIN $wpdb->posts as amps_post_status ON amps_post_status.ID = amps_pmach.post_id
                                                    WHERE amps_post_status.post_status = 'publish' AND amps_pmach.meta_key='amapress_adhesion_paiement_user' 
                                                    AND amps_pmach.meta_value IS NOT NULL
                                                    AND amps_pm_contrat.meta_key = 'amapress_adhesion_paiement_period'
-                                                   AND amps_pm_contrat.meta_value = %d)", $period->ID );
+                                                   AND amps_pm_contrat.meta_value IN ({$periods}))";
 			}
 		} elseif ( $amapress_adhesion == 'ok_co' ) {
 			$all_user_ids     = get_users(

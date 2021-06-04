@@ -86,6 +86,13 @@ function amapress_register_entities_adhesion_period( $entities ) {
 				'group' => __( '1/ Informations générales', 'amapress' ),
 				'desc'  => __( 'Nom de la Période d\'adhésion (Exemple : Saison 15)', 'amapress' ),
 			),
+			'categ'            => array(
+				'name'           => __( 'Catégorie', 'amapress' ),
+				'type'           => 'text',
+				'col_def_hidden' => true,
+				'group'          => __( '1/ Informations générales', 'amapress' ),
+				'desc'           => __( 'Catégorie d\'adhésion (par exemple pour faire des adhésions de durée variables)', 'amapress' ),
+			),
 			'hla_form_url'     => array(
 				'name'  => __( 'Formulaire d\'adhésion HelloAsso', 'amapress' ),
 				'type'  => 'text',

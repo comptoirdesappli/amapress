@@ -51,6 +51,10 @@ class AmapressAdhesionPeriod extends TitanEntity {
 		return wp_unslash( $this->getCustom( 'amapress_adhesion_period_name' ) );
 	}
 
+	public function getCategory() {
+		return wp_unslash( $this->getCustom( 'amapress_adhesion_period_categ' ) );
+	}
+
 	public function getOnlineDescription() {
 		return wp_unslash( $this->getCustom( 'amapress_adhesion_period_online_desc' ) );
 	}
@@ -143,10 +147,10 @@ class AmapressAdhesionPeriod extends TitanEntity {
 	}
 
 	/**
-	 * @return AmapressAdhesionPeriod
+	 * @return AmapressAdhesionPeriod[]
 	 */
-	public static function getCurrent( $date = null ) {
-		$key = "amapress_AmapressAdhesionPeriod_getCurrent_{$date}";
+	public static function getAllCurrent( $date = null, $category = null ) {
+		$key = "amapress_AmapressAdhesionPeriod_getAllCurrent_{$date}_{$category}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			if ( $date == null ) {
@@ -193,12 +197,27 @@ class AmapressAdhesionPeriod extends TitanEntity {
 				/** @var AmapressAdhesionPeriod $pb */
 				return $pa->getDate_debut() < $pb->getDate_debut() ? - 1 : 1;
 			} );
-			if ( count( $res ) > 0 ) {
-				$res = array_shift( $res );
-			} else {
-				$res = null;
+			if ( null == $category ) {
+				$res = array_filter( $res, function ( $p ) use ( $category ) {
+					/** @var AmapressAdhesionPeriod $p */
+					return strcasecmp( $category, $p->getCategory() ) == 0;
+				} );
 			}
 			wp_cache_set( $key, $res );
+		}
+
+		return $res;
+	}
+
+	/**
+	 * @return AmapressAdhesionPeriod
+	 */
+	public static function getCurrent( $date = null, $category = null ) {
+		$res = self::getAllCurrent( $date, $category );
+		if ( count( $res ) > 0 ) {
+			$res = array_values( $res )[0];
+		} else {
+			$res = null;
 		}
 
 		return $res;
