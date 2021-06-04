@@ -384,7 +384,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$is_adhesion_mode    = 'adhesion-en-ligne' == $tag || 'adhesion-en-ligne-connecte' == $tag
 	                       || 'intermittent-adhesion-en-ligne' == $tag || 'intermittent-adhesion-en-ligne-connecte' == $tag;
 
-	$atts = shortcode_atts(
+	$atts                                = shortcode_atts(
 		[
 			'key'                                 => '',
 			'use_steps_nums'                      => 'true',
@@ -407,6 +407,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'allow_inscriptions'                  => 'true',
 			'allow_new_mail'                      => 'true',
 			'allow_inscriptions_without_adhesion' => 'false',
+			'adhesion_category'                   => '',
 			'check_adhesion_received'             => Amapress::getOption( 'check_adh_rcv' ),
 			'check_adhesion_received_or_previous' => Amapress::getOption( 'check_adh_rcv_p' ),
 			'track_no_renews'                     => 'false',
@@ -505,6 +506,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$check_adhesion_received_or_previous = Amapress::toBool( $atts['check_adhesion_received_or_previous'] );
 	$allow_inscriptions_without_adhesion = Amapress::toBool( $atts['allow_inscriptions_without_adhesion'] );
 	$skip_coords                         = Amapress::toBool( $atts['skip_coords'] );
+	$adh_category                        = $atts['adhesion_category'];
 	if ( $check_adhesion_received_or_previous ) {
 		$check_adhesion_received = true;
 	}
@@ -947,7 +949,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 	/** @var AmapressAdhesionPeriod $adh_period */
 	if ( 'email' == $step ) {
-		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
+		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date, $adh_category );
 		if ( $adh_period && ( $is_adhesion_mode || $min_contrat_date <= 0 ) ) {
 			$saison = date_i18n( 'F Y', $adh_period->getDate_debut() ) . ' - ' . date_i18n( 'F Y', $adh_period->getDate_fin() );
 		} else {
@@ -1120,7 +1122,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 
 		if ( ! $admin_mode && $user ) {
-			$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
+			$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date, $adh_category );
 			if ( empty( $adh_period ) ) {
 				ob_clean();
 
@@ -1905,7 +1907,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			return $additional_css . '<p>' . sprintf( __( 'Vous avez déjà une adhésion. Vous pouvez aller vers l\'étape <a href="%s">Contrats</a>', 'amapress' ), $contrats_step_url ) . '</p>';
 		}
 
-		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
+		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date, $adh_category );
 		if ( empty( $adh_period ) ) {
 			ob_clean();
 
@@ -2029,14 +2031,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
 
-		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
+		$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date, $adh_category );
 		if ( empty( $adh_period ) ) {
 			ob_clean();
 
 			return ( sprintf( __( 'Aucune période d\'adhésion n\'est configurée au %s', 'amapress' ), date_i18n( 'd/m/Y', $adh_period_date ) ) );
 		}
 
-		$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period_date, true );
+		$adh_paiement = AmapressAdhesion_paiement::getForUser( $user_id, $adh_period, true );
 
 		delete_user_meta( $user_id, 'amapress_user_no_renew' );
 		delete_user_meta( $user_id, 'amapress_user_no_renew_reason' );
@@ -2254,7 +2256,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$adh_paiement = null;
 		if ( ! $admin_mode ) {
 			if ( $allow_coadherents_adhesion || ! $amapien->isCoAdherent() ) {
-				$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date );
+				$adh_period = AmapressAdhesionPeriod::getCurrent( $adh_period_date, $adh_category );
 				if ( empty( $adh_period ) ) {
 					ob_clean();
 
