@@ -2137,7 +2137,7 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 			$min_date = amapress_time();
 			$max_date = amapress_time();
 			$periods  = implode( ',', amapress_prepare_in( array_map( function ( $p ) {
-				$p->ID;
+				return $p->ID;
 			}, AmapressAdhesionPeriod::getAllCurrent() ) ) );
 			if ( empty( $periods ) ) {
 				$contrats = AmapressContrats::get_active_contrat_instances();
@@ -2175,7 +2175,7 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 			$min_date = amapress_time();
 			$max_date = amapress_time();
 			$periods  = implode( ',', amapress_prepare_in( array_map( function ( $p ) {
-				$p->ID;
+				return $p->ID;
 			}, AmapressAdhesionPeriod::getAllCurrent() ) ) );
 			if ( empty( $periods ) ) {
 				$contrats = AmapressContrats::get_active_contrat_instances();
@@ -2213,7 +2213,7 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 			$min_date = amapress_time();
 			$max_date = amapress_time();
 			$periods  = implode( ',', amapress_prepare_in( array_map( function ( $p ) {
-				$p->ID;
+				return $p->ID;
 			}, AmapressAdhesionPeriod::getAllCurrent() ) ) );
 			if ( empty( $periods ) ) {
 				$contrats = AmapressContrats::get_active_contrat_instances();
