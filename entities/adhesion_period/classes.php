@@ -197,7 +197,7 @@ class AmapressAdhesionPeriod extends TitanEntity {
 				/** @var AmapressAdhesionPeriod $pb */
 				return $pa->getDate_debut() < $pb->getDate_debut() ? - 1 : 1;
 			} );
-			if ( null == $category ) {
+			if ( null != $category ) {
 				$res = array_filter( $res, function ( $p ) use ( $category ) {
 					/** @var AmapressAdhesionPeriod $p */
 					return strcasecmp( $category, $p->getCategory() ) == 0;
