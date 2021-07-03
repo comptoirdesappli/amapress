@@ -120,11 +120,20 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 
 	/** @return AmapressLieu_distribution */
 	public function getLieu() {
-		return $this->getCustomAsEntity( 'amapress_assemblee_generale_lieu', 'AmapressLieu_distribution' );
+		if ( 'lieu' == $this->getType() ) {
+			return $this->getCustomAsEntity( 'amapress_assemblee_generale_lieu', 'AmapressLieu_distribution' );
+		}
+
+		return null;
 	}
 
 	public function getLieuId() {
-		return $this->getCustomAsInt( 'amapress_assemblee_generale_lieu' );
+		$lieu = $this->getLieu();
+		if ( $lieu ) {
+			return $lieu->ID;
+		} else {
+			return $this->ID;
+		}
 	}
 
 	public function getParticipants() {
