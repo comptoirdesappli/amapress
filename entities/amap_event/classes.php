@@ -136,13 +136,17 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 
 	/** @return AmapressLieu_distribution */
 	public function getLieu() {
-		return $this->getCustomAsEntity( 'amapress_amap_event_lieu', 'AmapressLieu_distribution' );
+		if ( 'lieu' == $this->getType() ) {
+			return $this->getCustomAsEntity( 'amapress_amap_event_lieu', 'AmapressLieu_distribution' );
+		}
+
+		return null;
 	}
 
 	public function getLieuId() {
-		$id = $this->getCustomAsInt( 'amapress_amap_event_lieu' );
-		if ( $id > 0 ) {
-			return $id;
+		$lieu = $this->getLieu();
+		if ( $lieu ) {
+			return $lieu->ID;
 		} else {
 			return $this->ID;
 		}
