@@ -13,7 +13,7 @@
  * Requires             PHP: 5.6
  * Requires at least:   4.6
  * Author:              Comptoir des Applis
- * Author URI:          http://amapress.fr/
+ * Author URI:          https://amapress.fr/
  * License:             GNU General Public License v2
  * License URI:         http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:         amapress
@@ -36,7 +36,7 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-Copyright 2015-2017 ShareVB
+Copyright 2015-2021 ShareVB
 */
 
 // Make sure we don't expose any info if called directly
