@@ -18,6 +18,7 @@
  * License URI:         http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:         amapress
  * GitHub Plugin URI:   https://github.com/comptoirdesappli/amapress
+ * Primary Branch:      develop
 */
 
 /*
