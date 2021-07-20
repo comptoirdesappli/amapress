@@ -44,8 +44,8 @@ function amapress_fullcalendar( $atts ) {
                 defaultView: '<?php echo esc_js( $atts['default_view'] ); ?>',
                 locale: '<?php echo esc_js( __( 'fr', 'amapress' ) ); ?>',
                 hiddenDays: <?php echo wp_json_encode(
-					empty( $atts['hidden_days'] ) ? [] : array_map( 'intval', explode( ',', $atts['hidden_days'] ) )
-				); ?>,
+		            empty( $atts['hidden_days'] ) ? [] : array_map( 'intval', explode( ',', $atts['hidden_days'] ) )
+	            ); ?>,
                 timezone: 'local',
                 header: {
                     left: '<?php echo esc_js( $atts['header_left'] ); ?>',
@@ -53,8 +53,8 @@ function amapress_fullcalendar( $atts ) {
                     right: '<?php echo esc_js( $atts['header_right'] ); ?>'
                 },
                 views: {
-                    listDay: {buttonText: '<?php echo esc_js( __( 'Par jours', 'amapress' ) ); ?>'},
-                    listWeek: {buttonText: '<?php echo esc_js( __( 'Par semaines', 'amapress' ) ); ?>'},
+                    listDay: {buttonText: '<?php echo esc_js( __( 'Par jour', 'amapress' ) ); ?>'},
+                    listWeek: {buttonText: '<?php echo esc_js( __( 'Par semaine', 'amapress' ) ); ?>'},
                     listMonth: {buttonText: '<?php echo esc_js( __( 'Par mois', 'amapress' ) ); ?>'}
                 },
                 navLinks: true, // can click day/week names to navigate views
