@@ -2939,7 +2939,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					return Amapress::start_of_day( $real_date ) < Amapress::end_of_day( $contrat->getDate_cloture() );
 				} );
 				$allow_all_dates      = Amapress::toBool( $atts['allow_inscription_all_dates'] );
-				$dates                = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours, $dates_before_cloture, $allow_all_dates ) {
+				if ( $contrat->isPanierVariable() ) {
+					$allow_all_dates = true;
+				}
+				$dates = array_filter( $dates, function ( $d ) use ( $contrat, $before_close_hours, $dates_before_cloture, $allow_all_dates ) {
 					$real_date   = $contrat->getRealDateForDistribution( $d );
 					$close_hours = $contrat->getCloseHours( $before_close_hours );
 
