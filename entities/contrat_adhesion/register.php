@@ -1986,7 +1986,7 @@ function amapress_get_contrat_quantite_datatable(
 						( '-toutes-' .
 						  ( $final_date != $dist_date ? sprintf( __( ' (report du %s)', 'amapress' ),
 							  date_i18n( 'd/m/Y', $final_date ) ) : '' ) );
-					$row['quant']     = $quant ? ( $has_groups ? $quant->getTitleWithoutGroup() : $quant->getTitle() ) :
+					$row['quant']     = $quant ? '<span class="smart-word-break">' . esc_html( $has_groups ? $quant->getTitleWithoutGroup() : $quant->getTitle() ) . '</span>' :
 						( '¤-Toutes-¤' .
 						  ( $final_date != $dist_date ? sprintf( __( ' (report du %s)', 'amapress' ),
 							  date_i18n( 'd/m/Y', $final_date ) ) : '' ) );
