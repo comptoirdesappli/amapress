@@ -594,8 +594,8 @@
 * placeholders .pseudo (adherent/coadherent/producteur) => nickname (pseudo) + .nom_public => displayname (nom à afficher publiquement)
 * placeholders producteur.rue/.code_postal/.ville
 * **Contrats:** 
-    - option gestion du Max adhérents en part de récolte (Facteur quantités, par ex, 0.5, 1)
-    - affichage du nombre de parts dans la vue Gestion Contrats/Edition
+  - option gestion de la limite en part de récolte (Coefficient de part, par ex, 0.5, 1)
+  - affichage du nombre de parts dans la vue Gestion Contrats/Edition
     - placeholders nb_inscriptions, nb_parts, max_parts, dispo_parts
 * **Distributions:** instruction de distribution par production pour ajouter à la liste d'émargement et/ou au rappel aux responsables de distribution (%%paniers_instructions_distribution%%)
 

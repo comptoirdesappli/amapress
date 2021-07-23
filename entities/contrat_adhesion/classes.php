@@ -1056,7 +1056,7 @@ class AmapressAdhesion extends TitanEntity {
 		$ret["quantite_dates"]                   = '(Tableau quantité, contrat simple) Dates de distribution restantes';
 		$ret["quantite_sous_total"]              = '(Tableau quantité, contrat simple) Prix pour la quantité choisie';
 		$ret["quantite_total"]                   = '(Tableau quantité) Prix pour la quuantité choisie x nombre distrib';
-		$ret["quantite_nombre"]                  = '(Tableau quantité, contrat simple) Facteur quantité choisi';
+		$ret["quantite_nombre"]                  = '(Tableau quantité, contrat simple) Quantité choisie';
 		$ret["quantite_prix_unitaire"]           = '(Tableau quantité, contrat simple) Prix à l\'unité';
 		$ret["quantite_description"]             = '(Tableau quantité) Description de la quantité ; pour les paniers modulables : quantités livrées à la date donnée';
 		$ret["quantite_description_no_price"]    = '(Tableau quantité, paniers modulables) : quantités livrées sans les prix à la date donnée';
@@ -1067,7 +1067,7 @@ class AmapressAdhesion extends TitanEntity {
 
 		$ret["quantite_details_date"]          = '(Tableau quantité détails) pour les paniers modulables : Date de distribution';
 		$ret["quantite_details_total"]         = '(Tableau quantité détails) pour les paniers modulables : Prix pour la quuantité choisie';
-		$ret["quantite_details_nombre"]        = '(Tableau quantité détails) pour les paniers modulables : Facteur quantité choisi';
+		$ret["quantite_details_nombre"]        = '(Tableau quantité détails) pour les paniers modulables : Quantité choisie';
 		$ret["quantite_details_prix_unitaire"] = '(Tableau quantité détails) pour les paniers modulables : Prix à l\'unité';
 		$ret["quantite_details_unite"]         = '(Tableau quantité détails) pour les paniers modulables : Unité de la quantité';
 		$ret["quantite_details_groupe"]        = '(Tableau quantité détails) pour les paniers modulables : Groupe de la quantité';
@@ -1080,7 +1080,7 @@ class AmapressAdhesion extends TitanEntity {
 		$ret["groupe_quantite_description_br"]          = '(Tableau groupe quantité) pour les paniers modulables : quantités livrées à la date donnée avec retour à la ligne entre chaque';
 		$ret["groupe_quantite_description_br_no_price"] = '(Tableau groupe quantité) pour les paniers modulables : quantités livrées sans les prix à la date donnée avec retour à la ligne entre chaque';
 		$ret["groupe_total"]                            = '(Tableau groupe quantité) total pour le groupe';
-		$ret["groupe_nombre"]                           = '(Tableau groupe quantité) total facteur quantité choisi';
+		$ret["groupe_nombre"]                           = '(Tableau groupe quantité) total quantité choisie';
 
 		$ret['paiement_type']     = '(Tableau paiement) Type de paiement (Chèque, espèces, virement...)';
 		$ret['paiement_numero']   = '(Tableau paiement) Numéro du chèque';

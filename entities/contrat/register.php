@@ -798,7 +798,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'readonly'    => 'amapress_is_contrat_instance_readonly',
 				'group'       => __( '2/6 - Paramètres généraux', 'amapress' ),
-				'desc'        => __( 'Compter les maximums en part (Fact. Quant/Facteur quantité) en non en inscriptions', 'amapress' ),
+				'desc'        => __( 'Compter les maximums en part (Coefficient de part) en non en inscriptions', 'amapress' ),
 			),
 			'min_engagement'        => array(
 				'name'           => __( 'Engagement minimum', 'amapress' ),
@@ -2467,11 +2467,8 @@ jQuery(function($) {
 			),
 			//que distrib
 			'quantite'         => array(
-				'name' => __( 'Facteur quantité', 'amapress' ),
+				'name' => __( 'Coefficient de part', 'amapress' ),
 				'type' => 'float',
-//                'required' => true,
-				'desc' => __( 'Quantité', 'amapress' ),
-//                'import_key' => true,
 			),
 			//commandes
 			'produits'         => array(
@@ -2495,7 +2492,7 @@ jQuery(function($) {
 				),
 			),
 			'quantite_config'  => array(
-				'name'              => __( 'Config quantités disponibles', 'amapress' ),
+				'name'              => __( 'Choix quantité', 'amapress' ),
 				'type'              => 'text',
 				'csv'               => false,
 				'custom_csv_sample' => function ( $option, $arg ) {
@@ -2513,11 +2510,11 @@ jQuery(function($) {
 				'type' => 'multidate',
 			),
 			'grp_mult'         => array(
-				'name' => __( 'Groupe multiple', 'amapress' ),
+				'name' => __( 'Confection', 'amapress' ),
 				'type' => 'number',
 			),
 			'max_adhs'         => array(
-				'name' => __( 'Max adhérents', 'amapress' ),
+				'name' => __( 'Limite', 'amapress' ),
 				'type' => 'number',
 			),
 		),
