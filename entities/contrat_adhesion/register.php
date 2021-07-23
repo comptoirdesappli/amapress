@@ -370,8 +370,21 @@ function amapress_register_entities_adhesion( $entities ) {
 				'orderby'           => 'post_title',
 				'order'             => 'ASC',
 				'top_filter'        => array(
-					'name'        => 'amapress_contrat_inst',
-					'placeholder' => __( 'Tous les contrats', 'amapress' )
+					'name'           => 'amapress_contrat_inst',
+					'placeholder'    => __( 'Tous les contrats', 'amapress' ),
+					'custom_options' => function ( $args ) {
+						$ret      = [];
+						$contrats = AmapressContrat_instance::getAll();
+						usort( $contrats, function ( $a, $b ) {
+							return strcmp( $a->getTitle(), $b->getTitle() );
+						} );
+						foreach ( $contrats as $contrat ) {
+							$ret[ strval( $contrat->ID ) ] = sprintf( '%s / %s',
+								$contrat->getTitle(), $contrat->getProperty( 'producteur.ferme' ) );
+						}
+
+						return $ret;
+					}
 				),
 				'csv_required'      => true,
 				'searchable'        => true,

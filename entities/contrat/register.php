@@ -567,13 +567,14 @@ function amapress_register_entities_contrat( $entities ) {
 
 			// 1/6 - Ferme
 			'producteur'            => array(
-				'name'        => __( 'Producteur', 'amapress' ),
-				'type'        => 'custom',
-				'csv_import'  => false,
-				'group'       => __( '1/6 - Ferme', 'amapress' ),
-				'show_on'     => 'edit-only',
-				'show_column' => false,
-				'custom'      => function ( $post_id ) {
+				'name'                 => __( 'Producteur', 'amapress' ),
+				'type'                 => 'custom',
+				'csv_import'           => false,
+				'group'                => __( '1/6 - Ferme', 'amapress' ),
+				'show_on'              => 'edit-only',
+				'show_column'          => true,
+				'use_custom_as_column' => true,
+				'custom'               => function ( $post_id ) {
 					$contrat = AmapressContrat_instance::getBy( $post_id );
 					if ( empty( $contrat )
 					     || empty( $contrat->getModel() )
@@ -602,8 +603,21 @@ function amapress_register_entities_contrat( $entities ) {
 				'orderby'           => 'post_title',
 				'order'             => 'ASC',
 				'top_filter'        => array(
-					'name'        => 'amapress_contrat',
-					'placeholder' => __( 'Toutes les productions', 'amapress' ),
+					'name'           => 'amapress_contrat',
+					'placeholder'    => __( 'Toutes les productions', 'amapress' ),
+					'custom_options' => function ( $args ) {
+						$ret      = [];
+						$contrats = AmapressContrats::get_contrats();
+						usort( $contrats, function ( $a, $b ) {
+							return strcmp( $a->getTitle(), $b->getTitle() );
+						} );
+						foreach ( $contrats as $contrat ) {
+							$ret[ strval( $contrat->ID ) ] = sprintf( '%s / %s',
+								$contrat->getTitle(), $contrat->getProducteur()->getNomExploitation() );
+						}
+
+						return $ret;
+					}
 				),
 				'readonly'          => function ( $post_id ) {
 					if ( TitanFrameworkOption::isOnNewScreen() ) {
