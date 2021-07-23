@@ -1961,7 +1961,11 @@ function amapress_get_contrat_quantite_datatable(
 				$qidx = 0;
 				foreach ( $contrat_instance_quantites as $quant ) {
 					$qidx += 1;
-					if ( $contrat_instance->isPanierVariable() && empty( $quant ) && ( ! $show_adherents_count || $show_adherents ) ) {
+					if ( $contrat_instance->isPanierVariable()
+					     && empty( $quant )
+					     && ( empty( $adhesions[0] )
+					          || ( empty( $adhesions[0]->getProducteurMessage() ) && empty( $adhesions[0]->getMessage() ) ) )
+					     && ( ! $show_adherents_count || $show_adherents ) ) {
 						continue;
 					}
 					/** @var AmapressContrat_quantite $quant */
@@ -1991,9 +1995,12 @@ function amapress_get_contrat_quantite_datatable(
 						  ( $final_date != $dist_date ? sprintf( __( ' (report du %s)', 'amapress' ),
 							  date_i18n( 'd/m/Y', $final_date ) ) : '' ) );
 					if ( ! $quant && $show_adherents ) {
-						if ( isset( $adhesions[0] ) ) {
+						if ( ! empty( $adhesions[0] ) ) {
 							if ( ! empty( $adhesions[0]->getProducteurMessage() ) ) {
-								$row['quant'] .= '<br />' . __( 'Message : ', 'amapress' ) . $adhesions[0]->getProducteurMessage();
+								$row['quant'] .= '<br />' . __( 'Message : ', 'amapress' ) . esc_html( $adhesions[0]->getProducteurMessage() );
+							}
+							if ( ! empty( $adhesions[0]->getMessage() ) ) {
+								$row['quant'] .= '<br />' . __( 'Message : ', 'amapress' ) . esc_html( $adhesions[0]->getMessage() );
 							}
 						}
 					}
