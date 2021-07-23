@@ -361,9 +361,9 @@ function amapress_get_validator( $post_type, $field_name, $settings ) {
 				$ret_date = 0;
 				if ( is_float( $value ) || is_int( $value ) || preg_match( '/^\d+$/', strval( $value ) ) ) {
 					$ret_date = PHPExcel_Shared_Date::ExcelToPHP( intval( $value ) );
-				} else if ( preg_match( '/^\d{1,2}\/\d{1,2}\/\d{4}$/', $value ) ) {
+				} else if ( preg_match( '/^\d{1,2}\/\d{1,2}\/\d{2}(?:\d{2})?$/', $value ) ) {
 					$ret_date = DateTime::createFromFormat( TitanFrameworkOptionDate::$default_date_format, $value )->getTimestamp();
-				} else if ( preg_match( '/^\d{1,2}\/\d{1,2}\/\d{4} \d{2}:\d{2}$/', $value ) ) {
+				} else if ( preg_match( '/^\d{1,2}\/\d{1,2}\/\d{2}(?:\d{2})? \d{2}:\d{2}$/', $value ) ) {
 					$ret_date = DateTime::createFromFormat( TitanFrameworkOptionDate::$default_date_format . ' ' . TitanFrameworkOptionDate::$default_time_format, $value )->getTimestamp();
 				} else if ( preg_match( '/^\d{2}:\d{2}$/', $value ) ) {
 					$ret_date = DateTime::createFromFormat( date( TitanFrameworkOptionDate::$default_date_format, 0 ) . ' ' . TitanFrameworkOptionDate::$default_time_format, $value )->getTimestamp();
