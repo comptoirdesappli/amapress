@@ -50,6 +50,7 @@ function amapress_get_custom_content_contrat_default( $content ) {
 	$content .= '</div>';
 	$content .= amapress_get_panel_end();
 
+	$content .= '<div class="contrat-produits-all-contrats">';
 	foreach ( AmapressContrats::get_active_contrat_instances_by_contrat( $contrat_id ) as $c ) {
 		$content .= amapress_get_panel_start( sprintf( __( 'Contrat - %s', 'amapress' ), esc_html( $c->getTitle() ) ) );
 		$content .= wpautop( $c->getContratInfo() );
@@ -85,6 +86,7 @@ function amapress_get_custom_content_contrat_default( $content ) {
 		}
 		$content .= amapress_get_panel_end();
 	}
+	$content .= '</div>';
 
 	return $content;
 }
