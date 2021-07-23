@@ -2855,13 +2855,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							echo '<p>';
 							echo __( 'Vous êtes déjà passé toutes les commandes disponibles.', 'amapress' );
 							if ( ! empty( $mes_contrat_href ) ) {
-								echo '<br />' . __( 'Pour accéder à vos commandes, cliquez ', 'amapress' ) . '<a href=\'$mes_contrat_href\'>' . __( 'ici', 'amapress' ) . '</a>';
+								echo '<br />' . __( 'Pour accéder à vos commandes, cliquez ', 'amapress' ) . "<a href='$mes_contrat_href'>" . __( 'ici', 'amapress' ) . '</a>';
 							}
 							echo '</p>';
 						} else {
 							echo '<p>' . __( 'Vous êtes déjà inscrit à tous les contrats.', 'amapress' );
 							if ( ! empty( $mes_contrat_href ) ) {
-								echo '<br />' . __( 'Pour accéder à vos contrats, cliquez ', 'amapress' ) . '<a href=\'$mes_contrat_href\'>' . __( 'ici', 'amapress' ) . '</a>';
+								echo '<br />' . __( 'Pour accéder à vos contrats, cliquez ', 'amapress' ) . "<a href='$mes_contrat_href'>" . __( 'ici', 'amapress' ) . '</a>';
 							}
 							echo '</p>';
 						}
