@@ -996,6 +996,7 @@ table.docspace_list tr.dir td:first-of-type a {
     -ms-hyphens: auto !important;
     -o-hyphens: auto !important;
     hyphens: auto !important;
+    white-space: normal !important;
 }
 
 

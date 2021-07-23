@@ -314,4 +314,5 @@
     -ms-hyphens: auto !important;
     -o-hyphens: auto !important;
     hyphens: auto !important;
+    white-space: normal !important;
 }
