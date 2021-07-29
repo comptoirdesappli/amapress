@@ -1267,14 +1267,6 @@ function amapress_register_admin_bar_menu_items( $items ) {
 		]
 	);
 
-	$items[] = array(
-		'id'         => 'amapress_forum',
-		'title'      => '<span class="ab-icon amps-forum dashicons-format-chat"></span><span class="ab-label">' . __( 'Forum des Amap', 'amapress' ) . '</span>',
-		'capability' => 'read',
-		'href'       => 'https://forum.amapress.fr',
-		'target'     => '_blank',
-	);
-
 	return $items;
 }
 

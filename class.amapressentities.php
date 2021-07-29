@@ -6304,7 +6304,6 @@ Sélectionnez les Coordinateurs Amap en charge des réponses à l\'aide des menu
 									'bare' => true,
 									'desc' => function ( $o ) {
 										return '<p>' . sprintf( __( 'Consultez la %s', 'amapress' ), Amapress::makeWikiLink( 'https://wiki.amapress.fr/accueil' ) ) . '</p>' .
-										       '<p>' . sprintf( __( 'Accédez au %s si vous ne trouvez pas la réponse à votre question', 'amapress' ), Amapress::makeExternalLink( 'https://forum.amapress.fr', 'Forum des Amap' ) ) . '</p>' .
 										       '<h5>' . __( 'Un espace dédié pour chaque rôle Amap', 'amapress' ) . '</h5><p><ul><li>' .
 										       Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/accueil', __( 'Accueil de l’Administrateur, du Responsable Amap', 'amapress' ) ) .
 										       '</li><li>' .
