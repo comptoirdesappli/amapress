@@ -746,7 +746,9 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 
 			$target_users = amapress_prepare_message_target_to( "user:include=" . implode( ',', $user_ids ),
 				sprintf( __( 'Amapiens de %s', 'amapress' ), $dist->getTitle() ), "distribution" );
-			$subject      = Amapress::getOption( 'distribution-amapiens-indiv-recall-mail-subject' );
+			$subject      = empty( $data ) ?
+				Amapress::getOption( 'distribution-amapiens-indiv-recall-mail-subject-no-delivery' ) :
+				Amapress::getOption( 'distribution-amapiens-indiv-recall-mail-subject' );
 			$content      = Amapress::getOption( 'distribution-amapiens-indiv-recall-mail-content' );
 
 			if ( ! empty( $slot_info ) ) {
@@ -894,6 +896,12 @@ function amapress_distribution_all_amapiens_recall_options() {
 			'sanitize' => false,
 			'type'     => 'text',
 			'default'  => '[Rappel] Infos sur %%post:title%%',
+		),
+		array(
+			'id'       => 'distribution-amapiens-indiv-recall-mail-subject-no-delivery',
+			'name'     => __( 'Objet de l\'email (sans livraison)', 'amapress' ),
+			'sanitize' => false,
+			'type'     => 'text',
 		),
 		array(
 			'id'      => 'distribution-amapiens-indiv-recall-mail-content',
