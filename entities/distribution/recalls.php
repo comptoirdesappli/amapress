@@ -699,6 +699,9 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 
 			$had_deliveries = false;
 			if ( empty( $data ) ) {
+				if ( Amapress::toBool( Amapress::getOption( 'distribution-amapiens-recall-disable-no-delivery' ) ) ) {
+					continue;
+				}
 				$replacements['livraison_details_prix'] = __( 'Vous n\'avez pas de produit à cette livraison', 'amapress' );
 				$replacements['livraison_details']      = __( 'Vous n\'avez pas de produit à cette livraison', 'amapress' );
 				$replacements['contenu_paniers']        = '';
@@ -830,6 +833,13 @@ function amapress_distribution_all_amapiens_recall_options() {
 			'name'    => __( 'Envoi individuel', 'amapress' ),
 			'type'    => 'checkbox',
 			'desc'    => __( 'Envoyer le détails des paniers individuellement à chaque amapien (voir section <a href="#amps_recall_dist_indiv">"Email individuel à chaque amapien"</a>) au lieu du rappel collectif ci-dessous (section <a href="#amps_recall_dist_all_amapiens">"Email collectif à tous les amapiens"</a>)', 'amapress' ),
+			'default' => false,
+		),
+		array(
+			'id'      => 'distribution-amapiens-recall-disable-no-delivery',
+			'name'    => __( 'Ignorer sans livraison', 'amapress' ),
+			'type'    => 'checkbox',
+			'desc'    => __( 'Ne pas envoyer de mail de livraison si pas de livraison', 'amapress' ),
 			'default' => false,
 		),
 		array(
