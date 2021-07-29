@@ -86,7 +86,6 @@ p.help,
 p.description,
 span.description,
 .form-wrap p {
-    float: left;
     margin-bottom: 10px !important;
 }
 
