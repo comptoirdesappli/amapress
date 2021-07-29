@@ -384,7 +384,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$is_adhesion_mode    = 'adhesion-en-ligne' == $tag || 'adhesion-en-ligne-connecte' == $tag
 	                       || 'intermittent-adhesion-en-ligne' == $tag || 'intermittent-adhesion-en-ligne-connecte' == $tag;
 
-	$atts                                = shortcode_atts(
+	$atts = shortcode_atts(
 		[
 			'key'                                 => '',
 			'use_steps_nums'                      => 'true',
@@ -2327,33 +2327,44 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						}
 					}
 				} else {
-					$print_bulletin = '';
-					if ( $adh_paiement->getPeriod()->getWordModelId() ) {
-						$print_bulletin = Amapress::makeButtonLink(
-							add_query_arg( [
-								'inscr_assistant' => 'generate_bulletin',
-								'adh_id'          => $adh_paiement->ID,
-								'inscr_key'       => amapress_sha_secret( $key )
-							] ),
-							$adhesion_print_button_text, true, true, 'btn btn-default'
-						);
-					}
 					if ( $check_adhesion_received_or_previous ) {
 						if ( AmapressAdhesion_paiement::hadUserAnyValidated( $user_id ) ) {
 							$check_adhesion_received = false;
 						}
 					}
 					if ( Amapress::toBool( $atts['show_adhesion_infos'] ) ) {
-						if ( $check_adhesion_received && $adh_paiement->isNotReceived() ) {
-							echo '<p>' . sprintf( __( 'Votre adhésion sera valable du %s au %s', 'amapress' ),
-									date_i18n( 'd/m/Y', $adh_period->getDate_debut() ),
-									date_i18n( 'd/m/Y', $adh_period->getDate_fin() )
-								) . '<br />' . $print_bulletin . '</p>';
-						} else {
-							echo '<p>';
-							echo sprintf( __( 'Votre adhésion est valable jusqu\'au %s', 'amapress' ), date_i18n( 'd/m/Y', $adh_period->getDate_fin() ) );
-							echo '.<br />
+						$all_adh_for_user = AmapressAdhesion_paiement::getAllForUserId( $user_id );
+						/** @var AmapressAdhesion_paiement $adh_cur_pmt */
+						foreach ( $all_adh_for_user as $adh_cur_pmt ) {
+							if ( empty( $adh_cur_pmt ) || Amapress::start_of_day( $adh_cur_pmt->getPeriod()->getDate_fin() ) < Amapress::start_of_day( amapress_time() ) ) {
+								continue;
+							}
+
+							$print_bulletin = '';
+							if ( $adh_cur_pmt->getPeriod()->getWordModelId() ) {
+								$print_bulletin = Amapress::makeButtonLink(
+									add_query_arg( [
+										'inscr_assistant' => 'generate_bulletin',
+										'adh_id'          => $adh_cur_pmt->ID,
+										'inscr_key'       => amapress_sha_secret( $key )
+									] ),
+									$adhesion_print_button_text, true, true, 'btn btn-default'
+								);
+							}
+
+							if ( $check_adhesion_received && $adh_cur_pmt->isNotReceived() ) {
+								echo '<p>' . sprintf( __( 'Vous avez une adhésion qui sera valable du %s au %s', 'amapress' ),
+										date_i18n( 'd/m/Y', $adh_cur_pmt->getPeriod()->getDate_debut() ),
+										date_i18n( 'd/m/Y', $adh_cur_pmt->getPeriod()->getDate_fin() )
+									) . '<br />' . $print_bulletin . '</p>';
+							} else {
+								echo '<p>';
+								echo sprintf( __( 'Vous avez une adhésion qui est valable du %s jusqu\'au %s', 'amapress' ),
+									date_i18n( 'd/m/Y', $adh_cur_pmt->getPeriod()->getDate_debut() ),
+									date_i18n( 'd/m/Y', $adh_cur_pmt->getPeriod()->getDate_fin() ) );
+								echo '.<br />
 ' . $print_bulletin . '</p>';
+							}
 						}
 					}
 				}
