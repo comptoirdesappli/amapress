@@ -3795,6 +3795,34 @@ Montant : %%total%% %%option_paiements%%\n
 										),
 										array(
 											'type' => 'heading',
+											'name' => __( 'Message de non renouvellement à l\'amapien', 'amapress' ),
+										),
+										array(
+											'id'       => 'online_adhesion_no_renew-mail-subject',
+											'name'     => __( 'Objet', 'amapress' ),
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => __( 'Non renouvellement de votre adhésion', 'amapress' ),
+										),
+										array(
+											'id'      => 'online_adhesion_no_renew-mail-content',
+											'name'    => __( 'Contenu', 'amapress' ),
+											'type'    => 'editor',
+											'default' => wpautop( __( "Bonjour,\n\n
+Merci pour votre participation à %%site_name%% et bonne continuation.
+\n\n%%nom_site%%", 'amapress' ) ),
+											'desc'    => function ( $option ) {
+												return Amapress::getPlaceholdersHelpTable(
+													'online_adhesion_no_renew-placeholders', [], null, [
+													'reason' => __( 'Raison du non renouvellement', 'amapress' ),
+												], false );
+											},
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
 											'name' => __( 'Validation de l\'adhésion à l\'Adhérent', 'amapress' ),
 										),
 										array(

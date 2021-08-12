@@ -348,6 +348,7 @@ function amapress_mes_contrats( $atts, $content = null, $tag ) {
 	unset( $atts['allow_remove_coadhs'] );
 	unset( $atts['track_no_renews'] );
 	unset( $atts['track_no_renews_email'] );
+	unset( $atts['send_no_renews_message'] );
 	unset( $atts['notify_email'] );
 	unset( $atts['allow_coadherents_inscription'] );
 	unset( $atts['allow_coadherents_access'] );
@@ -412,6 +413,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'check_adhesion_received_or_previous' => Amapress::getOption( 'check_adh_rcv_p' ),
 			'track_no_renews'                     => 'false',
 			'track_no_renews_email'               => get_option( 'admin_email' ),
+			'send_no_renews_message'              => 'false',
 			'notify_email'                        => '',
 			'max_produit_label_width'             => '10em',
 			'paiements_info_required'             => 'false',
@@ -1086,6 +1088,20 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						sprintf( __( 'Adhésion/Préinscription - Non renouvellement - %s', 'amapress' ), $amapien->getDisplayName() ),
 						amapress_replace_mail_placeholders(
 							wpautop( sprintf( "Bonjour,\n\nL\'amapien %s ne souhaite pas renouveler. Motif:%s\n\n%%%%site_name%%%%", $edit_link, $reason ) ), $amapien ),
+						'', [], $notify_email
+					);
+				}
+
+				if ( Amapress::toBool( $atts['send_no_renews_message'] ) ) {
+					$amapien = AmapressUser::getBy( $user );
+					$content = amapress_replace_mail_placeholders(
+						Amapress::getOption( 'online_adhesion_no_renew-mail-content' ), $amapien );
+					$content = str_replace( '%%reason%%', $reason, $content );
+					amapress_wp_mail(
+						implode( ',', $user->getAllEmails() ),
+						amapress_replace_mail_placeholders(
+							Amapress::getOption( 'online_adhesion_no_renew-mail-subject' ), $amapien ),
+						$content,
 						'', [], $notify_email
 					);
 				}
