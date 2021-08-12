@@ -3264,7 +3264,7 @@ class AmapressContrat_quantite extends TitanEntity {
 		$factor,
 		$as_html = false
 	) {
-		if ( $factor != 1 ) {
+		if ( $factor != 1 || defined( 'AMAPRESS_SHOW_ONE_UNITS' ) ) {
 			$title     = $this->getTitle();
 			$grp_name  = '';
 			$has_group = preg_match( '/^\s*(\[[^\]]+\])(.+)/', $title, $matches );

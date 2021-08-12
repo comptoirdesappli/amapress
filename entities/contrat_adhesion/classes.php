@@ -43,7 +43,7 @@ class AmapressAdhesionQuantite {
 		//if ( $quant->getContrat_instance() && $quant->getContrat_instance()->isQuantiteVariable() ) {
 		if ( abs( $this->getFactor() ) < 0.001 ) {
 			return __( 'Aucun', 'amapress' );
-		} else if ( $this->getFactor() != 1 ) {
+		} else if ( $this->getFactor() != 1 || defined( 'AMAPRESS_SHOW_ONE_UNITS' ) ) {
 			return $this->getFactor() . ' x ' . $quant->getCode();
 		} else {
 			return $quant->getCode();
