@@ -223,7 +223,7 @@ function amapress_get_paniers_intermittents_table(
 			}
 
 			/** @var AmapressIntermittence_panier $a */
-			return "{$a->getDate()}-{$a->getAdherent()->ID}-{$a->getRealLieu()->ID}";
+			return "{$a->getDate()}-{$a->getAdherent()->ID}-{$a->getRealLieu()->ID}-{$a->getStatus()}";
 		} );
 	$data                   = array();
 	foreach ( $ahs_by_date as $adh ) {
