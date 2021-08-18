@@ -1218,7 +1218,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 //				}
 //			}
 			$amapien = AmapressUser::getBy( $user );
-			if ( ! $user->isPrincipalAdherent() ) {
+			if ( ! $amapien->isPrincipalAdherent() ) {
 				$max_cofoyers = 0;
 				$max_coadhs   = 0;
 			}
