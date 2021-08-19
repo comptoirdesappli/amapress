@@ -1098,7 +1098,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						Amapress::getOption( 'online_adhesion_no_renew-mail-content' ), $amapien );
 					$content = str_replace( '%%reason%%', $reason, $content );
 					amapress_wp_mail(
-						implode( ',', $user->getAllEmails() ),
+						implode( ',', $amapien->getAllEmails() ),
 						amapress_replace_mail_placeholders(
 							Amapress::getOption( 'online_adhesion_no_renew-mail-subject' ), $amapien ),
 						$content,
@@ -4492,7 +4492,7 @@ $paiements_dates
 					$quantite_factors[ strval( $q_id ) ] = $f;
 				}
 				if ( ! $any_full ) {
-					$remaining_quants = $contrat->getRemainingQuantiteForMax( $q_id, $lieu_id, $q_dt );
+					$remaining_quants = $contrat->getRemainingQuantiteForMax( $q_id, $lieu_id, null );
 					if ( $remaining_quants >= 0 ) {
 						if ( $f > $remaining_quants ) {
 							$any_full = true;
