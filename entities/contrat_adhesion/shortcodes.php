@@ -4753,7 +4753,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="contrats" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Poursuivre', 'amapress' ) . '" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Ajouter de nouveaux contrats', 'amapress' ) . '" />
 </form></p>';
 			} else {
 				if ( ! empty( $user_subscribable_contrats ) ) {
@@ -4778,7 +4778,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="contrats" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Poursuivre', 'amapress' ) . '" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Ajouter de nouveaux contrats', 'amapress' ) . '" />
 </form></p>';
 				} else {
 					if ( ! $use_contrat_term ) {
@@ -4792,7 +4792,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="contrats" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Poursuivre', 'amapress' ) . '" />
+<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Ajouter de nouveaux contrats', 'amapress' ) . '" />
 </form></p>';
 				}
 			}
