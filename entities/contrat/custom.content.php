@@ -52,10 +52,14 @@ function amapress_get_custom_content_contrat_default( $content ) {
 
 	$content .= '<div class="contrat-produits-all-contrats">';
 	foreach ( AmapressContrats::get_active_contrat_instances_by_contrat( $contrat_id ) as $c ) {
-		$content .= amapress_get_panel_start( sprintf( __( 'Contrat - %s', 'amapress' ), esc_html( $c->getTitle() ) ) );
-		$content .= wpautop( $c->getContratInfo() );
+		$is_subscribable = $c->getDate_ouverture() < amapress_time() && amapress_time() < $c->getDate_cloture();
+		$content         .= amapress_get_panel_start(
+			sprintf( __( 'Contrat - %s', 'amapress' ), esc_html( $c->getTitle() ) ),
+			null, 'amap-panel-default amap-contrat-' . ( $is_subscribable ? 'subscribable' : 'not-subscribable' )
+		);
+		$content         .= wpautop( $c->getContratInfo() );
 
-		if ( $c->getDate_ouverture() < amapress_time() && amapress_time() < $c->getDate_cloture() ) {
+		if ( $is_subscribable ) {
 			$mes_contrats_href = Amapress::get_mes_contrats_page_href();
 			if ( amapress_is_user_logged_in() ) {
 				$inscription_contrats_link = Amapress::get_logged_inscription_page_href();
