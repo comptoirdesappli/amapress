@@ -393,6 +393,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'filter_multi_contrat'                => 'false',
 			'admin_mode'                          => 'false',
 			'agreement'                           => 'true',
+			'agreement_new_only'                  => 'false',
 			'allow_classic_adhesion'              => 'true',
 			'mob_phone_required'                  => Amapress::getOption( 'mob_phone_req' ) ? 'true' : 'false',
 			'address_required'                    => 'false',
@@ -490,6 +491,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 	$allow_classic_adhesion              = Amapress::toBool( $atts['allow_classic_adhesion'] );
 	$activate_adhesion                   = Amapress::toBool( $atts['adhesion'] );
 	$activate_agreement                  = Amapress::toBool( $atts['agreement'] );
+	$activate_agreement_if_noadh         = Amapress::toBool( $atts['agreement_new_only'] );
 	$allow_remove_coadhs                 = Amapress::toBool( $atts['allow_remove_coadhs'] );
 	$allow_remove_cofoys                 = Amapress::toBool( $atts['allow_remove_cofoyers'] );
 	$allow_coadherents_inscription       = Amapress::toBool( $atts['allow_coadherents_inscription'] );
@@ -1324,6 +1326,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                 <input type="hidden" name="coords_next_step" value="contrats"/>
 			<?php } elseif ( $activate_agreement ) { ?>
                 <input type="hidden" name="coords_next_step" value="agreement"/>
+			<?php } elseif ( $activate_agreement_if_noadh && ! empty( $adh_pmt ) ) { ?>
+                <input type="hidden" name="coords_next_step"
+                       value="<?php echo( $for_logged ? 'coords_logged' : 'coords' ); ?>"/>
 			<?php } elseif ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
 			<?php } ?>
