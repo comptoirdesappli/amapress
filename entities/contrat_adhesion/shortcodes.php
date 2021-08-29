@@ -2951,7 +2951,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		?>
 		<?php echo wp_unslash( amapress_replace_mail_placeholders(
 			Amapress::getOption( 'online_subscription_date_lieu_step_message' ),
-			null ) ); ?>
+			null, $contrat ) ); ?>
         <form action="<?php echo $next_step_url; ?>" method="post" class="amapress_validate">
 			<?php
 			$before_close_hours = 0;
@@ -3490,7 +3490,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		echo wp_unslash( amapress_replace_mail_placeholders(
 			Amapress::getOption( 'online_subscription_panier_step_message' ),
-			null ) );
+			null, $contrat ) );
 
 		$min_total = $contrat->getMinEngagement();
 
@@ -3815,7 +3815,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		echo '<h4>' . amapress_step_text( $step, $steps_nums, $steps_count ) . $step_name . '</h4>';
 		echo wp_unslash( amapress_replace_mail_placeholders(
 			Amapress::getOption( 'online_subscription_pay_step_message' ),
-			$amapien ) );
+			$amapien, $contrat ) );
 
 		$dates = $contrat->getRemainingDates( $start_date );
 

@@ -2884,7 +2884,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'name' => __( 'Message supplémentaire', 'amapress' ),
 											'type' => 'editor',
 											'desc' => function ( $option ) {
-												return Amapress::getPlaceholdersHelpTable( 'online_subscription_date_lieu_step_message-placeholders', [], null, [], false );
+												return AmapressContrat_instance::getPlaceholdersHelp();
 											},
 										),
 										array(
@@ -2905,7 +2905,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'name' => __( 'Message supplémentaire', 'amapress' ),
 											'type' => 'editor',
 											'desc' => function ( $option ) {
-												return Amapress::getPlaceholdersHelpTable( 'online_subscription_panier_step_message-placeholders', [], null, [], false );
+												return AmapressContrat_instance::getPlaceholdersHelp();
 											},
 										),
 										array(
@@ -2926,7 +2926,7 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 											'name' => __( 'Message supplémentaire', 'amapress' ),
 											'type' => 'editor',
 											'desc' => function ( $option ) {
-												return Amapress::getPlaceholdersHelpTable( 'online_subscription_pay_step_message-placeholders', [], 'user:de l\'amapien', [], false );
+												return AmapressContrat_instance::getPlaceholdersHelp();
 											},
 										),
 										array(
