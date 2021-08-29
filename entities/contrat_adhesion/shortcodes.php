@@ -3486,7 +3486,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$rattrapage = $contrat->getFormattedRattrapages( $dates );
 
 		$step_name = wp_unslash( Amapress::getOption( 'online_subscription_panier_step_name' ) );
-		echo '<h4>' . amapress_step_text( $step, $steps_nums, $steps_count ) . $step_name . ' - ' . esc_html( $contrat->getTitle() ) . '</h4>';
+		echo '<h4>' . amapress_step_text( $step, $steps_nums, $steps_count ) . $step_name
+		     . ' - ' . esc_html( $contrat->getTitle() )
+		     . ' (' . $contrat->getModel()->linkToPermalinkBlank( __( 'plus d\'infos', 'amapress' ) ) . ')</h4>';
 
 		echo wp_unslash( amapress_replace_mail_placeholders(
 			Amapress::getOption( 'online_subscription_panier_step_message' ),
