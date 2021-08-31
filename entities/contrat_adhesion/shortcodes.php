@@ -3730,12 +3730,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$price              = $dates_factors * $quantite->getPrix_unitaire();
 				$price_compute_text = esc_html( $dates_factors ) . ' x ' . esc_html( $quantite->getPrix_unitaireDisplay() );
 				if ( $contrat->isQuantiteVariable() ) {
+					$options          = $quantite->getQuantiteOptions( $contrat->getRemainingQuantiteForMax( $quantite->ID, $lieu_id ) );
 					$quant_var_editor .= "<select  style='max-width: none;min-width: 0' id='$id_factor' class='quant-factor' data-quant-id='$id_quant' data-price-id='$id_price' data-price-unit='$price' name='factors[{$quantite->ID}]' style='display: inline-block'>";
 					$quant_var_editor .= tf_parse_select_options(
-						$quantite->getQuantiteOptions( $contrat->getRemainingQuantiteForMax( $quantite->ID, $lieu_id ) ),
+						$options,
 						$edit_inscription
 							? $edit_inscription->getContrat_quantite_factor( $quantite->ID )
-							: null,
+							: ( isset( array_keys( $options )[1] ) ? $options[ array_keys( $options )[1] ] : null ),
 						false );
 					$quant_var_editor .= '</select>';
 				}
@@ -4849,17 +4850,18 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
         //<![CDATA[
         jQuery(function ($) {
             $('#quant-commandes').on('click', 'td', function () {
-                jQuery(this).find(".quant-var, .quant-var-recopier").css('visibility', 'visible');
+                jQuery(this).find(".quant-var, .quant-var-recopier")
+                    .css('visibility', 'visible').prop('selectedIndex', 1);
             });
             $(".amapress_validate").validate({
-                    onkeyup: false,
-                    errorPlacement: function (error, element) {
-                        var $commandes = element.closest('.dataTables_wrapper');
-                        if ($commandes.length) {
-                            error.insertAfter($commandes);
-                        } else {
-                            if ("radio" === element.attr("type") || "checkbox" === element.attr("type")) {
-                                error.insertBefore(element);
+                onkeyup: false,
+                errorPlacement: function (error, element) {
+                    var $commandes = element.closest('.dataTables_wrapper');
+                    if ($commandes.length) {
+                        error.insertAfter($commandes);
+                    } else {
+                        if ("radio" === element.attr("type") || "checkbox" === element.attr("type")) {
+                            error.insertBefore(element);
                             } else {
                                 error.insertAfter(element);
                             }
@@ -4902,9 +4904,9 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
                     var $this = jQuery(this);
                     var don = parseFloat($this.val()) * parseFloat($this.data('dists'));
                     jQuery('#don-dist-total').text(don.toFixed(2));
-			        <?php if ($contrat && ! $contrat->getDon_Distribution_Apart()) { ?>
+					<?php if ($contrat && ! $contrat->getDon_Distribution_Apart()) { ?>
                     total += don;
-			        <?php } ?>
+					<?php } ?>
                 });
                 jQuery('#total').text(total.toFixed(2));
             }

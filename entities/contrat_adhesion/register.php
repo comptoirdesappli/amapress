@@ -965,7 +965,7 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 					);
 					$options = $quant->getQuantiteOptions();
 					foreach ( $contrat_instance->getListe_dates() as $date ) {
-						$val         = isset( $paniers_variables[ $date ][ $quant->ID ] ) ? $paniers_variables[ $date ][ $quant->ID ] : '';
+						$val         = isset( $paniers_variables[ $date ][ $quant->ID ] ) ? $paniers_variables[ $date ][ $quant->ID ] : null;
 						$is_empty    = empty( $val );
 						$empty_class = $is_empty ? 'contrat_panier_vars-empty' : 'contrat_panier_vars-with-value';
 						$ed          = '';
@@ -1036,9 +1036,11 @@ function amapress_adhesion_contrat_quantite_editor( $post_id ) {
 					$hidden           = ! in_array( $quantite->ID, $adhesion_quantite_ids ) ? ';display:none' : '';
 					$quant_var_editor .= "<select id='$id_factor' name='amapress_adhesion_contrat_quants_factors[{$quantite->ID}]' style='display: inline-block;min-width: auto$hidden'>";
 
+					$options          = $quantite->getQuantiteOptions();
 					$quant_var_editor .= tf_parse_select_options(
-						$quantite->getQuantiteOptions(),
-						! empty( $adhesion_quantites[ $quantite->ID ] ) ? $adhesion_quantites[ $quantite->ID ]->getFactor() : null,
+						$options,
+						! empty( $adhesion_quantites[ $quantite->ID ] ) ? $adhesion_quantites[ $quantite->ID ]->getFactor()
+							: ( isset( array_keys( $options )[1] ) ? $options[ array_keys( $options )[1] ] : null ),
 						false );
 					$quant_var_editor .= '</select>';
 				}
