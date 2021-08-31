@@ -1968,6 +1968,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			}
 
 			if ( ! empty( $user_ids ) || ! empty( $principal_user_ids ) ) {
+				$user_ids    = array_filter( $user_ids, function ( $id ) use ( $principal_user_ids ) {
+					return ! in_array( $id, $principal_user_ids );
+				} );
 				$user_id_sql = amapress_prepare_in_sql( $user_ids );
 				if ( ! empty( $user_id_sql ) ) {
 					$where .= " AND $wpdb->users.ID NOT IN ($user_id_sql)";
