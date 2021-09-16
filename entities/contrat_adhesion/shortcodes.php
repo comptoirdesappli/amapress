@@ -4850,8 +4850,14 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
         //<![CDATA[
         jQuery(function ($) {
             $('#quant-commandes').on('click', 'td', function () {
+                var quant_var = jQuery(this).find(".quant-var");
+                if ('visible' !== quant_var.css("visibility")) {
+                    quant_var.prop('selectedIndex', 1).trigger('change');
+                    computeTotal();
+                }
+
                 jQuery(this).find(".quant-var, .quant-var-recopier")
-                    .css('visibility', 'visible').prop('selectedIndex', 1);
+                    .css('visibility', 'visible');
             });
             $(".amapress_validate").validate({
                 onkeyup: false,
