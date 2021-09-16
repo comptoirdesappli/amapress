@@ -38,12 +38,15 @@ class AmapressAdhesionQuantite {
 	/**
 	 * @return string
 	 */
-	public function getCode() {
+	public function getCode( $show_one_unit = null ) {
 		$quant = $this->getContratQuantite();
+		if ( null == $show_one_unit ) {
+			$show_one_unit = $quant->getContrat_instance()->isQuantiteVariable();
+		}
 		//if ( $quant->getContrat_instance() && $quant->getContrat_instance()->isQuantiteVariable() ) {
 		if ( abs( $this->getFactor() ) < 0.001 ) {
 			return __( 'Aucun', 'amapress' );
-		} else if ( $this->getFactor() != 1 || defined( 'AMAPRESS_SHOW_ONE_UNITS' ) ) {
+		} else if ( $this->getFactor() != 1 || $show_one_unit || defined( 'AMAPRESS_SHOW_ONE_UNITS' ) ) {
 			return $this->getFactor() . ' x ' . $quant->getCode();
 		} else {
 			return $quant->getCode();
@@ -1785,14 +1788,14 @@ class AmapressAdhesion extends TitanEntity {
 		return $this->getContrat_quantites_AsString( $date, false, $separator, true );
 	}
 
-	public function getContrat_quantites_Codes_AsString( $date = null ) {
+	public function getContrat_quantites_Codes_AsString( $date = null, $show_one_unit = null ) {
 		if ( $this->getContrat_instance()->isPanierVariable() ) {
 			return __( 'Var.', 'amapress' );
 		}
 
-		$codes = array_map( function ( $vv ) {
+		$codes = array_map( function ( $vv ) use ( $show_one_unit ) {
 			/** @var AmapressAdhesionQuantite $vv */
-			return $vv->getCode();
+			return $vv->getCode( $show_one_unit );
 		}, $this->getContrat_quantites( $date ) );
 
 		return implode( ',', $codes );

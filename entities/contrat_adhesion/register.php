@@ -3036,7 +3036,7 @@ function amapress_get_paiement_table_by_dates(
 				'banque'         => $p->getBanque(),
 				'last_name'      => $p->getAdhesion()->getAdherent()->getUser()->last_name,
 				'lieu'           => $p->getAdhesion()->getLieu()->getShortName(),
-				'quantite'       => $p->getAdhesion()->getContrat_quantites_Codes_AsString(),
+				'quantite'       => $p->getAdhesion()->getContrat_quantites_Codes_AsString( null, false ),
 				'label'          => implode( ', ', $all_emetteurs ),
 				'href'           => $p->getAdhesion()->getAdminEditLink(),
 				'date_debut'     => $date_debut,

@@ -1180,7 +1180,7 @@ function getMultiListeEmargement( $start_date, $end_date, $lieu ) {
 			foreach ( $dists as $dist ) {
 				$quant = '';
 				if ( in_array( $dist->getDate(), $adhesion->getContrat_instance()->getListe_dates() ) ) {
-					$quant = $adhesion->getContrat_quantites_Codes_AsString( $dist->getDate() );
+					$quant = $adhesion->getContrat_quantites_Codes_AsString( $dist->getDate(), false );
 					if ( $adhesion->getContrat_instance()->isPanierVariable() && ! empty( $quant ) ) {
 						$quant = 'Var.';
 					}

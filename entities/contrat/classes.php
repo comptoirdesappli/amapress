@@ -3262,9 +3262,13 @@ class AmapressContrat_quantite extends TitanEntity {
 	public
 	function getFormattedTitle(
 		$factor,
-		$as_html = false
+		$as_html = false,
+		$show_one_unit = null
 	) {
-		if ( $factor != 1 || defined( 'AMAPRESS_SHOW_ONE_UNITS' ) ) {
+		if ( null == $show_one_unit ) {
+			$show_one_unit = $this->getContrat_instance()->isQuantiteVariable();
+		}
+		if ( $factor != 1 || $show_one_unit || defined( 'AMAPRESS_SHOW_ONE_UNITS' ) ) {
 			$title     = $this->getTitle();
 			$grp_name  = '';
 			$has_group = preg_match( '/^\s*(\[[^\]]+\])(.+)/', $title, $matches );
