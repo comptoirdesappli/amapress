@@ -298,7 +298,7 @@ class AmapressSMTPMailingQueueOriginal {
 
 				$phpmailer->AddAddress( $recipient, $recipient_name );
 			} catch ( Exception $e ) {
-				$errors[] = '<strong>' . htmlspecialchars( $e->getMessage() ) . "</strong><br />\n";
+				//$errors[] = '<strong>' . htmlspecialchars( $e->getMessage() ) . "</strong><br />\n";
 				continue;
 			}
 		}
@@ -336,7 +336,7 @@ class AmapressSMTPMailingQueueOriginal {
 					}
 					$phpmailer->AddCc( $recipient, $recipient_name );
 				} catch ( Exception $e ) {
-					$errors[] = '<strong>' . htmlspecialchars( $e->getMessage() ) . "</strong><br />\n";
+					//$errors[] = '<strong>' . htmlspecialchars( $e->getMessage() ) . "</strong><br />\n";
 					continue;
 				}
 			}
@@ -355,7 +355,7 @@ class AmapressSMTPMailingQueueOriginal {
 					}
 					$phpmailer->AddBcc( $recipient, $recipient_name );
 				} catch ( Exception $e ) {
-					$errors[] = '<strong>' . htmlspecialchars( $e->getMessage() ) . "</strong><br />\n";
+					//$errors[] = '<strong>' . htmlspecialchars( $e->getMessage() ) . "</strong><br />\n";
 					continue;
 				}
 			}
