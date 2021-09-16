@@ -1999,10 +1999,10 @@ function amapress_get_contrat_quantite_datatable(
 					if ( ! $quant && $show_adherents ) {
 						if ( ! empty( $adhesions[0] ) ) {
 							if ( ! empty( $adhesions[0]->getProducteurMessage() ) ) {
-								$row['quant'] .= '<br />' . __( 'Message : ', 'amapress' ) . esc_html( $adhesions[0]->getProducteurMessage() );
+								$row['quant'] .= '<br /><span class="smart-word-break">' . __( 'Message : ', 'amapress' ) . esc_html( $adhesions[0]->getProducteurMessage() ) . '</span>';
 							}
 							if ( ! empty( $adhesions[0]->getMessage() ) ) {
-								$row['quant'] .= '<br />' . __( 'Message : ', 'amapress' ) . esc_html( $adhesions[0]->getMessage() );
+								$row['quant'] .= '<br /><span class="smart-word-break">' . __( 'Message : ', 'amapress' ) . esc_html( $adhesions[0]->getMessage() ) . '</span>';
 							}
 						}
 					}
