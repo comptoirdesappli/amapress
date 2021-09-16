@@ -922,12 +922,12 @@ function amapress_process_helloasso_order( $order ) {
 		$adh_period = AmapressAdhesionPeriod::getCurrent( $order_date );
 	}
 	if ( $adh_period ) {
-		$default_email        = empty( $payer ) ? '' : $payer->email;
-		$default_firstName    = empty( $payer ) ? '' : $payer->firstName;
-		$default_lastName     = empty( $payer ) ? '' : $payer->lastName;
-		$default_address      = empty( $payer ) ? '' : $payer->address;
-		$default_zipCode      = empty( $payer ) ? '' : $payer->zipCode;
-		$default_city         = empty( $payer ) ? '' : $payer->city;
+		$default_email        = empty( $payer ) || ! isset( $payer->email ) ? '' : $payer->email;
+		$default_firstName    = empty( $payer ) || ! isset( $payer->firstName ) ? '' : $payer->firstName;
+		$default_lastName     = empty( $payer ) || ! isset( $payer->lastName ) ? '' : $payer->lastName;
+		$default_address      = empty( $payer ) || ! isset( $payer->address ) ? '' : $payer->address;
+		$default_zipCode      = empty( $payer ) || ! isset( $payer->zipCode ) ? '' : $payer->zipCode;
+		$default_city         = empty( $payer ) || ! isset( $payer->city ) ? '' : $payer->city;
 		$default_phone        = '';
 		$multiple_used_emails = [];
 		$existing_adhesions   = [];
