@@ -1,5 +1,6 @@
 <?php
 
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -39,13 +40,11 @@ add_action(
 		$scripts->caching_routes()->register(
 			'^(' . implode( '|', $theme_directory_uri_patterns ) . ').*',
 			array(
-				'strategy'  => \WP_Service_Worker_Caching_Routes::STRATEGY_NETWORK_FIRST,
-				'cacheName' => 'theme-assets',
-				'plugins'   => array(
-					'expiration' => array(
-						'maxEntries' => 25,
-						// Limit the cached entries to the number of files loaded over network, e.g. JS, CSS, and PNG.
-					),
+				'strategy'   => \WP_Service_Worker_Caching_Routes::STRATEGY_NETWORK_FIRST,
+				'cacheName'  => 'theme-assets',
+				'expiration' => array(
+					'maxEntries' => 25,
+					// Limit the cached entries to the number of files loaded over network, e.g. JS, CSS, and PNG.
 				),
 			)
 		);
