@@ -263,18 +263,18 @@ function amapress_send_message(
 //				break;
 			case "bcc":
 			default:
-			$to = "\"{$opt['target_name']}\" <$from_email>";
-			if ( $current_user ) {
-				$emails[] = $current_user->getEmail();
-			}
-			$headers[] = "From: \"$from_dn\" <$from_email>";
-			if ( empty( $reply_to_headers ) ) {
-				$headers[] = "Reply-To: \"$from_dn\" <$reply_to_mail>";
-			}
-			$headers[] = 'Bcc: ' . implode( ',', $emails );
-			$subject   = amapress_replace_mail_placeholders( $subject, $current_user, $entity );
-			$content   = amapress_replace_mail_placeholders( $content, $current_user, $entity );
-			amapress_wp_mail( $to, $subject, $content, $headers, $attachments, $cc, $bcc );
+				$to = "\"{$opt['target_name']}\" <$from_email>";
+				if ( $current_user ) {
+					$emails[] = $current_user->getEmail();
+				}
+				$headers[] = "From: \"$from_dn\" <$from_email>";
+				if ( empty( $reply_to_headers ) ) {
+					$headers[] = "Reply-To: \"$from_dn\" <$reply_to_mail>";
+				}
+				$headers[] = 'Bcc: ' . implode( ',', $emails );
+				$subject   = amapress_replace_mail_placeholders( $subject, $current_user, $entity );
+				$content   = amapress_replace_mail_placeholders( $content, $current_user, $entity );
+				amapress_wp_mail( $to, $subject, $content, $headers, $attachments, $cc, $bcc );
 		}
 
 		if ( isset( $opt['send_from_me'] ) && $opt['send_from_me'] ) {
@@ -581,7 +581,12 @@ function amapress_message_get_targets() {
 	$res[ __( 'Amapiens', 'amapress' ) ] = $ret;
 
 	$ret = array();
-	amapress_add_message_target( $ret, "user:amapress_adhesion=nok", __( "Les amapiens avec adhésion AMAP non réglée", 'amapress' ), 'adh-nok' );
+	amapress_add_message_target( $ret, "user:amapress_adhesion=nok", __( "Les amapiens principaux avec adhésion AMAP non réglée", 'amapress' ), 'adh-nok' );
+	amapress_add_message_target( $ret, "user:amapress_adhesion=all", __( "Les amapiens principaux avec adhésion AMAP (réglée ou non réglée)", 'amapress' ), 'adh-all' );
+	amapress_add_message_target( $ret, "user:amapress_adhesion=all_co", __( "Les amapiens et coadhérents avec adhésion AMAP (réglée ou non réglée)", 'amapress' ), 'adh-all-co' );
+	foreach ( AmapressAdhesionPeriod::getAllCurrent() as $period ) {
+		amapress_add_message_target( $ret, "user:amapress_adhesion={$period->ID}", sprintf( __( "Les amapiens principaux - %s", 'amapress' ), $period->getTitle() ), 'adh-per-' . $period->ID );
+	}
 	$res[ __( 'Trésorerie', 'amapress' ) ] = $ret;
 
 	Amapress::setFilterForReferent( true );
