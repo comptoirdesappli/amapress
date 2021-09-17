@@ -598,6 +598,7 @@ function amapress_register_shortcodes() {
 				'use_quantite_tables'                 => __( '(false par défaut) (Paniers modulables) Afficher les quantités en tableaux (date en ligne, quantités en colonnes)', 'amapress' ),
 				'show_modify_coords'                  => __( '(true par défaut) Afficher un bouton pour modifier les coordonnées, co-adhérents et membres du foyer dans l\'étape 4/8 contrats', 'amapress' ),
 				'use_contrat_term'                    => __( '(true par défaut) Utiliser le terme Contrat si true et Commande si false', 'amapress' ),
+				'sort_contrats'                       => __( '(title par défaut) Ordre d\'affichage des contrats/commandes ouvertes aux inscriptions : title, inscr_start, inscr_end, contrat_start', 'amapress' ),
 				'only_contrats'                       => __( 'Filtrage des contrats affichés (par ID). Permet, par exemple, de faire une page dédiée aux paniers modulables et commandes', 'amapress' ) .
 				                                         '<br/>' . __( 'Valeurs possibles: ', 'amapress' ) . implode( ' ; ', array_map( function ( $c ) {
 						/** @var AmapressContrat $c */
@@ -629,6 +630,7 @@ function amapress_register_shortcodes() {
 				'send_tresoriers'                     => __( '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers', 'amapress' ),
 				'edit_names'                          => __( '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription', 'amapress' ),
 				'send_welcome'                        => __( '(booléen, false par défaut si New User Approve est actif, false sinon) : permet de désactiver l\'envoi automatique du mail de bienvenue aux nouveaux amapiens', 'amapress' ),
+				'sort_contrats'                       => __( '(title par défaut) Ordre d\'affichage des contrats/commandes ouvertes aux inscriptions : title, inscr_start, inscr_end, contrat_start', 'amapress' ),
 				'only_contrats'                       => __( 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un/plusieurs contrat(s) donné(s) avec une autre clé', 'amapress' ) .
 				                                         '<br/>' . __( 'Valeurs possibles: ', 'amapress' ) . implode( ' ; ', array_map( function ( $c ) {
 						/** @var AmapressContrat $c */
@@ -707,6 +709,7 @@ function amapress_register_shortcodes() {
 				'send_referents'                      => __( '(booléen, true par défaut) : envoyer une notification pour les nouvelles inscriptions aux référents', 'amapress' ),
 				'send_tresoriers'                     => __( '(booléen, true par défaut) : envoyer une notification pour les nouvelles adhésions aux trésoriers', 'amapress' ),
 				'edit_names'                          => __( '(booléen, true par défaut) : autoriser l\'édition des noms pour une réinscription', 'amapress' ),
+				'sort_contrats'                       => __( '(title par défaut) Ordre d\'affichage des contrats/commandes ouvertes aux inscriptions : title, inscr_start, inscr_end, contrat_start', 'amapress' ),
 				'only_contrats'                       => __( 'Filtrage des contrats affichés (par ID). Permet de faire une page dédiée à l\'inscription à un/plusieurs contrat(s) donné(s) ou commande(s)', 'amapress' ) .
 				                                         '<br/>' . __( 'Valeurs possibles: ', 'amapress' ) . implode( ' ; ', array_map( function ( $c ) {
 						/** @var AmapressContrat $c */

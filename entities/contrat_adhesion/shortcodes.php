@@ -437,6 +437,7 @@ function amapress_self_inscription( $atts, $content = null, $tag ) {
 			'show_cofoyers_address'               => 'false',
 			'contrat_print_button_text'           => __( 'Imprimer', 'amapress' ),
 			'adhesion_print_button_text'          => __( 'Imprimer', 'amapress' ),
+			'sort_contrats'                       => 'title',
 			'only_contrats'                       => '',
 			'shorturl'                            => '',
 			'show_modify_coords'                  => 'inscription-en-ligne' == $tag || 'adhesion-en-ligne' == $tag ? 'false' : 'true',
@@ -774,11 +775,33 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			} );
 		}
 	}
-	usort( $subscribable_contrats, function ( $a, $b ) {
-		/** @var AmapressContrat_instance $a */
-		/** @var AmapressContrat_instance $b */
-		return strcmp( $a->getTitle(), $b->getTitle() );
-	} );
+	$sort_contrats = $atts['sort_contrats'];
+	if ( 'title' == $sort_contrats ) {
+		usort( $subscribable_contrats, function ( $a, $b ) {
+			/** @var AmapressContrat_instance $a */
+			/** @var AmapressContrat_instance $b */
+			return strcmp( $a->getTitle(), $b->getTitle() );
+		} );
+	} elseif ( 'inscr_start' == $sort_contrats ) {
+		usort( $subscribable_contrats, function ( $a, $b ) {
+			/** @var AmapressContrat_instance $a */
+			/** @var AmapressContrat_instance $b */
+			return $a->getDate_ouverture() - $b->getDate_ouverture();
+		} );
+	} elseif ( 'inscr_end' == $sort_contrats ) {
+		usort( $subscribable_contrats, function ( $a, $b ) {
+			/** @var AmapressContrat_instance $a */
+			/** @var AmapressContrat_instance $b */
+			return $a->getDate_cloture() - $b->getDate_cloture();
+		} );
+	} elseif ( 'contrat_start' == $sort_contrats ) {
+		usort( $subscribable_contrats, function ( $a, $b ) {
+			/** @var AmapressContrat_instance $a */
+			/** @var AmapressContrat_instance $b */
+			return $a->getDate_debut() - $b->getDate_debut();
+		} );
+	}
+
 	$subscribable_contrats_ids = array_map( function ( $c ) {
 		return $c->ID;
 	}, $subscribable_contrats );
