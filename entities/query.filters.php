@@ -2299,6 +2299,13 @@ AND $wpdb->usermeta.user_id IN ($all_user_ids_sql)" ) as $user_id
 			);
 			$all_user_ids = amapress_prepare_in_sql( $all_user_ids );
 			$where        .= " AND $wpdb->users.ID NOT IN ($all_user_ids)";
+		} else {
+			$period_id   = intval( $amapress_adhesion );
+			$user_id_sql = amapress_prepare_in_sql(
+				array_keys(
+					AmapressAdhesion_paiement::getAllActiveByUserId( null, $period_id )
+				) );
+			$where       .= " AND $wpdb->users.ID IN ($user_id_sql)";
 		}
 	}
 	$uqi->query_where .= $where;
