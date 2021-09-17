@@ -2100,6 +2100,9 @@ NB : ne pas récupérer les emails reçus sur ces comptes sans quoi le système 
 		'info' );
 
 	$state['38_plugins_adv']   = array();
+	$state['38_plugins_adv'][] = amapress_check_plugin_install( 'wp-mail-smtp', __( 'WP Mail SMTP', 'amapress' ),
+		__( '<strong>Envoi de mail</strong> : Utilisation avancée, permet une configuration avancée de l\'envoi de mails par le site (Gmail OAuth, SendGrid..)', 'amapress' ),
+		'info' );
 	$state['38_plugins_adv'][] = amapress_check_plugin_install( 'wordpress-seo', __( 'Yoast SEO', 'amapress' ),
 		__( '<strong>SEO Avancé</strong> : Utilisation avancée, améliore le référencement du site. Ce plugin ajoute de nombreuse options dans le back-office, à installer par un webmaster.', 'amapress' ),
 		'info' );
