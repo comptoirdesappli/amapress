@@ -276,7 +276,7 @@ function amapress_get_state() {
 	$state['01_plugins'][] = amapress_check_plugin_install( 'wp-maintenance', 'WP Maintenance',
 		__( '<strong>Optionnel</strong> : Permet d\'indiquer aux visiteurs que le site de votre AMAP est en construction et d\'éviter l\'affichage de contenu non finalisé.', 'amapress' ),
 		'info' );
-	$state['01_plugins'][] = amapress_check_plugin_install( 'uk-cookie-consent', 'GDPR Cookie Consent Banner',
+	$state['01_plugins'][] = amapress_check_plugin_install( 'uk-cookie-consent', 'Termly | GDPR/CCPA Cookie Consent Banner',
 		__( '<strong>Recommandé</strong> : Affiche un bandeau de consentement à l\'utilisation des cookies sur votre site. Cela est nécessaire pour être en conformité avec la loi RGPD, par exemple, si vous faites des statistiques (ie, Google Analytics) sur les visiteurs.', 'amapress' ),
 		'warning' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'enable-media-replace', __( 'Enable Media Replace', 'amapress' ),
