@@ -749,7 +749,13 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 			$subject      = empty( $data ) ?
 				Amapress::getOption( 'distribution-amapiens-indiv-recall-mail-subject-no-delivery' ) :
 				Amapress::getOption( 'distribution-amapiens-indiv-recall-mail-subject' );
-			$content      = Amapress::getOption( 'distribution-amapiens-indiv-recall-mail-content' );
+			if ( empty( $subject ) ) {
+				$subject = Amapress::getOption( 'distribution-amapiens-indiv-recall-mail-subject' );
+			}
+			if ( empty( $subject ) ) {
+				$subject = __( '[Rappel] Infos sur %%post:title%%', 'amapress' );
+			}
+			$content = Amapress::getOption( 'distribution-amapiens-indiv-recall-mail-content' );
 
 			if ( ! empty( $slot_info ) ) {
 				$content = preg_replace( '/\[\/?creneau\]/', '', $content );
