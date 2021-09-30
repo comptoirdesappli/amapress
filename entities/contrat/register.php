@@ -3453,8 +3453,46 @@ function amapress_contrat_instance_archivables_view() {
 	}
 
 	return '<p class="description">' . sprintf( __( 'Les contrats ci-dessous sont terminés depuis au moins %d mois.', 'amapress' ), Amapress::getOption( 'archive_months', 3 ) ) . '</p>'
+	       . ( ! empty( $data ) ? '<p>' . Amapress::makeLink( add_query_arg(
+				array(
+					'action' => 'archive_all_contrat',
+				),
+				admin_url( 'admin-post.php' )
+			), 'Archiver tous les contrats archivables' ) . '</p>' : '' )
 	       . amapress_get_datatable( 'contrat-archivables-table', $columns, $data );
 }
+
+add_action( 'admin_post_archive_all_contrat', function () {
+	if ( ! isset( $_REQUEST['confirm'] ) ) {
+		echo '<p>';
+		echo sprintf( __( 'Etes-vous sûr de vouloir archiver tous les contrats archivables ? 
+<br />
+<a href="%s"> Confirmer l\'archivage</a>', 'amapress' ), add_query_arg( 'confirm', 'yes' ) );
+		echo '</p>';
+		die();
+	}
+
+	if ( 'yes' != $_REQUEST['confirm'] ) {
+		wp_die( __( 'Archivage abandonné.', 'amapress' ) );
+	}
+	foreach ( AmapressContrat_instance::getAll() as $contrat_instance ) {
+		if ( ! $contrat_instance->canBeArchived() || $contrat_instance->isArchived() ) {
+			continue;
+		}
+
+		if ( ! current_user_can( 'edit_contrat_instance', $contrat_instance->ID ) ) {
+			continue;
+		}
+
+		echo '<h4 style="font-weight: bold; font-size: 1.5em">' . esc_html( $contrat_instance->getTitle() ) . '</h4>';
+
+		$contrat_instance->archive();
+
+		echo '<p style="color: green">' . __( 'Archivage effectué', 'amapress' ) . '</p>';
+
+		echo '<p><a href="' . esc_attr( admin_url( 'admin.php?page=contrats_archives' ) ) . '">' . __( 'Retour à la liste des contrats archivables', 'amapress' ) . '</a></p>';
+	}
+} );
 
 add_action( 'admin_post_archive_contrat', function () {
 	$contrat_id = isset( $_REQUEST['contrat_id'] ) ? intval( $_REQUEST['contrat_id'] ) : 0;
