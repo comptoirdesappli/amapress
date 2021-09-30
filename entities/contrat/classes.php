@@ -734,7 +734,8 @@ class AmapressContrat_instance extends TitanEntity {
 			$adhs = AmapressContrats::get_active_adhesions( $this->ID, $contrat_quantite_id, $lieu_id, $date );
 			Amapress::setFilterForReferent( true );
 
-			$adhs_count = 0;
+			$adhs_all_count = 0;
+			$adhs_count     = 0;
 			foreach ( $adhs as $adh ) {
 				if ( $this->isPanierVariable() ) {
 					if ( $use_equiv ) {
@@ -742,12 +743,14 @@ class AmapressContrat_instance extends TitanEntity {
 							if ( null == $contrat_quantite_id || $q->getId() == $contrat_quantite_id ) {
 								$adhs_count += $q->getQuantite();
 							}
+							$adhs_all_count += $q->getQuantite();
 						}
 					} else {
 						foreach ( $adh->getContrat_quantites( $date ) as $q ) {
 							if ( null == $contrat_quantite_id || $q->getId() == $contrat_quantite_id ) {
 								$adhs_count += $q->getFactor();
 							}
+							$adhs_all_count += $q->getFactor();
 						}
 					}
 				} else {
@@ -756,19 +759,27 @@ class AmapressContrat_instance extends TitanEntity {
 							if ( null == $contrat_quantite_id || $q->getId() == $contrat_quantite_id ) {
 								$adhs_count += $q->getQuantite();
 							}
+							$adhs_all_count += $q->getQuantite();
 						}
 					} else {
 						foreach ( $adh->getContrat_quantites( null ) as $q ) {
 							if ( null == $contrat_quantite_id || $q->getId() == $contrat_quantite_id ) {
 								$adhs_count += $q->getFactor();
 							}
+							$adhs_all_count += $q->getFactor();
 						}
 					}
 				}
 			}
 
 			if ( $max_adhs > 0 ) {
-				return ( $max_adhs - $adhs_count ) < 0 ? 0 : $max_adhs - $adhs_count;
+				if ( ( $max_adhs - $adhs_all_count ) <= 0 ) {
+					return 0;
+				}
+
+				if ( $max_quant_adhs <= 0 ) {
+					return $max_adhs - $adhs_all_count;
+				}
 			}
 
 			if ( $max_quant_adhs > 0 ) {
