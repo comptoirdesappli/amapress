@@ -9,6 +9,8 @@ function amapress_bulk_action_amp_adh_pmt_mark_recv( $sendback, $post_ids ) {
 	foreach ( $post_ids as $post_id ) {
 		$adh = AmapressAdhesion_paiement::getBy( $post_id, true );
 		$adh->setStatus( AmapressAdhesion_paiement::RECEIVED );
+		delete_user_meta( $adh->getUserId(), 'pw_user_status' );
+		delete_transient( 'new_user_approve_user_statuses' );
 	}
 
 	return amapress_add_bulk_count( $sendback, count( $post_ids ) );
@@ -47,7 +49,8 @@ function amapress_row_action_adhesion_paiement_mark_rcv( $post_id ) {
 	$adh = AmapressAdhesion_paiement::getBy( $post_id, true );
 	if ( $adh ) {
 		$adh->setStatus( AmapressAdhesion_paiement::RECEIVED );
-
+		delete_user_meta( $adh->getUserId(), 'pw_user_status' );
+		delete_transient( 'new_user_approve_user_statuses' );
 	}
 
 	wp_redirect_and_exit( wp_get_referer() );
@@ -68,6 +71,8 @@ function amapress_row_action_adhesion_paiement_mark_rcv_valid( $post_id ) {
 	$adh = AmapressAdhesion_paiement::getBy( $post_id, true );
 	if ( $adh ) {
 		$adh->setStatus( AmapressAdhesion_paiement::RECEIVED );
+		delete_user_meta( $adh->getUserId(), 'pw_user_status' );
+		delete_transient( 'new_user_approve_user_statuses' );
 		$adh->sendValidation();
 	}
 
@@ -101,6 +106,8 @@ function amapress_bulk_action_amp_adh_pmt_mark_recv_valid( $sendback, $post_ids 
 	foreach ( $post_ids as $post_id ) {
 		$adh = AmapressAdhesion_paiement::getBy( $post_id, true );
 		$adh->setStatus( AmapressAdhesion_paiement::RECEIVED );
+		delete_user_meta( $adh->getUserId(), 'pw_user_status' );
+		delete_transient( 'new_user_approve_user_statuses' );
 		$adh->sendValidation();
 	}
 
