@@ -4314,7 +4314,7 @@ class Amapress {
 	public static function get_inscription_distrib_page_href( $lieu = null ) {
 		$filter = '';
 		if ( $lieu ) {
-			$filter = '/lieu="?' . $lieu->ID . '"?|lieu="?' . preg_quote( $lieu->getSlug() ) . '"?|lieu="?' . preg_quote( $lieu->getTitle() ) . '"?/i';
+			$filter = '/lieu="?' . $lieu->ID . '"?|lieu="?' . preg_quote( $lieu->getSlug(), '/' ) . '"?|lieu="?' . preg_quote( $lieu->getTitle(), '/' ) . '"?/i';
 		}
 
 		return self::get_page_with_shortcode_href( [
