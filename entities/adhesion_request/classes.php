@@ -193,11 +193,16 @@ class AmapressAdhesionRequest extends TitanEntity {
 		$mail_subject = amapress_replace_mail_placeholders( $mail_subject, null, $this );
 		$mail_content = amapress_replace_mail_placeholders( $mail_content, null, $this );
 
-		$current_user = AmapressUser::getBy( amapress_current_user_id() );
+		$headers  = [];
+		$reply_to = Amapress::getOption( 'adh-request-reply-replyto' );
+		if ( ! empty( $reply_to ) ) {
+			$headers[] = 'Reply-To: ' . $reply_to;
+		} else if ( amapress_current_user_id() ) {
+			$current_user = AmapressUser::getBy( amapress_current_user_id() );
+			$headers[]    = 'Reply-To: ' . implode( ',', $current_user->getAllEmails() );
+		}
 
-		amapress_wp_mail( [ $this->getEmail() ], $mail_subject, $mail_content, [
-			'Reply-To: ' . implode( ',', $current_user->getAllEmails() )
-		] );
+		amapress_wp_mail( [ $this->getEmail() ], $mail_subject, $mail_content, $headers );
 	}
 
 	public function getFormattedReplyMail() {

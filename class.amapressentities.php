@@ -5062,6 +5062,20 @@ Après obtention de votre nouveau mot de passe, connectez-vous. Vous pouvez le p
 									'id'      => 'adh_req_reply_mail',
 									'options' => array(
 										array(
+											'id'      => 'adh-request-reply-autoreply',
+											'name'    => __( 'Réponse auto', 'amapress' ),
+											'desc'    => __( 'Répondre automatiquement aux demandes d\'adhésion avec l\'email ci-dessous', 'amapress' ),
+											'type'    => 'checkbox',
+											'default' => false,
+										),
+										array(
+											'id'       => 'adh-request-reply-replyto',
+											'name'     => __( 'Reply-To', 'amapress' ),
+											'type'     => 'text',
+											'desc'     => __( 'Reply-To du message ci-dessous. Par défaut, l\'email du membre du collectif qui déclenche l\'envoi ou l\'email du site.', 'amapress' ),
+											'is_email' => true,
+										),
+										array(
 											'id'       => 'adh-request-reply-mail-subject',
 											'name'     => __( 'Objet de l\'email', 'amapress' ),
 											'sanitize' => false,

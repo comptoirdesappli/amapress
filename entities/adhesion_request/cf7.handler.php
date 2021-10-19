@@ -98,6 +98,11 @@ function amapress_preinscription_handler( WPCF7_ContactForm $cf7 ) {
 
 	$post_id = wp_insert_post( $my_post );
 
+	if ( Amapress::toBool( Amapress::getOption( 'adh-request-reply-autoreply' ) ) ) {
+		$adh_req = AmapressAdhesionRequest::getBy( $post_id );
+		$adh_req->sendReplyMail();
+	}
+
 	$mail = $cf7->prop( 'mail' );
 	$mail = str_replace(
 		array(
