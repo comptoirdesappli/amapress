@@ -68,11 +68,15 @@ function amapress_cf7_amapress_field_substitute( $tag, $replace ) {
 			case 'contrats':
 				$tag['basetype']  = 'checkbox';
 				$tag['options'][] = 'use_label_element';
-				$contrat_in_order = AmapressContrats::get_contrats( null, true, true );
+				$contrat_in_order = AmapressContrats::get_contrats(
+					null, true, in_array( 'filterhome', $tag['options'] ) );
 				if ( in_array( 'subscribable', $tag['options'] ) ) {
 					$contrat_instances = AmapressContrats::get_subscribable_contrat_instances();
 				} else {
-					$contrat_instances = AmapressContrats::get_active_contrat_instances();
+					$contrat_instances = AmapressContrats::get_active_contrat_instances(
+						null, null,
+						true, in_array( 'onlycurrent', $tag['options'] )
+					);
 				}
 				$subscribable_contrats = [];
 				foreach ( $contrat_in_order as $contrat ) {
