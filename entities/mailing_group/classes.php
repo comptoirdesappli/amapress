@@ -250,7 +250,7 @@ class AmapressMailingGroup extends TitanEntity {
 		$this->sendMailByParamName( 'mailinggroup-distrib-sender', $msg, $msg['from'] );
 		$this->storeMailData( 'accepted', $msg );
 
-		$this->deleteMessage( $msg_id, 'waiting' );
+		$this->deleteMessage( $msg_id, 'waiting', false );
 	}
 
 	public function rejectMailQuiet( $msg_id ) {
@@ -267,7 +267,7 @@ class AmapressMailingGroup extends TitanEntity {
 		$msg['mod_date']  = amapress_time();
 		$this->storeMailData( 'rejected', $msg );
 
-		$this->deleteMessage( $msg_id, 'waiting' );
+		$this->deleteMessage( $msg_id, 'waiting', false );
 	}
 
 
@@ -285,7 +285,7 @@ class AmapressMailingGroup extends TitanEntity {
 		$msg['mod_date']  = amapress_time();
 		$this->storeMailData( 'rejected', $msg );
 		$this->sendMailByParamName( 'mailinggroup-reject-sender', $msg, $msg['from'] );
-		$this->deleteMessage( $msg_id, 'waiting' );
+		$this->deleteMessage( $msg_id, 'waiting', false );
 	}
 
 	private function isCurrentUserModerator() {
@@ -650,16 +650,18 @@ class AmapressMailingGroup extends TitanEntity {
 		return $this->loadMessageFile( $this->getUploadDir( $type ) . $msg_id . '.json' );
 	}
 
-	public function deleteMessage( $msg_id, $type = null ) {
+	public function deleteMessage( $msg_id, $type = null, $delete_attachments = true ) {
 		foreach ( ! empty( $type ) ? [ $type ] : [ 'waiting', 'accepted', 'rejected' ] as $type ) {
-			$waiting_attachment_dir = $this->getUploadDir( "waiting/$msg_id" );
-			if ( file_exists( $waiting_attachment_dir ) ) {
-				self::delTree( $waiting_attachment_dir );
-			}
-			$dir                  = $this->getUploadDir( $type, false );
-			$local_attachment_dir = $dir . "/$msg_id";
-			if ( file_exists( $local_attachment_dir ) ) {
-				self::delTree( $local_attachment_dir );
+			if ( $delete_attachments ) {
+				$waiting_attachment_dir = $this->getUploadDir( "waiting/$msg_id" );
+				if ( file_exists( $waiting_attachment_dir ) ) {
+					self::delTree( $waiting_attachment_dir );
+				}
+				$dir                  = $this->getUploadDir( $type, false );
+				$local_attachment_dir = $dir . "/$msg_id";
+				if ( file_exists( $local_attachment_dir ) ) {
+					self::delTree( $local_attachment_dir );
+				}
 			}
 			$msg_json = $dir . "/$msg_id.json";
 			if ( file_exists( $msg_json ) ) {
