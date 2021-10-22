@@ -1804,6 +1804,9 @@ jQuery(function($) {
 						$ret[] = sprintf( __( '<span style="color:orange">clos depuis %s</span>', 'amapress' ), date_i18n( 'd/m/Y', $contrat->getDate_cloture() ) );
 					} elseif ( ! $contrat->canSelfSubscribe() ) {
 						$ret[] = '<span style="color:orange">inscription fermée</span>';
+					} elseif ( ! $contrat->hasRemainingSubscribableDistribution() ) {
+						$ret[] = sprintf( __( '<span style="color:orange">inscriptions closes %.1f jour(s) avant la dernière distribution</span>', 'amapress' ),
+							$contrat->getCloseHours() / 24.0 );
 					} elseif ( ! empty( $contrat->canSelfContratsCondition() ) ) {
 						$ret[] = sprintf( __( '<span style="color: green">inscription conditionnelle (%s&gt;%s)</span>', 'amapress' ),
 							date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ),

@@ -654,6 +654,18 @@ class AmapressContrat_instance extends TitanEntity {
 		return true;
 	}
 
+	public function hasRemainingSubscribableDistribution() {
+		$dates = array_values( $this->getListe_dates() );
+		$dates = array_filter( $dates, function ( $d ) {
+			$real_date   = $this->getRealDateForDistribution( $d );
+			$close_hours = $this->getCloseHours();
+
+			return ( Amapress::start_of_day( $real_date ) - $close_hours * HOUR_IN_SECONDS ) > amapress_time();
+		} );
+
+		return ! empty( $dates );
+	}
+
 	/** @return AmapressContrat_instance[] */
 	public function canSelfContratsCondition() {
 		return array_filter(
