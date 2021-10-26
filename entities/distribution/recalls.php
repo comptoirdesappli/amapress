@@ -641,16 +641,24 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 				$has_delivery = false;
 				/** @var AmapressAdhesion $adh */
 				if ( $adh->getContrat_instance()->isPanierVariable() ) {
-					$paniers = $adh->getPaniersVariables();
+					$real_date = $dist->getRealDateForContrat( $adh->getContrat_instanceId() );
+					$paniers   = $adh->getPaniersVariables();
 					foreach ( AmapressContrats::get_contrat_quantites( $adh->getContrat_instanceId() ) as $quant ) {
+						$panier_fact = 0;
 						if ( ! empty( $paniers[ $date ][ $quant->ID ] ) ) {
+							$panier_fact += $paniers[ $date ][ $quant->ID ];
+						}
+						if ( $real_date != $date && ! empty( $paniers[ $real_date ][ $quant->ID ] ) ) {
+							$panier_fact += $paniers[ $real_date ][ $quant->ID ];
+						}
+						if ( ! empty( $panier_fact ) ) {
 							$row            = [];
 							$row['prod']    = $adh->getContrat_instance()->getModel()->getTitle()
 							                  . '<br />'
 							                  . '<em>' . $adh->getContrat_instance()->getModel()->getProducteur()->getTitle() . '</em>';
 							$row['desc']    = $quant->getTitle();
-							$row['fact']    = $paniers[ $date ][ $quant->ID ];
-							$price          = $paniers[ $date ][ $quant->ID ] * $quant->getPrix_unitaire();
+							$row['fact']    = $panier_fact;
+							$price          = $panier_fact * $quant->getPrix_unitaire();
 							$row['total_d'] = Amapress::formatPrice( $price, true );
 							$row['total']   = $price;
 							$data[]         = $row;
