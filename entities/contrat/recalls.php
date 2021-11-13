@@ -476,6 +476,54 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 
 } );
 
+add_action( 'amapress_recall_contrat_current', function ( $args ) {
+	$dist = AmapressDistribution::getBy( $args['id'] );
+	if ( null == $dist ) {
+		echo '<p>' . __( 'Distribution intouvable', 'amapress' ) . '</p>';
+
+		return;
+	}
+
+	$subscribable_contrats = amapress_current_contrats();
+	if ( empty( $subscribable_contrats ) ) {
+		echo '<p>' . __( 'Pas de contrat ouvert aux inscriptions', 'amapress' ) . '</p>';
+
+		return;
+	}
+
+	$user_ids = [];
+	switch ( Amapress::getOption( 'contrat-current-recall-targets' ) ) {
+		case 'with-contrat':
+			$user_ids = get_users( [
+				'amapress_contrat' => 'active',
+				'fields'           => 'ids'
+			] );
+			break;
+		case 'same-lieu':
+			$user_ids = array_merge( $user_ids, get_users( [
+				'amapress_lieu' => $dist->getLieuId(),
+				'fields'        => 'ids'
+			] ) );
+			break;
+		case 'all':
+			$user_ids = get_users( [
+				'amapress_role' => 'active',
+				'fields'        => 'ids'
+			] );
+			break;
+	}
+	$target_users = amapress_prepare_message_target_bcc( "user:include=" . implode( ',', $user_ids ), __( 'Amapiens', 'amapress' ), 'amapiens' );
+	$subject      = Amapress::getOption( 'contrat-current-recall-mail-subject' );
+	$content      = Amapress::getOption( 'contrat-current-recall-mail-content' );
+	amapress_send_message(
+		$subject,
+		$content,
+		'', $target_users, null, array(),
+		amapress_get_recall_cc_from_option( 'contrat-current-recall-cc' )
+	);
+	echo '<p>' . __( 'Email de rappel envoyé', 'amapress' ) . '</p>';
+} );
+
 add_action( 'amapress_recall_contrat_openclose', function ( $args ) {
 	$contrat = AmapressContrat_instance::getBy( $args['id'] );
 	if ( null == $contrat ) {
@@ -1078,6 +1126,99 @@ function amapress_contrat_renew_recall_options() {
 			'desc'      => __( 'Désactiver les rappels pour les producteurs suivants :', 'amapress' ),
 			'orderby'   => 'post_title',
 			'order'     => 'ASC',
+		),
+		array(
+			'type' => 'save',
+		),
+	);
+}
+
+function amapress_contrat_current_recall_options() {
+	return array(
+		array(
+			'id'                  => 'contrat-current-recall-1',
+			'name'                => __( 'Rappel 1', 'amapress' ),
+			'desc'                => __( 'Contrats ouverts à l\'inscription', 'amapress' ),
+			'type'                => 'event-scheduler',
+			'hook_name'           => 'amapress_recall_contrat_current',
+			'show_after'          => true,
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'                  => 'contrat-current-recall-2',
+			'name'                => __( 'Rappel 2', 'amapress' ),
+			'desc'                => __( 'Contrats ouverts à l\'inscription', 'amapress' ),
+			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
+			'hook_name'           => 'amapress_recall_contrat_current',
+			'show_after'          => true,
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'                  => 'contrat-current-recall-3',
+			'name'                => __( 'Rappel 3', 'amapress' ),
+			'desc'                => __( 'Contrats ouverts à l\'inscription', 'amapress' ),
+			'type'                => 'event-scheduler',
+			'show_resend_links'   => false,
+			'show_test_links'     => false,
+			'hook_name'           => 'amapress_recall_contrat_current',
+			'show_after'          => true,
+			'hook_args_generator' => function ( $option ) {
+				return amapress_get_next_distributions_cron();
+			},
+		),
+		array(
+			'id'      => 'contrat-current-recall-targets',
+			'name'    => __( 'Destinataires', 'amapress' ),
+			'type'    => 'radio',
+			'options' => [
+				'with-contrat' => __( 'Amapiens avec contrat', 'amapress' ),
+				'same-lieu'    => __( 'Amapiens des lieux de distributions de ce contrat', 'amapress' ),
+				'all'          => __( 'Tous les amapiens (avec adhésions/avec contrats/collectifs sauf producteur)', 'amapress' ),
+			],
+			'default' => 'all',
+		),
+		array(
+			'id'       => 'contrat-current-recall-mail-subject',
+			'name'     => __( 'Objet de l\'email', 'amapress' ),
+			'type'     => 'text',
+			'sanitize' => false,
+			'default'  => __( 'Inscriptions ouvertes', 'amapress' ),
+		),
+		array(
+			'id'      => 'contrat-current-recall-mail-content',
+			'name'    => __( 'Contenu de l\'email', 'amapress' ),
+			'type'    => 'editor',
+			'default' => wpautop( __( "Bonjour,\n\nLes inscriptions sont ouvertes pour les contrats suivants:\n%%contrats_en_cours_by_inscr_end%%\n\nPour vous inscrire : %%lien_inscription_contrats%%\n\n%%nom_site%%", 'amapress' ) ),
+			'desc'    => function ( $option ) {
+				return __( 'Les placeholders suivants sont disponibles:', 'amapress' ) .
+				       Amapress::getPlaceholdersHelpTable( 'ontrat-current-recall-placeholders',
+					       [], null, [], 'recall' );
+			},
+		),
+		array(
+			'id'           => 'contrat-current-recall-cc',
+			'name'         => __( 'Cc', 'amapress' ),
+			'type'         => 'select-users',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => __( 'Emails en copie', 'amapress' ),
+		),
+		array(
+			'id'           => 'contrat-current-recall-cc-groups',
+			'name'         => __( 'Groupes Cc', 'amapress' ),
+			'type'         => 'select',
+			'options'      => 'amapress_get_collectif_target_queries',
+			'autocomplete' => true,
+			'multiple'     => true,
+			'tags'         => true,
+			'desc'         => __( 'Groupe(s) en copie', 'amapress' ),
 		),
 		array(
 			'type' => 'save',

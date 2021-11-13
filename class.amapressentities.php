@@ -2536,6 +2536,11 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'desc'    => 'Rappels envoyés aux amapiens avant (ou après) l\'ouverture des inscriptions aux contrats',
 									'options' => amapress_contrat_open_recall_options(),
 								),
+								__( 'Emails - Contrats ouverts à l\'inscription', 'amapress' )           => array(
+									'id'      => 'amp_tab_recall_contrat_current',
+									'desc'    => 'Rappels envoyés aux amapiens avant (ou après) chaque distribution pour signaler les contrats ouverts aux inscriptions',
+									'options' => amapress_contrat_current_recall_options(),
+								),
 								__( 'Emails - Contrats bientôt fermés', 'amapress' )                     => array(
 									'id'      => 'amp_tab_recall_contrat_close',
 									'desc'    => 'Rappels envoyés aux amapiens avant la clôture des inscriptions aux contrats',

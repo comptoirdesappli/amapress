@@ -142,15 +142,71 @@ function amapress_replace_mail_user_placeholders_help() {
 	$ret['prenom']           = __( 'Prénom de l\'amapien', 'amapress' );
 	$ret['adresse']          = __( 'Adresse de l\'amapien', 'amapress' );
 	$ret['code_postal']      = __( 'Code postal de l\'amapien', 'amapress' );
-	$ret['ville']            = __( 'Ville de l\'amapien', 'amapress' );
-	$ret['rue']              = __( 'Rue (adresse) de l\'amapien', 'amapress' );
-	$ret['tel']              = __( 'Téléphone de l\'amapien', 'amapress' );
-	$ret['email']            = __( 'Email de l\'amapien', 'amapress' );
+	$ret['ville'] = __( 'Ville de l\'amapien', 'amapress' );
+	$ret['rue'] = __( 'Rue (adresse) de l\'amapien', 'amapress' );
+	$ret['tel'] = __( 'Téléphone de l\'amapien', 'amapress' );
+	$ret['email'] = __( 'Email de l\'amapien', 'amapress' );
 	$ret['coadhesion_infos'] = __( 'Infos sur les coadhésions de l\'amapien', 'amapress' );
-	$ret['contacts']         = __( 'Moyens de contacts de l\'amapien', 'amapress' );
-	$ret['roles']            = __( 'Rôles de l\'amapien', 'amapress' );
+	$ret['contacts'] = __( 'Moyens de contacts de l\'amapien', 'amapress' );
+	$ret['roles'] = __( 'Rôles de l\'amapien', 'amapress' );
 
 	return $ret;
+}
+
+function amapress_current_contrats() {
+	$subscribable_contrats = AmapressContrats::get_subscribable_contrat_instances_by_contrat( null );
+
+	return array_filter( $subscribable_contrats, function ( $c ) {
+		/** @var AmapressContrat_instance $c */
+		return $c->canSelfSubscribe() && ! $c->isEnded() && 0 !== strcmp( 'test', $c->getSubName() );
+	} );
+}
+
+function amapress_current_contrats_placeholder( $sort_contrats = 'title' ) {
+	$subscribable_contrats = amapress_current_contrats();
+	if ( 'title' == $sort_contrats ) {
+		usort( $subscribable_contrats, function ( $a, $b ) {
+			/** @var AmapressContrat_instance $a */
+			/** @var AmapressContrat_instance $b */
+			return strcmp( $a->getTitle(), $b->getTitle() );
+		} );
+	} elseif ( 'inscr_start' == $sort_contrats ) {
+		usort( $subscribable_contrats, function ( $a, $b ) {
+			/** @var AmapressContrat_instance $a */
+			/** @var AmapressContrat_instance $b */
+			return $a->getDate_ouverture() - $b->getDate_ouverture();
+		} );
+	} elseif ( 'inscr_end' == $sort_contrats ) {
+		usort( $subscribable_contrats, function ( $a, $b ) {
+			/** @var AmapressContrat_instance $a */
+			/** @var AmapressContrat_instance $b */
+			return $a->getDate_cloture() - $b->getDate_cloture();
+		} );
+	} elseif ( 'contrat_start' == $sort_contrats ) {
+		usort( $subscribable_contrats, function ( $a, $b ) {
+			/** @var AmapressContrat_instance $a */
+			/** @var AmapressContrat_instance $b */
+			return $a->getDate_debut() - $b->getDate_debut();
+		} );
+	}
+
+	if ( empty( $subscribable_contrats ) ) {
+		return 'Aucun contrat ouvert aux inscriptions';
+	}
+
+	$contrat_title_template = wp_unslash( Amapress::getOption( 'online_subscription_contrat_avail_format' ) );
+
+	return implode( "\n", array_map( function ( $contrat ) use ( $contrat_title_template ) {
+		if ( empty( $contrat_title_template ) ) {
+			$contrat_title = esc_html( $contrat->getTitle() );
+		} else {
+			$contrat_title = amapress_replace_mail_placeholders(
+				$contrat_title_template, null, $contrat
+			);
+		}
+
+		return '-> ' . $contrat_title;
+	}, $subscribable_contrats ) );
 }
 
 /**
@@ -240,6 +296,14 @@ function amapress_replace_mail_placeholders( $mail_content, $user, TitanEntity $
 					return Amapress::makeLink( $url );
 				case 'lien_desinscription_intermittent':
 					return Amapress::makeLink( amapress_intermittence_desinscription_link() );//Amapress::makeLink( $this->getDesinscriptionIntermittenceLink() );
+
+				case 'contrats_en_cours_by_inscr_end':
+					return amapress_current_contrats_placeholder( 'inscr_end' );
+				case 'contrats_en_cours_by_contrat_start':
+					return amapress_current_contrats_placeholder( 'contrat_start' );
+				case 'contrats_en_cours_by_title':
+					return amapress_current_contrats_placeholder( 'title' );
+
 				case 'site_icon_url':
 					$size = empty( $fmt ) ? 'thumbnail' : $fmt;
 					preg_match( '/(?<w>\d+)x(?<h>\d+)/', $fmt, $ma );
@@ -437,13 +501,16 @@ function amapress_replace_mail_placeholders_help(
 		$ret["site_description"]          = __( 'Description du site de l\'AMAP', 'amapress' );
 		$ret["site:admin_email"]          = __( 'Email de l\'admin du site', 'amapress' ); //subopt
 //	$ret["site:language"]               = __('Langue du site', 'amapress'); //subopt
-		$ret["site:rss_url"]                     = __( 'Lien RSS du site', 'amapress' ); //subopt
-		$ret["site:rss2_url"]                    = __( 'Lien RSS2 du site', 'amapress' ); //subopt
-		$ret['site_icon_url']                    = __( 'Url du logo du site de l\'AMAP', 'amapress' );
-		$ret['site_icon_url_link']               = __( 'Lien du logo du site de l\'AMAP', 'amapress' );
-		$ret['lien_intermittence']               = __( 'Lien vers la page des paniers intermittents disponibles', 'amapress' );
-		$ret['lien_paniers_intermittence']       = __( 'Lien vers la page des paniers intermittents disponibles', 'amapress' );
-		$ret['lien_desinscription_intermittent'] = __( 'Lien de désinscription de la liste des intermittents', 'amapress' );
+		$ret["site:rss_url"]                       = __( 'Lien RSS du site', 'amapress' ); //subopt
+		$ret["site:rss2_url"]                      = __( 'Lien RSS2 du site', 'amapress' ); //subopt
+		$ret['site_icon_url']                      = __( 'Url du logo du site de l\'AMAP', 'amapress' );
+		$ret['site_icon_url_link']                 = __( 'Lien du logo du site de l\'AMAP', 'amapress' );
+		$ret['lien_intermittence']                 = __( 'Lien vers la page des paniers intermittents disponibles', 'amapress' );
+		$ret['lien_paniers_intermittence']         = __( 'Lien vers la page des paniers intermittents disponibles', 'amapress' );
+		$ret['lien_desinscription_intermittent']   = __( 'Lien de désinscription de la liste des intermittents', 'amapress' );
+		$ret["contrats_en_cours_by_inscr_end"]     = __( 'Contrats ouverts aux inscriptions (par ordre de clôture)', 'amapress' );
+		$ret["contrats_en_cours_by_contrat_start"] = __( 'Contrats ouverts aux inscriptions (par ordre de début)', 'amapress' );
+		$ret["contrats_en_cours_by_title"]         = __( 'Contrats ouverts aux inscriptions (par ordre de clôture)', 'amapress' );
 
 		if ( $include_sender ) {
 			foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {
