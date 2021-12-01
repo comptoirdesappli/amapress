@@ -67,7 +67,7 @@ class Amapress_OVH_MailingList extends Amapress_MailingList {
 		$query_emails = array_unique( $wpdb->get_col( $sql_query ) );
 		$was_errored  = $wpdb->last_error;
 		$inter        = array_intersect( $query_emails, $sympa_emails );
-		if ( ! $was_errored && count( $inter ) == count( $sympa_emails ) && count( $inter ) == count( $query_emails ) ) {
+		if ( empty( $was_errored ) && count( $inter ) == count( $sympa_emails ) && count( $inter ) == count( $query_emails ) ) {
 			return 'sync';
 		} else {
 			return 'not_sync';
