@@ -78,8 +78,36 @@ class Amapress_OVH_MailingList extends Amapress_MailingList {
 		return false;
 	}
 
-	function handleModerationSetting() {
+	public function handleModerationSetting() {
 		return false;
+	}
+
+	public function getModerationModeName() {
+		return '';
+	}
+
+	public function getModerationMode() {
+		return null;
+	}
+
+	/** @return string */
+	public function getConfigurationLink() {
+		return $this->getSystem()->getConfigurationLink();
+	}
+
+	/** @return string */
+	public function getModerationLink() {
+		return $this->getSystem()->getModerationLink();
+	}
+
+	/** @return string */
+	public function getModeratorsLink() {
+		return $this->getSystem()->getModeratorsLink();
+	}
+
+	/** @return string */
+	public function getMembersLink() {
+		return $this->getSystem()->getMembersLink();
 	}
 }
 
@@ -116,6 +144,10 @@ class Amapress_OVH_MailSystem extends Amapress_MailingSystem {
 		return $this->ovh->get( "/email/domain/{$this->mailing_domain}/mailingList/{$list_name}/subscriber" );
 	}
 
+	public function getFullName( $name ) {
+		return "$name@{$this->mailing_domain}";
+	}
+
 	/** @return string */
 	public function getConfigurationLink() {
 		return "https://www.ovh.com/manager/web/#/configuration/email-domain/{$this->mailing_domain}";
@@ -134,10 +166,6 @@ class Amapress_OVH_MailSystem extends Amapress_MailingSystem {
 	/** @return string */
 	public function getMembersLink() {
 		return "https://www.ovh.com/manager/web/#/configuration/email-domain/{$this->mailing_domain}";
-	}
-
-	public function getFullName( $name ) {
-		return "$name@{$this->mailing_domain}";
 	}
 
 	public function getMailingList( $name ) {

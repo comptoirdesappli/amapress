@@ -72,7 +72,7 @@ function amapress_register_entities_mailinglist( $entities ) {
 
 						echo '<p style="color:red;font-weight: bold">' . __( 'La gestion de la modération se fait manuellement dans ', 'amapress' ) .
 						     Amapress::makeLink( $ml->getMailingList()->getConfigurationLink(),
-							     __( 'Configuraton de la mailinglist', 'amapress' ), true, true )
+							     __( 'Configuration de la mailinglist', 'amapress' ), true, true )
 						     . '</p>';
 					}
 				},
@@ -168,14 +168,25 @@ function amapress_register_entities_mailinglist( $entities ) {
 				'show_on' => 'edit-only',
 			),
 			'reply_to'               => array(
-				'group'       => __( 'Membres', 'amapress' ),
-				'name'        => __( 'Reply to', 'amapress' ),
-				'type'        => 'select',
-				'desc'        => __( 'Choisir à qui répondent les destinataires de la liste', 'amapress' ),
-				'options'     => 'amapress_get_mailinglist_reply_to_options',
-				'custom_get'  => 'amapress_get_mailinglist_reply_to',
-				'custom_save' => 'amapress_set_mailinglist_reply_to',
-				'show_on'     => 'edit-only',
+				'group'        => __( 'Membres', 'amapress' ),
+				'name'         => __( 'Reply to', 'amapress' ),
+				'type'         => 'select',
+				'desc'         => __( 'Choisir à qui répondent les destinataires de la liste', 'amapress' ),
+				'readonly'     => 'amapress_get_mailinglist_reply_to_readonly',
+				'options'      => 'amapress_get_mailinglist_reply_to_options',
+				'custom_get'   => 'amapress_get_mailinglist_reply_to',
+				'custom_save'  => 'amapress_set_mailinglist_reply_to',
+				'show_on'      => 'edit-only',
+				'after_option' => function ( TitanFrameworkOption $option ) {
+					if ( amapress_get_mailinglist_reply_to_readonly( $option ) ) {
+						$ml = new Amapress_MailingListConfiguration( $option->getPostID() );
+
+						echo '<p style="color:red;font-weight: bold">' . __( 'La gestion du reply-to se fait manuellement dans ', 'amapress' ) .
+						     Amapress::makeLink( $ml->getMailingList()->getConfigurationLink(),
+							     __( 'Configuration de la mailinglist', 'amapress' ), true, true )
+						     . '</p>';
+					}
+				},
 			),
 			'status'                 => array(
 				'group'   => __( 'Nom', 'amapress' ),
@@ -550,6 +561,10 @@ function amapress_get_mailinglist_reply_to( $mailing_list_id ) {
 	}
 
 	return $ml_obj->getReplyTo();
+}
+
+function amapress_get_mailinglist_reply_to_readonly( TitanFrameworkOption $option ) {
+	return empty( amapress_get_mailinglist_reply_to_options( $option ) );
 }
 
 function amapress_get_mailinglist_reply_to_options( TitanFrameworkOption $option ) {
