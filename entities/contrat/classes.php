@@ -3349,7 +3349,7 @@ class AmapressContrat_quantite extends TitanEntity {
 		$my_post = array(
 			'post_title'   => $this->getTitle(),
 			'post_type'    => AmapressContrat_quantite::INTERNAL_POST_TYPE,
-			'post_content' => '',
+			'post_content' => $this->getContent(),
 			'post_status'  => 'publish',
 			'meta_input'   => $meta,
 		);
