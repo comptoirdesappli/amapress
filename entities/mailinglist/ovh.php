@@ -121,6 +121,9 @@ class Amapress_OVH_MailSystem extends Amapress_MailingSystem {
 	}
 
 	protected function fetchMails() {
+		if ( ! $this->isConnected() ) {
+			return [];
+		}
 		$names = $this->ovh->get( "/email/domain/{$this->mailing_domain}/mailingList" );
 		$ret   = [];
 		foreach ( $names as $name ) {
