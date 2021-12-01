@@ -758,7 +758,7 @@ function amapress_get_mailinglist_status( $mailing_list_id ) {
 	$ml     = new Amapress_MailingListConfiguration( $mailing_list_id );
 	$ml_obj = $ml->getMailingList();
 	if ( ! $ml_obj ) {
-		return '';
+		return '<strong style="color:red">Mailing liste introuvable. Veuillez vérifier la configuration.</strong>';
 	}
 
 	$ret = '';
