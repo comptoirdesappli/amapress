@@ -477,7 +477,10 @@ function amapress_get_mailinglist_members_count( $mailing_list_id ) {
 //	}
 //
 //	return "<a target='_blank' href='{$ml_obj->getMembersLink()}'>{$ml_obj->getMembersCount()}</a>";
-	return Amapress::makeLink( admin_url( 'users.php?amapress_mllst_id=' . $mailing_list_id ), count( $ml->getMembersIds() ), true, true );
+	return Amapress::makeLink(
+		admin_url( 'users.php?amapress_mllst_id=' . $mailing_list_id ),
+		strval( count( $ml->getMembersIds() ) ),
+		true, true );
 }
 
 function amapress_get_mailinglist_moderation_column( $mailing_list_id ) {
