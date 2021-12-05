@@ -97,17 +97,17 @@ class Amapress_OVH_MailingList extends Amapress_MailingList {
 
 	/** @return string */
 	public function getModerationLink() {
-		return $this->getSystem()->getModerationLink();
+		return $this->getSystem()->getModerationLink( $this->getName() );
 	}
 
 	/** @return string */
 	public function getModeratorsLink() {
-		return $this->getSystem()->getModeratorsLink();
+		return $this->getSystem()->getModeratorsLink( $this->getName() );
 	}
 
 	/** @return string */
 	public function getMembersLink() {
-		return $this->getSystem()->getMembersLink();
+		return $this->getSystem()->getMembersLink( $this->getName() );
 	}
 }
 
@@ -153,22 +153,22 @@ class Amapress_OVH_MailSystem extends Amapress_MailingSystem {
 
 	/** @return string */
 	public function getConfigurationLink() {
-		return "https://www.ovh.com/manager/web/#/configuration/email-domain/{$this->mailing_domain}";
+		return "https://www.ovh.com/manager/web/#/email_domain/{$this->mailing_domain}/mailing-list";
 	}
 
 	/** @return string */
-	public function getModerationLink() {
-		return "https://www.ovh.com/manager/web/#/configuration/email-domain/{$this->mailing_domain}";
+	public function getModerationLink( $list_name ) {
+		return "https://www.ovh.com/manager/web/#/email_domain/{$this->mailing_domain}/mailing-list";
 	}
 
 	/** @return string */
-	public function getModeratorsLink() {
-		return "https://www.ovh.com/manager/web/#/configuration/email-domain/{$this->mailing_domain}";
+	public function getModeratorsLink( $list_name ) {
+		return "https://www.ovh.com/manager/web/#/email_domain/{$this->mailing_domain}/mailing-list";
 	}
 
 	/** @return string */
-	public function getMembersLink() {
-		return "https://www.ovh.com/manager/web/#/configuration/email-domain/{$this->mailing_domain}";
+	public function getMembersLink( $list_name ) {
+		return "https://www.ovh.com/manager/web/#/email_domain/{$this->mailing_domain}/mailing-list";
 	}
 
 	public function getMailingList( $name ) {
