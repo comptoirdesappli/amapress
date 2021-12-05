@@ -64,7 +64,7 @@ class Amapress_Ouvaton_MailingList extends Amapress_Sympa_MailingList {
 					$user_emails = array_unique( $user_emails );
 				}
 			}
-			$inter = array_intersect( $this->getModeratorsEmails(), $user_emails );
+			$inter = array_intersect( Amapress_MailingList::normalizeEmailsArray( $this->getModeratorsEmails() ), Amapress_MailingList::normalizeEmailsArray( $user_emails ) );
 			if ( count( $user_emails ) != count( $inter ) || count( $this->getModeratorsEmails() ) != count( $inter ) ) {
 				return 'not_sync';
 			}
@@ -83,9 +83,9 @@ class Amapress_Ouvaton_MailingList extends Amapress_Sympa_MailingList {
 			$new_query = trim( preg_replace( '/\{[0-9A-Fa-f]+\}/', '', $new_query ) );
 			$sql_query = trim( preg_replace( '/\{[0-9A-Fa-f]+\}/', '', $sql_query ) );
 
-			$new_users   = array_unique( $wpdb->get_col( $new_query ) );
+			$new_users   = array_unique( Amapress_MailingList::normalizeEmailsArray( $wpdb->get_col( $new_query ) ) );
 			$was_errored = $wpdb->last_error;
-			$old_users   = array_unique( $wpdb->get_col( $sql_query ) );
+			$old_users   = array_unique( Amapress_MailingList::normalizeEmailsArray( $wpdb->get_col( $sql_query ) ) );
 			$was_errored = $was_errored || $wpdb->last_error;
 			$inter       = array_intersect( $new_users, $old_users );
 			if ( ! $was_errored && count( $inter ) == count( $old_users ) && count( $inter ) == count( $new_users ) ) {

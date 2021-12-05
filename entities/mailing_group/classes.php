@@ -708,9 +708,9 @@ class AmapressMailingGroup extends TitanEntity {
 		$key = 'amps_mlg_q' . md5( serialize( $queries ) );
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
-			$res = array_map( function ( $email ) {
-				return strtolower( $email );
-			}, $wpdb->get_col( Amapress_MailingList::getSqlQuery( $queries, [] ) ) );
+			$res = Amapress_MailingList::normalizeEmailsArray(
+				$wpdb->get_col( Amapress_MailingList::getSqlQuery( $queries, [] ) )
+			);
 		}
 
 		return $res;

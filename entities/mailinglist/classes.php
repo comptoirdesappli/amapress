@@ -337,6 +337,12 @@ abstract class Amapress_MailingList {
 		return implode( ' UNION ', array_merge( $sql_queries, $sql_queries2 ) );
 	}
 
+	public static function normalizeEmailsArray( $emails ) {
+		return array_map( function ( $email ) {
+			return strtolower( $email );
+		}, $emails );
+	}
+
 	public static function getSqlQuery( $queries, $exclude_queries ) {
 		if ( empty( $queries ) ) {
 			global $wpdb;

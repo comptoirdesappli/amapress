@@ -183,7 +183,8 @@ add_action( 'admin_post_nopriv_fetch-mailing-members', function () {
 	$sql_query = Amapress_MailingList::getSqlQuery( $ml->getMembersQueries(), $ml->getExcludeMembersQueries() );
 	global $wpdb;
 	foreach ( $wpdb->get_col( $sql_query ) as $email ) {
-		echo "{$email}\n";
+		$normalized_email = strtolower( $email );
+		echo "{$normalized_email}\n";
 	}
 	die();
 } );
