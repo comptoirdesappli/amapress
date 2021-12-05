@@ -207,7 +207,7 @@ class Amapress {
 	}
 
 	public static function makeLink( $url, $title = null, $escape_title = true, $blank = false ) {
-		if ( empty( $title ) ) {
+		if ( empty( $title ) && '0' !== $title ) {
 			$title = $url;
 		}
 
