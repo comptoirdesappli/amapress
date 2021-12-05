@@ -824,21 +824,30 @@ function amapress_mailinglists_autosync( $force = false ) {
 	$messages = array();
 	foreach ( Amapress_MailingListConfiguration::getAll() as $conf ) {
 		$ml = $conf->getMailingList();
-		if ( $force ) {
-			$sync = 'not_sync';
-		} else {
-			$sync = $ml->isSync( $conf );
+		if ( null == $ml ) {
+			$messages[] = sprintf( __( 'La synchro de %s n\'est possible. Cette liste est introuvable. Veuillez vérifier la configuration de la liste ou du fournisseur. Voir %s', 'amapress' ), $conf->getTitle(), $conf->getAdminEditLink() );
+			continue;
 		}
-		switch ( $sync ) {
-			case 'not_sync':
-				$ml->syncMembers( $conf );
-				if ( 'sync' != $ml->isSync( $conf ) ) {
-					$messages[] = sprintf( __( 'La synchro de %s a échouée. Voir %s', 'amapress' ), $conf->getTitle(), $conf->getAdminEditLink() );
-				}
-				break;
-			case 'manual':
-				$messages[] = sprintf( __( 'La synchro de %s doit être faite manuellement (ou n\'est pas configurée). Voir %s', 'amapress' ), $conf->getTitle(), $conf->getAdminEditLink() );
-				break;
+		try {
+			if ( $force ) {
+				$sync = 'not_sync';
+			} else {
+				$sync = $ml->isSync( $conf );
+			}
+			switch ( $sync ) {
+				case 'not_sync':
+					$ml->syncMembers( $conf );
+					if ( 'sync' != $ml->isSync( $conf ) ) {
+						$messages[] = sprintf( __( 'La synchro de %s a échouée. Voir %s', 'amapress' ), $conf->getTitle(), $conf->getAdminEditLink() );
+					}
+					break;
+				case 'manual':
+					$messages[] = sprintf( __( 'La synchro de %s doit être faite manuellement (ou n\'est pas configurée). Voir %s', 'amapress' ), $conf->getTitle(), $conf->getAdminEditLink() );
+					break;
+			}
+		} catch ( Exception $ex ) {
+			$messages[] = sprintf( __( 'La synchro de %s a échouée : %s. Voir %s', 'amapress' ),
+				$conf->getTitle(), $ex->getMessage(), $conf->getAdminEditLink() );
 		}
 	}
 	if ( ! empty( $messages ) ) {
