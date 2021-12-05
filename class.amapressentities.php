@@ -747,7 +747,8 @@ Tout email envoyé à ces comptes email spécifiques seront (après modération 
 									'options' => array(
 										array(
 											'type' => 'note',
-											'desc' => __( 'Générer des clés pour l\'API avec une durée Illimitée depuis ', 'amapress' ) . Amapress::makeLink( 'https://api.ovh.com/createToken/index.cgi?GET=/*&PUT=/*&POST=/*&DELETE=/*' )
+											'desc' => __( 'Générer des clés pour l\'API avec une durée Illimitée depuis ', 'amapress' ) .
+											          Amapress::makeLink( 'https://api.ovh.com/createToken/index.cgi?GET=/*&PUT=/*&POST=/*&DELETE=/*', null, true, true )
 										),
 										array(
 											'id'      => 'ovh_mailing_domain',
