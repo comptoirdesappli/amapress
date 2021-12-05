@@ -511,8 +511,15 @@ class AmapressMailingGroup extends TitanEntity {
 								$parsed_bounce_email = $bounce_handler->parseEmail( file_get_contents( $eml_file ) );
 
 								$undelivered = implode( ', ', array_map( function ( $recipient ) {
+									$email      = $recipient['recipient'];
+									$email_link = $email;
+									$user       = get_user_by( 'email', $email );
+									if ( $user ) {
+										$email_link = Amapress::makeLink( admin_url( sprintf( 'user-edit.php?user_id=%d#email', $user->ID ) ) );
+									}
+
 									return sprintf( __( '%s (%s/%s)', 'amapress' ),
-										$recipient['recipient'],
+										$email_link,
 										$recipient['action'],
 										$recipient['message']
 									);
