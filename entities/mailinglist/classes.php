@@ -358,7 +358,7 @@ abstract class Amapress_MailingList {
 
 		$exclude_sql_query = self::getSqlUnionQuery( $exclude_queries );
 
-		return "($include_sql_query) EXCEPT ALL ($exclude_sql_query)";
+		return "SELECT email FROM ($include_sql_query) as inc WHERE inc.email NOT IN ($exclude_sql_query)";
 	}
 
 	public function getName() {
