@@ -153,10 +153,13 @@ add_filter( 'amapress_lieu_distribution_title_formatter', 'amapress_lieu_distrib
 function amapress_lieu_distribution_title_formatter( $post_title, WP_Post $post ) {
 	//clear post cache...
 	$lieu = AmapressLieu_distribution::getBy( $post, true );
+	if ( ! $lieu ) {
+		return $post_title;
+	}
 
 	global $amapress_pre_post_titles;
 	global $amapress_import_demo;
-	if ( ! $amapress_import_demo ) {
+	if ( ! $amapress_import_demo && 'publish' == $post->post_status ) {
 		if ( ! isset( $amapress_pre_post_titles[ $post->ID ] ) || $amapress_pre_post_titles[ $post->ID ] != $lieu->getTitle() ) {
 			amapress_update_all_posts(
 				[
@@ -203,10 +206,7 @@ function amapress_adhesion_title_formatter( $post_title, WP_Post $post ) {
 	$post_id = $post->ID;
 
 	$adh = AmapressAdhesion::getBy( $post, true );
-	if ( ! $adh->getContrat_instanceId() ) {
-		return $post->post_title;
-	}
-	if ( ! $adh->getAdherentId() ) {
+	if ( ! $adh || ! $adh->getContrat_instance() || ! $adh->getAdherent() ) {
 		return $post->post_title;
 	}
 
