@@ -3698,9 +3698,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 </script>';
 			}
 
-			echo '<style type="text/css">.quant-var-recopier{text-shadow: none !important; text-decoration: none !important;}.panier-mod-produit-label{display: inline-block;white-space: normal;word-wrap: break-word; max-width: ' . $atts['max_produit_label_width'] . ';}</style>';
+			echo '<style type="text/css">.DTFC_LeftBodyLiner{overflow-x: hidden;}.quant-var-recopier{text-shadow: none !important; text-decoration: none !important;}.panier-mod-produit-label{display: inline-block;white-space: normal;word-wrap: break-word; max-width: ' . $atts['max_produit_label_width'] . ';}</style>';
 
-			$js_options = array(
+			$paniers_modulables_editor_height = $atts['paniers_modulables_editor_height'];
+			$js_options                       = array(
 				'bSort'          => false,
 				'paging'         => false,
 				'searching'      => true,
@@ -3709,7 +3710,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				'init_as_html'   => true,
 				'scrollCollapse' => true,
 				'scrollX'        => true,
-				'scrollY'        => $atts['paniers_modulables_editor_height'],
+				'scrollY'        => is_numeric( $paniers_modulables_editor_height ) ?
+					$paniers_modulables_editor_height . 'px' : $paniers_modulables_editor_height,
 				'fixedColumns'   => array( 'leftColumns' => 2 ),
 			);
 			if ( $has_groups ) {
@@ -3726,7 +3728,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			}
 
 			echo amapress_get_datatable( 'quant-commandes', $columns, $data, $js_options );
-			echo '<p>* Cliquez sur la case pour faire apparaître le choix de quantités</p>';
+			echo '<p>* Cliquez sur la case pour faire apparaître le choix de quantités et utilisez les 2 barres de défilement à droite et en bas pour voir toutes les dates et tous les produits.</p>';
 		} else {
 			$contrat_quants = AmapressContrats::get_contrat_quantites( $contrat->ID );
 			foreach ( $contrat_quants as $quantite ) {
