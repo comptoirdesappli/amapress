@@ -2975,21 +2975,10 @@ class Amapress {
 	 * This function is hooked into the 'wp_dashboard_setup' action below.
 	 */
 	public static function add_dashboard_widgets() {
-
-		wp_add_dashboard_widget(
-			'amapress_this_week_dashboard_widget',         // Widget slug.
-			__( 'Cette semaine avec Amapress', 'amapress' ),         // Title.
-			array( 'Amapress', 'amapress_this_week_dashboard_widget_function' ) // Display function.
-		);
 		wp_add_dashboard_widget(
 			'amapress_entities_dashboard_widget',         // Widget slug.
 			__( 'Information Amapress', 'amapress' ),         // Title.
 			array( 'Amapress', 'amapress_entities_dashboard_widget_function' ) // Display function.
-		);
-		wp_add_dashboard_widget(
-			'amapress_paiements_dashboard_widget',         // Widget slug.
-			__( 'Inscriptions Amapress', 'amapress' ),         // Title.
-			array( 'Amapress', 'amapress_paiements_dashboard_widget_function' ) // Display function.
 		);
 		wp_add_dashboard_widget(
 			'amapress_this_month_dashboard_widget',         // Widget slug.
@@ -2999,19 +2988,26 @@ class Amapress {
 	}
 
 	static function amapress_this_month_dashboard_widget_function() {
-		$start_date     = Amapress::start_of_week( amapress_time() );
-		$end_date       = Amapress::add_a_month( amapress_time() );
-		$week_paniers   = AmapressPanier::get_paniers( $start_date, $end_date );
-		$week_dists     = AmapressDistribution::get_distributions( $start_date, $end_date );
-		$week_visites   = AmapressVisite::get_visites( $start_date, $end_date );
-		$week_paiements = AmapressAmapien_paiement::get_paiements( $start_date, $end_date );
+		$start_date    = Amapress::start_of_week( amapress_time() );
+		$end_date      = Amapress::add_a_month( amapress_time() );
+		$month_paniers = array_filter( AmapressPanier::get_paniers( $start_date, $end_date ),
+			function ( $panier ) {
+				return $panier->getContrat_instance()->hasPanier_CustomContent();
+			} );
+		$month_dists   = AmapressDistribution::get_distributions( $start_date, $end_date );
+		$month_visites = AmapressVisite::get_visites( $start_date, $end_date );
 
-		echo '<p>' . __( 'Paniers :', 'amapress' ) . '</p>';
-		if ( count( $week_paniers ) == 0 ) {
-			echo '<i>' . __( 'Pas de panier ce mois-ci', 'amapress' ) . '</i>';
-		} else {
+		echo '<p>' . Amapress::makeLink(
+				admin_url( 'admin.php?page=contrats_quantites_next_distrib' ),
+				__( 'Quantités à la prochaine distribution', 'amapress' ), true, true ) . '</p>';
+
+		if ( ! empty( $month_paniers ) ) {
+			echo '<p>' . __( 'Contenu de paniers à remplir :', 'amapress' ) . '</p>';
 			echo '<ul>';
-			foreach ( $week_paniers as $panier ) {
+			foreach ( $month_paniers as $panier ) {
+				if ( ! $panier->getContrat_instance()->hasPanier_CustomContent() ) {
+					continue;
+				}
 				$prods = AmapressPaniers::get_selected_produits( $panier->ID );
 				$cnt   = count( $prods );
 				$url   = admin_url( 'post.php?post=' . $panier->ID . '&action=edit' );
@@ -3024,33 +3020,38 @@ class Amapress {
 			echo '</ul>';
 		}
 
-		echo '<p>' . __( 'Distributions :', 'amapress' ) . '</p>';
-		if ( count( $week_dists ) == 0 ) {
+		if ( empty( $month_dists ) ) {
 			echo '<i>' . __( 'Pas de distribution ce mois-ci', 'amapress' ) . '</i>';
 		} else {
+			echo '<p>' . sprintf(
+					__( 'Distributions / <a target="_blank" href="%s">Inscriptions des responsables</a> :', 'amapress' ),
+					Amapress::get_inscription_distrib_page_href() ) . '</p>';
 			echo '<ul>';
-			foreach ( $week_dists as $dist ) {
+			foreach ( $month_dists as $dist ) {
 				$url   = admin_url( 'post.php?post=' . $dist->ID . '&action=edit' );
 				$resps = $dist->getResponsablesIds();
 				$req   = AmapressDistributions::get_required_responsables( $dist->ID );
+				echo '<li><a target="_blank" href=' . $url . '>';
 				if ( count( $resps ) == 0 ) {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . __( 'Pas de responsables', 'amapress' ) . "</strong></li>";
+					echo $dist->getTitle() . '</a> - <strong style="color:red">' . __( 'Pas de responsables', 'amapress' ) . '</strong>';
 				} else if ( $req > count( $resps ) ) {
 					$miss = $req - count( $resps );
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong>" . sprintf( __( '%d responsable(s) manquants', 'amapress' ), $miss ) . "</strong></li>";
+					echo $dist->getTitle() . '</a> - <strong>' . sprintf( __( '%d responsable(s) manquants', 'amapress' ), $miss ) . '</strong>';
 				} else {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . __( 'Complet', 'amapress' ) . "</li>";
+					echo $dist->getTitle() . '</a> - ' . __( 'Complet', 'amapress' );
 				}
+				echo ' / ' . Amapress::makeLink( $dist->getListeEmargementHref(), __( 'Liste d\'émargement', 'amapress' ), true, true );
+				echo '</li>';
 			}
 			echo '</ul>';
 		}
 
 		echo '<p>' . __( 'Visites à la ferme :', 'amapress' ) . '</p>';
-		if ( count( $week_visites ) == 0 ) {
+		if ( count( $month_visites ) == 0 ) {
 			echo '<i>' . __( 'Pas de visite à la ferme ce mois-ci', 'amapress' ) . '</i>';
 		} else {
 			echo '<ul>';
-			foreach ( $week_visites as $dist ) {
+			foreach ( $month_visites as $dist ) {
 				$url   = admin_url( 'post.php?post=' . $dist->ID . '&action=edit' );
 				$resps = AmapressDistributions::get_visite_participants( $dist->ID );
 				if ( count( $resps ) == 0 ) {
@@ -3059,173 +3060,41 @@ class Amapress {
 					$cnt = count( $resps );
 					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . sprintf( __( '%d participant(s)', 'amapress' ), $cnt ) . "</li>";
 				}
-			}
-			echo '</ul>';
-		}
-
-		echo '<p>' . __( 'Chèques à encaisser :', 'amapress' ) . '</p>';
-		if ( count( $week_paiements ) == 0 ) {
-			echo '<i>' . __( 'Pas de chèque à encaisser ce mois-ci', 'amapress' ) . '</i>';
-		} else {
-			echo '<ul>';
-			foreach ( $week_paiements as $dist ) {
-				$url = admin_url( 'post.php?post=' . $dist->ID . '&action=edit' );
-				echo "<li><a href='$url'>{$dist->getTitle()}</a></li>";
-			}
-			echo '</ul>';
-		}
-	}
-
-	static function amapress_this_week_dashboard_widget_function() {
-		$start_date     = Amapress::start_of_week( amapress_time() );
-		$end_date       = Amapress::add_a_week( amapress_time() );
-		$week_paniers   = AmapressPanier::get_paniers( $start_date, $end_date );
-		$week_dists     = AmapressDistribution::get_distributions( $start_date, $end_date );
-		$week_visites   = AmapressVisite::get_visites( $start_date, $end_date );
-		$week_paiements = AmapressAmapien_paiement::get_paiements( $start_date, $end_date );
-
-		echo '<p>' . __( 'Paniers :', 'amapress' ) . '</p>';
-		if ( count( $week_paniers ) == 0 ) {
-			echo '<i>' . __( 'Pas de panier cette semaine', 'amapress' ) . '</i>';
-		} else {
-			echo '<ul>';
-			foreach ( $week_paniers as $panier ) {
-				$prods = AmapressPaniers::get_selected_produits( $panier->ID );
-				$cnt   = count( $prods );
-				$url   = admin_url( 'post.php?post=' . $panier->ID . '&action=edit' );
-				if ( $cnt == 0 ) {
-					echo "<li><a href='$url'>{$panier->getTitle()}</a> - Pas de produits sélectionnés</li>";
-				} else {
-					echo "<li><a href='$url'>{$panier->getTitle()}</a> - $cnt produit(s)</li>";
-				}
-			}
-			echo '</ul>';
-		}
-
-		echo '<p>' . __( 'Distributions :', 'amapress' ) . '</p>';
-		if ( count( $week_dists ) == 0 ) {
-			echo '<i>' . __( 'Pas de distribution cette semaine', 'amapress' ) . '</i>';
-		} else {
-			echo '<ul>';
-			foreach ( $week_dists as $dist ) {
-				$url   = admin_url( 'post.php?post=' . $dist->ID . '&action=edit' );
-				$resps = $dist->getResponsablesIds();
-				$req   = AmapressDistributions::get_required_responsables( $dist->ID );
-				if ( count( $resps ) == 0 ) {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . __( 'Pas de responsables', 'amapress' ) . "</strong></li>";
-				} else if ( $req > count( $resps ) ) {
-					$miss = $req - count( $resps );
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong>" . sprintf( __( '%d responsable(s) manquants', 'amapress' ), $miss ) . "</strong></li>";
-				} else {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . __( 'Complet', 'amapress' ) . "</li>";
-				}
-			}
-			echo '</ul>';
-		}
-
-		echo '<p>' . __( 'Visites à la ferme :', 'amapress' ) . '</p>';
-		if ( count( $week_visites ) == 0 ) {
-			echo '<i>' . __( 'Pas de visite à la ferme cette semaine', 'amapress' ) . '</i>';
-		} else {
-			echo '<ul>';
-			foreach ( $week_visites as $dist ) {
-				$url   = admin_url( 'post.php?post=' . $dist->ID . '&action=edit' );
-				$resps = AmapressDistributions::get_visite_participants( $dist->ID );
-				if ( count( $resps ) == 0 ) {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . __( 'Pas de participants', 'amapress' ) . "</strong></li>";
-				} else {
-					$cnt = count( $resps );
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . sprintf( __( '%d participant(s)', 'amapress' ), $cnt ) . "</li>";
-				}
-			}
-			echo '</ul>';
-		}
-
-		echo '<p>' . __( 'Chèques à encaisser :', 'amapress' ) . '</p>';
-		if ( count( $week_paiements ) == 0 ) {
-			echo '<i>' . __( 'Pas de chèque à encaisser cette semaine', 'amapress' ) . '</i>';
-		} else {
-			echo '<ul>';
-			foreach ( $week_paiements as $dist ) {
-				$url = admin_url( 'post.php?post=' . $dist->ID . '&action=edit' );
-				echo "<li><a href='$url'>{$dist->getTitle()}</a></li>";
 			}
 			echo '</ul>';
 		}
 	}
 
 	static function amapress_entities_dashboard_widget_function() {
-		$contrats         = AmapressContrats::get_active_contrat_instances();
-		$contrats_tocheck = array();
-		foreach ( $contrats as $contrat ) {
-			$res = false;
-			AmapressContrats::get_contrat_status( $contrat->ID, $res );
-			if ( $res ) {
-				$contrats_tocheck[] = $contrat;
-			}
-		}
-
-		//contrat à vérifier
-		$cnt_contrats_tocheck = count( $contrats_tocheck );
-		if ( $cnt_contrats_tocheck > 0 ) {
-			$adm = admin_url( 'edit.php?post_type=amps_contrat_inst' );
-			echo sprintf( __( '<p style=\'color:red\'><a href=\'%s\'>(%s)</a> contrats à vérifier</p>', 'amapress' ), $adm, $cnt_contrats_tocheck );
-		}
+		$lieux    = Amapress::get_lieux();
+		$contrats = AmapressContrats::get_active_contrat_instances();
 
 		//contrats
 		$adm = admin_url( 'edit.php?post_type=amps_contrat_inst' );
 		$cnt = count( $contrats );
-		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> contrats actifs</p>', 'amapress' ), $adm, $cnt );
+		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> contrats actifs. Contrat(s) ouvert(s) à l\'inscription :</p>', 'amapress' ), $adm, $cnt );
+		echo wpautop( amapress_replace_mail_placeholders( '%%contrats_en_cours_by_inscr_end%%', null, null ) );
 
-		//lieux distrib
-		$lieux = get_posts(
+		//adhérents
+		$cnt = get_posts_count(
 			array(
 				'posts_per_page' => - 1,
-				'post_type'      => 'amps_lieu'
+				'post_type'      => 'amps_adh_pmt',
+				'amapress_date'  => 'active'
 			)
 		);
-		$adm   = admin_url( 'edit.php?post_type=amps_lieu' );
-		$cnt   = count( $lieux );
-		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> lieu(x) de distribution</p>', 'amapress' ), $adm, $cnt );
+		$adm = admin_url( 'edit.php?post_type=amps_adh_pmt&amapress_date=active' );
+		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> adhésions</p>', 'amapress' ), $adm, $cnt );
 
-		$posts = get_posts(
-			array(
-				'posts_per_page' => - 1,
-				'post_type'      => 'amps_producteur'
-			)
-		);
-		$adm   = admin_url( 'edit.php?post_type=amps_producteur' );
-		$cnt   = count( $posts );
-		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> producteurs</p>', 'amapress' ), $adm, $cnt );
-
-		$posts = get_posts(
-			array(
-				'posts_per_page' => - 1,
-				'post_type'      => 'amps_produit'
-			)
-		);
-		$adm   = admin_url( 'edit.php?post_type=amps_produit' );
-		$cnt   = count( $posts );
-		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> produits</p>', 'amapress' ), $adm, $cnt );
-	}
-
-	static function amapress_paiements_dashboard_widget_function() {
-		$contrats = AmapressContrats::get_active_contrat_instances();
-
-		$lieux = get_posts(
-			array(
-				'posts_per_page' => - 1,
-				'post_type'      => 'amps_lieu'
-			)
-		);
-		$ads   = get_posts(
+		//inscriptions
+		$ads = get_posts(
 			array(
 				'posts_per_page' => - 1,
 				'post_type'      => 'amps_adhesion'
 			)
 		);
-		$adm   = admin_url( 'edit.php?post_type=amps_adhesion' );
-		$cnt   = count( $ads );
+		$adm = admin_url( 'edit.php?post_type=amps_adhesion' );
+		$cnt = count( $ads );
 		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> inscriptions :</p>', 'amapress' ), $adm, $cnt );
 		echo '<ul>';
 		foreach ( $lieux as $lieu ) {
@@ -3244,7 +3113,7 @@ class Amapress {
 			);
 			$adm      = admin_url( 'edit.php?post_type=amps_adhesion&meta_key=amapress_adhesion_lieu&meta_value=' . $lieu->ID );
 			$cnt      = count( $ads_lieu );
-			echo sprintf( __( '<li>%s: <a href=\'%s\'>(%s)</a> inscriptions</li>', 'amapress' ), $lieu->post_title, $adm, $cnt );
+			echo sprintf( __( '<li>%s: <a href=\'%s\'>(%s)</a> inscriptions</li>', 'amapress' ), $lieu->getTitle(), $adm, $cnt );
 		}
 		echo '</ul>';
 		echo '<ul>';
@@ -3268,26 +3137,22 @@ class Amapress {
 		}
 		echo '</ul>';
 
+		//lieux distrib
+		$adm = admin_url( 'edit.php?post_type=amps_lieu' );
+		$cnt = count( $lieux );
+		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> lieu(x) de distribution</p>', 'amapress' ), $adm, $cnt );
 
-		$ads_to_confirm = get_posts(
+		//producteurs
+		$cnt = get_posts_count(
 			array(
-				'post_type'      => 'amps_adhesion',
 				'posts_per_page' => - 1,
-				'meta_query'     => array(
-					array(
-						'key'     => 'amapress_adhesion_status',
-						'value'   => 'to_confirm',
-						'compare' => '=',
-					)
-				)
+				'post_type'      => 'amps_producteur'
 			)
 		);
-		$cnt            = count( $ads_to_confirm );
-		if ( $cnt > 0 ) {
-			$adm = admin_url( 'edit.php?post_type=amps_adhesion&meta_key=amapress_adhesion_status&meta_value=to_confirm' );
-			echo sprintf( __( '<p style=\'color:red\'><a href=\'%s\'>(%s)</a> inscriptions à confirmer</p>', 'amapress' ), $adm, $cnt );
-		}
+		$adm = admin_url( 'edit.php?post_type=amps_producteur' );
+		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> producteurs</p>', 'amapress' ), $adm, $cnt );
 	}
+
 
 	static function remove_dashboard_meta() {
 		remove_meta_box( 'dashboard_incoming_links', 'dashboard', 'normal' );
