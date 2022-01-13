@@ -9,7 +9,7 @@ function amapress_register_entities_amapien( $entities ) {
 	$entities['user'] = array(
 		'internal_name'            => 'user',
 		'csv_required_fields'      => array( 'user_email', 'first_name', 'last_name' ),
-		'other_def_hidden_columns' => array( 'bbp_user_role', 'posts', 'last_name' ),
+		'other_def_hidden_columns' => array( 'bbp_user_role', 'posts', 'name' ),
 		'bulk_actions'             => array(
 			'amp_resend_welcome' => array(
 				'label'    => __( 'Renvoyer l\'email de bienvenue', 'amapress' ),
