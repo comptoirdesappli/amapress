@@ -413,7 +413,28 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'                     => 'related-posts',
 				'query'                    => 'post_type=amps_adh_pmt&amapress_user=%%id%%&orderby=title&order=asc',
 			),
-			'contrats'          => array(
+			'adh_lieu'  => array(
+				'name'           => __( 'Lieu d\'adhésion', 'amapress' ),
+				'type'           => 'custom',
+				'desc'           => __( 'Lieu d\'adhésion', 'amapress' ),
+				'show_column'    => true,
+				'col_def_hidden' => true,
+				'custom_column'  => function ( $option, $user_id ) {
+					$adhesions = AmapressAdhesion_paiement::getAllActiveByUserId();
+					if ( ! empty( $adhesions[ $user_id ] ) ) {
+						$adh = $adhesions[ $user_id ];
+						if ( is_array( $adh ) ) {
+							$adh = array_values( $adh )[ count( $adh ) - 1 ];
+						}
+
+						$lieu = $adh->getLieu();
+						if ( $lieu ) {
+							echo $lieu->getLieuTitle();
+						}
+					}
+				},
+			),
+			'contrats'  => array(
 				'name'                     => __( 'Contrats', 'amapress' ),
 				'show_column'              => true,
 				'related_posts_count_func' => function ( $user_id ) {
