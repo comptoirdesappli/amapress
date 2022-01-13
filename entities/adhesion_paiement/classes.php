@@ -310,7 +310,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 		return $res;
 	}
 
-
+/** @return AmapressAdhesion_paiement[] */
 	public static function getAllActiveByUserId( $date = null, $adhesion_period_id = null ) {
 		$key = "amapress_AmapressAdhesionPaiement_getAllActiveByUserId_{$date}_{$adhesion_period_id}";
 		$res = wp_cache_get( $key );
