@@ -145,7 +145,7 @@ class AmapressExport_Users {
 			'user_activation_key',
 			'user_status',
 			'display_name',
-			'roles'
+			'role'
 		);
 		$meta_keys = $wpdb->get_results( "SELECT distinct(meta_key) FROM $wpdb->usermeta" );
 		$meta_keys = wp_list_pluck( $meta_keys, 'meta_key' );

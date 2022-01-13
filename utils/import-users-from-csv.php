@@ -49,12 +49,6 @@ class Amapress_Import_Users_CSV {
 		}
 		$filename = $sitename . $name . '.import_model';
 
-//		$data_keys = array(
-//			'ID', 'user_login', 'user_pass',
-//			'user_nicename', 'user_email', 'user_url',
-//			'user_registered', 'user_activation_key', 'user_status',
-//			'display_name', 'roles'
-//		);
 		$meta_keys = array();
 		foreach ( $post_fields as $k => $v ) {
 			if ( ( ( ! isset( $v['csv'] ) || $v['csv'] !== false ) && ( ! isset( $v['csv_import'] ) || $v['csv_import'] !== false ) )
@@ -418,7 +412,7 @@ class Amapress_Import_Users_CSV {
 			'use_ssl',
 			'show_admin_bar_front',
 			'show_admin_bar_admin',
-			'roles'
+			'role'
 		);
 
 		include( plugin_dir_path( __FILE__ ) . 'class-readcsv.php' );

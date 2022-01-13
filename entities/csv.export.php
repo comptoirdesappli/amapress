@@ -171,6 +171,7 @@ add_filter( 'amapress_users_export_fields', 'amapress_users_export_fields', 10, 
 function amapress_users_export_fields( $fields, $name ) {
 	$cols = apply_filters( 'manage_users_columns', array(
 		'ID'         => 'ID',
+		'name'       => __( 'Nom' ),
 		'user_login' => __( 'Username' ),
 		'first_name' => __( 'First Name' ),
 		'last_name'  => __( 'Last Name' ),

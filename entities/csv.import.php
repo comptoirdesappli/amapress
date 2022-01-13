@@ -24,7 +24,7 @@ function amapress_get_wp_users_labels() {
 //        'use_ssl' => 'SSL?',
 //        'show_admin_bar_front' => '',
 //        'show_admin_bar_admin' => __('Bar admin?', 'amapress'),
-		'roles'           => __( 'Rôle sur le site', 'amapress' ),
+		'role'            => __( 'Rôle', 'amapress' ),
 		'email2'          => __( 'Email 2', 'amapress' ),
 		'email3'          => __( 'Email 3', 'amapress' ),
 		'email4'          => __( 'Email 4', 'amapress' ),
@@ -747,7 +747,7 @@ function amapress_process_generate_model() {
 				'email2',
 				'email3',
 				'email4',
-				'roles'
+				'role'
 			) );
 			break;
 		default:
