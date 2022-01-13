@@ -663,7 +663,7 @@ function amapress_register_entities_amapien( $entities ) {
 		),
 		'row_actions'              => array(
 			'add_inscription'  => [
-				'label'  => __( 'Ajout Inscription Contrat', 'amapress' ),
+				'label'  => __( 'Ajout Inscription', 'amapress' ),
 				'href'   => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription&user_id=%id%' ),
 				'target' => '_blank',
 			],

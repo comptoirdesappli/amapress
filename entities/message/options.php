@@ -510,7 +510,7 @@ function amapress_replace_mail_placeholders_help(
 		$ret['lien_desinscription_intermittent']   = __( 'Lien de désinscription de la liste des intermittents', 'amapress' );
 		$ret["contrats_en_cours_by_inscr_end"]     = __( 'Contrats ouverts aux inscriptions (par ordre de clôture)', 'amapress' );
 		$ret["contrats_en_cours_by_contrat_start"] = __( 'Contrats ouverts aux inscriptions (par ordre de début)', 'amapress' );
-		$ret["contrats_en_cours_by_title"]         = __( 'Contrats ouverts aux inscriptions (par ordre de clôture)', 'amapress' );
+		$ret["contrats_en_cours_by_title"]         = __( 'Contrats ouverts aux inscriptions (par ordre de titre)', 'amapress' );
 
 		if ( $include_sender ) {
 			foreach ( amapress_replace_mail_user_placeholders_help() as $k => $v ) {

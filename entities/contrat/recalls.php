@@ -392,7 +392,7 @@ add_action( 'amapress_recall_contrats_paiements_producteur', function ( $args ) 
 add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
 	if ( null == $dist ) {
-		echo '<p>' . __( 'Distribution intouvable', 'amapress' ) . '</p>';
+		echo '<p>' . __( 'Distribution introuvable', 'amapress' ) . '</p>';
 
 		return;
 	}
@@ -479,7 +479,7 @@ add_action( 'amapress_recall_contrat_renew', function ( $args ) {
 add_action( 'amapress_recall_contrat_current', function ( $args ) {
 	$dist = AmapressDistribution::getBy( $args['id'] );
 	if ( null == $dist ) {
-		echo '<p>' . __( 'Distribution intouvable', 'amapress' ) . '</p>';
+		echo '<p>' . __( 'Distribution introuvable', 'amapress' ) . '</p>';
 
 		return;
 	}
@@ -527,7 +527,7 @@ add_action( 'amapress_recall_contrat_current', function ( $args ) {
 add_action( 'amapress_recall_contrat_openclose', function ( $args ) {
 	$contrat = AmapressContrat_instance::getBy( $args['id'] );
 	if ( null == $contrat ) {
-		echo '<p>' . __( 'Contrat intouvable', 'amapress' ) . '</p>';
+		echo '<p>' . __( 'Contrat introuvable', 'amapress' ) . '</p>';
 
 		return;
 	}
