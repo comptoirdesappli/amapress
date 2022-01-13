@@ -957,7 +957,14 @@ class AmapressContrat_instance extends TitanEntity {
 		return $contrat_attachment_id;
 	}
 
+	public function includeDocContrat() {
+		return $this->getCustomAsInt( 'amapress_contrat_instance_allow_word', 0 );
+	}
+
 	public function getContratModelDocFileName() {
+		if ( ! $this->includeDocContrat() ) {
+			return null;
+		}
 		if ( defined( 'AMAPRESS_DEMO_MODE' ) ) {
 			if ( $this->isPanierVariable() ) {
 				if ( $this->hasGroups() ) {
@@ -1003,7 +1010,10 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getContratModelDocStatus() {
-		$model_file   = $this->getContratModelDocFileName();
+		$model_file = $this->getContratModelDocFileName();
+		if ( empty( $model_file ) ) {
+			return null;
+		}
 		$placeholders = $this->generateContratDoc( $this->getDate_debut(), false, true );
 
 		return Phptemplate_withnewline::getPlaceholderStatus( $model_file, $placeholders, __( 'Contrat personnalisé', 'amapress' ) );
@@ -1065,7 +1075,11 @@ class AmapressContrat_instance extends TitanEntity {
 
 	public function getContratDocFileName( $date_first_distrib ) {
 		$model_filename = $this->getContratModelDocFileName();
-		$ext            = strpos( $model_filename, '.docx' ) !== false ? '.docx' : '.odt';
+		if ( empty( $model_filename ) ) {
+			return null;
+		}
+
+		$ext = strpos( $model_filename, '.docx' ) !== false ? '.docx' : '.odt';
 
 		return trailingslashit( Amapress::getContratDir() ) . sanitize_file_name(
 				__( 'contrat-papier-', 'amapress' ) . $this->getTitle() . '-' . $this->ID . '-' . date_i18n( 'Y-m-d', $date_first_distrib ) . $ext );

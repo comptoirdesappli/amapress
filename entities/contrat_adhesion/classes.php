@@ -1033,7 +1033,10 @@ class AmapressAdhesion extends TitanEntity {
 
 	public function getContratDocFileName() {
 		$model_filename = $this->getContrat_instance()->getContratModelDocFileName();
-		$ext            = strpos( $model_filename, '.docx' ) !== false ? '.docx' : '.odt';
+		if ( empty( $model_filename ) ) {
+			return null;
+		}
+		$ext = strpos( $model_filename, '.docx' ) !== false ? '.docx' : '.odt';
 
 		return trailingslashit( Amapress::getContratDir() ) . sanitize_file_name(
 				__( 'inscription-', 'amapress' ) . $this->getContrat_instance()->getModelTitle() . '-' . $this->ID . '-' . $this->getAdherent()->getUser()->last_name . $ext );
@@ -1114,6 +1117,9 @@ class AmapressAdhesion extends TitanEntity {
 	}
 
 	public function generateContratDoc( $editable, $check_only = false ) {
+		if ( ! $this->getContrat_instance() ) {
+			return null;
+		}
 		$out_filename   = $this->getContratDocFileName();
 		$model_filename = $this->getContrat_instance()->getContratModelDocFileName();
 		if ( ! $check_only && empty( $model_filename ) ) {

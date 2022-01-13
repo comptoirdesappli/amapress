@@ -1156,7 +1156,10 @@ add_action( 'amapress_row_action_adhesion_generate_contrat', 'amapress_row_actio
 function amapress_row_action_adhesion_generate_contrat( $post_id ) {
 	$adhesion       = AmapressAdhesion::getBy( $post_id );
 	$full_file_name = $adhesion->generateContratDoc( true );
-	$file_name      = basename( $full_file_name );
+	if ( empty( $full_file_name ) ) {
+		wp_die( __( 'Ne peut pas générer le fichier DOCX', 'amapress' ) );
+	}
+	$file_name = basename( $full_file_name );
 	Amapress::sendDocumentFile( $full_file_name, $file_name );
 }
 
@@ -1164,7 +1167,10 @@ add_action( 'amapress_row_action_adhesion_generate_contrat_pdf', 'amapress_row_a
 function amapress_row_action_adhesion_generate_contrat_pdf( $post_id ) {
 	$adhesion       = AmapressAdhesion::getBy( $post_id );
 	$full_file_name = $adhesion->generateContratDoc( false );
-	$file_name      = basename( $full_file_name );
+	if ( empty( $full_file_name ) ) {
+		wp_die( __( 'Ne peut pas générer le fichier DOCX', 'amapress' ) );
+	}
+	$file_name = basename( $full_file_name );
 	Amapress::sendDocumentFile( $full_file_name, $file_name );
 }
 

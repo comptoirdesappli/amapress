@@ -248,7 +248,10 @@ add_action( 'amapress_init', function () {
 		}
 
 		$full_file_name = $adhesion->generateContratDoc( false );
-		$file_name      = basename( $full_file_name );
+		if ( empty( $full_file_name ) ) {
+			wp_die( __( 'Ne peut pas générer le fichier DOCX', 'amapress' ) );
+		}
+		$file_name = basename( $full_file_name );
 		Amapress::sendDocumentFile( $full_file_name, $file_name );
 	}
 	if ( isset( $_REQUEST['inscr_assistant'] ) && 'generate_bulletin' == $_REQUEST['inscr_assistant'] ) {
@@ -4885,14 +4888,14 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
                     .css('visibility', 'visible');
             });
             $(".amapress_validate").validate({
-                onkeyup: false,
-                errorPlacement: function (error, element) {
-                    var $commandes = element.closest('.dataTables_wrapper');
-                    if ($commandes.length) {
-                        error.insertAfter($commandes);
-                    } else {
-                        if ("radio" === element.attr("type") || "checkbox" === element.attr("type")) {
-                            error.insertBefore(element);
+                    onkeyup: false,
+                    errorPlacement: function (error, element) {
+                        var $commandes = element.closest('.dataTables_wrapper');
+                        if ($commandes.length) {
+                            error.insertAfter($commandes);
+                        } else {
+                            if ("radio" === element.attr("type") || "checkbox" === element.attr("type")) {
+                                error.insertBefore(element);
                             } else {
                                 error.insertAfter(element);
                             }

@@ -1709,7 +1709,15 @@ jQuery(function($) {
 <p>Vous pouvez télécharger <a target="_blank" href="%s">ici</a> l\'un des modèles DOCX génériques utilisables comme contrat vierge. Vous aurez à personnaliser le logo de votre AMAP et les engagements.</p>', 'amapress' ), Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ), admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ), esc_attr( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) ) );
 				},
 			),
-
+			'allow_word'            => array(
+				'name'        => __( 'Utiliser contrat DOCX?', 'amapress' ),
+				'type'        => 'checkbox',
+				'default'     => true,
+				'show_column' => false,
+				'required'    => true,
+				'group'       => __( '5/6 - Pré-inscription en ligne', 'amapress' ),
+				'desc'        => __( 'Autoriser l\'utilisation du contrat "papier"/DOCX/PDF', 'amapress' ),
+			),
 
 			//Statut
 			'is_principal'          => array(
@@ -3282,7 +3290,10 @@ function amapress_row_action_contrat_instance_generate_contrat( $post_id ) {
 	$adhesion       = AmapressContrat_instance::getBy( $post_id );
 	$date           = isset( $_GET['start_date'] ) ? intval( $_GET['start_date'] ) : amapress_time();
 	$full_file_name = $adhesion->generateContratDoc( $date, true );
-	$file_name      = basename( $full_file_name );
+	if ( empty( $full_file_name ) ) {
+		wp_die( __( 'Ne peut pas générer le fichier DOCX', 'amapress' ) );
+	}
+	$file_name = basename( $full_file_name );
 	Amapress::sendDocumentFile( $full_file_name, $file_name );
 }
 
