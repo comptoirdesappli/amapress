@@ -214,7 +214,7 @@ class TitanFrameworkMetaBox {
 			return $ret;
 		}
 
-		return $v;
+		return wp_strip_all_tags( apply_filters( 'manage_users_custom_column', $v, $column_name, $user_id ) );
 	}
 
 	/** @var TitanFrameworkOption $custom_orderby_options * */
