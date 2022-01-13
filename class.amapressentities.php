@@ -6621,7 +6621,13 @@ jQuery(function($) {
 							'name'     => __( 'Contenu', 'amapress' ),
 							'type'     => 'editor',
 							'required' => true,
-							'desc'     => __( 'Rédigez votre message', 'amapress' ),
+							'desc'     => function ( $o ) {
+								return __( 'Rédigez votre message', 'amapress' )
+								       . '<br/><br/>Contrats en cours :<br/>' .
+								       wpautop( amapress_replace_mail_placeholders( '%%contrats_en_cours_by_inscr_end%%', null ) )
+								       . '<br/>Inscription aux contrats : ' . Amapress::get_pre_inscription_page_href()
+								       . '<br/>Inscriptions aux distributions :' . Amapress::get_inscription_distrib_page_href();
+							},
 						),
 						array(
 							'type'      => 'save',
