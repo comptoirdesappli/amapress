@@ -126,17 +126,16 @@ function amapress_posts_export_prepare_value( $value, $field, $post ) {
 }
 
 add_filter( 'amapress_users_export_exclude_data', 'amapress_users_export_exclude_data' );
-function amapress_users_export_exclude_data( $exclude_date ) {
-	$exclude_date = array_merge( array(
+function amapress_users_export_exclude_data( $exclude_data ) {
+	$exclude_data = array_merge( array(
 		'user_pass',
-		'user_registered',
 		'rich_editing',
 		'comment_shortcuts',
 		'admin_color',
 		'use_ssl',
 		'show_admin_bar_front',
 		'show_admin_bar_admin'
-	), $exclude_date );
+	), $exclude_data );
 
 	foreach ( AmapressEntities::getFilteredFields( 'user' ) as $field => $options ) {
 		if ( ( isset( $options['csv'] ) && $options['csv'] == false ) || ( isset( $options['csv_export'] ) && $options['csv_export'] == false ) ) {
@@ -144,7 +143,7 @@ function amapress_users_export_exclude_data( $exclude_date ) {
 		}
 	}
 
-	return $exclude_date;
+	return $exclude_data;
 }
 
 add_filter( 'amapress_users_get_field_display_name', 'amapress_users_get_field_display_name' );
