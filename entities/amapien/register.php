@@ -655,6 +655,28 @@ function amapress_register_entities_amapien( $entities ) {
 				},
 				'confirm'   => true,
 			),
+			'send_email'       => [
+				'label' => __( 'Email', 'amapress' ),
+				'href'  => function ( $user_id ) {
+					$user = AmapressUser::getBy( $user_id );
+					if ( ! $user ) {
+						return '';
+					}
+
+					return 'mailto:' . implode( ',', $user->getAllEmails() );
+				}
+			],
+			'send_email_coadh' => [
+				'label' => __( 'Email (coadhérents)', 'amapress' ),
+				'href'  => function ( $user_id ) {
+					$user = AmapressUser::getBy( $user_id );
+					if ( ! $user ) {
+						return '';
+					}
+
+					return 'mailto:' . implode( ',', $user->getAllEmailsWithAllCoAdherents() );
+				}
+			],
 			'resend_welcome'   => array(
 				'label'   => __( 'Renvoyer l\'email de bienvenue', 'amapress' ),
 				'confirm' => true,
