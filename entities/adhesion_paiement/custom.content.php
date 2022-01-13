@@ -54,7 +54,6 @@ function adhesion_paiements_manage_users_columns( $columns ) {
 
 add_filter( 'manage_users_custom_column', 'amapress_paiements_column_display', 10, 3 );
 function amapress_paiements_column_display( $output, $colname, $user_id ) {
-	$adhesions = AmapressAdhesion::getAllActiveByUserId();
 //	if ( $colname == 'adh_nb_contrats' ) {
 //		$cnt  = isset( $adhesions[ $user_id ] ) ? count( $adhesions[ $user_id ] ) : 0;
 //		$href = admin_url( 'edit.php?post_type=amps_adhesion&amapress_date=active&amapress_user=' . $user_id );
@@ -63,6 +62,8 @@ function amapress_paiements_column_display( $output, $colname, $user_id ) {
 //	}
 
 	if ( strpos( $colname, 'contrat_amount_' ) === 0 ) {
+		$adhesions = AmapressAdhesion::getAllActiveByUserId();
+
 		$contrat_id      = intval( substr( $colname, 15 ) );
 		$expected_amount = 0;
 		/** @var AmapressAdhesion $adh */
