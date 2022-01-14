@@ -493,7 +493,7 @@ function amapress_register_entities_contrat( $entities ) {
 //				},
 //				'show_on'   => 'none',
 //			],
-			'open_inscr'           => [
+			'open_inscr'    => [
 				'label'     => __( 'Ouvrir inscriptions', 'amapress' ),
 				'condition' => function ( $adh_id ) {
 					$contrat = AmapressContrat_instance::getBy( $adh_id );
@@ -502,7 +502,7 @@ function amapress_register_entities_contrat( $entities ) {
 					       && Amapress::start_of_day( $contrat->getDate_cloture() ) >= Amapress::start_of_day( amapress_time() );
 				},
 			],
-			'close_inscr'          => [
+			'close_inscr'   => [
 				'label'     => __( 'Fermer inscriptions', 'amapress' ),
 				'condition' => function ( $adh_id ) {
 					$contrat = AmapressContrat_instance::getBy( $adh_id );
@@ -511,6 +511,18 @@ function amapress_register_entities_contrat( $entities ) {
 					       && Amapress::start_of_day( $contrat->getDate_cloture() ) >= Amapress::start_of_day( amapress_time() );
 				},
 			],
+			'send_openmail' => array(
+				'label'     => __( 'Envoyer le rappel d\'ouverture des inscriptions', 'amapress' ),
+				'condition' => function ( $adh_id ) {
+					$contrat = AmapressContrat_instance::getBy( $adh_id );
+
+					return $contrat->canSelfSubscribe()
+					       && Amapress::start_of_day( $contrat->getDate_cloture() ) >= Amapress::start_of_day( amapress_time() );
+				},
+				'target'    => '_blank',
+				'show_on'   => 'editor',
+				'confirm'   => true,
+			),
 		),
 		'bulk_actions'             => array(
 			'amp_incr_cloture' => array(
@@ -3310,6 +3322,21 @@ function amapress_row_action_contrat_instance_open_inscr( $post_id ) {
 	$contrat = AmapressContrat_instance::getBy( $post_id );
 	$contrat->setSelfSubscribe( true );
 	wp_redirect_and_exit( wp_get_referer() );
+}
+
+add_action( 'amapress_row_action_contrat_instance_send_openmail', 'amapress_row_action_contrat_instance_send_openmail' );
+function amapress_row_action_contrat_instance_send_openmail( $post_id ) {
+	$contrat = AmapressContrat_instance::getBy( $post_id );
+	do_action( 'amapress_recall_contrat_openclose',
+		[
+			'id'          => $contrat->getID(),
+			'manual_send' => 1,
+			'time'        => $contrat->getDate_ouverture(),
+			'type'        => 'open',
+			'title'       => sprintf( __( 'Ouverture inscriptions (%s) - %s', 'amapress' ),
+				date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ), $contrat->getTitle() )
+		] );
+	die();
 }
 
 add_action( 'amapress_row_action_contrat_instance_close_inscr', 'amapress_row_action_contrat_instance_close_inscr' );

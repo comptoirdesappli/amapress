@@ -533,6 +533,8 @@ add_action( 'amapress_recall_contrat_openclose', function ( $args ) {
 	}
 
 	if ( 0 === strcasecmp( $contrat->getSubName(), 'test' ) ) {
+		echo '<p>' . __( 'Contrat test. Le rappel ne peut pas être envoyé !', 'amapress' ) . '</p>';
+
 		return;
 	}
 
@@ -543,8 +545,10 @@ add_action( 'amapress_recall_contrat_openclose', function ( $args ) {
 		return;
 	}
 
+	$manual_send = isset( $args['manual_send'] );
+
 	$disabled_for_producteurs = Amapress::get_array( Amapress::getOption( 'contrat-' . $args['type'] . '-recall-excl-producteurs' ) );
-	if ( in_array( $contrat->getModel()->getProducteurId(), $disabled_for_producteurs ) ) {
+	if ( ! $manual_send && in_array( $contrat->getModel()->getProducteurId(), $disabled_for_producteurs ) ) {
 		echo '<p>' . __( 'Producteur exclu', 'amapress' ) . '</p>';
 
 		return;
