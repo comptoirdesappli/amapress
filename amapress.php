@@ -202,6 +202,9 @@ function amapress_add_admin_notice( $message, $type, $is_dismissible, $escape = 
 }
 
 function amapress_get_admin_notice( $message, $type, $is_dismissible, $escape = true ) {
+	if ( empty( $message ) ) {
+		return '';
+	}
 	$class = $is_dismissible ? "notice-$type is-dismissible" : "notice-$type";
 
 	return sprintf( __( '<div class="notice %1$s"><p>%2$s</p></div>', 'amapress' ), esc_attr( $class ), ! $escape ? $message : esc_html( $message ) );
