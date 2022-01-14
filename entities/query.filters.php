@@ -66,6 +66,10 @@ function amapress_add_tax_query( WP_Query $query, $tax_query ) {
 
 add_action( 'pre_get_posts', 'amapress_filter_posts' );
 function amapress_filter_posts( WP_Query $query ) {
+	if ( ! function_exists( 'is_user_logged_in' ) ) {
+		return;
+	}
+
 	if ( ! amapress_is_user_logged_in() && ! $query->is_main_query() ) {
 		global $amapress_no_filter_amps_lo;
 		if ( ! $amapress_no_filter_amps_lo ) {
