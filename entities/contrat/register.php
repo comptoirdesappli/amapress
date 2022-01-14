@@ -215,6 +215,7 @@ function amapress_register_entities_contrat( $entities ) {
 			],
 		),
 		'edit_header'              => function ( $post ) {
+			/** @var WP_Post $post */
 			$contrat = AmapressContrat_instance::getBy( $post );
 			if ( TitanFrameworkOption::isOnEditScreen() ) {
 				if ( empty( $contrat->getModel() ) ) {
@@ -251,6 +252,13 @@ function amapress_register_entities_contrat( $entities ) {
 						     sprintf( __( 'Il y a moins de dates de paiement renseignées (%d) que le nombre de règlements maximum autorisé (%d). <br/><strong>La répartition des dates de paiement ne fonctionnera pas correctement.</strong>', 'amapress' ),
 							     $nb_dates_paiements, $max_nb_paiements ) . '</p></div>';
 					}
+				}
+
+				if ( strtotime( $post->post_date ) > $contrat->getDate_ouverture() ) {
+					echo '<div class="notice notice-warning"><p>' .
+					     sprintf( __( 'La date d\'ouverture des inscriptions (%s) est inférieure à la date de création de ce contrat (%s). <br/>Les rappels d\'ouverture des inscriptions ne partiront pas. Vous pouvez utiliser le lien "<em>Envoyer le rappel d\'ouverture des inscriptions</em>" ci-dessous pour lancer manuellement l\'envoi du rappel.', 'amapress' ),
+						     date_i18n( 'd/m/Y', $contrat->getDate_ouverture() ),
+						     date_i18n( 'd/m/Y', strtotime( $post->post_date ) ) ) . '</p></div>';
 				}
 
 				if ( empty( AmapressContrats::get_contrat_quantites( $post->ID ) ) ) {
