@@ -216,6 +216,68 @@ function amapress_register_shortcodes() {
 				'responsive'          => __( '(Par défaut scroll) Configuration du mode mobile/responsive : scroll (hauteur de la vue et largeur de colonnes fixes avec barres de défilement), auto (passage en mode pliant sur mobile, répartition en largeur sinon), true/false', 'amapress' )
 			]
 		] );
+
+	amapress_register_shortcode( 'inscription-distrib-info', function ( $args, $content ) {
+		$args             = shortcode_atts(
+			[
+				'min_inscriptions' => 0,
+			],
+			$args
+		);
+		$user_id          = amapress_current_user_id();
+		$amapien          = AmapressUser::getBy( $user_id );
+		$period           = AmapressAdhesionPeriod::getCurrent();
+		$min_contrat_date = null;
+		if ( $period ) {
+			$min_contrat_date = $period->getDate_debut();
+		} else {
+			$contrats = AmapressContrats::get_active_contrat_instances();
+			if ( empty( $contrats ) ) {
+				return '';
+			}
+			foreach ( $contrats as $c ) {
+				if ( null == $min_contrat_date ) {
+					$min_contrat_date = $c->getDate_debut();
+				}
+				if ( $c->getDate_debut() < $min_contrat_date ) {
+					$min_contrat_date = $c->getDate_debut();
+				}
+			}
+		}
+		if ( empty( $min_contrat_date ) ) {
+			return '';
+		}
+		$dist_inscriptions                       = AmapressDistributions::getResponsableDistribForCurrentAdhesions(
+			$user_id, null, $min_contrat_date );
+		$online_contrats_inscription_distrib_msg = $content;
+		if ( empty( $online_contrats_inscription_distrib_msg ) ) {
+			$online_contrats_inscription_distrib_msg = wpautop(
+				"<strong>Inscriptions comme responsable de distribution</strong>\nNombre d'inscriptions requises : %%min_inscriptions%%\nVos inscriptions : %%nb_inscriptions%% (%%dates_inscriptions%%)\n%%lien_inscription%%" );
+		}
+		$online_contrats_inscription_distrib_msg = str_replace( '%%min_inscriptions%%',
+			$args['min_inscriptions'], $online_contrats_inscription_distrib_msg );
+		$online_contrats_inscription_distrib_msg = str_replace( '%%nb_inscriptions%%',
+			count( $dist_inscriptions ), $online_contrats_inscription_distrib_msg );
+		$online_contrats_inscription_distrib_msg = str_replace( '%%lien_inscription%%',
+			Amapress::makeLink( Amapress::get_inscription_distrib_page_href(), 'S\'inscrire comme responsable de distribution', true, true ), $online_contrats_inscription_distrib_msg );
+		$online_contrats_inscription_distrib_msg = str_replace( '%%dates_inscriptions%%',
+			empty( $dist_inscriptions ) ? 'aucune' : implode( ', ', array_map(
+				function ( $d ) {
+					/** @var AmapressDistribution $d */
+					return date_i18n( 'd/m/Y', $d->getDate() );
+				}, $dist_inscriptions
+			) ), $online_contrats_inscription_distrib_msg );
+
+		return amapress_replace_mail_placeholders( $online_contrats_inscription_distrib_msg, $amapien );
+	},
+		[
+			'desc' => __( 'Informations sur le nombre d\'inscriptions requises comme responsable de distribution', 'amapress' ),
+			'args' => [
+				'min_inscriptions' => __( 'Nombre d\'inscriptions requises', 'amapress' ),
+				'contenu'          => __( 'Le contenu du shortcode permet de changer le message affiché. Les placeholders disponibles sont les suivants : %%min_inscriptions%% (nombre d\'inscriptions requises) ; %%nb_inscriptions%% (nombre d\'inscription de l\'amapien) ; %%dates_inscriptions%% (liste des dates pour lesquelles l\'amapien est inscrit) ; %%lien_inscription%% (lien vers la page d\'inscription aux distributions)', 'amapress' ),
+			]
+		] );
+
 	amapress_register_shortcode( 'liste-inscription-distrib', function ( $args ) {
 		$args         = shortcode_atts(
 			[
