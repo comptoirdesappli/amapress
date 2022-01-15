@@ -50,7 +50,6 @@ class Amapress_Ouvaton_MailingList extends Amapress_Sympa_MailingList {
 	 */
 	public function isSync( $config ) {
 		$moderators_queries = $config->getModeratorsQueries();
-		$members_queries    = $config->getMembersQueries();
 
 		if ( $this->handleModerators() && ! empty( $moderators_queries ) ) {
 			$user_emails = array();
@@ -69,6 +68,8 @@ class Amapress_Ouvaton_MailingList extends Amapress_Sympa_MailingList {
 				return 'not_sync';
 			}
 		}
+
+		$members_queries = $config->getMembersQueries();
 		global $wpdb;
 		$sql_query = isset( $this->info['query'] ) ? $this->info['query'] : '';
 		if ( ! empty( $sql_query ) ) {
