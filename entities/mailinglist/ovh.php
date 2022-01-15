@@ -6,6 +6,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Amapress_OVH_MailingList extends Amapress_MailingList {
+	public static $OVH_SYNC_WAIT = 800000;
+
 	public function getFullName() {
 		return $this->getSystem()->getFullName( $this->getName() );
 	}
@@ -23,6 +25,29 @@ class Amapress_OVH_MailingList extends Amapress_MailingList {
 	 * @param Amapress_MailingListConfiguration $config
 	 */
 	public function syncMembers( $config ) {
+		global $wpdb;
+		$moderators_queries = $config->getModeratorsQueries();
+		if ( ! empty( $moderators_queries ) ) {
+			$sql_query = Amapress_MailingList::getSqlQuery( $moderators_queries, [] );
+			if ( empty( $sql_query ) ) {
+				return;
+			}
+			$sympa_emails = Amapress_MailingList::normalizeEmailsArray( $this->getSystem()->getMLModeratorsEmails( $this->getName() ) );
+			$query_emails = array_unique( Amapress_MailingList::normalizeEmailsArray( $wpdb->get_col( $sql_query ) ) );
+
+			$to_add = array_diff( $query_emails, $sympa_emails );
+			$to_del = array_diff( $sympa_emails, $query_emails );
+
+			foreach ( $to_del as $email ) {
+				$this->getSystem()->removeMLModerator( $this->getName(), $email );
+				usleep( self::$OVH_SYNC_WAIT );
+			}
+			foreach ( $to_add as $email ) {
+				$this->getSystem()->addMLModerator( $this->getName(), $email );
+				usleep( self::$OVH_SYNC_WAIT );
+			}
+		}
+
 		$members_queries = $config->getMembersQueries();
 
 		if ( empty( $members_queries ) ) {
@@ -34,7 +59,6 @@ class Amapress_OVH_MailingList extends Amapress_MailingList {
 			return;
 		}
 		$sympa_emails = Amapress_MailingList::normalizeEmailsArray( $this->getSystem()->getMLMembersEmails( $this->getName() ) );
-		global $wpdb;
 		$query_emails = array_unique( Amapress_MailingList::normalizeEmailsArray( $wpdb->get_col( $sql_query ) ) );
 
 		$to_add = array_diff( $query_emails, $sympa_emails );
@@ -42,11 +66,11 @@ class Amapress_OVH_MailingList extends Amapress_MailingList {
 
 		foreach ( $to_del as $email ) {
 			$this->getSystem()->removeMLMember( $this->getName(), $email );
-			usleep( 800000 );
+			usleep( self::$OVH_SYNC_WAIT );
 		}
 		foreach ( $to_add as $email ) {
 			$this->getSystem()->addMLMember( $this->getName(), $email );
-			usleep( 800000 );
+			usleep( self::$OVH_SYNC_WAIT );
 		}
 	}
 
@@ -56,6 +80,19 @@ class Amapress_OVH_MailingList extends Amapress_MailingList {
 	 * @return string
 	 */
 	public function isSync( $config ) {
+		$moderators_queries = $config->getModeratorsQueries();
+		global $wpdb;
+		if ( $this->handleModerators() && ! empty( $moderators_queries ) ) {
+			$sql_query    = Amapress_MailingList::getSqlQuery( $moderators_queries, [] );
+			$sympa_emails = Amapress_MailingList::normalizeEmailsArray( $this->getSystem()->getMLModeratorsEmails( $this->getName() ) );
+			$query_emails = array_unique( Amapress_MailingList::normalizeEmailsArray( $wpdb->get_col( $sql_query ) ) );
+			$was_errored  = $wpdb->last_error;
+			$inter        = array_intersect( $query_emails, $sympa_emails );
+			if ( ! ( empty( $was_errored ) && count( $inter ) == count( $sympa_emails ) && count( $inter ) == count( $query_emails ) ) ) {
+				return 'not_sync';
+			}
+		}
+
 		$members_queries = $config->getMembersQueries();
 
 		$sql_query = Amapress_MailingList::getSqlQuery( $members_queries, $config->getExcludeMembersQueries() );
@@ -63,7 +100,6 @@ class Amapress_OVH_MailingList extends Amapress_MailingList {
 			return 'manual';
 		}
 		$sympa_emails = Amapress_MailingList::normalizeEmailsArray( $this->getSystem()->getMLMembersEmails( $this->getName() ) );
-		global $wpdb;
 		$query_emails = array_unique( Amapress_MailingList::normalizeEmailsArray( $wpdb->get_col( $sql_query ) ) );
 		$was_errored  = $wpdb->last_error;
 		$inter        = array_intersect( $query_emails, $sympa_emails );
@@ -72,10 +108,6 @@ class Amapress_OVH_MailingList extends Amapress_MailingList {
 		} else {
 			return 'not_sync';
 		}
-	}
-
-	public function handleModerators() {
-		return false;
 	}
 
 	public function handleModerationSetting() {
@@ -131,6 +163,20 @@ class Amapress_OVH_MailSystem extends Amapress_MailingSystem {
 		}
 
 		return $ret;
+	}
+
+	public function addMLModerator( $list_name, $email ) {
+		return $this->ovh->post( "/email/domain/{$this->mailing_domain}/mailingList/{$list_name}/moderator", array(
+			'email' => $email,
+		) );
+	}
+
+	public function removeMLModerator( $list_name, $email ) {
+		return $this->ovh->delete( "/email/domain/{$this->mailing_domain}/mailingList/{$list_name}/moderator/{$email}" );
+	}
+
+	public function getMLModeratorsEmails( $list_name ) {
+		return $this->ovh->get( "/email/domain/{$this->mailing_domain}/mailingList/{$list_name}/moderator" );
 	}
 
 	public function addMLMember( $list_name, $email ) {
