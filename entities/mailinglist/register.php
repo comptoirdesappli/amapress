@@ -781,7 +781,7 @@ function amapress_get_mailinglist_status( $mailing_list_id ) {
 			$ret .= '<div class="status"><div class="mailinglist-status" style="color: orange;">' . __( 'Inconnu', 'amapress' ) . '</div></div>';
 			break;
 	}
-	$ret .= '<div class="mailing-conf-link"><a href="' . $ml_obj->getConfigurationLink() . '">' . __( 'Voir la configuration complète', 'amapress' ) . '</a></div>';
+	$ret .= '<div class="mailing-conf-link"><a target="_blank" href="' . $ml_obj->getConfigurationLink() . '">' . __( 'Voir la configuration complète', 'amapress' ) . '</a></div>';
 
 	return $ret;
 //    $res = false;
