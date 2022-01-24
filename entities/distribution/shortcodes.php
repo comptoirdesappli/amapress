@@ -475,6 +475,21 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			$ret .= '<p style="text-align: center"><a class="' . $btn_class . '" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">' . __( 'Modifier le nombre de responsables de distribution du lieu', 'amapress' ) . '</a></p>';
 		}
 
+		if ( ! $for_pdf && 'anon-inscription-distrib' != $tag && amapress_is_user_logged_in() ) {
+			$inscr_gardien_all_url = add_query_arg( [
+				'action' => 'inscr_all_dist_gardien'
+			], admin_url( 'admin-post.php' ) );
+			$ret                   .= '<form style="text-align: center" method="post" action="' . esc_attr( $inscr_gardien_all_url ) . '">
+		<input type="hidden" name="dists" value="' . esc_attr( implode( ',', array_map( function ( $d ) {
+					return $d->ID;
+				}, array_filter( $dists, function ( $d ) use ( $lieu_id ) {
+					/** @var AmapressDistribution $d */
+					return $d->getLieuId() == $lieu_id;
+				} ) ) ) ) . '" />
+<input type="submit" value="' . esc_attr( __( 'S\'inscrire gardien de paniers à toutes les distributions', 'amapress' ) ) . '" />
+</form><br/>';
+		}
+
 		if ( $for_pdf ) {
 			$responsive = false;
 			$data_atts  = '';
@@ -1010,6 +1025,10 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 //		$ret .= '<script type="text/javascript">jQuery(function($) {$(".distrib-inscr-list").DataTable().fixedHeader.enable(true);});</script>';
 	}
 
+	if ( empty( $all_user_lieux ) ) {
+		echo '<p class="error">' . __( 'Vous n\'êtes inscrits à aucun contrat. Vous ne pouvez pas vous inscrire comme responsable de distribution.', 'amapress' ) . '</p>';
+	}
+
 	$ret .= '<style type="text/css">.inscr-list-info * {
     white-space: normal !important;
 }</style>';
@@ -1323,4 +1342,20 @@ function amapress_next_distrib_shortcode( $atts, $content = null, $tag = null ) 
 
 	return $content;
 }
-//});
+
+add_action( 'admin_post_inscr_all_dist_gardien', function () {
+	$dists = array_map( 'intval', explode( ',', $_REQUEST['dists'] ) );
+
+	$user_id = amapress_current_user_id();
+	foreach ( $dists as $dist_id ) {
+		$dist = AmapressDistribution::getBy( $dist_id );
+		if ( $dist->inscrireGardien(
+			$user_id,
+			false, false,
+			null, false, true
+		) ) {
+			echo esc_html( sprintf( __( 'Vous avez été inscrit gardien de paniers à %s', 'amapress' ), $dist->getTitle() ) ) . '</br>';
+		}
+	}
+	die();
+} );

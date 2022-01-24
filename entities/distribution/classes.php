@@ -187,19 +187,28 @@ class AmapressDistribution extends Amapress_EventBase {
 
 	public function inscrireGardien(
 		$user_id, $allow_anonymous = false, $allow_not_member = false,
-		$comment = null
+		$comment = null, $send_mail = true, $bulk = false
 	) {
 		if ( ! $allow_anonymous && ! amapress_is_user_logged_in() ) {
+			if ( $bulk ) {
+				return false;
+			}
 			wp_die( __( 'Vous devez avoir un compte pour effectuer cette opération.', 'amapress' ) );
 		}
 
 		if ( ! $allow_not_member && ! amapress_can_access_admin() ) {
 			if ( ! $this->isUserMemberOf( $user_id, true ) ) {
+				if ( $bulk ) {
+					return false;
+				}
 				wp_die( __( 'Vous ne faites pas partie de cette distribution.', 'amapress' ) );
 			}
 		}
 
 		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
+			if ( $bulk ) {
+				return false;
+			}
 			wp_die( __( 'Clos et passé', 'amapress' ) );
 		}
 
@@ -218,18 +227,29 @@ class AmapressDistribution extends Amapress_EventBase {
 				$this->deleteCustom( "amapress_distribution_gardien_{$user_id}_comment" );
 			}
 
-			amapress_mail_current_user_inscr( $this, $user_id, 'distrib-gardien' );
+			if ( $send_mail ) {
+				amapress_mail_current_user_inscr( $this, $user_id, 'distrib-gardien' );
+			}
 
 			return 'ok';
 		}
 	}
 
-	public function desinscrireGardien( $user_id, $allow_anonymous = false ) {
+	public function desinscrireGardien(
+		$user_id, $allow_anonymous = false,
+		$send_mail = true, $bulk = false
+	) {
 		if ( ! $allow_anonymous && ! amapress_is_user_logged_in() ) {
+			if ( $bulk ) {
+				return false;
+			}
 			wp_die( __( 'Vous devez avoir un compte pour effectuer cette opération.', 'amapress' ) );
 		}
 
 		if ( ! amapress_can_access_admin() && Amapress::end_of_day( $this->getEndDateAndHour() ) < amapress_time() ) {
+			if ( $bulk ) {
+				return false;
+			}
 			wp_die( __( 'Clos et passé', 'amapress' ) );
 		}
 
@@ -248,8 +268,10 @@ class AmapressDistribution extends Amapress_EventBase {
 			$this->deleteCustom( "amapress_distribution_gardien_{$user_id}_comment" );
 			$this->setCustom( 'amapress_distribution_gardiens', $gardiens );
 
-			amapress_mail_current_user_desinscr( $this, $user_id, 'distrib-gardien',
-				null, null, null, $events );
+			if ( $send_mail ) {
+				amapress_mail_current_user_desinscr( $this, $user_id, 'distrib-gardien',
+					null, null, null, $events );
+			}
 
 			return 'ok';
 		} else {
