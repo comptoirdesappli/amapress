@@ -524,12 +524,10 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		}
 	}
 
-	$current_post = get_post();
-
-	$admin_post_url = admin_url( 'admin-post.php' );
-	$ret            .= '<form action="' . $admin_post_url . '?action=inscription_amap_extern" method="post">
+	$admin_post_url = add_query_arg( 'action', 'inscription_amap_extern', admin_url( 'admin-post.php' ) );
+	$ret            .= '<form action="' . esc_attr( $admin_post_url ) . '" method="post">
   <input type="hidden" name="key" value="' . esc_attr( $key ) . '" />
-  <input type="hidden" name="post-id" value="' . esc_attr( $current_post ? $current_post->ID : 0 ) . '" />
+  <input type="hidden" name="inscr-key" value="' . esc_attr( amapress_sha_secret( $key ) ) . '" />
   <input type="hidden" name="group" value="' . esc_attr( $atts['group'] ) . '" />
   <div class="form-group">
     <label for="email"><strong>*' . __( 'Email:', 'amapress' ) . '</strong></label>
@@ -551,6 +549,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
     <label for="address"><em>' . __( 'Adresse', 'amapress' ) . '</em>:</label>
     <input type="text" class="form-control ' . ( $force_upper ? 'force-upper' : '' ) . '" id="address" name="address">
   </div>
+  ' . amapress_get_honeypots() . '
   <button type="submit" class="btn btn-default" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous votre inscription ?', 'amapress' ) ) . '\')">' . __( 'S\'inscrire', 'amapress' ) . '</button>
 </form>';
 

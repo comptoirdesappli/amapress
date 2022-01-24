@@ -54,16 +54,17 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 	if ( Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ) ) {
 		$href = Amapress::get_intermittent_adhesion_page_href();
 		$link = ! empty( $href ) ? Amapress::makeLink( $href, __( 'Assistant d\'adhésion Intermittents', 'amapress' ) ) : __( 'Non configuré', 'amapress' );
-		wp_die( __( 'Les inscriptions à l\'Espace intermittents doivent se faire via l\'', 'amapress' ) . $link );
+		wp_die( __( 'Les inscriptions à l\'Espace intermittents doivent se faire via : ', 'amapress' ) . $link );
 	}
 
 	$current_post = get_post();
 
-	$admin_post_url = admin_url( 'admin-post.php' );
+	$admin_post_url = add_query_arg( 'action', 'inscription_intermittent', admin_url( 'admin-post.php' ) );
 	if ( Amapress::toBool( Amapress::getOption( 'intermit_self_inscr' ) ) ) {
-		$ret .= '<form action="' . $admin_post_url . '?action=inscription_intermittent" method="post">
+		$ret .= '<style type="text/css">form.inter-self-inscr .form-group input {display: block; width: 100%}</style>';
+		$ret .= '<form class="inter-self-inscr" action="' . esc_attr( $admin_post_url ) . '" method="post">
   <input type="hidden" name="key" value="' . esc_attr( $key ) . '" />
-  <input type="hidden" name="post-id" value="' . esc_attr( $current_post ? $current_post->ID : 0 ) . '" />
+  <input type="hidden" name="inscr-key" value="' . esc_attr( amapress_sha_secret( $key ) ) . '" />
   <div class="form-group">
     <label for="email"><strong>*' . __( 'Email:', 'amapress' ) . '</strong></label>
     <input type="email" class="form-control required" id="email" name="email">
@@ -84,6 +85,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
     <label for="address"><em>' . __( 'Adresse', 'amapress' ) . '</em>:</label>
     <input type="text" class="form-control ' . ( $force_upper ? 'force-upper' : '' ) . '" id="address" name="address">
   </div>
+  ' . amapress_get_honeypots() . '
   <button type="submit" class="btn btn-default" onclick="return confirm(\'' . esc_js( __( 'Confirmez-vous votre inscription ?', 'amapress' ) ) . '\')">' . __( 'S\'inscrire', 'amapress' ) . '</button>
 </form>';
 	} else {

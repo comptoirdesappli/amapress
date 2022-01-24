@@ -12,6 +12,9 @@ add_action( 'amapress_init', function () {
 				wp_die( __( 'Accès interdit', 'amapress' ) );
 			}
 		}
+
+		amapress_checkhoneypots();
+
 		$email              = sanitize_email( isset( $_REQUEST['email'] ) ? $_REQUEST['email'] : '' );
 		$user_firt_name     = sanitize_text_field( ! empty( $_REQUEST['first_name'] ) ? $_REQUEST['first_name'] : '' );
 		$user_last_name     = sanitize_text_field( ! empty( $_REQUEST['last_name'] ) ? $_REQUEST['last_name'] : '' );
@@ -1055,36 +1058,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				<?php
 			}
 
-			$honey_1_id = uniqid( 'amps-firstname' );
-			$honey_2_id = uniqid( 'amps-lastname' );
+			amapress_echo_honeypots();
 			?>
-            <span id="<?php echo $honey_1_id; ?>">
-                <label for="amps-firstname"><?php _e( 'Laisser vide', 'amapress' ); ?></label>
-                <input type="text" value="" name="amps-firstname"
-                       id="amps-firstname"
-                       size="40" tabindex="-1" autocomplete="off"/>
-            </span>
-            <span id="<?php echo $honey_2_id; ?>" style="display:none !important; visibility:hidden !important;">
-                <label for="amps-lastname"><?php _e( 'Laisser vide', 'amapress' ); ?></label>
-                <input type="text" value="" name="amps-lastname"
-                       id="amps-lastname"
-                       size="40" tabindex="-1" autocomplete="off"/>
-            </span>
             <input type="submit" value="<?php _e( 'Valider', 'amapress' ); ?>"
                    class="btn btn-default btn-assist-inscr"/>
         </form>
 		<?php
-
-		$hp_css = '#' . $honey_1_id . ' {display:none !important; visibility:hidden !important}';
-		wp_register_style( 'inscr-' . $honey_1_id . '-inline', false );
-		wp_enqueue_style( 'inscr-' . $honey_1_id . '-inline' );
-		wp_add_inline_style( 'inscr-' . $honey_1_id . '-inline', $hp_css );
 	} else if ( 'coords' == $step || 'coords_logged' == $step ) {
 		if ( Amapress::toBool( $atts['check_honeypots'] ) ) {
-			if ( ! empty( $_REQUEST['amps-firstname'] ) || ! isset( $_REQUEST['amps-firstname'] )
-			     || ! empty( $_REQUEST['amps-lastname'] ) || ! isset( $_REQUEST['amps-lastname'] ) ) {
-				wp_die( __( 'Spam detected !!!', 'amapress' ) );
-			}
+			amapress_checkhoneypots();
 		}
 		if ( 'coords_logged' == $step && amapress_is_user_logged_in() ) {
 			$email = wp_get_current_user()->user_email;
@@ -1348,16 +1330,17 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
             <input type="hidden" name="notify_email" value="<?php echo esc_attr( $notify_email ); ?>"/>
             <input type="hidden" name="send_welcome" value="<?php echo esc_attr( $atts['send_welcome'] ); ?>"/>
             <input type="hidden" name="inscr_assistant" value="validate_coords"/>
-			<?php if ( $is_mes_contrats && ! $activate_adhesion ) { ?>
+	        <?php if ( $is_mes_contrats && ! $activate_adhesion ) { ?>
                 <input type="hidden" name="coords_next_step" value="contrats"/>
-			<?php } elseif ( $activate_agreement ) { ?>
+	        <?php } elseif ( $activate_agreement ) { ?>
                 <input type="hidden" name="coords_next_step" value="agreement"/>
-			<?php } elseif ( $activate_agreement_if_noadh && ! empty( $adh_pmt ) ) { ?>
+	        <?php } elseif ( $activate_agreement_if_noadh && ! empty( $adh_pmt ) ) { ?>
                 <input type="hidden" name="coords_next_step"
                        value="<?php echo( $for_logged ? 'coords_logged' : 'coords' ); ?>"/>
-			<?php } elseif ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
+	        <?php } elseif ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
-			<?php } ?>
+	        <?php } ?>
+	        <?php amapress_echo_honeypots(); ?>
             <input type="hidden" name="inscr_key" value="<?php echo esc_attr( amapress_sha_secret( $key ) ); ?>"/>
             <table style="min-width: 50%">
                 <tr>
@@ -1405,7 +1388,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                   class="<?php echo( $force_upper ? 'force-upper' : '' ); ?> <?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
                     </td>
                 </tr>
-	            <?php if ( $allow_trombi_decline ) { ?>
+		        <?php if ( $allow_trombi_decline ) { ?>
                     <tr>
                         <th style="text-align: left; width: auto"></th>
                         <td>
@@ -1414,7 +1397,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                             </label>
                         </td>
                     </tr>
-	            <?php } ?>
+		        <?php } ?>
             </table>
             <div>
 		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>

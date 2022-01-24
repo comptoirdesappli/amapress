@@ -382,6 +382,8 @@ function amapress_bulk_action_amp_relocate( $sendback, $user_ids ) {
 add_action( 'admin_post_inscription_amap_extern', 'amapress_admin_action_nopriv_inscription_amap_extern' );
 add_action( 'admin_post_nopriv_inscription_amap_extern', 'amapress_admin_action_nopriv_inscription_amap_extern' );
 function amapress_admin_action_nopriv_inscription_amap_extern() {
+	amapress_checkhoneypots();
+
 	header( 'Content-Type: text/html; charset=UTF-8' );
 	if ( ! isset( $_REQUEST['email'] ) ) {
 		die( __( 'Pas d\'email spécifié', 'amapress' ) );
@@ -396,17 +398,9 @@ function amapress_admin_action_nopriv_inscription_amap_extern() {
 	/** @var WP_Term $term */
 	$term = get_term( $group_id, AmapressUser::AMAPIEN_GROUP );
 
-	$key     = ! empty( $_POST['key'] ) ? $_POST['key'] : '';
-	$post_id = ! empty( $_POST['post-id'] ) ? intval( $_POST['post-id'] ) : 0;
-	$is_ok   = false;
-	if ( ! empty( $key ) && ! empty( $post_id ) ) {
-		$post = get_post( $post_id );
-		if ( $post ) {
-			if ( false !== strpos( $post->post_content, "key=$key" ) ) {
-				$is_ok = true;
-			}
-		}
-	}
+	$key       = ! empty( $_POST['key'] ) ? $_POST['key'] : '';
+	$inscr_key = ! empty( $_POST['inscr-key'] ) ? intval( $_POST['inscr-key'] ) : '';
+	$is_ok     = amapress_sha_secret( $key ) == $inscr_key;
 
 	if ( ! $is_ok ) {
 		echo '<p class="error">' . __( 'Non autorisé', 'amapress' ) . '</p>';

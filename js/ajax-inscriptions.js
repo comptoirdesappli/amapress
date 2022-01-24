@@ -13,7 +13,7 @@ jQuery(document).ready(function ($) {
             'gardien': $this.data('gardien'),
             'key': $this.data('key'),
             'not_member': $this.data('not_member'),
-            'post-id': $this.data('post-id'),
+            'inscr-key': $this.data('inscr-key'),
             'message': $this.data('message') ? $($this.data('message').substr(4)).val() : '',
         };
         var $parentForm = $this.parent('form');
@@ -51,7 +51,7 @@ jQuery(document).ready(function ($) {
             'user': $this.data('user'),
             'gardien': $this.data('gardien'),
             'key': $this.data('key'),
-            'post-id': $this.data('post-id'),
+            'inscr-key': $this.data('inscr-key'),
         };
         //var $parentForm = $this.parent('form');
         //if ($parentForm.length > 0) {

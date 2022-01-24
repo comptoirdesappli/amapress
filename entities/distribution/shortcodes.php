@@ -785,7 +785,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 					} else {
 						$inscr_self = '';
 					}
-					$inscr_self .= '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous proposer comme gardien de panier ?', 'amapress' ) . '" data-not_member="' . $inscr_all_distrib . '" data-message="val:#garde-msg-' . $dist->ID . '" data-gardien="T" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">' . __( 'Me proposer', 'amapress' ) . '</button>';
+					$inscr_self .= '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous proposer comme gardien de panier ?', 'amapress' ) . '" data-not_member="' . $inscr_all_distrib . '" data-message="val:#garde-msg-' . $dist->ID . '" data-gardien="T" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-inscr-key="' . esc_attr( amapress_sha_secret( $key ) ) . '" data-key="' . esc_attr( $key ) . '">' . __( 'Me proposer', 'amapress' ) . '</button>';
 					$info       = '';
 					if ( ! $for_pdf ) {
 						if ( ! $can_subscribe ) {
@@ -793,7 +793,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 						}
 						if ( in_array( amapress_current_user_id(), $dist->getGardiensIds() ) ) {
 							if ( $can_unsubscribe ) {
-								$inscr_self = '<button type="button" class="' . $btn_class . ' dist-desinscrire-button"  data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir ne plus vous proposer comme gardien de panier ?', 'amapress' ) . '" data-not_member="' . $inscr_all_distrib . '" data-gardien="T" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">' . __( 'Ne plus me proposer', 'amapress' ) . '</button>';
+								$inscr_self = '<button type="button" class="' . $btn_class . ' dist-desinscrire-button"  data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir ne plus vous proposer comme gardien de panier ?', 'amapress' ) . '" data-not_member="' . $inscr_all_distrib . '" data-gardien="T" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-inscr-key="' . esc_attr( amapress_sha_secret( $key ) ) . '" data-key="' . esc_attr( $key ) . '">' . __( 'Ne plus me proposer', 'amapress' ) . '</button>';
 							} else {
 								$inscr_self = '';
 							}
@@ -935,7 +935,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 								}
 							}
 
-							$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-not_member="' . $inscr_all_distrib . '" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . ( $current_post ? $current_post->ID : 0 ) . '" data-key="' . $key . '">' . __( 'M\'inscrire', 'amapress' ) . '</button>';
+							$inscr_self = '<button type="button" class="' . $btn_class . ' dist-inscrire-button"  data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-not_member="' . $inscr_all_distrib . '" data-role="' . $resp_idx . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-inscr-key="' . esc_attr( amapress_sha_secret( $key ) ) . '" data-key="' . esc_attr( $key ) . '">' . __( 'M\'inscrire', 'amapress' ) . '</button>';
 							$missing    = '';
 							if ( ! $for_pdf ) {
 								if ( ( $has_role_names || ! $added_inscr_button || $allow_multi_inscription ) && ( ! $is_resp || $allow_multi_inscription ) && $can_subscribe ) {
@@ -966,7 +966,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 								$is_resp = $is_resp || $r->ID == $user_id;
 								if ( $can_unsubscribe ) {
 									if ( $r_id == $user_id ) {
-										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-post-id="' . $current_post->ID . '" data-key="' . $key . '">' . __( 'Me désinscrire', 'amapress' ) . '</button>';
+										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-dist="' . $dist->ID . '" data-user="' . $user_id . '" data-inscr-key="' . esc_attr( amapress_sha_secret( $key ) ) . '" data-key="' . esc_attr( $key ) . '">' . __( 'Me désinscrire', 'amapress' ) . '</button>';
 									} elseif ( $allow_manage_others ) {
 										$ret .= '<button type="button" class="' . $btn_class . ' dist-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir désinscrire cet amapien ?', 'amapress' ) . '" data-dist="' . $dist->ID . '" data-user="' . $r->ID . '">' . __( 'Désinscrire', 'amapress' ) . '</button>';
 									} elseif ( in_array( $r->ID, $cofoyers_ids ) ) {
@@ -1147,15 +1147,10 @@ add_action( 'wp_ajax_nopriv_desinscrire_distrib_action', function () {
 	$for_gardien = isset( $_POST['gardien'] ) && 'T' == $_POST['gardien'];
 	$user_id     = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : 0;
 	$key         = ! empty( $_POST['key'] ) ? $_POST['key'] : '';
-	$post_id     = ! empty( $_POST['post-id'] ) ? intval( $_POST['post-id'] ) : 0;
+	$inscr_key   = ! empty( $_POST['inscr-key'] ) ? intval( $_POST['inscr-key'] ) : '';
 	$is_ok       = false;
-	if ( ! empty( $user_id ) && ! empty( $dist_id ) && ! empty( $key ) && ! empty( $post_id ) ) {
-		$post = get_post( $post_id );
-		if ( $post ) {
-			if ( false !== strpos( $post->post_content, "key=$key" ) ) {
-				$is_ok = true;
-			}
-		}
+	if ( ! empty( $user_id ) && ! empty( $dist_id ) && ! empty( $key ) && ! empty( $inscr_key ) ) {
+		$is_ok = amapress_sha_secret( $key ) == $inscr_key;
 	}
 
 	if ( ! $is_ok ) {
@@ -1181,15 +1176,10 @@ add_action( 'wp_ajax_nopriv_inscrire_distrib_action', function () {
 	$for_gardien = isset( $_POST['gardien'] ) && 'T' == $_POST['gardien'];
 	$user_id     = ! empty( $_POST['user'] ) ? intval( $_POST['user'] ) : amapress_current_user_id();
 	$key         = ! empty( $_POST['key'] ) ? $_POST['key'] : '';
-	$post_id     = ! empty( $_POST['post-id'] ) ? intval( $_POST['post-id'] ) : 0;
+	$inscr_key   = ! empty( $_POST['inscr-key'] ) ? intval( $_POST['inscr-key'] ) : '';
 	$is_ok       = false;
-	if ( ! empty( $user_id ) && ! empty( $dist_id ) && ! empty( $key ) && ! empty( $post_id ) ) {
-		$post = get_post( $post_id );
-		if ( $post ) {
-			if ( false !== strpos( $post->post_content, "key=$key" ) ) {
-				$is_ok = true;
-			}
-		}
+	if ( ! empty( $user_id ) && ! empty( $dist_id ) && ! empty( $key ) && ! empty( $inscr_key ) ) {
+		$is_ok = amapress_sha_secret( $key ) == $inscr_key;
 	}
 
 	if ( ! $is_ok ) {

@@ -138,6 +138,8 @@ function amapress_create_user_if_not_exists(
 
 add_action( 'admin_post_nopriv_inscription_intermittent', 'amapress_admin_action_nopriv_inscription_intermittent' );
 function amapress_admin_action_nopriv_inscription_intermittent() {
+	amapress_checkhoneypots();
+
 	if ( ! Amapress::toBool( Amapress::getOption( 'intermit_self_inscr' ) ) && ! amapress_can_access_admin() ) {
 		wp_die( __( 'Les inscriptions à l\'Espace intermittents sont gérées par le collectif', 'amapress' ) );
 	}
@@ -151,17 +153,9 @@ function amapress_admin_action_nopriv_inscription_intermittent() {
 		die( __( 'Pas d\'email spécifié', 'amapress' ) );
 	}
 
-	$key     = ! empty( $_POST['key'] ) ? $_POST['key'] : '';
-	$post_id = ! empty( $_POST['post-id'] ) ? intval( $_POST['post-id'] ) : 0;
-	$is_ok   = false;
-	if ( ! empty( $key ) && ! empty( $post_id ) ) {
-		$post = get_post( $post_id );
-		if ( $post ) {
-			if ( false !== strpos( $post->post_content, "key=$key" ) ) {
-				$is_ok = true;
-			}
-		}
-	}
+	$key       = ! empty( $_POST['key'] ) ? $_POST['key'] : '';
+	$inscr_key = ! empty( $_POST['inscr-key'] ) ? intval( $_POST['inscr-key'] ) : '';
+	$is_ok     = amapress_sha_secret( $key ) == $inscr_key;
 
 	if ( ! $is_ok ) {
 		echo '<p class="error">' . __( 'Non autorisé', 'amapress' ) . '</p>';
