@@ -176,6 +176,16 @@ function amapress_admin_action_nopriv_inscription_intermittent() {
 		die();
 	}
 
+	add_filter( 'wp_new_user_notification_email_admin', function ( $wp_new_user_notification_email_admin ) {
+		$wp_new_user_notification_email_admin['to'] .= ',' . implode( ',', AmapressIntermittence_panier::getRespIntermittentsEmails( null ) );
+
+		return $wp_new_user_notification_email_admin;
+	} );
+
+	add_filter( 'new_user_approve_email_admins', function ( $emails ) {
+		return array_merge( $emails, AmapressIntermittence_panier::getRespIntermittentsEmails( null ) );
+	} );
+
 	$user_id = amapress_create_user_if_not_exists( $user_email, $user_firt_name, $user_last_name, $user_address, $user_phone );
 	$user    = AmapressUser::getBy( $user_id );
 	if ( false === $user->inscriptionIntermittence() ) {
@@ -217,6 +227,16 @@ function amapress_admin_action_inscription_intermittent() {
 		echo '<br/>
 <a href="' . add_query_arg( 'confirm', 'yes' ) . '">' . __( 'Confirmer l\'inscription', 'amapress' ) . '</a>';
 	} else {
+		add_filter( 'wp_new_user_notification_email_admin', function ( $wp_new_user_notification_email_admin ) {
+			$wp_new_user_notification_email_admin['to'] .= ',' . implode( ',', AmapressIntermittence_panier::getRespIntermittentsEmails( null ) );
+
+			return $wp_new_user_notification_email_admin;
+		} );
+
+		add_filter( 'new_user_approve_email_admins', function ( $emails ) {
+			return array_merge( $emails, AmapressIntermittence_panier::getRespIntermittentsEmails( null ) );
+		} );
+
 		$return_to_sender = isset( $_REQUEST['return_sender'] );
 		$user_id          = amapress_create_user_if_not_exists( $user_email, $user_firt_name, $user_last_name, $user_address, $user_phone );
 		$user             = AmapressUser::getBy( $user_id );
@@ -296,10 +316,11 @@ function amapress_admin_action_desinscription_intermittent() {
 	$amapien = AmapressUser::getBy( $user );
 
 	if ( ! $amapien->isIntermittent() ) {
-		if ( $is_me )
+		if ( $is_me ) {
 			die( __( 'Vous n\'êtes pas inscrit sur la liste des intermittents', 'amapress' ) );
-		else
-			die( sprintf( __( '%s n\'est pas inscrit sur la liste des intermittents', 'amapress' ), $user_email));
+		} else {
+			die( sprintf( __( '%s n\'est pas inscrit sur la liste des intermittents', 'amapress' ), $user_email ) );
+		}
 	}
 
 	if ( ! isset( $_REQUEST['confirm'] ) ) {
@@ -318,10 +339,11 @@ function amapress_admin_action_desinscription_intermittent() {
 	} else {
 		$amapien->desinscriptionIntermittence();
 
-		if ( $is_me )
+		if ( $is_me ) {
 			echo __( 'Vous êtes désinscrit de la liste des intermittents', 'amapress' );
-		else
-			echo sprintf( __( '%s a été désinscrit de la liste des intermittents', 'amapress' ), $user_email);
+		} else {
+			echo sprintf( __( '%s a été désinscrit de la liste des intermittents', 'amapress' ), $user_email );
+		}
 	}
 }
 

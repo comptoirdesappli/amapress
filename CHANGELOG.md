@@ -1,3 +1,8 @@
+# 0.99.130 (2022-01-26)
+
+* **Inscription Intermittents:** ajout des responsables des intermittents en destinataire des mails d'approbation (New
+  User Approve)
+
 # 0.99.125 (2022-01-24)
 
 * **Inscriptions distributions:** ajout d'un bouton 'S'inscrire gardien de paniers à toutes les distributions'
@@ -184,8 +189,7 @@
 
 # 0.98.80 (2021-06-04)
 
-* **GitHub Updater:** intégration du renommage du plugin GitHub Updater en Git
-  Updater (https://git-updater.com/knowledge-base/updating-from-github-updater-to-git-updater/)
+* **GitHub Updater:** intégration du renommage du plugin GitHub Updater en Git Updater (https://git-updater.com/knowledge-base/updating-from-github-updater-to-git-updater/)
 * **PWA:** PWA cache plugin 0.6
 * **Adhésion:** gestion émetteur
 * **Adhésion en ligne:** paramètre _send_adhesion_bulletin_ pour permettre de désactiver l'envoi du bulletin d'adhésion
@@ -304,8 +308,7 @@
 # 0.97.70 (2021-02-19)
 
 * affichage de l'aide Shortcodes, afficher le shortcode entre []
-* bug affichage/prise encompte des paniers reportés dans la distribution d'origine (bug du
-  commit [#36](https://github.com/comptoirdesappli/amapress/issues/36)cd00af4f57d50c4b11e080b04dfc57dafcf992),
+* bug affichage/prise encompte des paniers reportés dans la distribution d'origine (bug du commit [#36](https://github.com/comptoirdesappli/amapress/issues/36)cd00af4f57d50c4b11e080b04dfc57dafcf992),
   closes [#36cd00af4f57d50c4b11e080b04dfc57dafcf992](https://github.com/comptoirdesappli/amapress/issues/36cd00af4f57d50c4b11e080b04dfc57dafcf992)
 * prise en compte du lieu choisi dans l'adhésion si aucune inscription (donc aucun lieu associé à un amapien)
 * **Calendrier:**
@@ -507,8 +510,7 @@
   - personnalisation du délai de clôture des inscriptions avant la première distribution
 * **HelloAsso:**
   - shortcode formulaire (form_type)
-  - affichage message au sujet de l'utilisation de son adresse email et nom pour l'adhésion sur le formulaire
-    HelloAsso (renouvellement)
+  - affichage message au sujet de l'utilisation de son adresse email et nom pour l'adhésion sur le formulaire HelloAsso (renouvellement)
   - log des accès au callback si la clé n'est pas valide
 * filtre adhésion (ok, nok, all), check publish
 * disable autoupdate for Amapress 
@@ -519,10 +521,8 @@
 # 0.96.150 (2020-11-20)
 
 * **ICAL:**
-  - correction de l'unicité des uid d'évènements de distribution des différents
-    contrats ([#22](https://github.com/comptoirdesappli/amapress/issues/22))
-  - ajout d'un espace avant le \n si jamais il n'est pas
-    géré ([#22](https://github.com/comptoirdesappli/amapress/issues/22))
+  - correction de l'unicité des uid d'évènements de distribution des différents contrats ([#22](https://github.com/comptoirdesappli/amapress/issues/22))
+  - ajout d'un espace avant le \n si jamais il n'est pas géré ([#22](https://github.com/comptoirdesappli/amapress/issues/22))
 * **HelloAsso:** correction création adhésion avec la période d'adhésion de renouvellement
 * **Paiement mensuel:** check d'une date de paiement par mois minimum 
 * **Etat d'Amapress:**
@@ -537,10 +537,8 @@
 * **Emails groupés:** clean du dossier de stockage de l'eml et de ses pièces jointes
 * **Contrats:**
   - boutons d'aide au remplissage du calendrier (Toutes les dates de distribution, Première distribution de chaque mois,
-    Dernière distribution de chaque mois, Supprimer toutes les
-    dates) ([#24](https://github.com/comptoirdesappli/amapress/issues/24))
-  - possibilité de choisir des dates de paiement spécifiques pour les paiements en plusieurs
-    fois ([#24](https://github.com/comptoirdesappli/amapress/issues/24))
+    Dernière distribution de chaque mois, Supprimer toutes les dates) ([#24](https://github.com/comptoirdesappli/amapress/issues/24))
+  - possibilité de choisir des dates de paiement spécifiques pour les paiements en plusieurs fois ([#24](https://github.com/comptoirdesappli/amapress/issues/24))
 
 # 0.96.140 (2020-11-18)
 
@@ -824,8 +822,7 @@
 # 0.95.160 (2020-09-02)
 
 * **Récapitulatif des livraisons:**
-  - gestion d'un excel avec les produits en colonnes et onglet par date (Quantité à la prochaine distribution,
-    archivage)
+  - gestion d'un excel avec les produits en colonnes et onglet par date (Quantité à la prochaine distribution, archivage)
   - placeholder %%producteur_paniers_quantites_columns%% pour les rappels
 
 # 0.95.150 (2020-09-01)
@@ -985,8 +982,7 @@
 * **Espaces documents:** documentation des paramètres title et title_tag
 * **Shortcodes:**
   - gestion non connectée de next-distrib-deliv ([#20](https://github.com/comptoirdesappli/amapress/issues/20))
-  - next-distrib-deliv-paniers pour afficher les paniers aux prochaines
-    distributions ([#20](https://github.com/comptoirdesappli/amapress/issues/20))
+  - next-distrib-deliv-paniers pour afficher les paniers aux prochaines distributions ([#20](https://github.com/comptoirdesappli/amapress/issues/20))
 
 # 0.95.26 (2020-07-08)
 * **multisite, superadmin** check role avec current_user_can (renvoie toujours true), ne renvoyer true que si le rôle demandé est administrator
@@ -1009,8 +1005,7 @@
 
 # 0.95.10 (2020-06-29)
 
-* **Assistant inscription:** documentation check_adhesion_received et check_adhesion_received_or_previous
-  sur [inscription-en-ligne] et [inscription-en-ligne-connecte]
+* **Assistant inscription:** documentation check_adhesion_received et check_adhesion_received_or_previous sur [inscription-en-ligne] et [inscription-en-ligne-connecte]
 * **Demande d'adhésion:**
   - affichage de la réponse type prérempli dans l'éditeur de demande d'adhésion
   - possibilité de création du compte utilisateur + possibilité d'envoi d'un mail de réponse "automatique"/prérempli
@@ -1052,8 +1047,7 @@
   - autoriser les co-adhérents à voir le détails des inscriptions de l'adhérent principal
   - lien vers contrats si déjà une adhésion
   - intégration complète de New User Approve (pas de notification nouvelle inscription utilisateur native puisque New
-    User Approve envoie une notif) + bug send_welcome (suite
-    issue [#19](https://github.com/comptoirdesappli/amapress/issues/19))
+    User Approve envoie une notif) + bug send_welcome (suite issue [#19](https://github.com/comptoirdesappli/amapress/issues/19))
   - option Rendre accessible les pré-inscriptions en ligne pour un contrat uniquement si l'amapien a une inscription à
     un ou plusieurs autres contrats
   - paramètre check_adhesion_received pour empêcher l'inscription tant que l'adhésion n'est pas validée
@@ -1061,8 +1055,7 @@
     moins qu'une adhésion précédente ait été validée
   - paramètres globaux dans Tableau de bord>Gestion Contrats>Configuration, onglet Contrats pour la vérification
     d'adhésions validées
-  - à la fin d'une inscription, afficher le bouton 'Livraisons' à côté du bouton 'Imprimer' (pour les paniers
-    modulables)
+  - à la fin d'une inscription, afficher le bouton 'Livraisons' à côté du bouton 'Imprimer' (pour les paniers modulables)
   - étape récapitulatif et réglements, paramètre use_quantite_tables pour afficher un tableaux des quantités (date en
     ligne, quantités en colonnes)
   - **connecté:** paramètre skip_coords pour passer l'étape de saisie de coordonnées et des coadhérents + ne pas
