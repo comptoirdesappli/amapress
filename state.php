@@ -1458,82 +1458,82 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 	$new_page_href                              = admin_url( 'post-new.php?post_type=page' );
 	$new_private_page_href                      = admin_url( 'post-new.php?post_type=page&amps_lo=1' );
 	$needed_shortcodes                          = [
-		'trombinoscope'                 => [
+		'trombinoscope'                  => [
 			'desc'  => __( 'Ajouter une page privée avec le shortcode %s pour afficher le trombinoscope des amapiens', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '3/ Info utiles', 'amapress' ),
 		],
-		'recettes'                      => [
+		'recettes'                       => [
 			'desc'  => __( 'Ajouter une page avec le shortcode %s pour afficher les recettes', 'amapress' ),
 			'href'  => $new_page_href,
 			'categ' => __( '1/ Site public', 'amapress' ),
 		],
-		'produits'                      => [
+		'produits'                       => [
 			'desc'  => __( 'Ajouter une page avec le shortcode %s pour afficher les produits', 'amapress' ),
 			'href'  => $new_page_href,
 			'categ' => __( '1/ Site public', 'amapress' ),
 		],
-		'inscription-distrib'           => [
+		'inscription-distrib'            => [
 			'desc'  => __( 'Ajouter une page avec le shortcode %s pour permettre aux amapiens de s\'inscrire comme responsable de distribution', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '4/ Gestion AMAP', 'amapress' ),
 		],
-		'echanger-paniers-list'         => [
+		'echanger-paniers-list'          => [
 			'desc'  => __( 'Ajouter une page avec le shortcode %s pour permettre aux amapiens de proposer leurs paniers en cas d\'absence', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '5/ Espace intermittents', 'amapress' ),
 		],
-		'intermittents-inscription'     => [
+		'intermittents-inscription'      => [
 			'desc'  => __( 'Ajouter une page avec le shortcode %s pour permettre aux amapiens d\'inscrire des intermittents', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '5/ Espace intermittents', 'amapress' ),
 		],
-		'intermittents-desinscription'  => [
+		'intermittents-desinscription'   => [
 			'desc'  => __( 'Ajouter une page avec le shortcode %s pour permettre aux intermittents de se désinscrire', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '5/ Espace intermittents', 'amapress' ),
 		],
-		'amapress-post-its'             => [
+		'amapress-post-its'              => [
 			'desc'  => __( 'Ajouter le shortcode %s à la page d\'Accueil pour afficher les post-its de gestion de l\'AMAP', 'amapress' ),
 			'href'  => $front_page_edit_href,
 			'categ' => __( '2/ Page Accueil - Infos utiles', 'amapress' ),
 		],
-		'amapien-edit-infos'            => [
+		'amapien-edit-infos'             => [
 			'desc'  => __( 'Ajouter le shortcode %s à la page "Mes infos" pour permettre aux amapiens d\'éditer leur profil', 'amapress' ),
 			'href'  => $amapien_mes_infos_edit_href,
 			'categ' => __( '4/ Profil amapien', 'amapress' ),
 		],
-		'mes-contrats'                  => [
+		'mes-contrats'                   => [
 			'desc'  => __( 'Ajouter le shortcode %s à une page "Mes contrats" pour permettre aux amapiens de voir leurs inscriptions, de télécharger leurs contrats Word ou de s\'inscrire à de nouveaux contrats en cours de saison', 'amapress' ),
 			'href'  => $amapien_mes_infos_edit_href,
 			'categ' => __( '4/ Profil amapien', 'amapress' ),
 		],
-		'amapien-paniers-intermittents' => [
+		'amapien-paniers-intermittents'  => [
 			'desc'  => __( 'Ajouter le shortcode %s à la page Mes paniers échangés pour afficher "Les paniers que j\'ai proposé"', 'amapress' ),
 			'href'  => $amapien_mes_paniers_edit_href,
 			'categ' => __( '5/ Espace intermittents', 'amapress' ),
 		],
-		'les-paniers-intermittents'     => [
+		'les-paniers-intermittents'      => [
 			'desc'  => __( 'Ajouter le shortcode %s à la page "Intermittent - Réserver un panier" pour permettre aux intermittents de réserver des paniers', 'amapress' ),
 			'href'  => $amapien_les_paniers_edit_href,
 			'categ' => __( '5/ Espace intermittents', 'amapress' ),
 		],
-		'intermittent-paniers'          => [
+		'intermittent-paniers'           => [
 			'desc'  => __( 'Ajouter le shortcode %s à la page Mes paniers échangés pour afficher "Les paniers que j\'ai réservé"', 'amapress' ),
 			'href'  => $amapien_mes_paniers_edit_href,
 			'categ' => __( '5/ Espace intermittents', 'amapress' ),
 		],
-		'amapiens-map'                  => [
+		'amapiens-map'                   => [
 			'desc'  => __( 'Ajouter une page avec le shortcode %s pour afficher la carte des amapiens', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '3/ Info utiles', 'amapress' ),
 		],
-		'amapiens-role-list'            => [
+		'amapiens-role-list'             => [
 			'desc'  => __( 'Ajouter une page avec le shortcode %s pour afficher la liste des membres du collectif', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '3/ Info utiles', 'amapress' ),
 		],
-		'agenda-url'                    => [
+		'agenda-url'                     => [
 			'desc'  => __( 'Ajouter le shortcode %s (ou [agenda-url-button]) à la page Mes infos pour permettre aux amapiens d\'ajouter leur calendrier à leur agenda', 'amapress' ),
 			'href'  => $amapien_mes_infos_edit_href,
 			'categ' => __( '4/ Profil amapien', 'amapress' ),
@@ -1578,37 +1578,37 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 			'href'  => $new_page_href,
 			'categ' => __( '6/ Inscriptions en ligne', 'amapress' ),
 		],
-		'listes-diffusions'             => [
+		'listes-diffusions'              => [
 			'desc'  => __( 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens ou au collectif de connaitre les listes de diffusions configurées de votre AMAP', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '3/ Info utiles', 'amapress' ),
 		],
-		'inscription-visite'            => [
+		'inscription-visite'             => [
 			'desc'  => __( 'Ajouter le shortcode %s sur une page protégée pour permettre aux amapiens de s\'inscrires aux visites aux producteurs', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '8/ Inscriptions', 'amapress' ),
 		],
-		'amapress-latest-posts'         => [
+		'amapress-latest-posts'          => [
 			'desc'  => __( 'Ajouter le shortcode %s sur une page pour permettre d\'afficher une liste des derniers articles publiés sur le site', 'amapress' ),
 			'href'  => $new_page_href,
 			'categ' => __( '3/ Info utiles', 'amapress' ),
 		],
-		'producteur-map'                => [
+		'producteur-map'                 => [
 			'desc'  => __( 'Ajouter le shortcode %s sur une page pour permettre d\'afficher la carte des producteurs', 'amapress' ),
 			'href'  => $new_page_href,
 			'categ' => __( '3/ Info utiles', 'amapress' ),
 		],
-		'resp-distrib-contacts'         => [
+		'resp-distrib-contacts'          => [
 			'desc'  => __( 'Ajouter le shortcode %s à la page d\'Accueil pour permettre d\'afficher les contacts des responsables de distribution de la semaine', 'amapress' ),
 			'href'  => $front_page_edit_href,
 			'categ' => __( '2/ Page Accueil - Infos utiles', 'amapress' ),
 		],
-		'anon-inscription-distrib'      => [
+		'anon-inscription-distrib'       => [
 			'desc'  => __( 'Ajouter le shortcode %s sur une page protégée pour permettre d\'afficher une liste des derniers articles publiés sur le site', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '8/ Inscriptions', 'amapress' ),
 		],
-		'inscription-amap-event'        => [
+		'inscription-amap-event'         => [
 			'desc'  => __( 'Ajouter le shortcode %s sur une page protégée pour permettre d\'afficher la page d\'inscription aux évènements', 'amapress' ),
 			'href'  => $new_private_page_href,
 			'categ' => __( '8/ Inscriptions', 'amapress' ),
@@ -1738,7 +1738,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 	} );
 	$with_word_contrats_invalid = array_filter( $subscribable_contrat_instances, function ( $c ) {
 		/** @var AmapressContrat_instance $c */
-		return $c->canSelfSubscribe() && ! empty( $c->getContratModelDocFileName() ) && true !== $c->getContratModelDocStatus();
+		return $c->canSelfSubscribe() && ! empty( $c->getContratModelDocFileName() ) && is_array( $c->getContratModelDocStatus() );
 	} );
 	$without_word_contrats      = array_filter( $subscribable_contrat_instances, function ( $c ) {
 		/** @var AmapressContrat_instance $c */
@@ -1755,7 +1755,7 @@ configurer le mot de passe du listmaster et le domaine de liste <a href="%s">ici
 			$tit         = esc_html( $dn->getTitle() );
 			$status      = $dn->getContratModelDocStatus();
 			$status_text = '';
-			if ( true !== $status ) {
+			if ( is_array( $status ) ) {
 				$status_text = ' (<span class="' . $status['status'] . '">' . esc_html( $status['message'] ) . '</span>)';
 			}
 

@@ -2237,7 +2237,10 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function generateContratDoc( $date_first_distrib, $editable, $check_only = false ) {
-		$out_filename   = $this->getContratDocFileName( $date_first_distrib );
+		$out_filename = $this->getContratDocFileName( $date_first_distrib );
+		if ( empty( $out_filename ) ) {
+			return '';
+		}
 		$model_filename = $this->getContratPapierModelDocFileName();
 		if ( ! $check_only && empty( $model_filename ) ) {
 			return '';

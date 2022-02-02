@@ -222,7 +222,9 @@ function amapress_register_entities_contrat( $entities ) {
 					echo '<div class="notice notice-error"><p>' . __( 'Modèle de contrat invalide : pas de production associée', 'amapress' ) . '</p></div>';
 				} else {
 					$result = $contrat->getContratModelDocStatus();
-					if ( true !== $result ) {
+					if ( null === $result ) {
+						echo amapress_get_admin_notice( __( 'Contrat sans utilisation de contrat papier', 'amapress' ), 'info', false );
+					} elseif ( is_array( $result ) ) {
 						echo amapress_get_admin_notice( $result['message'], $result['status'], false );
 					}
 
