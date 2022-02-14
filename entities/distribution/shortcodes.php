@@ -475,7 +475,7 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 			$ret .= '<p style="text-align: center"><a class="' . $btn_class . '" href="' . $user_lieu->getAdminEditLink() . '#amapress_lieu_distribution_nb_responsables">' . __( 'Modifier le nombre de responsables de distribution du lieu', 'amapress' ) . '</a></p>';
 		}
 
-		if ( ! $for_pdf && 'anon-inscription-distrib' != $tag && amapress_is_user_logged_in() ) {
+		if ( $allow_gardiens && ! $for_pdf && 'anon-inscription-distrib' != $tag && amapress_is_user_logged_in() ) {
 			$inscr_gardien_all_url = add_query_arg( [
 				'action' => 'inscr_all_dist_gardien'
 			], admin_url( 'admin-post.php' ) );
