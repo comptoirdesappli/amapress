@@ -533,6 +533,12 @@ WHERE tt.taxonomy = %s", AmapressUser::AMAPIEN_GROUP ) );
 		return isset( $this->custom['amapress_user_moyen'] ) ? $this->custom['amapress_user_moyen'] : 'mail';
 	}
 
+	public function getAdherentNumber() {
+		$this->ensure_init();
+
+		return isset( $this->custom['amapress_user_num_adh'] ) ? $this->custom['amapress_user_num_adh'] : '';
+	}
+
 	public function getDisplayNameWithAdminEditLink() {
 		return Amapress::makeLink( $this->getEditLink(), $this->getDisplayName(), true, true );
 	}

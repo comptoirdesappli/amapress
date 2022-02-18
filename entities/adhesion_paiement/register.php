@@ -161,7 +161,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 					return '';
 				}
 			),
-			'adherent_address'   => array(
+			'adherent_address' => array(
 				'csv_import'           => false,
 				'csv_export'           => true,
 				'show_column'          => true,
@@ -180,7 +180,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 					return '';
 				}
 			),
-			'adherent_tel'       => array(
+			'adherent_tel'     => array(
 				'csv_import'           => false,
 				'csv_export'           => true,
 				'show_column'          => true,
@@ -199,7 +199,26 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 					return '';
 				}
 			),
-			'period'             => array(
+			'adherent_num'     => array(
+				'csv_import'           => false,
+				'csv_export'           => true,
+				'show_column'          => true,
+				'show_on'              => 'edit-only',
+				'group'                => __( '1/ Adhérent', 'amapress' ),
+				'use_custom_as_column' => true,
+				'col_def_hidden'       => true,
+				'name'                 => __( 'Numéro d\'adhérent', 'amapress' ),
+				'type'                 => 'custom',
+				'custom'               => function ( $post_id ) {
+					$adh = AmapressAdhesion_paiement::getBy( $post_id );
+					if ( $adh->getUser() ) {
+						return implode( ' / ', $adh->getUser()->getAdherentNumber() );
+					}
+
+					return '';
+				}
+			),
+			'period'           => array(
 				'name'              => __( 'Période adhésion', 'amapress' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressAdhesionPeriod::INTERNAL_POST_TYPE,
@@ -214,7 +233,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				),
 				'csv_required'      => true,
 			),
-			'date'               => array(
+			'date'             => array(
 				'name'         => __( 'Date', 'amapress' ),
 				'type'         => 'date',
 				'required'     => true,
