@@ -45,7 +45,7 @@ class AmapressExport_Users {
 					null,
 					$amapress_export_columns );
 				echo '<p>' . __( 'Shortcode correspondant à la vue actuelle :', 'amapress' ) . '</p><pre style="white-space: pre-wrap;word-break: break-all">' .
-				     '[amapress-backoffice-view view="scroll" logged="true" query="' . $data['query'] . '" columns="' . implode( ',', $data['header_ids'] ) . '"]' .
+				     '[amapress-backoffice-view view="scroll" logged="true" users="true" query="' . $data['query'] . '" columns="' . implode( ',', $data['header_ids'] ) . '"]' .
 				     '</pre>';
 				die();
 			}
