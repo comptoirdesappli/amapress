@@ -958,7 +958,7 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function includeDocContrat() {
-		return $this->getCustomAsInt( 'amapress_contrat_instance_allow_word', 0 );
+		return $this->getCustomAsInt( 'amapress_contrat_instance_allow_word', 1 );
 	}
 
 	public function getContratModelDocFileName() {
