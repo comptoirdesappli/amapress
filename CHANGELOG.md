@@ -1,3 +1,21 @@
+# 0.99.141 (2022-02-21)
+
+* **Contrats:** autoriser les contrats papiers, valeur par défaut
+
+# 0.99.140 (2022-02-18)
+
+* **Shortcodes:** générer le shortcode [amapress-backoffice-view] de la vue des comptes avec users="true"
+* **Règlements adhésions:** affichage colonne Numéro d'adhérent
+
+# 0.99.135 (2022-02-14)
+
+* **Shortcodes:** inscription responsables de distribution, bouton S'inscrire gardien sur toutes les prochaines
+  distributions uniquement si le système de gardien de paniers est actif
+
+# 0.99.131 (2022-02-02)
+
+* **Contrat** vérification de la présence des contrats DOCX
+
 # 0.99.130 (2022-01-26)
 
 * **Inscription Intermittents:** ajout des responsables des intermittents en destinataire des mails d'approbation (New
