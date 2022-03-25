@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -20,37 +20,41 @@ namespace PhpOffice\PhpWord\Writer\Word2007\Element;
 /**
  * @since 0.13.0
  */
-class TableAlignment {
-	private $name = 'w:jc';
+class TableAlignment
+{
+    private $name = 'w:jc';
 
-	private $attributes = array();
+    private $attributes = array();
 
-	/**
-	 * @since 0.13.0
-	 *
-	 * @param string $value Any value provided by JcTable simple type
-	 *
-	 * @see \PhpOffice\PhpWord\SimpleType\JcTable For the allowed values of $value parameter.
-	 */
-	final public function __construct( $value ) {
-		$this->attributes['w:val'] = $value;
-	}
+    /**
+     * @since 0.13.0
+     *
+     * @param string $value Any value provided by JcTable simple type
+     *
+     * @see \PhpOffice\PhpWord\SimpleType\JcTable For the allowed values of $value parameter.
+     */
+    final public function __construct($value)
+    {
+        $this->attributes['w:val'] = $value;
+    }
 
-	/**
-	 * @since 0.13.0
-	 *
-	 * @return string
-	 */
-	final public function getName() {
-		return $this->name;
-	}
+    /**
+     * @since 0.13.0
+     *
+     * @return string
+     */
+    final public function getName()
+    {
+        return $this->name;
+    }
 
-	/**
-	 * @since 0.13.0
-	 *
-	 * @return string[]
-	 */
-	final public function getAttributes() {
-		return $this->attributes;
-	}
+    /**
+     * @since 0.13.0
+     *
+     * @return string[]
+     */
+    final public function getAttributes()
+    {
+        return $this->attributes;
+    }
 }

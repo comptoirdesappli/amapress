@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,19 +22,21 @@ namespace PhpOffice\PhpWord\Writer\Word2007\Element;
  *
  * @since 0.10.0
  */
-class TextRun extends Text {
-	/**
-	 * Write textrun element.
-	 */
-	public function write() {
-		$xmlWriter = $this->getXmlWriter();
-		$element   = $this->getElement();
+class TextRun extends Text
+{
+    /**
+     * Write textrun element.
+     */
+    public function write()
+    {
+        $xmlWriter = $this->getXmlWriter();
+        $element = $this->getElement();
 
-		$this->startElementP();
+        $this->startElementP();
 
-		$containerWriter = new Container( $xmlWriter, $element );
-		$containerWriter->write();
+        $containerWriter = new Container($xmlWriter, $element);
+        $containerWriter->write();
 
-		$this->endElementP(); // w:p
-	}
+        $this->endElementP(); // w:p
+    }
 }

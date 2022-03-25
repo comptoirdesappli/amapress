@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -26,8 +26,9 @@ use PhpOffice\PhpWord\Shared\AbstractEnum;
  *
  * @since 0.13.0
  */
-final class JcTable extends AbstractEnum {
-	const START = 'start';
-	const CENTER = 'center';
-	const END = 'end';
+final class JcTable extends AbstractEnum
+{
+    const START = 'start';
+    const CENTER = 'center';
+    const END = 'end';
 }

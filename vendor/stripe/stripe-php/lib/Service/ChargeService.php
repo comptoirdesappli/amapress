@@ -15,7 +15,7 @@ class ChargeService extends \Stripe\Service\AbstractService
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
-     * @return \Stripe\Collection
+     * @return \Stripe\Collection<\Stripe\Charge>
      */
     public function all($params = null, $opts = null)
     {
@@ -27,9 +27,10 @@ class ChargeService extends \Stripe\Service\AbstractService
      * of the two-step payment flow, where first you <a href="#create_charge">created a
      * charge</a> with the capture option set to false.
      *
-     * Uncaptured payments expire exactly seven days after they are created. If they
-     * are not captured by that point in time, they will be marked as refunded and will
-     * no longer be capturable.
+     * Uncaptured payments expire a set number of days after they are created (<a
+     * href="/docs/charges/placing-a-hold">7 by default</a>). If they are not captured
+     * by that point in time, they will be marked as refunded and will no longer be
+     * capturable.
      *
      * @param string $id
      * @param null|array $params

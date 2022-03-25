@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -23,129 +23,135 @@ namespace PhpOffice\PhpWord\Style;
  * @see  http://www.schemacentral.com/sc/ooxml/t-w_CT_Ind.html
  * @since 0.10.0
  */
-class Indentation extends AbstractStyle {
-	/**
-	 * Left indentation (twip)
-	 *
-	 * @var int|float
-	 */
-	private $left = 0;
+class Indentation extends AbstractStyle
+{
+    /**
+     * Left indentation (twip)
+     *
+     * @var int|float
+     */
+    private $left = 0;
 
-	/**
-	 * Right indentation (twip)
-	 *
-	 * @var int|float
-	 */
-	private $right = 0;
+    /**
+     * Right indentation (twip)
+     *
+     * @var int|float
+     */
+    private $right = 0;
 
-	/**
-	 * Additional first line indentation (twip)
-	 *
-	 * @var int|float
-	 */
-	private $firstLine;
+    /**
+     * Additional first line indentation (twip)
+     *
+     * @var int|float
+     */
+    private $firstLine;
 
-	/**
-	 * Indentation removed from first line (twip)
-	 *
-	 * @var int|float
-	 */
-	private $hanging;
+    /**
+     * Indentation removed from first line (twip)
+     *
+     * @var int|float
+     */
+    private $hanging;
 
-	/**
-	 * Create a new instance
-	 *
-	 * @param array $style
-	 */
-	public function __construct( $style = array() ) {
-		$this->setStyleByArray( $style );
-	}
+    /**
+     * Create a new instance
+     *
+     * @param array $style
+     */
+    public function __construct($style = array())
+    {
+        $this->setStyleByArray($style);
+    }
 
-	/**
-	 * Get left
-	 *
-	 * @return int|float
-	 */
-	public function getLeft() {
-		return $this->left;
-	}
+    /**
+     * Get left
+     *
+     * @return int|float
+     */
+    public function getLeft()
+    {
+        return $this->left;
+    }
 
-	/**
-	 * Set left
-	 *
-	 * @param int|float $value
-	 *
-	 * @return self
-	 */
-	public function setLeft( $value = null ) {
-		$this->left = $this->setNumericVal( $value, $this->left );
+    /**
+     * Set left
+     *
+     * @param int|float $value
+     * @return self
+     */
+    public function setLeft($value = null)
+    {
+        $this->left = $this->setNumericVal($value, $this->left);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get right
-	 *
-	 * @return int|float
-	 */
-	public function getRight() {
-		return $this->right;
-	}
+    /**
+     * Get right
+     *
+     * @return int|float
+     */
+    public function getRight()
+    {
+        return $this->right;
+    }
 
-	/**
-	 * Set right
-	 *
-	 * @param int|float $value
-	 *
-	 * @return self
-	 */
-	public function setRight( $value = null ) {
-		$this->right = $this->setNumericVal( $value, $this->right );
+    /**
+     * Set right
+     *
+     * @param int|float $value
+     * @return self
+     */
+    public function setRight($value = null)
+    {
+        $this->right = $this->setNumericVal($value, $this->right);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get first line
-	 *
-	 * @return int|float
-	 */
-	public function getFirstLine() {
-		return $this->firstLine;
-	}
+    /**
+     * Get first line
+     *
+     * @return int|float
+     */
+    public function getFirstLine()
+    {
+        return $this->firstLine;
+    }
 
-	/**
-	 * Set first line
-	 *
-	 * @param int|float $value
-	 *
-	 * @return self
-	 */
-	public function setFirstLine( $value = null ) {
-		$this->firstLine = $this->setNumericVal( $value, $this->firstLine );
+    /**
+     * Set first line
+     *
+     * @param int|float $value
+     * @return self
+     */
+    public function setFirstLine($value = null)
+    {
+        $this->firstLine = $this->setNumericVal($value, $this->firstLine);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get hanging
-	 *
-	 * @return int|float
-	 */
-	public function getHanging() {
-		return $this->hanging;
-	}
+    /**
+     * Get hanging
+     *
+     * @return int|float
+     */
+    public function getHanging()
+    {
+        return $this->hanging;
+    }
 
-	/**
-	 * Set hanging
-	 *
-	 * @param int|float $value
-	 *
-	 * @return self
-	 */
-	public function setHanging( $value = null ) {
-		$this->hanging = $this->setNumericVal( $value, $this->hanging );
+    /**
+     * Set hanging
+     *
+     * @param int|float $value
+     * @return self
+     */
+    public function setHanging($value = null)
+    {
+        $this->hanging = $this->setNumericVal($value, $this->hanging);
 
-		return $this;
-	}
+        return $this;
+    }
 }

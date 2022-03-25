@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,56 +22,59 @@ use PhpOffice\PhpWord\Style\Paragraph;
 /**
  * Textrun/paragraph element
  */
-class TextRun extends AbstractContainer {
-	/**
-	 * @var string Container type
-	 */
-	protected $container = 'TextRun';
+class TextRun extends AbstractContainer
+{
+    /**
+     * @var string Container type
+     */
+    protected $container = 'TextRun';
 
-	/**
-	 * Paragraph style
-	 *
-	 * @var string|\PhpOffice\PhpWord\Style\Paragraph
-	 */
-	protected $paragraphStyle;
+    /**
+     * Paragraph style
+     *
+     * @var string|\PhpOffice\PhpWord\Style\Paragraph
+     */
+    protected $paragraphStyle;
 
-	/**
-	 * Create new instance
-	 *
-	 * @param string|array|\PhpOffice\PhpWord\Style\Paragraph $paragraphStyle
-	 */
-	public function __construct( $paragraphStyle = null ) {
-		$this->paragraphStyle = $this->setParagraphStyle( $paragraphStyle );
-	}
+    /**
+     * Create new instance
+     *
+     * @param string|array|\PhpOffice\PhpWord\Style\Paragraph $paragraphStyle
+     */
+    public function __construct($paragraphStyle = null)
+    {
+        $this->paragraphStyle = $this->setParagraphStyle($paragraphStyle);
+    }
 
-	/**
-	 * Get Paragraph style
-	 *
-	 * @return string|\PhpOffice\PhpWord\Style\Paragraph
-	 */
-	public function getParagraphStyle() {
-		return $this->paragraphStyle;
-	}
+    /**
+     * Get Paragraph style
+     *
+     * @return string|\PhpOffice\PhpWord\Style\Paragraph
+     */
+    public function getParagraphStyle()
+    {
+        return $this->paragraphStyle;
+    }
 
-	/**
-	 * Set Paragraph style
-	 *
-	 * @param string|array|\PhpOffice\PhpWord\Style\Paragraph $style
-	 *
-	 * @return string|\PhpOffice\PhpWord\Style\Paragraph
-	 */
-	public function setParagraphStyle( $style = null ) {
-		if ( is_array( $style ) ) {
-			$this->paragraphStyle = new Paragraph();
-			$this->paragraphStyle->setStyleByArray( $style );
-		} elseif ( $style instanceof Paragraph ) {
-			$this->paragraphStyle = $style;
-		} elseif ( null === $style ) {
-			$this->paragraphStyle = new Paragraph();
-		} else {
-			$this->paragraphStyle = $style;
-		}
+    /**
+     * Set Paragraph style
+     *
+     * @param string|array|\PhpOffice\PhpWord\Style\Paragraph $style
+     * @return string|\PhpOffice\PhpWord\Style\Paragraph
+     */
+    public function setParagraphStyle($style = null)
+    {
+        if (is_array($style)) {
+            $this->paragraphStyle = new Paragraph();
+            $this->paragraphStyle->setStyleByArray($style);
+        } elseif ($style instanceof Paragraph) {
+            $this->paragraphStyle = $style;
+        } elseif (null === $style) {
+            $this->paragraphStyle = new Paragraph();
+        } else {
+            $this->paragraphStyle = $style;
+        }
 
-		return $this->paragraphStyle;
-	}
+        return $this->paragraphStyle;
+    }
 }

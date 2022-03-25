@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -26,16 +26,17 @@ use PhpOffice\PhpWord\Shared\AbstractEnum;
  *
  * @see http://www.datypic.com/sc/ooxml/t-w_ST_Zoom.html
  */
-final class Zoom extends AbstractEnum {
-	//No Preset Magnification
-	const NONE = 'none';
+final class Zoom extends AbstractEnum
+{
+    //No Preset Magnification
+    const NONE = 'none';
 
-	//Display One Full Page
-	const FULL_PAGE = 'fullPage';
+    //Display One Full Page
+    const FULL_PAGE = 'fullPage';
 
-	//Display Page Width
-	const BEST_FIT = 'bestFit';
+    //Display Page Width
+    const BEST_FIT = 'bestFit';
 
-	//Display Text Width
-	const TEXT_FIT = 'textFit';
+    //Display Text Width
+    const TEXT_FIT = 'textFit';
 }

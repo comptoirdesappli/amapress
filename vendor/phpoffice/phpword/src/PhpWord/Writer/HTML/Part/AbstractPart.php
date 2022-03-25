@@ -11,55 +11,59 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
 namespace PhpOffice\PhpWord\Writer\HTML\Part;
 
+use Laminas\Escaper\Escaper;
 use PhpOffice\PhpWord\Exception\Exception;
 use PhpOffice\PhpWord\Writer\AbstractWriter;
-use Zend\Escaper\Escaper;
 
 /**
  * @since 0.11.0
  */
-abstract class AbstractPart {
-	/**
-	 * @var \PhpOffice\PhpWord\Writer\AbstractWriter
-	 */
-	private $parentWriter;
+abstract class AbstractPart
+{
+    /**
+     * @var \PhpOffice\PhpWord\Writer\AbstractWriter
+     */
+    private $parentWriter;
 
-	/**
-	 * @var \Zend\Escaper\Escaper
-	 */
-	protected $escaper;
+    /**
+     * @var \Laminas\Escaper\Escaper
+     */
+    protected $escaper;
 
-	public function __construct() {
-		$this->escaper = new Escaper();
-	}
+    public function __construct()
+    {
+        $this->escaper = new Escaper();
+    }
 
-	/**
-	 * @return string
-	 */
-	abstract public function write();
+    /**
+     * @return string
+     */
+    abstract public function write();
 
-	/**
-	 * @param \PhpOffice\PhpWord\Writer\AbstractWriter $writer
-	 */
-	public function setParentWriter( AbstractWriter $writer = null ) {
-		$this->parentWriter = $writer;
-	}
+    /**
+     * @param \PhpOffice\PhpWord\Writer\AbstractWriter $writer
+     */
+    public function setParentWriter(AbstractWriter $writer = null)
+    {
+        $this->parentWriter = $writer;
+    }
 
-	/**
-	 * @throws \PhpOffice\PhpWord\Exception\Exception
-	 *
-	 * @return \PhpOffice\PhpWord\Writer\AbstractWriter
-	 */
-	public function getParentWriter() {
-		if ( $this->parentWriter !== null ) {
-			return $this->parentWriter;
-		}
-		throw new Exception( 'No parent WriterInterface assigned.' );
-	}
+    /**
+     * @throws \PhpOffice\PhpWord\Exception\Exception
+     *
+     * @return \PhpOffice\PhpWord\Writer\AbstractWriter
+     */
+    public function getParentWriter()
+    {
+        if ($this->parentWriter !== null) {
+            return $this->parentWriter;
+        }
+        throw new Exception('No parent WriterInterface assigned.');
+    }
 }

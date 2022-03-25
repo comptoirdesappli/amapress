@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -26,19 +26,20 @@ use PhpOffice\PhpWord\Shared\AbstractEnum;
  *
  * @see http://www.datypic.com/sc/ooxml/t-w_ST_LineSpacingRule.html
  */
-final class LineSpacingRule extends AbstractEnum {
-	/**
-	 * Automatically Determined Line Height
-	 */
-	const AUTO = 'auto';
+final class LineSpacingRule extends AbstractEnum
+{
+    /**
+     * Automatically Determined Line Height
+     */
+    const AUTO = 'auto';
 
-	/**
-	 * Exact Line Height
-	 */
-	const EXACT = 'exact';
+    /**
+     * Exact Line Height
+     */
+    const EXACT = 'exact';
 
-	/**
-	 * Minimum Line Height
-	 */
-	const AT_LEAST = 'atLeast';
+    /**
+     * Minimum Line Height
+     */
+    const AT_LEAST = 'atLeast';
 }

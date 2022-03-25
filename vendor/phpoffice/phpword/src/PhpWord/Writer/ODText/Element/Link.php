@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,29 +22,31 @@ namespace PhpOffice\PhpWord\Writer\ODText\Element;
  *
  * @since 0.10.0
  */
-class Link extends AbstractElement {
-	/**
-	 * Write element
-	 */
-	public function write() {
-		$xmlWriter = $this->getXmlWriter();
-		$element   = $this->getElement();
-		if ( ! $element instanceof \PhpOffice\PhpWord\Element\Link ) {
-			return;
-		}
+class Link extends AbstractElement
+{
+    /**
+     * Write element
+     */
+    public function write()
+    {
+        $xmlWriter = $this->getXmlWriter();
+        $element = $this->getElement();
+        if (!$element instanceof \PhpOffice\PhpWord\Element\Link) {
+            return;
+        }
 
-		if ( ! $this->withoutP ) {
-			$xmlWriter->startElement( 'text:p' ); // text:p
-		}
+        if (!$this->withoutP) {
+            $xmlWriter->startElement('text:p'); // text:p
+        }
 
-		$xmlWriter->startElement( 'text:a' );
-		$xmlWriter->writeAttribute( 'xlink:type', 'simple' );
-		$xmlWriter->writeAttribute( 'xlink:href', $element->getSource() );
-		$this->writeText( $element->getText() );
-		$xmlWriter->endElement(); // text:a
+        $xmlWriter->startElement('text:a');
+        $xmlWriter->writeAttribute('xlink:type', 'simple');
+        $xmlWriter->writeAttribute('xlink:href', ($element->isInternal() ? '#' : '') . $element->getSource());
+        $this->writeText($element->getText());
+        $xmlWriter->endElement(); // text:a
 
-		if ( ! $this->withoutP ) {
-			$xmlWriter->endElement(); // text:p
-		}
-	}
+        if (!$this->withoutP) {
+            $xmlWriter->endElement(); // text:p
+        }
+    }
 }

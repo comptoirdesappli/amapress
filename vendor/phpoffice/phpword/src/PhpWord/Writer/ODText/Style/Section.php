@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,28 +22,30 @@ namespace PhpOffice\PhpWord\Writer\ODText\Style;
  *
  * @since 0.11.0
  */
-class Section extends AbstractStyle {
-	/**
-	 * Write style.
-	 */
-	public function write() {
-		/** @var \PhpOffice\PhpWord\Style\Section $style Type hint */
-		$style = $this->getStyle();
-		if ( ! $style instanceof \PhpOffice\PhpWord\Style\Section ) {
-			return;
-		}
-		$xmlWriter = $this->getXmlWriter();
+class Section extends AbstractStyle
+{
+    /**
+     * Write style.
+     */
+    public function write()
+    {
+        /** @var \PhpOffice\PhpWord\Style\Section $style Type hint */
+        $style = $this->getStyle();
+        if (!$style instanceof \PhpOffice\PhpWord\Style\Section) {
+            return;
+        }
+        $xmlWriter = $this->getXmlWriter();
 
-		$xmlWriter->startElement( 'style:style' );
-		$xmlWriter->writeAttribute( 'style:name', $style->getStyleName() );
-		$xmlWriter->writeAttribute( 'style:family', 'section' );
-		$xmlWriter->startElement( 'style:section-properties' );
+        $xmlWriter->startElement('style:style');
+        $xmlWriter->writeAttribute('style:name', $style->getStyleName());
+        $xmlWriter->writeAttribute('style:family', 'section');
+        $xmlWriter->startElement('style:section-properties');
 
-		$xmlWriter->startElement( 'style:columns' );
-		$xmlWriter->writeAttribute( 'fo:column-count', $style->getColsNum() );
-		$xmlWriter->endElement(); // style:columns
+        $xmlWriter->startElement('style:columns');
+        $xmlWriter->writeAttribute('fo:column-count', $style->getColsNum());
+        $xmlWriter->endElement(); // style:columns
 
-		$xmlWriter->endElement(); // style:section-properties
-		$xmlWriter->endElement(); // style:style
-	}
+        $xmlWriter->endElement(); // style:section-properties
+        $xmlWriter->endElement(); // style:style
+    }
 }

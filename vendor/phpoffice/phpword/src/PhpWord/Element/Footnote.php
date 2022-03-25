@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -19,66 +19,71 @@ namespace PhpOffice\PhpWord\Element;
 
 use PhpOffice\PhpWord\Style\Paragraph;
 
-class Footnote extends AbstractContainer {
-	/**
-	 * @var string Container type
-	 */
-	protected $container = 'Footnote';
+class Footnote extends AbstractContainer
+{
+    /**
+     * @var string Container type
+     */
+    protected $container = 'Footnote';
 
-	/**
-	 * Paragraph style
-	 *
-	 * @var string|\PhpOffice\PhpWord\Style\Paragraph
-	 */
-	protected $paragraphStyle;
+    /**
+     * Paragraph style
+     *
+     * @var string|\PhpOffice\PhpWord\Style\Paragraph
+     */
+    protected $paragraphStyle;
 
-	/**
-	 * Is part of collection
-	 *
-	 * @var bool
-	 */
-	protected $collectionRelation = true;
+    /**
+     * Is part of collection
+     *
+     * @var bool
+     */
+    protected $collectionRelation = true;
 
-	/**
-	 * Create new instance
-	 *
-	 * @param string|array|\PhpOffice\PhpWord\Style\Paragraph $paragraphStyle
-	 */
-	public function __construct( $paragraphStyle = null ) {
-		$this->paragraphStyle = $this->setNewStyle( new Paragraph(), $paragraphStyle );
-		$this->setDocPart( $this->container );
-	}
+    /**
+     * Create new instance
+     *
+     * @param string|array|\PhpOffice\PhpWord\Style\Paragraph $paragraphStyle
+     */
+    public function __construct($paragraphStyle = null)
+    {
+        $this->paragraphStyle = $this->setNewStyle(new Paragraph(), $paragraphStyle);
+        $this->setDocPart($this->container);
+    }
 
-	/**
-	 * Get paragraph style
-	 *
-	 * @return string|\PhpOffice\PhpWord\Style\Paragraph
-	 */
-	public function getParagraphStyle() {
-		return $this->paragraphStyle;
-	}
+    /**
+     * Get paragraph style
+     *
+     * @return string|\PhpOffice\PhpWord\Style\Paragraph
+     */
+    public function getParagraphStyle()
+    {
+        return $this->paragraphStyle;
+    }
 
-	/**
-	 * Get Footnote Reference ID
-	 *
-	 * @deprecated 0.10.0
-	 * @codeCoverageIgnore
-	 *
-	 * @return int
-	 */
-	public function getReferenceId() {
-		return $this->getRelationId();
-	}
+    /**
+     * Get Footnote Reference ID
+     *
+     * @deprecated 0.10.0
+     * @codeCoverageIgnore
+     *
+     * @return int
+     */
+    public function getReferenceId()
+    {
+        return $this->getRelationId();
+    }
 
-	/**
-	 * Set Footnote Reference ID
-	 *
-	 * @deprecated 0.10.0
-	 * @codeCoverageIgnore
-	 *
-	 * @param int $rId
-	 */
-	public function setReferenceId( $rId ) {
-		$this->setRelationId( $rId );
-	}
+    /**
+     * Set Footnote Reference ID
+     *
+     * @deprecated 0.10.0
+     * @codeCoverageIgnore
+     *
+     * @param int $rId
+     */
+    public function setReferenceId($rId)
+    {
+        $this->setRelationId($rId);
+    }
 }

@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -24,79 +24,84 @@ use PhpOffice\PhpWord\Style\Row as RowStyle;
  *
  * @since 0.8.0
  */
-class Row extends AbstractElement {
-	/**
-	 * Row height
-	 *
-	 * @var int
-	 */
-	private $height = null;
+class Row extends AbstractElement
+{
+    /**
+     * Row height
+     *
+     * @var int
+     */
+    private $height = null;
 
-	/**
-	 * Row style
-	 *
-	 * @var \PhpOffice\PhpWord\Style\Row
-	 */
-	private $style;
+    /**
+     * Row style
+     *
+     * @var \PhpOffice\PhpWord\Style\Row
+     */
+    private $style;
 
-	/**
-	 * Row cells
-	 *
-	 * @var \PhpOffice\PhpWord\Element\Cell[]
-	 */
-	private $cells = array();
+    /**
+     * Row cells
+     *
+     * @var \PhpOffice\PhpWord\Element\Cell[]
+     */
+    private $cells = array();
 
-	/**
-	 * Create a new table row
-	 *
-	 * @param int $height
-	 * @param mixed $style
-	 */
-	public function __construct( $height = null, $style = null ) {
-		$this->height = $height;
-		$this->style  = $this->setNewStyle( new RowStyle(), $style, true );
-	}
+    /**
+     * Create a new table row
+     *
+     * @param int $height
+     * @param mixed $style
+     */
+    public function __construct($height = null, $style = null)
+    {
+        $this->height = $height;
+        $this->style = $this->setNewStyle(new RowStyle(), $style, true);
+    }
 
-	/**
-	 * Add a cell
-	 *
-	 * @param int $width
-	 * @param mixed $style
-	 *
-	 * @return \PhpOffice\PhpWord\Element\Cell
-	 */
-	public function addCell( $width = null, $style = null ) {
-		$cell = new Cell( $width, $style );
-		$cell->setParentContainer( $this );
-		$this->cells[] = $cell;
+    /**
+     * Add a cell
+     *
+     * @param int $width
+     * @param mixed $style
+     * @return \PhpOffice\PhpWord\Element\Cell
+     */
+    public function addCell($width = null, $style = null)
+    {
+        $cell = new Cell($width, $style);
+        $cell->setParentContainer($this);
+        $this->cells[] = $cell;
 
-		return $cell;
-	}
+        return $cell;
+    }
 
-	/**
-	 * Get all cells
-	 *
-	 * @return \PhpOffice\PhpWord\Element\Cell[]
-	 */
-	public function getCells() {
-		return $this->cells;
-	}
+    /**
+     * Get all cells
+     *
+     * @return \PhpOffice\PhpWord\Element\Cell[]
+     */
+    public function getCells()
+    {
+        return $this->cells;
+    }
 
-	/**
-	 * Get row style
-	 *
-	 * @return \PhpOffice\PhpWord\Style\Row
-	 */
-	public function getStyle() {
-		return $this->style;
-	}
+    /**
+     * Get row style
+     *
+     * @return \PhpOffice\PhpWord\Style\Row
+     */
+    public function getStyle()
+    {
+        return $this->style;
+    }
 
-	/**
-	 * Get row height
-	 *
-	 * @return int
-	 */
-	public function getHeight() {
-		return $this->height;
-	}
+    /**
+     * Get row height
+     *
+     * @return int
+     */
+    public function getHeight()
+    {
+        return $this->height;
+    }
 }

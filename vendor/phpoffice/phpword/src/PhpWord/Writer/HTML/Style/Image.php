@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,24 +22,26 @@ namespace PhpOffice\PhpWord\Writer\HTML\Style;
  *
  * @since 0.10.0
  */
-class Image extends AbstractStyle {
-	/**
-	 * Write style
-	 *
-	 * @return string
-	 */
-	public function write() {
-		$style = $this->getStyle();
-		if ( ! $style instanceof \PhpOffice\PhpWord\Style\Image ) {
-			return '';
-		}
-		$css = array();
+class Image extends AbstractStyle
+{
+    /**
+     * Write style
+     *
+     * @return string
+     */
+    public function write()
+    {
+        $style = $this->getStyle();
+        if (!$style instanceof \PhpOffice\PhpWord\Style\Image) {
+            return '';
+        }
+        $css = array();
 
-		$width         = $style->getWidth();
-		$height        = $style->getHeight();
-		$css['width']  = $this->getValueIf( is_numeric( $width ), $width . 'px' );
-		$css['height'] = $this->getValueIf( is_numeric( $height ), $height . 'px' );
+        $width = $style->getWidth();
+        $height = $style->getHeight();
+        $css['width'] = $this->getValueIf(is_numeric($width), $width . 'px');
+        $css['height'] = $this->getValueIf(is_numeric($height), $height . 'px');
 
-		return $this->assembleCss( $css );
-	}
+        return $this->assembleCss($css);
+    }
 }

@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,70 +22,74 @@ namespace PhpOffice\PhpWord\Collection;
  *
  * @since 0.10.0
  */
-abstract class AbstractCollection {
-	/**
-	 * Items
-	 *
-	 * @var array
-	 */
-	private $items = array();
+abstract class AbstractCollection
+{
+    /**
+     * Items
+     *
+     * @var \PhpOffice\PhpWord\Element\AbstractContainer[]
+     */
+    private $items = array();
 
-	/**
-	 * Get items
-	 *
-	 * @return array
-	 */
-	public function getItems() {
-		return $this->items;
-	}
+    /**
+     * Get items
+     *
+     * @return \PhpOffice\PhpWord\Element\AbstractContainer[]
+     */
+    public function getItems()
+    {
+        return $this->items;
+    }
 
-	/**
-	 * Get item by index
-	 *
-	 * @param int $index
-	 *
-	 * @return mixed
-	 */
-	public function getItem( $index ) {
-		if ( array_key_exists( $index, $this->items ) ) {
-			return $this->items[ $index ];
-		}
+    /**
+     * Get item by index
+     *
+     * @param int $index
+     * @return \PhpOffice\PhpWord\Element\AbstractContainer
+     */
+    public function getItem($index)
+    {
+        if (array_key_exists($index, $this->items)) {
+            return $this->items[$index];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * Set item.
-	 *
-	 * @param int $index
-	 * @param mixed $item
-	 */
-	public function setItem( $index, $item ) {
-		if ( array_key_exists( $index, $this->items ) ) {
-			$this->items[ $index ] = $item;
-		}
-	}
+    /**
+     * Set item.
+     *
+     * @param int $index
+     * @param \PhpOffice\PhpWord\Element\AbstractContainer $item
+     */
+    public function setItem($index, $item)
+    {
+        if (array_key_exists($index, $this->items)) {
+            $this->items[$index] = $item;
+        }
+    }
 
-	/**
-	 * Add new item
-	 *
-	 * @param mixed $item
-	 *
-	 * @return int
-	 */
-	public function addItem( $item ) {
-		$index                 = $this->countItems() + 1;
-		$this->items[ $index ] = $item;
+    /**
+     * Add new item
+     *
+     * @param \PhpOffice\PhpWord\Element\AbstractContainer $item
+     * @return int
+     */
+    public function addItem($item)
+    {
+        $index = $this->countItems() + 1;
+        $this->items[$index] = $item;
 
-		return $index;
-	}
+        return $index;
+    }
 
-	/**
-	 * Get item count
-	 *
-	 * @return int
-	 */
-	public function countItems() {
-		return count( $this->items );
-	}
+    /**
+     * Get item count
+     *
+     * @return int
+     */
+    public function countItems()
+    {
+        return count($this->items);
+    }
 }

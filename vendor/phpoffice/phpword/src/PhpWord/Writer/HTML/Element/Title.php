@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -24,25 +24,33 @@ use PhpOffice\PhpWord\Settings;
  *
  * @since 0.10.0
  */
-class Title extends AbstractElement {
-	/**
-	 * Write heading
-	 *
-	 * @return string
-	 */
-	public function write() {
-		if ( ! $this->element instanceof \PhpOffice\PhpWord\Element\Title ) {
-			return '';
-		}
+class Title extends AbstractElement
+{
+    /**
+     * Write heading
+     *
+     * @return string
+     */
+    public function write()
+    {
+        if (!$this->element instanceof \PhpOffice\PhpWord\Element\Title) {
+            return '';
+        }
 
-		$tag = 'h' . $this->element->getDepth();
-		if ( Settings::isOutputEscapingEnabled() ) {
-			$text = $this->escaper->escapeHtml( $this->element->getText() );
-		} else {
-			$text = $this->element->getText();
-		}
-		$content = "<{$tag}>{$text}</{$tag}>" . PHP_EOL;
+        $tag = 'h' . $this->element->getDepth();
 
-		return $content;
-	}
+        $text = $this->element->getText();
+        if (is_string($text)) {
+            if (Settings::isOutputEscapingEnabled()) {
+                $text = $this->escaper->escapeHtml($text);
+            }
+        } elseif ($text instanceof \PhpOffice\PhpWord\Element\AbstractContainer) {
+            $writer = new Container($this->parentWriter, $text);
+            $text = $writer->write();
+        }
+
+        $content = "<{$tag}>{$text}</{$tag}>" . PHP_EOL;
+
+        return $content;
+    }
 }

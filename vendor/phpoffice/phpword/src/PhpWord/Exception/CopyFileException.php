@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -20,18 +20,20 @@ namespace PhpOffice\PhpWord\Exception;
 /**
  * @since 0.12.0
  */
-final class CopyFileException extends Exception {
-	/**
-	 * @param string $source The fully qualified source file name
-	 * @param string $destination The fully qualified destination file name
-	 * @param int $code The user defined exception code
-	 * @param \Exception $previous The previous exception used for the exception chaining
-	 */
-	final public function __construct( $source, $destination, $code = 0, \Exception $previous = null ) {
-		parent::__construct(
-			sprintf( 'Could not copy \'%s\' file to \'%s\'.', $source, $destination ),
-			$code,
-			$previous
-		);
-	}
+final class CopyFileException extends Exception
+{
+    /**
+     * @param string $source The fully qualified source file name
+     * @param string $destination The fully qualified destination file name
+     * @param int $code The user defined exception code
+     * @param \Exception $previous The previous exception used for the exception chaining
+     */
+    final public function __construct($source, $destination, $code = 0, \Exception $previous = null)
+    {
+        parent::__construct(
+            sprintf('Could not copy \'%s\' file to \'%s\'.', $source, $destination),
+            $code,
+            $previous
+        );
+    }
 }

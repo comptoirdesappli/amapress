@@ -26,6 +26,7 @@ namespace Stripe;
  * @property \Stripe\Service\ExchangeRateService $exchangeRates
  * @property \Stripe\Service\FileLinkService $fileLinks
  * @property \Stripe\Service\FileService $files
+ * @property \Stripe\Service\Identity\IdentityServiceFactory $identity
  * @property \Stripe\Service\InvoiceItemService $invoiceItems
  * @property \Stripe\Service\InvoiceService $invoices
  * @property \Stripe\Service\Issuing\IssuingServiceFactory $issuing
@@ -34,24 +35,28 @@ namespace Stripe;
  * @property \Stripe\Service\OrderReturnService $orderReturns
  * @property \Stripe\Service\OrderService $orders
  * @property \Stripe\Service\PaymentIntentService $paymentIntents
+ * @property \Stripe\Service\PaymentLinkService $paymentLinks
  * @property \Stripe\Service\PaymentMethodService $paymentMethods
  * @property \Stripe\Service\PayoutService $payouts
  * @property \Stripe\Service\PlanService $plans
  * @property \Stripe\Service\PriceService $prices
  * @property \Stripe\Service\ProductService $products
  * @property \Stripe\Service\PromotionCodeService $promotionCodes
+ * @property \Stripe\Service\QuoteService $quotes
  * @property \Stripe\Service\Radar\RadarServiceFactory $radar
  * @property \Stripe\Service\RefundService $refunds
  * @property \Stripe\Service\Reporting\ReportingServiceFactory $reporting
  * @property \Stripe\Service\ReviewService $reviews
  * @property \Stripe\Service\SetupAttemptService $setupAttempts
  * @property \Stripe\Service\SetupIntentService $setupIntents
+ * @property \Stripe\Service\ShippingRateService $shippingRates
  * @property \Stripe\Service\Sigma\SigmaServiceFactory $sigma
  * @property \Stripe\Service\SkuService $skus
  * @property \Stripe\Service\SourceService $sources
  * @property \Stripe\Service\SubscriptionItemService $subscriptionItems
  * @property \Stripe\Service\SubscriptionScheduleService $subscriptionSchedules
  * @property \Stripe\Service\SubscriptionService $subscriptions
+ * @property \Stripe\Service\TaxCodeService $taxCodes
  * @property \Stripe\Service\TaxRateService $taxRates
  * @property \Stripe\Service\Terminal\TerminalServiceFactory $terminal
  * @property \Stripe\Service\TokenService $tokens

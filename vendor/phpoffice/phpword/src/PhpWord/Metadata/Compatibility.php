@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -23,38 +23,40 @@ namespace PhpOffice\PhpWord\Metadata;
  * @since 0.12.0
  * @see  http://www.datypic.com/sc/ooxml/t-w_CT_Compat.html
  */
-class Compatibility {
-	/**
-	 * OOXML version
-	 *
-	 * 12 = 2007
-	 * 14 = 2010
-	 * 15 = 2013
-	 *
-	 * @var int
-	 * @see  http://msdn.microsoft.com/en-us/library/dd909048%28v=office.12%29.aspx
-	 */
-	private $ooxmlVersion = 12;
+class Compatibility
+{
+    /**
+     * OOXML version
+     *
+     * 12 = 2007
+     * 14 = 2010
+     * 15 = 2013
+     *
+     * @var int
+     * @see  http://msdn.microsoft.com/en-us/library/dd909048%28v=office.12%29.aspx
+     */
+    private $ooxmlVersion = 12;
 
-	/**
-	 * Get OOXML version
-	 *
-	 * @return int
-	 */
-	public function getOoxmlVersion() {
-		return $this->ooxmlVersion;
-	}
+    /**
+     * Get OOXML version
+     *
+     * @return int
+     */
+    public function getOoxmlVersion()
+    {
+        return $this->ooxmlVersion;
+    }
 
-	/**
-	 * Set OOXML version
-	 *
-	 * @param int $value
-	 *
-	 * @return self
-	 */
-	public function setOoxmlVersion( $value ) {
-		$this->ooxmlVersion = $value;
+    /**
+     * Set OOXML version
+     *
+     * @param int $value
+     * @return self
+     */
+    public function setOoxmlVersion($value)
+    {
+        $this->ooxmlVersion = $value;
 
-		return $this;
-	}
+        return $this;
+    }
 }

@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -24,42 +24,44 @@ use PhpOffice\PhpWord\Writer\Word2007\Style\Paragraph as ParagraphStyleWriter;
  *
  * @since 0.10.0
  */
-class ListItem extends AbstractElement {
-	/**
-	 * Write list item element.
-	 */
-	public function write() {
-		$xmlWriter = $this->getXmlWriter();
-		$element   = $this->getElement();
-		if ( ! $element instanceof \PhpOffice\PhpWord\Element\ListItem ) {
-			return;
-		}
+class ListItem extends AbstractElement
+{
+    /**
+     * Write list item element.
+     */
+    public function write()
+    {
+        $xmlWriter = $this->getXmlWriter();
+        $element = $this->getElement();
+        if (!$element instanceof \PhpOffice\PhpWord\Element\ListItem) {
+            return;
+        }
 
-		$textObject = $element->getTextObject();
+        $textObject = $element->getTextObject();
 
-		$styleWriter = new ParagraphStyleWriter( $xmlWriter, $textObject->getParagraphStyle() );
-		$styleWriter->setWithoutPPR( true );
-		$styleWriter->setIsInline( true );
+        $styleWriter = new ParagraphStyleWriter($xmlWriter, $textObject->getParagraphStyle());
+        $styleWriter->setWithoutPPR(true);
+        $styleWriter->setIsInline(true);
 
-		$xmlWriter->startElement( 'w:p' );
+        $xmlWriter->startElement('w:p');
 
-		$xmlWriter->startElement( 'w:pPr' );
-		$styleWriter->write();
+        $xmlWriter->startElement('w:pPr');
+        $styleWriter->write();
 
-		$xmlWriter->startElement( 'w:numPr' );
-		$xmlWriter->startElement( 'w:ilvl' );
-		$xmlWriter->writeAttribute( 'w:val', $element->getDepth() );
-		$xmlWriter->endElement(); // w:ilvl
-		$xmlWriter->startElement( 'w:numId' );
-		$xmlWriter->writeAttribute( 'w:val', $element->getStyle()->getNumId() );
-		$xmlWriter->endElement(); // w:numId
-		$xmlWriter->endElement(); // w:numPr
+        $xmlWriter->startElement('w:numPr');
+        $xmlWriter->startElement('w:ilvl');
+        $xmlWriter->writeAttribute('w:val', $element->getDepth());
+        $xmlWriter->endElement(); // w:ilvl
+        $xmlWriter->startElement('w:numId');
+        $xmlWriter->writeAttribute('w:val', $element->getStyle()->getNumId());
+        $xmlWriter->endElement(); // w:numId
+        $xmlWriter->endElement(); // w:numPr
 
-		$xmlWriter->endElement(); // w:pPr
+        $xmlWriter->endElement(); // w:pPr
 
-		$elementWriter = new Text( $xmlWriter, $textObject, true );
-		$elementWriter->write();
+        $elementWriter = new Text($xmlWriter, $textObject, true);
+        $elementWriter->write();
 
-		$xmlWriter->endElement(); // w:p
-	}
+        $xmlWriter->endElement(); // w:p
+    }
 }

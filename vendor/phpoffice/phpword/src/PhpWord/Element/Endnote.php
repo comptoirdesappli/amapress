@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,18 +22,20 @@ namespace PhpOffice\PhpWord\Element;
  *
  * @since 0.10.0
  */
-class Endnote extends Footnote {
-	/**
-	 * @var string Container type
-	 */
-	protected $container = 'Endnote';
+class Endnote extends Footnote
+{
+    /**
+     * @var string Container type
+     */
+    protected $container = 'Endnote';
 
-	/**
-	 * Create new instance
-	 *
-	 * @param string|array|\PhpOffice\PhpWord\Style\Paragraph $paragraphStyle
-	 */
-	public function __construct( $paragraphStyle = null ) {
-		parent::__construct( $paragraphStyle );
-	}
+    /**
+     * Create new instance
+     *
+     * @param string|array|\PhpOffice\PhpWord\Style\Paragraph $paragraphStyle
+     */
+    public function __construct($paragraphStyle = null)
+    {
+        parent::__construct($paragraphStyle);
+    }
 }

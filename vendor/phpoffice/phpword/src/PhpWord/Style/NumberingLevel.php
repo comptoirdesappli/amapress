@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -26,416 +26,433 @@ use PhpOffice\PhpWord\SimpleType\NumberFormat;
  * @see  http://www.schemacentral.com/sc/ooxml/e-w_lvl-1.html
  * @since 0.10.0
  */
-class NumberingLevel extends AbstractStyle {
-	/**
-	 * Level number, 0 to 8 (total 9 levels)
-	 *
-	 * @var int
-	 */
-	private $level = 0;
+class NumberingLevel extends AbstractStyle
+{
+    /**
+     * Level number, 0 to 8 (total 9 levels)
+     *
+     * @var int
+     */
+    private $level = 0;
 
-	/**
-	 * Starting value w:start
-	 *
-	 * @var int
-	 * @see  http://www.schemacentral.com/sc/ooxml/e-w_start-1.html
-	 */
-	private $start = 1;
+    /**
+     * Starting value w:start
+     *
+     * @var int
+     * @see  http://www.schemacentral.com/sc/ooxml/e-w_start-1.html
+     */
+    private $start = 1;
 
-	/**
-	 * Numbering format w:numFmt, one of PhpOffice\PhpWord\SimpleType\NumberFormat
-	 *
-	 * @var string
-	 * @see  http://www.schemacentral.com/sc/ooxml/t-w_ST_NumberFormat.html
-	 */
-	private $format;
+    /**
+     * Numbering format w:numFmt, one of PhpOffice\PhpWord\SimpleType\NumberFormat
+     *
+     * @var string
+     * @see  http://www.schemacentral.com/sc/ooxml/t-w_ST_NumberFormat.html
+     */
+    private $format;
 
-	/**
-	 * Restart numbering level symbol w:lvlRestart
-	 *
-	 * @var int
-	 * @see  http://www.schemacentral.com/sc/ooxml/e-w_lvlRestart-1.html
-	 */
-	private $restart;
+    /**
+     * Restart numbering level symbol w:lvlRestart
+     *
+     * @var int
+     * @see  http://www.schemacentral.com/sc/ooxml/e-w_lvlRestart-1.html
+     */
+    private $restart;
 
-	/**
-	 * Related paragraph style
-	 *
-	 * @var string
-	 * @see  http://www.schemacentral.com/sc/ooxml/e-w_pStyle-2.html
-	 */
-	private $pStyle;
+    /**
+     * Related paragraph style
+     *
+     * @var string
+     * @see  http://www.schemacentral.com/sc/ooxml/e-w_pStyle-2.html
+     */
+    private $pStyle;
 
-	/**
-	 * Content between numbering symbol and paragraph text w:suff
-	 *
-	 * @var string tab|space|nothing
-	 * @see  http://www.schemacentral.com/sc/ooxml/e-w_suff-1.html
-	 */
-	private $suffix = 'tab';
+    /**
+     * Content between numbering symbol and paragraph text w:suff
+     *
+     * @var string tab|space|nothing
+     * @see  http://www.schemacentral.com/sc/ooxml/e-w_suff-1.html
+     */
+    private $suffix = 'tab';
 
-	/**
-	 * Numbering level text e.g. %1 for nonbullet or bullet character
-	 *
-	 * @var string
-	 * @see  http://www.schemacentral.com/sc/ooxml/e-w_lvlText-1.html
-	 */
-	private $text;
+    /**
+     * Numbering level text e.g. %1 for nonbullet or bullet character
+     *
+     * @var string
+     * @see  http://www.schemacentral.com/sc/ooxml/e-w_lvlText-1.html
+     */
+    private $text;
 
-	/**
-	 * Justification, w:lvlJc
-	 *
-	 * @var string, one of PhpOffice\PhpWord\SimpleType\Jc
-	 */
-	private $alignment = '';
+    /**
+     * Justification, w:lvlJc
+     *
+     * @var string, one of PhpOffice\PhpWord\SimpleType\Jc
+     */
+    private $alignment = '';
 
-	/**
-	 * Left
-	 *
-	 * @var int
-	 */
-	private $left;
+    /**
+     * Left
+     *
+     * @var int
+     */
+    private $left;
 
-	/**
-	 * Hanging
-	 *
-	 * @var int
-	 */
-	private $hanging;
+    /**
+     * Hanging
+     *
+     * @var int
+     */
+    private $hanging;
 
-	/**
-	 * Tab position
-	 *
-	 * @var int
-	 */
-	private $tabPos;
+    /**
+     * Tab position
+     *
+     * @var int
+     */
+    private $tabPos;
 
-	/**
-	 * Font family
-	 *
-	 * @var string
-	 */
-	private $font;
+    /**
+     * Font family
+     *
+     * @var string
+     */
+    private $font;
 
-	/**
-	 * Hint default|eastAsia|cs
-	 *
-	 * @var string
-	 * @see  http://www.schemacentral.com/sc/ooxml/a-w_hint-1.html
-	 */
-	private $hint;
+    /**
+     * Hint default|eastAsia|cs
+     *
+     * @var string
+     * @see  http://www.schemacentral.com/sc/ooxml/a-w_hint-1.html
+     */
+    private $hint;
 
-	/**
-	 * Get level
-	 *
-	 * @return int
-	 */
-	public function getLevel() {
-		return $this->level;
-	}
+    /**
+     * Get level
+     *
+     * @return int
+     */
+    public function getLevel()
+    {
+        return $this->level;
+    }
 
-	/**
-	 * Set level
-	 *
-	 * @param int $value
-	 *
-	 * @return self
-	 */
-	public function setLevel( $value ) {
-		$this->level = $this->setIntVal( $value, $this->level );
+    /**
+     * Set level
+     *
+     * @param int $value
+     * @return self
+     */
+    public function setLevel($value)
+    {
+        $this->level = $this->setIntVal($value, $this->level);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get start
-	 *
-	 * @return int
-	 */
-	public function getStart() {
-		return $this->start;
-	}
+    /**
+     * Get start
+     *
+     * @return int
+     */
+    public function getStart()
+    {
+        return $this->start;
+    }
 
-	/**
-	 * Set start
-	 *
-	 * @param int $value
-	 *
-	 * @return self
-	 */
-	public function setStart( $value ) {
-		$this->start = $this->setIntVal( $value, $this->start );
+    /**
+     * Set start
+     *
+     * @param int $value
+     * @return self
+     */
+    public function setStart($value)
+    {
+        $this->start = $this->setIntVal($value, $this->start);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get format
-	 *
-	 * @return string
-	 */
-	public function getFormat() {
-		return $this->format;
-	}
+    /**
+     * Get format
+     *
+     * @return string
+     */
+    public function getFormat()
+    {
+        return $this->format;
+    }
 
-	/**
-	 * Set format
-	 *
-	 * @param string $value
-	 *
-	 * @return self
-	 */
-	public function setFormat( $value ) {
-		$this->format = $this->setEnumVal( $value, NumberFormat::values(), $this->format );
+    /**
+     * Set format
+     *
+     * @param string $value
+     * @return self
+     */
+    public function setFormat($value)
+    {
+        $this->format = $this->setEnumVal($value, NumberFormat::values(), $this->format);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get restart
-	 *
-	 * @return int
-	 */
-	public function getRestart() {
-		return $this->restart;
-	}
+    /**
+     * Get restart
+     *
+     * @return int
+     */
+    public function getRestart()
+    {
+        return $this->restart;
+    }
 
-	/**
-	 * Set restart
-	 *
-	 * @param int $value
-	 *
-	 * @return self
-	 */
-	public function setRestart( $value ) {
-		$this->restart = $this->setIntVal( $value, $this->restart );
+    /**
+     * Set restart
+     *
+     * @param int $value
+     * @return self
+     */
+    public function setRestart($value)
+    {
+        $this->restart = $this->setIntVal($value, $this->restart);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get related paragraph style
-	 *
-	 * @return string
-	 */
-	public function getPStyle() {
-		return $this->pStyle;
-	}
+    /**
+     * Get related paragraph style
+     *
+     * @return string
+     */
+    public function getPStyle()
+    {
+        return $this->pStyle;
+    }
 
-	/**
-	 * Set  related paragraph style
-	 *
-	 * @param string $value
-	 *
-	 * @return self
-	 */
-	public function setPStyle( $value ) {
-		$this->pStyle = $value;
+    /**
+     * Set  related paragraph style
+     *
+     * @param string $value
+     * @return self
+     */
+    public function setPStyle($value)
+    {
+        $this->pStyle = $value;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get suffix
-	 *
-	 * @return string
-	 */
-	public function getSuffix() {
-		return $this->suffix;
-	}
+    /**
+     * Get suffix
+     *
+     * @return string
+     */
+    public function getSuffix()
+    {
+        return $this->suffix;
+    }
 
-	/**
-	 * Set suffix
-	 *
-	 * @param string $value
-	 *
-	 * @return self
-	 */
-	public function setSuffix( $value ) {
-		$enum         = array( 'tab', 'space', 'nothing' );
-		$this->suffix = $this->setEnumVal( $value, $enum, $this->suffix );
+    /**
+     * Set suffix
+     *
+     * @param string $value
+     * @return self
+     */
+    public function setSuffix($value)
+    {
+        $enum = array('tab', 'space', 'nothing');
+        $this->suffix = $this->setEnumVal($value, $enum, $this->suffix);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get text
-	 *
-	 * @return string
-	 */
-	public function getText() {
-		return $this->text;
-	}
+    /**
+     * Get text
+     *
+     * @return string
+     */
+    public function getText()
+    {
+        return $this->text;
+    }
 
-	/**
-	 * Set text
-	 *
-	 * @param string $value
-	 *
-	 * @return self
-	 */
-	public function setText( $value ) {
-		$this->text = $value;
+    /**
+     * Set text
+     *
+     * @param string $value
+     * @return self
+     */
+    public function setText($value)
+    {
+        $this->text = $value;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @since 0.13.0
-	 *
-	 * @return string
-	 */
-	public function getAlignment() {
-		return $this->alignment;
-	}
+    /**
+     * @since 0.13.0
+     *
+     * @return string
+     */
+    public function getAlignment()
+    {
+        return $this->alignment;
+    }
 
-	/**
-	 * @since 0.13.0
-	 *
-	 * @param string $value
-	 *
-	 * @return self
-	 */
-	public function setAlignment( $value ) {
-		if ( Jc::isValid( $value ) ) {
-			$this->alignment = $value;
-		}
+    /**
+     * @since 0.13.0
+     *
+     * @param string $value
+     *
+     * @return self
+     */
+    public function setAlignment($value)
+    {
+        if (Jc::isValid($value)) {
+            $this->alignment = $value;
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @deprecated 0.13.0 Use the `getAlignment` method instead.
-	 *
-	 * @return string
-	 *
-	 * @codeCoverageIgnore
-	 */
-	public function getAlign() {
-		return $this->getAlignment();
-	}
+    /**
+     * @deprecated 0.13.0 Use the `getAlignment` method instead.
+     *
+     * @return string
+     *
+     * @codeCoverageIgnore
+     */
+    public function getAlign()
+    {
+        return $this->getAlignment();
+    }
 
-	/**
-	 * @deprecated 0.13.0 Use the `setAlignment` method instead.
-	 *
-	 * @param string $value
-	 *
-	 * @return self
-	 *
-	 * @codeCoverageIgnore
-	 */
-	public function setAlign( $value ) {
-		return $this->setAlignment( $value );
-	}
+    /**
+     * @deprecated 0.13.0 Use the `setAlignment` method instead.
+     *
+     * @param string $value
+     *
+     * @return self
+     *
+     * @codeCoverageIgnore
+     */
+    public function setAlign($value)
+    {
+        return $this->setAlignment($value);
+    }
 
-	/**
-	 * Get left
-	 *
-	 * @return int
-	 */
-	public function getLeft() {
-		return $this->left;
-	}
+    /**
+     * Get left
+     *
+     * @return int
+     */
+    public function getLeft()
+    {
+        return $this->left;
+    }
 
-	/**
-	 * Set left
-	 *
-	 * @param int $value
-	 *
-	 * @return self
-	 */
-	public function setLeft( $value ) {
-		$this->left = $this->setIntVal( $value, $this->left );
+    /**
+     * Set left
+     *
+     * @param int $value
+     * @return self
+     */
+    public function setLeft($value)
+    {
+        $this->left = $this->setIntVal($value, $this->left);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get hanging
-	 *
-	 * @return int
-	 */
-	public function getHanging() {
-		return $this->hanging;
-	}
+    /**
+     * Get hanging
+     *
+     * @return int
+     */
+    public function getHanging()
+    {
+        return $this->hanging;
+    }
 
-	/**
-	 * Set hanging
-	 *
-	 * @param int $value
-	 *
-	 * @return self
-	 */
-	public function setHanging( $value ) {
-		$this->hanging = $this->setIntVal( $value, $this->hanging );
+    /**
+     * Set hanging
+     *
+     * @param int $value
+     * @return self
+     */
+    public function setHanging($value)
+    {
+        $this->hanging = $this->setIntVal($value, $this->hanging);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get tab
-	 *
-	 * @return int
-	 */
-	public function getTabPos() {
-		return $this->tabPos;
-	}
+    /**
+     * Get tab
+     *
+     * @return int
+     */
+    public function getTabPos()
+    {
+        return $this->tabPos;
+    }
 
-	/**
-	 * Set tab
-	 *
-	 * @param int $value
-	 *
-	 * @return self
-	 */
-	public function setTabPos( $value ) {
-		$this->tabPos = $this->setIntVal( $value, $this->tabPos );
+    /**
+     * Set tab
+     *
+     * @param int $value
+     * @return self
+     */
+    public function setTabPos($value)
+    {
+        $this->tabPos = $this->setIntVal($value, $this->tabPos);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get font
-	 *
-	 * @return string
-	 */
-	public function getFont() {
-		return $this->font;
-	}
+    /**
+     * Get font
+     *
+     * @return string
+     */
+    public function getFont()
+    {
+        return $this->font;
+    }
 
-	/**
-	 * Set font
-	 *
-	 * @param string $value
-	 *
-	 * @return self
-	 */
-	public function setFont( $value ) {
-		$this->font = $value;
+    /**
+     * Set font
+     *
+     * @param string $value
+     * @return self
+     */
+    public function setFont($value)
+    {
+        $this->font = $value;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get hint
-	 *
-	 * @return string
-	 */
-	public function getHint() {
-		return $this->hint;
-	}
+    /**
+     * Get hint
+     *
+     * @return string
+     */
+    public function getHint()
+    {
+        return $this->hint;
+    }
 
-	/**
-	 * Set hint
-	 *
-	 * @param string $value
-	 *
-	 * @return self
-	 */
-	public function setHint( $value = null ) {
-		$enum       = array( 'default', 'eastAsia', 'cs' );
-		$this->hint = $this->setEnumVal( $value, $enum, $this->hint );
+    /**
+     * Set hint
+     *
+     * @param string $value
+     * @return self
+     */
+    public function setHint($value = null)
+    {
+        $enum = array('default', 'eastAsia', 'cs');
+        $this->hint = $this->setEnumVal($value, $enum, $this->hint);
 
-		return $this;
-	}
+        return $this;
+    }
 }

@@ -1,6 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpImap;
+
+use const FILEINFO_MIME_TYPE;
+use InvalidArgumentException;
 
 /**
  * The PhpImap IncomingMail class.
@@ -12,117 +17,231 @@ namespace PhpImap;
  * @property string $textPlain lazy plain message body
  * @property string $textHtml  lazy html message body
  */
-class IncomingMail extends IncomingMailHeader {
-	/**
-	 * @var IncomingMailAttachment[]
-	 */
-	protected $attachments = [];
-	protected $hasAttachments = false;
-	protected $dataInfo = [ [], [] ];
+class IncomingMail extends IncomingMailHeader
+{
+    /**
+     * @var IncomingMailAttachment[]
+     */
+    protected $attachments = [];
 
-	public function setHeader( IncomingMailHeader $header ) {
-		foreach ( get_object_vars( $header ) as $property => $value ) {
-			$this->$property = $value;
-		}
-	}
+    /** @var bool */
+    protected $hasAttachments = false;
 
-	public function addDataPartInfo( DataPartInfo $dataInfo, $type ) {
-		$this->dataInfo[ $type ][] = $dataInfo;
-	}
+    /**
+     * @var DataPartInfo[][]
+     *
+     * @psalm-var array{0:list<DataPartInfo>, 1:list<DataPartInfo>}
+     */
+    protected $dataInfo = [[], []];
 
-	/**
-	 * __get() is utilized for reading data from inaccessible (protected
-	 * or private) or non-existing properties.
-	 *
-	 * @property $name Name of the property (eg. textPlain)
-	 *
-	 * @return mixed Value of the property (eg. Plain text message)
-	 */
-	public function __get( $name ) {
-		$type = false;
-		if ( 'textPlain' == $name ) {
-			$type = DataPartInfo::TEXT_PLAIN;
-		}
-		if ( 'textHtml' == $name ) {
-			$type = DataPartInfo::TEXT_HTML;
-		}
-		if ( false === $type ) {
-			trigger_error( "Undefined property: IncomingMail::$name" );
-		}
-		$this->$name = '';
-		foreach ( $this->dataInfo[ $type ] as $data ) {
-			$this->$name .= trim( $data->fetch() );
-		}
+    /** @var string|null */
+    private $textPlain;
 
-		return $this->$name;
-	}
+    /** @var string|null */
+    private $textHtml;
 
-	/**
-	 * The method __isset() is triggered by calling isset() or empty()
-	 * on inaccessible (protected or private) or non-existing properties.
-	 *
-	 * @property $name Name of the property (eg. textPlain)
-	 *
-	 * @return bool True, if property is set or empty
-	 */
-	public function __isset( $name ) {
-		self::__get( $name );
+    /**
+     * __get() is utilized for reading data from inaccessible (protected
+     * or private) or non-existing properties.
+     *
+     * @param string $name Name of the property (eg. textPlain)
+     *
+     * @return string Value of the property (eg. Plain text message)
+     */
+    public function __get(string $name): string
+    {
+        $type = false;
+        if ('textPlain' == $name) {
+            $type = DataPartInfo::TEXT_PLAIN;
+        }
+        if ('textHtml' == $name) {
+            $type = DataPartInfo::TEXT_HTML;
+        }
+        if (('textPlain' === $name || 'textHtml' === $name) && isset($this->$name)) {
+            return (string) $this->$name;
+        }
+        if (false === $type) {
+            \trigger_error("Undefined property: IncomingMail::$name");
+        }
+        if (!isset($this->$name)) {
+            $this->$name = '';
+        }
+        foreach ($this->dataInfo[$type] as $data) {
+            $this->$name .= \trim($data->fetch());
+        }
 
-		return isset( $this->$name );
-	}
+        /** @var string */
+        return $this->$name;
+    }
 
-	public function addAttachment( IncomingMailAttachment $attachment ) {
-		$this->attachments[ $attachment->id ] = $attachment;
-	}
+    /**
+     * The method __isset() is triggered by calling isset() or empty()
+     * on inaccessible (protected or private) or non-existing properties.
+     *
+     * @param string $name Name of the property (eg. textPlain)
+     *
+     * @return bool True, if property is set or empty
+     */
+    public function __isset(string $name): bool
+    {
+        self::__get($name);
 
-	/**
-	 * Sets property $hasAttachments.
-	 *
-	 * @param bool $hasAttachments True, if IncomingMail[] has one or more attachments
-	 */
-	public function setHasAttachments( $hasAttachments ) {
-		$this->hasAttachments = $hasAttachments;
-	}
+        return isset($this->$name);
+    }
 
-	/**
-	 * Returns, if the mail has attachments or not.
-	 *
-	 * @return bool true or false
-	 */
-	public function hasAttachments() {
-		return $this->hasAttachments;
-	}
+    public function setHeader(IncomingMailHeader $header): void
+    {
+        /** @psalm-var array<string, scalar|array|object|null> */
+        $array = \get_object_vars($header);
+        foreach ($array as $property => $value) {
+            $this->$property = $value;
+        }
+    }
 
-	/**
-	 * @return IncomingMailAttachment[]
-	 */
-	public function getAttachments() {
-		return $this->attachments;
-	}
+    /**
+     * @param DataPartInfo::TEXT_PLAIN|DataPartInfo::TEXT_HTML $type
+     */
+    public function addDataPartInfo(DataPartInfo $dataInfo, int $type): void
+    {
+        $this->dataInfo[$type][] = $dataInfo;
+    }
 
-	/**
-	 * Get array of internal HTML links placeholders.
-	 *
-	 * @return array attachmentId => link placeholder
-	 */
-	public function getInternalLinksPlaceholders() {
-		return preg_match_all( '/=["\'](ci?d:([\w\.%*@-]+))["\']/i', $this->textHtml, $matches ) ? array_combine( $matches[2], $matches[1] ) : [];
-	}
+    public function addAttachment(IncomingMailAttachment $attachment): void
+    {
+        if (!\is_string($attachment->id)) {
+            throw new InvalidArgumentException('Argument 1 passed to '.__METHOD__.'() does not have an id specified!');
+        }
+        $this->attachments[$attachment->id] = $attachment;
 
-	public function replaceInternalLinks( $baseUri ) {
-		$baseUri     = rtrim( $baseUri, '\\/' ) . '/';
-		$fetchedHtml = $this->textHtml;
-		$search      = [];
-		$replace     = [];
-		foreach ( $this->getInternalLinksPlaceholders() as $attachmentId => $placeholder ) {
-			foreach ( $this->attachments as $attachment ) {
-				if ( $attachment->contentId == $attachmentId ) {
-					$search[]  = $placeholder;
-					$replace[] = $baseUri . basename( $this->attachments[ $attachment->id ]->filePath );
-				}
-			}
-		}
+        $this->setHasAttachments(true);
+    }
 
-		return str_replace( $search, $replace, $fetchedHtml );
-	}
+    /**
+     * Sets property $hasAttachments.
+     *
+     * @param bool $hasAttachments True, if IncomingMail[] has one or more attachments
+     */
+    public function setHasAttachments(bool $hasAttachments): void
+    {
+        $this->hasAttachments = $hasAttachments;
+    }
+
+    /**
+     * Returns, if the mail has attachments or not.
+     *
+     * @return bool true or false
+     */
+    public function hasAttachments(): bool
+    {
+        return $this->hasAttachments;
+    }
+
+    /**
+     * @return IncomingMailAttachment[]
+     */
+    public function getAttachments(): array
+    {
+        return $this->attachments;
+    }
+
+    /**
+     * @param string $id The attachment id
+     */
+    public function removeAttachment(string $id): bool
+    {
+        if (!isset($this->attachments[$id])) {
+            return false;
+        }
+
+        unset($this->attachments[$id]);
+
+        $this->setHasAttachments([] !== $this->attachments);
+
+        return true;
+    }
+
+    /**
+     * Get array of internal HTML links placeholders.
+     *
+     * @return array attachmentId => link placeholder
+     *
+     * @psalm-return array<string, string>
+     */
+    public function getInternalLinksPlaceholders(): array
+    {
+        $fetchedHtml = $this->__get('textHtml');
+
+        $match = \preg_match_all('/=["\'](ci?d:([\w\.%*@-]+))["\']/i', $fetchedHtml, $matches);
+
+        /** @psalm-var array{1:list<string>, 2:list<string>} */
+        $matches = $matches;
+
+        return $match ? \array_combine($matches[2], $matches[1]) : [];
+    }
+
+    public function replaceInternalLinks(string $baseUri): string
+    {
+        $baseUri = \rtrim($baseUri, '\\/').'/';
+        $fetchedHtml = $this->textHtml;
+        $search = [];
+        $replace = [];
+        foreach ($this->getInternalLinksPlaceholders() as $attachmentId => $placeholder) {
+            foreach ($this->attachments as $attachment) {
+                if ($attachment->contentId == $attachmentId) {
+                    if (!\is_string($attachment->id)) {
+                        throw new InvalidArgumentException('Argument 1 passed to '.__METHOD__.'() does not have an id specified!');
+                    }
+                    $search[] = $placeholder;
+                    $replace[] = $baseUri.\basename($this->attachments[$attachment->id]->filePath);
+                }
+            }
+        }
+
+        /** @psalm-var string */
+        return \str_replace($search, $replace, $fetchedHtml);
+    }
+
+    /**
+     * Embed inline image attachments as base64 to allow for
+     * email html to display inline images automatically.
+     */
+    public function embedImageAttachments(): void
+    {
+        $fetchedHtml = $this->__get('textHtml');
+
+        \preg_match_all("/\bcid:[^'\"\s]{1,256}/mi", $fetchedHtml, $matches);
+
+        if (isset($matches[0]) && \is_array($matches[0]) && \count($matches[0])) {
+            /** @var list<string> */
+            $matches = $matches[0];
+            $attachments = $this->getAttachments();
+            foreach ($matches as $match) {
+                $cid = \str_replace('cid:', '', $match);
+
+                foreach ($attachments as $attachment) {
+                    /**
+                     * Inline images can contain a "Content-Disposition: inline", but only a "Content-ID" is also enough.
+                     * See https://github.com/barbushin/php-imap/issues/569.
+                     */
+                    if ($attachment->contentId == $cid || 'inline' == \mb_strtolower((string) $attachment->disposition)) {
+                        $contents = $attachment->getContents();
+                        $contentType = $attachment->getFileInfo(FILEINFO_MIME_TYPE);
+
+                        if (!\strstr($contentType, 'image')) {
+                            continue;
+                        } elseif (!\is_string($attachment->id)) {
+                            throw new InvalidArgumentException('Argument 1 passed to '.__METHOD__.'() does not have an id specified!');
+                        }
+
+                        $base64encoded = \base64_encode($contents);
+                        $replacement = 'data:'.$contentType.';base64, '.$base64encoded;
+
+                        $this->textHtml = \str_replace($match, $replacement, $this->textHtml);
+
+                        $this->removeAttachment($attachment->id);
+                    }
+                }
+            }
+        }
+    }
 }

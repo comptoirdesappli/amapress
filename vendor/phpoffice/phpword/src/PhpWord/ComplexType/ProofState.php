@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,82 +22,85 @@ namespace PhpOffice\PhpWord\ComplexType;
  *
  * @see http://www.datypic.com/sc/ooxml/e-w_proofState-1.html
  */
-final class ProofState {
-	/**
-	 * Check Completed
-	 */
-	const CLEAN = 'clean';
+final class ProofState
+{
+    /**
+     * Check Completed
+     */
+    const CLEAN = 'clean';
 
-	/**
-	 * Check Not Completed
-	 */
-	const DIRTY = 'dirty';
+    /**
+     * Check Not Completed
+     */
+    const DIRTY = 'dirty';
 
-	/**
-	 * Spell Checking State
-	 *
-	 * @var string
-	 */
-	private $spelling;
+    /**
+     * Spell Checking State
+     *
+     * @var string
+     */
+    private $spelling;
 
-	/**
-	 * Grammatical Checking State
-	 *
-	 * @var string
-	 */
-	private $grammar;
+    /**
+     * Grammatical Checking State
+     *
+     * @var string
+     */
+    private $grammar;
 
-	/**
-	 * Set the Spell Checking State (dirty or clean)
-	 *
-	 * @param string $spelling
-	 *
-	 * @throws \InvalidArgumentException
-	 * @return self
-	 */
-	public function setSpelling( $spelling ) {
-		if ( $spelling == self::CLEAN || $spelling == self::DIRTY ) {
-			$this->spelling = $spelling;
-		} else {
-			throw new \InvalidArgumentException( 'Invalid value, dirty or clean possible' );
-		}
+    /**
+     * Set the Spell Checking State (dirty or clean)
+     *
+     * @param string $spelling
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function setSpelling($spelling)
+    {
+        if ($spelling == self::CLEAN || $spelling == self::DIRTY) {
+            $this->spelling = $spelling;
+        } else {
+            throw new \InvalidArgumentException('Invalid value, dirty or clean possible');
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get the Spell Checking State
-	 *
-	 * @return string
-	 */
-	public function getSpelling() {
-		return $this->spelling;
-	}
+    /**
+     * Get the Spell Checking State
+     *
+     * @return string
+     */
+    public function getSpelling()
+    {
+        return $this->spelling;
+    }
 
-	/**
-	 * Set the Grammatical Checking State (dirty or clean)
-	 *
-	 * @param string $grammar
-	 *
-	 * @throws \InvalidArgumentException
-	 * @return self
-	 */
-	public function setGrammar( $grammar ) {
-		if ( $grammar == self::CLEAN || $grammar == self::DIRTY ) {
-			$this->grammar = $grammar;
-		} else {
-			throw new \InvalidArgumentException( 'Invalid value, dirty or clean possible' );
-		}
+    /**
+     * Set the Grammatical Checking State (dirty or clean)
+     *
+     * @param string $grammar
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function setGrammar($grammar)
+    {
+        if ($grammar == self::CLEAN || $grammar == self::DIRTY) {
+            $this->grammar = $grammar;
+        } else {
+            throw new \InvalidArgumentException('Invalid value, dirty or clean possible');
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get the Grammatical Checking State
-	 *
-	 * @return string
-	 */
-	public function getGrammar() {
-		return $this->grammar;
-	}
+    /**
+     * Get the Grammatical Checking State
+     *
+     * @return string
+     */
+    public function getGrammar()
+    {
+        return $this->grammar;
+    }
 }

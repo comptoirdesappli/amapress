@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,52 +22,56 @@ use PhpOffice\PhpWord\Style\Cell as CellStyle;
 /**
  * Table cell element
  */
-class Cell extends AbstractContainer {
-	/**
-	 * @var string Container type
-	 */
-	protected $container = 'Cell';
+class Cell extends AbstractContainer
+{
+    /**
+     * @var string Container type
+     */
+    protected $container = 'Cell';
 
-	/**
-	 * Cell width
-	 *
-	 * @var int
-	 */
-	private $width = null;
+    /**
+     * Cell width
+     *
+     * @var int
+     */
+    private $width = null;
 
-	/**
-	 * Cell style
-	 *
-	 * @var \PhpOffice\PhpWord\Style\Cell
-	 */
-	private $style;
+    /**
+     * Cell style
+     *
+     * @var \PhpOffice\PhpWord\Style\Cell
+     */
+    private $style;
 
-	/**
-	 * Create new instance
-	 *
-	 * @param int $width
-	 * @param array|\PhpOffice\PhpWord\Style\Cell $style
-	 */
-	public function __construct( $width = null, $style = null ) {
-		$this->width = $width;
-		$this->style = $this->setNewStyle( new CellStyle(), $style, true );
-	}
+    /**
+     * Create new instance
+     *
+     * @param int $width
+     * @param array|\PhpOffice\PhpWord\Style\Cell $style
+     */
+    public function __construct($width = null, $style = null)
+    {
+        $this->width = $width;
+        $this->style = $this->setNewStyle(new CellStyle(), $style, true);
+    }
 
-	/**
-	 * Get cell style
-	 *
-	 * @return \PhpOffice\PhpWord\Style\Cell
-	 */
-	public function getStyle() {
-		return $this->style;
-	}
+    /**
+     * Get cell style
+     *
+     * @return \PhpOffice\PhpWord\Style\Cell
+     */
+    public function getStyle()
+    {
+        return $this->style;
+    }
 
-	/**
-	 * Get cell width
-	 *
-	 * @return int
-	 */
-	public function getWidth() {
-		return $this->width;
-	}
+    /**
+     * Get cell width
+     *
+     * @return int
+     */
+    public function getWidth()
+    {
+        return $this->width;
+    }
 }

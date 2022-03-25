@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -26,19 +26,20 @@ use PhpOffice\PhpWord\Shared\AbstractEnum;
  *
  * @see http://www.datypic.com/sc/ooxml/t-w_ST_TextAlignment.html
  */
-final class TextAlignment extends AbstractEnum {
-	//Align Text at Top
-	const TOP = 'top';
+final class TextAlignment extends AbstractEnum
+{
+    //Align Text at Top
+    const TOP = 'top';
 
-	//Align Text at Center
-	const CENTER = 'center';
+    //Align Text at Center
+    const CENTER = 'center';
 
-	//Align Text at Baseline
-	const BASELINE = 'baseline';
+    //Align Text at Baseline
+    const BASELINE = 'baseline';
 
-	//Align Text at Bottom
-	const BOTTOM = 'bottom';
+    //Align Text at Bottom
+    const BOTTOM = 'bottom';
 
-	//Automatically Determine Alignment
-	const AUTO = 'auto';
+    //Automatically Determine Alignment
+    const AUTO = 'auto';
 }

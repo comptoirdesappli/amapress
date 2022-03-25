@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -91,99 +91,104 @@ use PhpOffice\PhpWord\Shared\Converter;
  *
  * @since 0.12.0
  */
-class Paper extends AbstractStyle {
-	/**
-	 * Paper sizes
-	 *
-	 * @var array
-	 */
-	private $sizes = array(
-		'A3'     => array( 297, 420, 'mm' ),
-		'A4'     => array( 210, 297, 'mm' ),
-		'A5'     => array( 148, 210, 'mm' ),
-		'B5'     => array( 176, 250, 'mm' ),
-		'Folio'  => array( 8.5, 13, 'in' ),
-		'Legal'  => array( 8.5, 14, 'in' ),
-		'Letter' => array( 8.5, 11, 'in' ),
-	);
+class Paper extends AbstractStyle
+{
+    /**
+     * Paper sizes
+     *
+     * @var array
+     */
+    private $sizes = array(
+        'A3'        => array(297, 420, 'mm'),
+        'A4'        => array(210, 297, 'mm'),
+        'A5'        => array(148, 210, 'mm'),
+        'B5'        => array(176, 250, 'mm'),
+        'Folio'     => array(8.5, 13, 'in'),
+        'Legal'     => array(8.5, 14, 'in'),
+        'Letter'    => array(8.5, 11, 'in'),
+    );
 
-	/**
-	 * Paper size
-	 *
-	 * @var string
-	 */
-	private $size = 'A4';
+    /**
+     * Paper size
+     *
+     * @var string
+     */
+    private $size = 'A4';
 
-	/**
-	 * Width
-	 *
-	 * @var float (twip)
-	 */
-	private $width;
+    /**
+     * Width
+     *
+     * @var float (twip)
+     */
+    private $width;
 
-	/**
-	 * Height
-	 *
-	 * @var float (twip)
-	 */
-	private $height;
+    /**
+     * Height
+     *
+     * @var float (twip)
+     */
+    private $height;
 
-	/**
-	 * Create a new instance
-	 *
-	 * @param string $size
-	 */
-	public function __construct( $size = 'A4' ) {
-		$this->setSize( $size );
-	}
+    /**
+     * Create a new instance
+     *
+     * @param string $size
+     */
+    public function __construct($size = 'A4')
+    {
+        $this->setSize($size);
+    }
 
-	/**
-	 * Get size
-	 *
-	 * @return string
-	 */
-	public function getSize() {
-		return $this->size;
-	}
+    /**
+     * Get size
+     *
+     * @return string
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
 
-	/**
-	 * Set size
-	 *
-	 * @param string $size
-	 *
-	 * @return self
-	 */
-	public function setSize( $size ) {
-		$this->size = $this->setEnumVal( $size, array_keys( $this->sizes ), $this->size );
+    /**
+     * Set size
+     *
+     * @param string $size
+     * @return self
+     */
+    public function setSize($size)
+    {
+        $this->size = $this->setEnumVal($size, array_keys($this->sizes), $this->size);
 
-		list( $width, $height, $unit ) = $this->sizes[ $this->size ];
+        list($width, $height, $unit) = $this->sizes[$this->size];
 
-		if ( $unit == 'mm' ) {
-			$this->width  = Converter::cmToTwip( $width / 10 );
-			$this->height = Converter::cmToTwip( $height / 10 );
-		} else {
-			$this->width  = Converter::inchToTwip( $width );
-			$this->height = Converter::inchToTwip( $height );
-		}
+        if ($unit == 'mm') {
+            $this->width = Converter::cmToTwip($width / 10);
+            $this->height = Converter::cmToTwip($height / 10);
+        } else {
+            $this->width = Converter::inchToTwip($width);
+            $this->height = Converter::inchToTwip($height);
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get width
-	 *
-	 * @return float
-	 */
-	public function getWidth() {
-		return $this->width;
-	}
+    /**
+     * Get width
+     *
+     * @return float
+     */
+    public function getWidth()
+    {
+        return $this->width;
+    }
 
-	/**
-	 * Get height
-	 *
-	 * @return float
-	 */
-	public function getHeight() {
-		return $this->height;
-	}
+    /**
+     * Get height
+     *
+     * @return float
+     */
+    public function getHeight()
+    {
+        return $this->height;
+    }
 }

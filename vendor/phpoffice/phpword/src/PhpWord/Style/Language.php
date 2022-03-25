@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -24,194 +24,222 @@ namespace PhpOffice\PhpWord\Style;
  * @see http://www.datypic.com/sc/ooxml/t-w_CT_Language.html
  * @see https://technet.microsoft.com/en-us/library/cc287874(v=office.12).aspx
  */
-final class Language extends AbstractStyle {
-	const EN_US = 'en-US';
-	const EN_US_ID = 1033;
+final class Language extends AbstractStyle
+{
+    const EN_US = 'en-US';
+    const EN_US_ID = 1033;
 
-	const EN_GB = 'en-GB';
-	const EN_GB_ID = 2057;
+    const EN_GB = 'en-GB';
+    const EN_GB_ID = 2057;
 
-	const FR_FR = 'fr-FR';
-	const FR_FR_ID = 1036;
+    const FR_FR = 'fr-FR';
+    const FR_FR_ID = 1036;
 
-	const FR_BE = 'fr-BE';
-	const FR_BE_ID = 2060;
+    const FR_BE = 'fr-BE';
+    const FR_BE_ID = 2060;
 
-	const ES_ES = 'es-ES';
-	const ES_ES_ID = 3082;
+    const ES_ES = 'es-ES';
+    const ES_ES_ID = 3082;
 
-	const DE_DE = 'de-DE';
-	const DE_DE_ID = 1031;
+    const DE_DE = 'de-DE';
+    const DE_DE_ID = 1031;
 
-	const HE_IL = 'he-IL';
-	const HE_IL_ID = 1037;
+    const HE_IL = 'he-IL';
+    const HE_IL_ID = 1037;
 
-	const JA_JP = 'ja-JP';
-	const JA_JP_ID = 1041;
+    const IT_IT = 'it-IT';
+    const IT_IT_ID = 1040;
 
-	const KO_KR = 'ko-KR';
-	const KO_KR_ID = 1042;
+    const JA_JP = 'ja-JP';
+    const JA_JP_ID = 1041;
 
-	const ZH_CN = 'zh-CN';
-	const ZH_CN_ID = 2052;
+    const KO_KR = 'ko-KR';
+    const KO_KR_ID = 1042;
 
-	const HI_IN = 'hi-IN';
-	const HI_IN_ID = 1081;
+    const ZH_CN = 'zh-CN';
+    const ZH_CN_ID = 2052;
 
-	/**
-	 * Language ID, used for RTF document generation
-	 *
-	 * @var int
-	 * @see https://technet.microsoft.com/en-us/library/cc179219.aspx
-	 */
-	private $langId;
+    const HI_IN = 'hi-IN';
+    const HI_IN_ID = 1081;
 
-	/**
-	 * Latin Language
-	 *
-	 * @var string
-	 */
-	private $latin;
+    const PT_BR = 'pt-BR';
+    const PT_BR_ID = 1046;
 
-	/**
-	 * East Asian Language
-	 *
-	 * @var string
-	 */
-	private $eastAsia;
+    const NL_NL = 'nl-NL';
+    const NL_NL_ID = 1043;
 
-	/**
-	 * Complex Script Language
-	 *
-	 * @var string
-	 */
-	private $bidirectional;
+    const UK_UA = 'uk-UA';
+    const UK_UA_ID = 1058;
 
-	/**
-	 * Constructor
-	 *
-	 * @param string|null $latin
-	 * @param string|null $eastAsia
-	 * @param string|null $bidirectional
-	 */
-	public function __construct( $latin = null, $eastAsia = null, $bidirectional = null ) {
-		if ( ! empty( $latin ) ) {
-			$this->setLatin( $latin );
-		}
-		if ( ! empty( $eastAsia ) ) {
-			$this->setEastAsia( $eastAsia );
-		}
-		if ( ! empty( $bidirectional ) ) {
-			$this->setBidirectional( $bidirectional );
-		}
-	}
+    const RU_RU = 'ru-RU';
+    const RU_RU_ID = 1049;
 
-	/**
-	 * Set the Latin Language
-	 *
-	 * @param string $latin
-	 *            The value for the latin language
-	 *
-	 * @return self
-	 */
-	public function setLatin( $latin ) {
-		$this->validateLocale( $latin );
-		$this->latin = $latin;
+    /**
+     * Language ID, used for RTF document generation
+     *
+     * @var int
+     * @see https://technet.microsoft.com/en-us/library/cc179219.aspx
+     */
+    private $langId;
 
-		return $this;
-	}
+    /**
+     * Latin Language
+     *
+     * @var string
+     */
+    private $latin;
 
-	/**
-	 * Get the Latin Language
-	 *
-	 * @return string|null
-	 */
-	public function getLatin() {
-		return $this->latin;
-	}
+    /**
+     * East Asian Language
+     *
+     * @var string
+     */
+    private $eastAsia;
 
-	/**
-	 * Set the Language ID
-	 *
-	 * @param int $langId
-	 *            The value for the language ID
-	 *
-	 * @return self
-	 * @see https://technet.microsoft.com/en-us/library/cc287874(v=office.12).aspx
-	 */
-	public function setLangId( $langId ) {
-		$this->langId = $langId;
+    /**
+     * Complex Script Language
+     *
+     * @var string
+     */
+    private $bidirectional;
 
-		return $this;
-	}
+    /**
+     * Constructor
+     *
+     * @param string|null $latin
+     * @param string|null $eastAsia
+     * @param string|null $bidirectional
+     */
+    public function __construct($latin = null, $eastAsia = null, $bidirectional = null)
+    {
+        if (!empty($latin)) {
+            $this->setLatin($latin);
+        }
+        if (!empty($eastAsia)) {
+            $this->setEastAsia($eastAsia);
+        }
+        if (!empty($bidirectional)) {
+            $this->setBidirectional($bidirectional);
+        }
+    }
 
-	/**
-	 * Get the Language ID
-	 *
-	 * @return int
-	 */
-	public function getLangId() {
-		return $this->langId;
-	}
+    /**
+     * Set the Latin Language
+     *
+     * @param string $latin
+     *            The value for the latin language
+     * @return self
+     */
+    public function setLatin($latin)
+    {
+        $this->latin = $this->validateLocale($latin);
 
-	/**
-	 * Set the East Asian Language
-	 *
-	 * @param string $eastAsia
-	 *            The value for the east asian language
-	 *
-	 * @return self
-	 */
-	public function setEastAsia( $eastAsia ) {
-		$this->validateLocale( $eastAsia );
-		$this->eastAsia = $eastAsia;
+        return $this;
+    }
 
-		return $this;
-	}
+    /**
+     * Get the Latin Language
+     *
+     * @return string|null
+     */
+    public function getLatin()
+    {
+        return $this->latin;
+    }
 
-	/**
-	 * Get the East Asian Language
-	 *
-	 * @return string|null
-	 */
-	public function getEastAsia() {
-		return $this->eastAsia;
-	}
+    /**
+     * Set the Language ID
+     *
+     * @param int $langId
+     *            The value for the language ID
+     * @return self
+     * @see https://technet.microsoft.com/en-us/library/cc287874(v=office.12).aspx
+     */
+    public function setLangId($langId)
+    {
+        $this->langId = $langId;
 
-	/**
-	 * Set the Complex Script Language
-	 *
-	 * @param string $bidirectional
-	 *            The value for the complex script language
-	 *
-	 * @return self
-	 */
-	public function setBidirectional( $bidirectional ) {
-		$this->validateLocale( $bidirectional );
-		$this->bidirectional = $bidirectional;
+        return $this;
+    }
 
-		return $this;
-	}
+    /**
+     * Get the Language ID
+     *
+     * @return int
+     */
+    public function getLangId()
+    {
+        return $this->langId;
+    }
 
-	/**
-	 * Get the Complex Script Language
-	 *
-	 * @return string|null
-	 */
-	public function getBidirectional() {
-		return $this->bidirectional;
-	}
+    /**
+     * Set the East Asian Language
+     *
+     * @param string $eastAsia
+     *            The value for the east asian language
+     * @return self
+     */
+    public function setEastAsia($eastAsia)
+    {
+        $this->eastAsia = $this->validateLocale($eastAsia);
 
-	/**
-	 * Validates that the language passed is in the format xx-xx
-	 *
-	 * @param string $locale
-	 *
-	 * @return bool
-	 */
-	private function validateLocale( $locale ) {
-		if ( $locale !== null && strstr( $locale, '-' ) === false ) {
-			throw new \InvalidArgumentException( $locale . ' is not a valid language code' );
-		}
-	}
+        return $this;
+    }
+
+    /**
+     * Get the East Asian Language
+     *
+     * @return string|null
+     */
+    public function getEastAsia()
+    {
+        return $this->eastAsia;
+    }
+
+    /**
+     * Set the Complex Script Language
+     *
+     * @param string $bidirectional
+     *            The value for the complex script language
+     * @return self
+     */
+    public function setBidirectional($bidirectional)
+    {
+        $this->bidirectional = $this->validateLocale($bidirectional);
+
+        return $this;
+    }
+
+    /**
+     * Get the Complex Script Language
+     *
+     * @return string|null
+     */
+    public function getBidirectional()
+    {
+        return $this->bidirectional;
+    }
+
+    /**
+     * Validates that the language passed is in the format xx-xx
+     *
+     * @param string $locale
+     * @return string
+     */
+    private function validateLocale($locale)
+    {
+        if ($locale !== null) {
+            $locale = str_replace('_', '-', $locale);
+        }
+
+        if (strlen($locale) === 2) {
+            return strtolower($locale) . '-' . strtoupper($locale);
+        }
+
+        if ($locale !== null && $locale !== 'zxx' && strstr($locale, '-') === false) {
+            throw new \InvalidArgumentException($locale . ' is not a valid language code');
+        }
+
+        return $locale;
+    }
 }

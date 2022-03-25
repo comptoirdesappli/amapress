@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,15 +22,17 @@ namespace PhpOffice\PhpWord\Writer\ODText\Element;
  *
  * @since 0.10.0
  */
-class TextBreak extends AbstractElement {
-	/**
-	 * Write element
-	 */
-	public function write() {
-		$xmlWriter = $this->getXmlWriter();
+class TextBreak extends AbstractElement
+{
+    /**
+     * Write element
+     */
+    public function write()
+    {
+        $xmlWriter = $this->getXmlWriter();
 
-		$xmlWriter->startElement( 'text:p' );
-		$xmlWriter->writeAttribute( 'text:style-name', 'Standard' );
-		$xmlWriter->endElement();
-	}
+        $xmlWriter->startElement('text:p');
+        $xmlWriter->writeAttribute('text:style-name', 'Standard');
+        $xmlWriter->endElement();
+    }
 }

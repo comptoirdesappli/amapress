@@ -11,73 +11,76 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
 namespace PhpOffice\PhpWord\Writer\HTML\Element;
 
+use Laminas\Escaper\Escaper;
 use PhpOffice\PhpWord\Element\AbstractElement as Element;
 use PhpOffice\PhpWord\Writer\AbstractWriter;
-use Zend\Escaper\Escaper;
 
 /**
  * Abstract HTML element writer
  *
  * @since 0.11.0
  */
-abstract class AbstractElement {
-	/**
-	 * Parent writer
-	 *
-	 * @var \PhpOffice\PhpWord\Writer\AbstractWriter
-	 */
-	protected $parentWriter;
+abstract class AbstractElement
+{
+    /**
+     * Parent writer
+     *
+     * @var \PhpOffice\PhpWord\Writer\AbstractWriter
+     */
+    protected $parentWriter;
 
-	/**
-	 * Element
-	 *
-	 * @var \PhpOffice\PhpWord\Element\AbstractElement
-	 */
-	protected $element;
+    /**
+     * Element
+     *
+     * @var \PhpOffice\PhpWord\Element\AbstractElement
+     */
+    protected $element;
 
-	/**
-	 * Without paragraph
-	 *
-	 * @var bool
-	 */
-	protected $withoutP = false;
+    /**
+     * Without paragraph
+     *
+     * @var bool
+     */
+    protected $withoutP = false;
 
-	/**
-	 * @var \Zend\Escaper\Escaper|\PhpOffice\PhpWord\Escaper\AbstractEscaper
-	 */
-	protected $escaper;
+    /**
+     * @var \Laminas\Escaper\Escaper|\PhpOffice\PhpWord\Escaper\AbstractEscaper
+     */
+    protected $escaper;
 
-	/**
-	 * Write element
-	 */
-	abstract public function write();
+    /**
+     * Write element
+     */
+    abstract public function write();
 
-	/**
-	 * Create new instance
-	 *
-	 * @param \PhpOffice\PhpWord\Writer\AbstractWriter $parentWriter
-	 * @param \PhpOffice\PhpWord\Element\AbstractElement $element
-	 * @param bool $withoutP
-	 */
-	public function __construct( AbstractWriter $parentWriter, Element $element, $withoutP = false ) {
-		$this->parentWriter = $parentWriter;
-		$this->element      = $element;
-		$this->withoutP     = $withoutP;
-		$this->escaper      = new Escaper();
-	}
+    /**
+     * Create new instance
+     *
+     * @param \PhpOffice\PhpWord\Writer\AbstractWriter $parentWriter
+     * @param \PhpOffice\PhpWord\Element\AbstractElement $element
+     * @param bool $withoutP
+     */
+    public function __construct(AbstractWriter $parentWriter, Element $element, $withoutP = false)
+    {
+        $this->parentWriter = $parentWriter;
+        $this->element = $element;
+        $this->withoutP = $withoutP;
+        $this->escaper = new Escaper();
+    }
 
-	/**
-	 * Set without paragraph.
-	 *
-	 * @param bool $value
-	 */
-	public function setWithoutP( $value ) {
-		$this->withoutP = $value;
-	}
+    /**
+     * Set without paragraph.
+     *
+     * @param bool $value
+     */
+    public function setWithoutP($value)
+    {
+        $this->withoutP = $value;
+    }
 }

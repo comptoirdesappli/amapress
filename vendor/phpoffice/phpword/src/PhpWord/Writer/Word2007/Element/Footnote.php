@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,37 +22,39 @@ namespace PhpOffice\PhpWord\Writer\Word2007\Element;
  *
  * @since 0.10.0
  */
-class Footnote extends Text {
-	/**
-	 * Reference type footnoteReference|endnoteReference
-	 *
-	 * @var string
-	 */
-	protected $referenceType = 'footnoteReference';
+class Footnote extends Text
+{
+    /**
+     * Reference type footnoteReference|endnoteReference
+     *
+     * @var string
+     */
+    protected $referenceType = 'footnoteReference';
 
-	/**
-	 * Write element.
-	 */
-	public function write() {
-		$xmlWriter = $this->getXmlWriter();
-		$element   = $this->getElement();
-		if ( ! $element instanceof \PhpOffice\PhpWord\Element\Footnote ) {
-			return;
-		}
+    /**
+     * Write element.
+     */
+    public function write()
+    {
+        $xmlWriter = $this->getXmlWriter();
+        $element = $this->getElement();
+        if (!$element instanceof \PhpOffice\PhpWord\Element\Footnote) {
+            return;
+        }
 
-		$this->startElementP();
+        $this->startElementP();
 
-		$xmlWriter->startElement( 'w:r' );
-		$xmlWriter->startElement( 'w:rPr' );
-		$xmlWriter->startElement( 'w:rStyle' );
-		$xmlWriter->writeAttribute( 'w:val', ucfirst( $this->referenceType ) );
-		$xmlWriter->endElement(); // w:rStyle
-		$xmlWriter->endElement(); // w:rPr
-		$xmlWriter->startElement( "w:{$this->referenceType}" );
-		$xmlWriter->writeAttribute( 'w:id', $element->getRelationId() );
-		$xmlWriter->endElement(); // w:$referenceType
-		$xmlWriter->endElement(); // w:r
+        $xmlWriter->startElement('w:r');
+        $xmlWriter->startElement('w:rPr');
+        $xmlWriter->startElement('w:rStyle');
+        $xmlWriter->writeAttribute('w:val', ucfirst($this->referenceType));
+        $xmlWriter->endElement(); // w:rStyle
+        $xmlWriter->endElement(); // w:rPr
+        $xmlWriter->startElement("w:{$this->referenceType}");
+        $xmlWriter->writeAttribute('w:id', $element->getRelationId());
+        $xmlWriter->endElement(); // w:$referenceType
+        $xmlWriter->endElement(); // w:r
 
-		$this->endElementP(); // w:p
-	}
+        $this->endElementP(); // w:p
+    }
 }

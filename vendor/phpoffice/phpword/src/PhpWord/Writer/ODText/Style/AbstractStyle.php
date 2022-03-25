@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -24,5 +24,6 @@ use PhpOffice\PhpWord\Writer\Word2007\Style\AbstractStyle as Word2007AbstractSty
  *
  * @since 0.10.0
  */
-abstract class AbstractStyle extends Word2007AbstractStyle {
+abstract class AbstractStyle extends Word2007AbstractStyle
+{
 }

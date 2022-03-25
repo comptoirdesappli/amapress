@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,20 +22,58 @@ namespace PhpOffice\PhpWord\Writer\ODText\Element;
  *
  * @since 0.11.0
  */
-class Title extends AbstractElement {
-	/**
-	 * Write element
-	 */
-	public function write() {
-		$xmlWriter = $this->getXmlWriter();
-		$element   = $this->getElement();
-		if ( ! $element instanceof \PhpOffice\PhpWord\Element\Title ) {
-			return;
-		}
+class Title extends AbstractElement
+{
+    /**
+     * Write element
+     */
+    public function write()
+    {
+        $xmlWriter = $this->getXmlWriter();
+        $element = $this->getElement();
+        if (!$element instanceof \PhpOffice\PhpWord\Element\Title) {
+            return;
+        }
 
-		$xmlWriter->startElement( 'text:h' );
-		$xmlWriter->writeAttribute( 'text:outline-level', $element->getDepth() );
-		$this->writeText( $element->getText() );
-		$xmlWriter->endElement(); // text:h
-	}
+        $xmlWriter->startElement('text:h');
+        $hdname = 'HD';
+        $sect = $element->getParent();
+        if ($sect instanceof \PhpOffice\PhpWord\Element\Section) {
+            if (self::compareToFirstElement($element, $sect->getElements())) {
+                $hdname = 'HE';
+            }
+        }
+        $depth = $element->getDepth();
+        $xmlWriter->writeAttribute('text:style-name', "$hdname$depth");
+        $xmlWriter->writeAttribute('text:outline-level', $depth);
+        $xmlWriter->startElement('text:span');
+        if ($depth > 0) {
+            $xmlWriter->writeAttribute('text:style-name', 'Heading_' . $depth);
+        } else {
+            $xmlWriter->writeAttribute('text:style-name', 'Title');
+        }
+        $text = $element->getText();
+        if (is_string($text)) {
+            $this->writeText($text);
+        } elseif ($text instanceof \PhpOffice\PhpWord\Element\AbstractContainer) {
+            $containerWriter = new Container($xmlWriter, $text);
+            $containerWriter->write();
+        }
+        $xmlWriter->endElement(); // text:span
+        $xmlWriter->endElement(); // text:h
+    }
+
+    /**
+     * Test if element is same as first element in array
+     *
+     * @param \PhpOffice\PhpWord\Element\AbstractElement $elem
+     *
+     * @param \PhpOffice\PhpWord\Element\AbstractElement[] $elemarray
+     *
+     * @return bool
+     */
+    private static function compareToFirstElement($elem, $elemarray)
+    {
+        return $elem === $elemarray[0];
+    }
 }

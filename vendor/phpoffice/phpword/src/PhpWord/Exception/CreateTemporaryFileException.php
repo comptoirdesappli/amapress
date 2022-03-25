@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -20,16 +20,18 @@ namespace PhpOffice\PhpWord\Exception;
 /**
  * @since 0.12.0
  */
-final class CreateTemporaryFileException extends Exception {
-	/**
-	 * @param int $code The user defined exception code
-	 * @param \Exception $previous The previous exception used for the exception chaining
-	 */
-	final public function __construct( $code = 0, \Exception $previous = null ) {
-		parent::__construct(
-			'Could not create a temporary file with unique name in the specified directory.',
-			$code,
-			$previous
-		);
-	}
+final class CreateTemporaryFileException extends Exception
+{
+    /**
+     * @param int $code The user defined exception code
+     * @param \Exception $previous The previous exception used for the exception chaining
+     */
+    final public function __construct($code = 0, \Exception $previous = null)
+    {
+        parent::__construct(
+            'Could not create a temporary file with unique name in the specified directory.',
+            $code,
+            $previous
+        );
+    }
 }

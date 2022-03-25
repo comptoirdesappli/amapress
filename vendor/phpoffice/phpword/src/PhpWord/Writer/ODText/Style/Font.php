@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,66 +22,88 @@ namespace PhpOffice\PhpWord\Writer\ODText\Style;
  *
  * @since 0.10.0
  */
-class Font extends AbstractStyle {
-	/**
-	 * Write style.
-	 */
-	public function write() {
-		$style = $this->getStyle();
-		if ( ! $style instanceof \PhpOffice\PhpWord\Style\Font ) {
-			return;
-		}
-		$xmlWriter = $this->getXmlWriter();
+class Font extends AbstractStyle
+{
+    /**
+     * Write style.
+     */
+    public function write()
+    {
+        $style = $this->getStyle();
+        if (!$style instanceof \PhpOffice\PhpWord\Style\Font) {
+            return;
+        }
+        $xmlWriter = $this->getXmlWriter();
 
-		$xmlWriter->startElement( 'style:style' );
-		$xmlWriter->writeAttribute( 'style:name', $style->getStyleName() );
-		$xmlWriter->writeAttribute( 'style:family', 'text' );
-		$xmlWriter->startElement( 'style:text-properties' );
+        $stylep = (method_exists($style, 'getParagraph')) ? $style->getParagraph() : null;
+        if ($stylep instanceof \PhpOffice\PhpWord\Style\Paragraph) {
+            $temp1 = clone $stylep;
+            $temp1->setStyleName($style->getStyleName());
+            $temp2 = new \PhpOffice\PhpWord\Writer\ODText\Style\Paragraph($xmlWriter, $temp1);
+            $temp2->write();
+        }
 
-		// Name
-		$font = $style->getName();
-		$xmlWriter->writeAttributeIf( $font != '', 'style:font-name', $font );
-		$xmlWriter->writeAttributeIf( $font != '', 'style:font-name-complex', $font );
-		$size = $style->getSize();
+        $xmlWriter->startElement('style:style');
+        $xmlWriter->writeAttribute('style:name', $style->getStyleName());
+        $xmlWriter->writeAttribute('style:family', 'text');
+        $xmlWriter->startElement('style:text-properties');
 
-		// Size
-		$xmlWriter->writeAttributeIf( is_numeric( $size ), 'fo:font-size', $size . 'pt' );
-		$xmlWriter->writeAttributeIf( is_numeric( $size ), 'style:font-size-asian', $size . 'pt' );
-		$xmlWriter->writeAttributeIf( is_numeric( $size ), 'style:font-size-complex', $size . 'pt' );
+        // Name
+        $font = $style->getName();
+        $xmlWriter->writeAttributeIf($font != '', 'style:font-name', $font);
+        $xmlWriter->writeAttributeIf($font != '', 'style:font-name-complex', $font);
+        $size = $style->getSize();
 
-		// Color
-		$color = $style->getColor();
-		$xmlWriter->writeAttributeIf( $color != '', 'fo:color', '#' . $color );
+        // Size
+        $xmlWriter->writeAttributeIf(is_numeric($size), 'fo:font-size', $size . 'pt');
+        $xmlWriter->writeAttributeIf(is_numeric($size), 'style:font-size-asian', $size . 'pt');
+        $xmlWriter->writeAttributeIf(is_numeric($size), 'style:font-size-complex', $size . 'pt');
 
-		// Bold & italic
-		$xmlWriter->writeAttributeIf( $style->isBold(), 'fo:font-weight', 'bold' );
-		$xmlWriter->writeAttributeIf( $style->isBold(), 'style:font-weight-asian', 'bold' );
-		$xmlWriter->writeAttributeIf( $style->isItalic(), 'fo:font-style', 'italic' );
-		$xmlWriter->writeAttributeIf( $style->isItalic(), 'style:font-style-asian', 'italic' );
-		$xmlWriter->writeAttributeIf( $style->isItalic(), 'style:font-style-complex', 'italic' );
+        // Color
+        $color = $style->getColor();
+        $xmlWriter->writeAttributeIf($color != '', 'fo:color', '#' . \PhpOffice\PhpWord\Shared\Converter::stringToRgb($color));
 
-		// Underline
-		// @todo Various mode of underline
-		$underline = $style->getUnderline();
-		$xmlWriter->writeAttributeIf( $underline != 'none', 'style:text-underline-style', 'solid' );
+        // Bold & italic
+        $xmlWriter->writeAttributeIf($style->isBold(), 'fo:font-weight', 'bold');
+        $xmlWriter->writeAttributeIf($style->isBold(), 'style:font-weight-asian', 'bold');
+        $xmlWriter->writeAttributeIf($style->isItalic(), 'fo:font-style', 'italic');
+        $xmlWriter->writeAttributeIf($style->isItalic(), 'style:font-style-asian', 'italic');
+        $xmlWriter->writeAttributeIf($style->isItalic(), 'style:font-style-complex', 'italic');
 
-		// Strikethrough, double strikethrough
-		$xmlWriter->writeAttributeIf( $style->isStrikethrough(), 'style:text-line-through-type', 'single' );
-		$xmlWriter->writeAttributeIf( $style->isDoubleStrikethrough(), 'style:text-line-through-type', 'double' );
+        // Underline
+        // @todo Various mode of underline
+        $underline = $style->getUnderline();
+        $xmlWriter->writeAttributeIf($underline != 'none', 'style:text-underline-style', 'solid');
 
-		// Small caps, all caps
-		$xmlWriter->writeAttributeIf( $style->isSmallCaps(), 'fo:font-variant', 'small-caps' );
-		$xmlWriter->writeAttributeIf( $style->isAllCaps(), 'fo:text-transform', 'uppercase' );
+        // Strikethrough, double strikethrough
+        $xmlWriter->writeAttributeIf($style->isStrikethrough(), 'style:text-line-through-type', 'single');
+        $xmlWriter->writeAttributeIf($style->isDoubleStrikethrough(), 'style:text-line-through-type', 'double');
 
-		// Superscript/subscript
-		$xmlWriter->writeAttributeIf( $style->isSuperScript(), 'style:text-position', 'super' );
-		$xmlWriter->writeAttributeIf( $style->isSubScript(), 'style:text-position', 'sub' );
+        // Small caps, all caps
+        $xmlWriter->writeAttributeIf($style->isSmallCaps(), 'fo:font-variant', 'small-caps');
+        $xmlWriter->writeAttributeIf($style->isAllCaps(), 'fo:text-transform', 'uppercase');
 
-		// @todo Foreground-Color
+        //Hidden text
+        $xmlWriter->writeAttributeIf($style->isHidden(), 'text:display', 'none');
 
-		// @todo Background color
+        // Superscript/subscript
+        $xmlWriter->writeAttributeIf($style->isSuperScript(), 'style:text-position', 'super');
+        $xmlWriter->writeAttributeIf($style->isSubScript(), 'style:text-position', 'sub');
 
-		$xmlWriter->endElement(); // style:text-properties
-		$xmlWriter->endElement(); // style:style
-	}
+        if ($style->isNoProof()) {
+            $xmlWriter->writeAttribute('fo:language', 'zxx');
+            $xmlWriter->writeAttribute('style:language-asian', 'zxx');
+            $xmlWriter->writeAttribute('style:language-complex', 'zxx');
+            $xmlWriter->writeAttribute('fo:country', 'none');
+            $xmlWriter->writeAttribute('style:country-asian', 'none');
+            $xmlWriter->writeAttribute('style:country-complex', 'none');
+        }
+
+        // @todo Foreground-Color
+
+        // @todo Background color
+
+        $xmlWriter->endElement(); // style:text-properties
+        $xmlWriter->endElement(); // style:style
+    }
 }

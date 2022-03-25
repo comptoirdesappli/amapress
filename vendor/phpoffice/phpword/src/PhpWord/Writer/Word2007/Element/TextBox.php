@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -24,48 +24,50 @@ use PhpOffice\PhpWord\Writer\Word2007\Style\TextBox as TextBoxStyleWriter;
  *
  * @since 0.11.0
  */
-class TextBox extends Image {
-	/**
-	 * Write element.
-	 */
-	public function write() {
-		$xmlWriter = $this->getXmlWriter();
-		$element   = $this->getElement();
-		if ( ! $element instanceof \PhpOffice\PhpWord\Element\TextBox ) {
-			return;
-		}
-		$style       = $element->getStyle();
-		$styleWriter = new TextBoxStyleWriter( $xmlWriter, $style );
+class TextBox extends Image
+{
+    /**
+     * Write element.
+     */
+    public function write()
+    {
+        $xmlWriter = $this->getXmlWriter();
+        $element = $this->getElement();
+        if (!$element instanceof \PhpOffice\PhpWord\Element\TextBox) {
+            return;
+        }
+        $style = $element->getStyle();
+        $styleWriter = new TextBoxStyleWriter($xmlWriter, $style);
 
-		if ( ! $this->withoutP ) {
-			$xmlWriter->startElement( 'w:p' );
-			$styleWriter->writeAlignment();
-		}
-		$this->writeCommentRangeStart();
+        if (!$this->withoutP) {
+            $xmlWriter->startElement('w:p');
+            $styleWriter->writeAlignment();
+        }
+        $this->writeCommentRangeStart();
 
-		$xmlWriter->startElement( 'w:r' );
-		$xmlWriter->startElement( 'w:pict' );
-		$xmlWriter->startElement( 'v:shape' );
-		$xmlWriter->writeAttribute( 'type', '#_x0000_t0202' );
+        $xmlWriter->startElement('w:r');
+        $xmlWriter->startElement('w:pict');
+        $xmlWriter->startElement('v:shape');
+        $xmlWriter->writeAttribute('type', '#_x0000_t0202');
 
-		$styleWriter->write();
-		$styleWriter->writeBorder();
+        $styleWriter->write();
+        $styleWriter->writeBorder();
 
-		$xmlWriter->startElement( 'v:textbox' );
-		$styleWriter->writeInnerMargin();
+        $xmlWriter->startElement('v:textbox');
+        $styleWriter->writeInnerMargin();
 
-		// TextBox content, serving as a container
-		$xmlWriter->startElement( 'w:txbxContent' );
-		$containerWriter = new Container( $xmlWriter, $element );
-		$containerWriter->write();
-		$xmlWriter->endElement(); // w:txbxContent
+        // TextBox content, serving as a container
+        $xmlWriter->startElement('w:txbxContent');
+        $containerWriter = new Container($xmlWriter, $element);
+        $containerWriter->write();
+        $xmlWriter->endElement(); // w:txbxContent
 
-		$xmlWriter->endElement(); // v: textbox
+        $xmlWriter->endElement(); // v: textbox
 
-		$xmlWriter->endElement(); // v:shape
-		$xmlWriter->endElement(); // w:pict
-		$xmlWriter->endElement(); // w:r
+        $xmlWriter->endElement(); // v:shape
+        $xmlWriter->endElement(); // w:pict
+        $xmlWriter->endElement(); // w:r
 
-		$this->endElementP();
-	}
+        $this->endElementP();
+    }
 }

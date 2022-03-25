@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,18 +22,19 @@ namespace PhpOffice\PhpWord\Reader\Word2007;
  *
  * @since 0.10.0
  */
-class DocPropsApp extends DocPropsCore {
-	/**
-	 * Property mapping
-	 *
-	 * @var array
-	 */
-	protected $mapping = array( 'Company' => 'setCompany', 'Manager' => 'setManager' );
+class DocPropsApp extends DocPropsCore
+{
+    /**
+     * Property mapping
+     *
+     * @var array
+     */
+    protected $mapping = array('Company' => 'setCompany', 'Manager' => 'setManager');
 
-	/**
-	 * Callback functions
-	 *
-	 * @var array
-	 */
-	protected $callbacks = array();
+    /**
+     * Callback functions
+     *
+     * @var array
+     */
+    protected $callbacks = array();
 }

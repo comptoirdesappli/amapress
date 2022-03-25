@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,30 +22,32 @@ namespace PhpOffice\PhpWord\Writer\RTF\Element;
  *
  * @since 0.10.0
  */
-class Text extends AbstractElement {
-	/**
-	 * Write element
-	 *
-	 * @return string
-	 */
-	public function write() {
-		/** @var \PhpOffice\PhpWord\Element\Text $element Type hint */
-		$element      = $this->element;
-		$elementClass = str_replace( '\\Writer\\RTF', '', get_class( $this ) );
-		if ( ! $element instanceof $elementClass ) {
-			return '';
-		}
+class Text extends AbstractElement
+{
+    /**
+     * Write element
+     *
+     * @return string
+     */
+    public function write()
+    {
+        /** @var \PhpOffice\PhpWord\Element\Text $element Type hint */
+        $element = $this->element;
+        $elementClass = str_replace('\\Writer\\RTF', '', get_class($this));
+        if (!$element instanceof $elementClass || !is_string($element->getText())) {
+            return '';
+        }
 
-		$this->getStyles();
+        $this->getStyles();
 
-		$content = '';
-		$content .= $this->writeOpening();
-		$content .= '{';
-		$content .= $this->writeFontStyle();
-		$content .= $this->writeText( $element->getText() );
-		$content .= '}';
-		$content .= $this->writeClosing();
+        $content = '';
+        $content .= $this->writeOpening();
+        $content .= '{';
+        $content .= $this->writeFontStyle();
+        $content .= $this->writeText($element->getText());
+        $content .= '}';
+        $content .= $this->writeClosing();
 
-		return $content;
-	}
+        return $content;
+    }
 }

@@ -11,71 +11,73 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
 namespace PhpOffice\PhpWord\Reader\Word2007;
 
-use PhpOffice\Common\XMLReader;
 use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Shared\XMLReader;
 
 /**
  * Core properties reader
  *
  * @since 0.10.0
  */
-class DocPropsCore extends AbstractPart {
-	/**
-	 * Property mapping
-	 *
-	 * @var array
-	 */
-	protected $mapping = array(
-		'dc:creator'        => 'setCreator',
-		'dc:title'          => 'setTitle',
-		'dc:description'    => 'setDescription',
-		'dc:subject'        => 'setSubject',
-		'cp:keywords'       => 'setKeywords',
-		'cp:category'       => 'setCategory',
-		'cp:lastModifiedBy' => 'setLastModifiedBy',
-		'dcterms:created'   => 'setCreated',
-		'dcterms:modified'  => 'setModified',
-	);
+class DocPropsCore extends AbstractPart
+{
+    /**
+     * Property mapping
+     *
+     * @var array
+     */
+    protected $mapping = array(
+        'dc:creator'        => 'setCreator',
+        'dc:title'          => 'setTitle',
+        'dc:description'    => 'setDescription',
+        'dc:subject'        => 'setSubject',
+        'cp:keywords'       => 'setKeywords',
+        'cp:category'       => 'setCategory',
+        'cp:lastModifiedBy' => 'setLastModifiedBy',
+        'dcterms:created'   => 'setCreated',
+        'dcterms:modified'  => 'setModified',
+    );
 
-	/**
-	 * Callback functions
-	 *
-	 * @var array
-	 */
-	protected $callbacks = array( 'dcterms:created' => 'strtotime', 'dcterms:modified' => 'strtotime' );
+    /**
+     * Callback functions
+     *
+     * @var array
+     */
+    protected $callbacks = array('dcterms:created' => 'strtotime', 'dcterms:modified' => 'strtotime');
 
-	/**
-	 * Read core/extended document properties.
-	 *
-	 * @param \PhpOffice\PhpWord\PhpWord $phpWord
-	 */
-	public function read( PhpWord $phpWord ) {
-		$xmlReader = new XMLReader();
-		$xmlReader->getDomFromZip( $this->docFile, $this->xmlFile );
+    /**
+     * Read core/extended document properties.
+     *
+     * @param \PhpOffice\PhpWord\PhpWord $phpWord
+     */
+    public function read(PhpWord $phpWord)
+    {
+        $xmlReader = new XMLReader();
+        $xmlReader->getDomFromZip($this->docFile, $this->xmlFile);
 
-		$docProps = $phpWord->getDocInfo();
+        $docProps = $phpWord->getDocInfo();
 
-		$nodes = $xmlReader->getElements( '*' );
-		if ( $nodes->length > 0 ) {
-			foreach ( $nodes as $node ) {
-				if ( ! isset( $this->mapping[ $node->nodeName ] ) ) {
-					continue;
-				}
-				$method = $this->mapping[ $node->nodeName ];
-				$value  = $node->nodeValue == '' ? null : $node->nodeValue;
-				if ( isset( $this->callbacks[ $node->nodeName ] ) ) {
-					$value = $this->callbacks[$node->nodeName]( $value );
-				}
-				if ( method_exists( $docProps, $method ) ) {
-					$docProps->$method( $value );
-				}
-			}
-		}
-	}
+        $nodes = $xmlReader->getElements('*');
+        if ($nodes->length > 0) {
+            foreach ($nodes as $node) {
+                if (!isset($this->mapping[$node->nodeName])) {
+                    continue;
+                }
+                $method = $this->mapping[$node->nodeName];
+                $value = $node->nodeValue == '' ? null : $node->nodeValue;
+                if (isset($this->callbacks[$node->nodeName])) {
+                    $value = $this->callbacks[$node->nodeName]($value);
+                }
+                if (method_exists($docProps, $method)) {
+                    $docProps->$method($value);
+                }
+            }
+        }
+    }
 }

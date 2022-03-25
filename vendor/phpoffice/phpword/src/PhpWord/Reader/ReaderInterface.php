@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,20 +22,20 @@ namespace PhpOffice\PhpWord\Reader;
  *
  * @since 0.8.0
  */
-interface ReaderInterface {
-	/**
-	 * Can the current ReaderInterface read the file?
-	 *
-	 * @param  string $filename
-	 *
-	 * @return bool
-	 */
-	public function canRead( $filename );
+interface ReaderInterface
+{
+    /**
+     * Can the current ReaderInterface read the file?
+     *
+     * @param  string $filename
+     * @return bool
+     */
+    public function canRead($filename);
 
-	/**
-	 * Loads PhpWord from file
-	 *
-	 * @param string $filename
-	 */
-	public function load( $filename );
+    /**
+     * Loads PhpWord from file
+     *
+     * @param string $filename
+     */
+    public function load($filename);
 }

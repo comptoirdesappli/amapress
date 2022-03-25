@@ -11,16 +11,16 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
 namespace PhpOffice\PhpWord\Writer\RTF\Element;
 
-use PhpOffice\Common\Text as CommonText;
 use PhpOffice\PhpWord\Element\AbstractElement as Element;
 use PhpOffice\PhpWord\Escaper\Rtf;
 use PhpOffice\PhpWord\Settings;
+use PhpOffice\PhpWord\Shared\Text as SharedText;
 use PhpOffice\PhpWord\Style;
 use PhpOffice\PhpWord\Style\Font as FontStyle;
 use PhpOffice\PhpWord\Style\Paragraph as ParagraphStyle;
@@ -34,141 +34,147 @@ use PhpOffice\PhpWord\Writer\RTF\Style\Paragraph as ParagraphStyleWriter;
  *
  * @since 0.11.0
  */
-abstract class AbstractElement extends HTMLAbstractElement {
-	/**
-	 * Font style
-	 *
-	 * @var \PhpOffice\PhpWord\Style\Font
-	 */
-	private $fontStyle;
+abstract class AbstractElement extends HTMLAbstractElement
+{
+    /**
+     * Font style
+     *
+     * @var \PhpOffice\PhpWord\Style\Font
+     */
+    protected $fontStyle;
 
-	/**
-	 * Paragraph style
-	 *
-	 * @var \PhpOffice\PhpWord\Style\Paragraph
-	 */
-	private $paragraphStyle;
+    /**
+     * Paragraph style
+     *
+     * @var \PhpOffice\PhpWord\Style\Paragraph
+     */
+    protected $paragraphStyle;
 
-	public function __construct( AbstractWriter $parentWriter, Element $element, $withoutP = false ) {
-		parent::__construct( $parentWriter, $element, $withoutP );
+    public function __construct(AbstractWriter $parentWriter, Element $element, $withoutP = false)
+    {
+        parent::__construct($parentWriter, $element, $withoutP);
 
-		$this->escaper = new Rtf();
-	}
+        $this->escaper = new Rtf();
+    }
 
-	/**
-	 * Get font and paragraph styles.
-	 */
-	protected function getStyles() {
-		/** @var \PhpOffice\PhpWord\Writer\RTF $parentWriter Type hint */
-		$parentWriter = $this->parentWriter;
+    /**
+     * Get font and paragraph styles.
+     */
+    protected function getStyles()
+    {
+        /** @var \PhpOffice\PhpWord\Writer\RTF $parentWriter Type hint */
+        $parentWriter = $this->parentWriter;
 
-		/** @var \PhpOffice\PhpWord\Element\Text $element Type hint */
-		$element = $this->element;
+        /** @var \PhpOffice\PhpWord\Element\Text $element Type hint */
+        $element = $this->element;
 
-		// Font style
-		if ( method_exists( $element, 'getFontStyle' ) ) {
-			$this->fontStyle = $element->getFontStyle();
-			if ( is_string( $this->fontStyle ) ) {
-				$this->fontStyle = Style::getStyle( $this->fontStyle );
-			}
-		}
+        // Font style
+        if (method_exists($element, 'getFontStyle')) {
+            $this->fontStyle = $element->getFontStyle();
+            if (is_string($this->fontStyle)) {
+                $this->fontStyle = Style::getStyle($this->fontStyle);
+            }
+        }
 
-		// Paragraph style
-		if ( method_exists( $element, 'getParagraphStyle' ) ) {
-			$this->paragraphStyle = $element->getParagraphStyle();
-			if ( is_string( $this->paragraphStyle ) ) {
-				$this->paragraphStyle = Style::getStyle( $this->paragraphStyle );
-			}
+        // Paragraph style
+        if (method_exists($element, 'getParagraphStyle')) {
+            $this->paragraphStyle = $element->getParagraphStyle();
+            if (is_string($this->paragraphStyle)) {
+                $this->paragraphStyle = Style::getStyle($this->paragraphStyle);
+            }
 
-			if ( $this->paragraphStyle !== null && ! $this->withoutP ) {
-				if ( $parentWriter->getLastParagraphStyle() != $element->getParagraphStyle() ) {
-					$parentWriter->setLastParagraphStyle( $element->getParagraphStyle() );
-				} else {
-					$parentWriter->setLastParagraphStyle();
-					$this->paragraphStyle = null;
-				}
-			} else {
-				$parentWriter->setLastParagraphStyle();
-				$this->paragraphStyle = null;
-			}
-		}
-	}
+            if ($this->paragraphStyle !== null && !$this->withoutP) {
+                if ($parentWriter->getLastParagraphStyle() != $element->getParagraphStyle()) {
+                    $parentWriter->setLastParagraphStyle($element->getParagraphStyle());
+                } else {
+                    $parentWriter->setLastParagraphStyle();
+                    $this->paragraphStyle = null;
+                }
+            } else {
+                $parentWriter->setLastParagraphStyle();
+                $this->paragraphStyle = null;
+            }
+        }
+    }
 
-	/**
-	 * Write opening
-	 *
-	 * @return string
-	 */
-	protected function writeOpening() {
-		if ( $this->withoutP || ! $this->paragraphStyle instanceof ParagraphStyle ) {
-			return '';
-		}
+    /**
+     * Write opening
+     *
+     * @return string
+     */
+    protected function writeOpening()
+    {
+        if ($this->withoutP || !$this->paragraphStyle instanceof ParagraphStyle) {
+            return '';
+        }
 
-		$styleWriter = new ParagraphStyleWriter( $this->paragraphStyle );
-		$styleWriter->setNestedLevel( $this->element->getNestedLevel() );
+        $styleWriter = new ParagraphStyleWriter($this->paragraphStyle);
+        $styleWriter->setNestedLevel($this->element->getNestedLevel());
 
-		return $styleWriter->write();
-	}
+        return $styleWriter->write();
+    }
 
-	/**
-	 * Write text
-	 *
-	 * @param string $text
-	 *
-	 * @return string
-	 */
-	protected function writeText( $text ) {
-		if ( Settings::isOutputEscapingEnabled() ) {
-			return $this->escaper->escape( $text );
-		}
+    /**
+     * Write text
+     *
+     * @param string $text
+     * @return string
+     */
+    protected function writeText($text)
+    {
+        if (Settings::isOutputEscapingEnabled()) {
+            return $this->escaper->escape($text);
+        }
 
-		return CommonText::toUnicode( $text ); // todo: replace with `return $text;` later.
-	}
+        return SharedText::toUnicode($text); // todo: replace with `return $text;` later.
+    }
 
-	/**
-	 * Write closing
-	 *
-	 * @return string
-	 */
-	protected function writeClosing() {
-		if ( $this->withoutP ) {
-			return '';
-		}
+    /**
+     * Write closing
+     *
+     * @return string
+     */
+    protected function writeClosing()
+    {
+        if ($this->withoutP) {
+            return '';
+        }
 
-		return '\par' . PHP_EOL;
-	}
+        return '\par' . PHP_EOL;
+    }
 
-	/**
-	 * Write font style
-	 *
-	 * @return string
-	 */
-	protected function writeFontStyle() {
-		if ( ! $this->fontStyle instanceof FontStyle ) {
-			return '';
-		}
+    /**
+     * Write font style
+     *
+     * @return string
+     */
+    protected function writeFontStyle()
+    {
+        if (!$this->fontStyle instanceof FontStyle) {
+            return '';
+        }
 
-		/** @var \PhpOffice\PhpWord\Writer\RTF $parentWriter Type hint */
-		$parentWriter = $this->parentWriter;
+        /** @var \PhpOffice\PhpWord\Writer\RTF $parentWriter Type hint */
+        $parentWriter = $this->parentWriter;
 
-		// Create style writer and set color/name index
-		$styleWriter = new FontStyleWriter( $this->fontStyle );
-		if ( $this->fontStyle->getColor() != null ) {
-			$colorIndex = array_search( $this->fontStyle->getColor(), $parentWriter->getColorTable() );
-			if ( $colorIndex !== false ) {
-				$styleWriter->setColorIndex( $colorIndex + 1 );
-			}
-		}
-		if ( $this->fontStyle->getName() != null ) {
-			$fontIndex = array_search( $this->fontStyle->getName(), $parentWriter->getFontTable() );
-			if ( $fontIndex !== false ) {
-				$styleWriter->setNameIndex( $fontIndex );
-			}
-		}
+        // Create style writer and set color/name index
+        $styleWriter = new FontStyleWriter($this->fontStyle);
+        if ($this->fontStyle->getColor() != null) {
+            $colorIndex = array_search($this->fontStyle->getColor(), $parentWriter->getColorTable());
+            if ($colorIndex !== false) {
+                $styleWriter->setColorIndex($colorIndex + 1);
+            }
+        }
+        if ($this->fontStyle->getName() != null) {
+            $fontIndex = array_search($this->fontStyle->getName(), $parentWriter->getFontTable());
+            if ($fontIndex !== false) {
+                $styleWriter->setNameIndex($fontIndex);
+            }
+        }
 
-		// Write style
-		$content = $styleWriter->write();
+        // Write style
+        $content = $styleWriter->write();
 
-		return $content;
-	}
+        return $content;
+    }
 }

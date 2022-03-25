@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -25,27 +25,29 @@ use PhpOffice\PhpWord\Reader\RTF\Document;
  *
  * @since 0.11.0
  */
-class RTF extends AbstractReader implements ReaderInterface {
-	/**
-	 * Loads PhpWord from file
-	 *
-	 * @param string $docFile
-	 *
-	 * @throws \Exception
-	 *
-	 * @return \PhpOffice\PhpWord\PhpWord
-	 */
-	public function load( $docFile ) {
-		$phpWord = new PhpWord();
+class RTF extends AbstractReader implements ReaderInterface
+{
+    /**
+     * Loads PhpWord from file
+     *
+     * @param string $docFile
+     *
+     * @throws \Exception
+     *
+     * @return \PhpOffice\PhpWord\PhpWord
+     */
+    public function load($docFile)
+    {
+        $phpWord = new PhpWord();
 
-		if ( $this->canRead( $docFile ) ) {
-			$doc      = new Document();
-			$doc->rtf = file_get_contents( $docFile );
-			$doc->read( $phpWord );
-		} else {
-			throw new \Exception( "Cannot read {$docFile}." );
-		}
+        if ($this->canRead($docFile)) {
+            $doc = new Document();
+            $doc->rtf = file_get_contents($docFile);
+            $doc->read($phpWord);
+        } else {
+            throw new \Exception("Cannot read {$docFile}.");
+        }
 
-		return $phpWord;
-	}
+        return $phpWord;
+    }
 }

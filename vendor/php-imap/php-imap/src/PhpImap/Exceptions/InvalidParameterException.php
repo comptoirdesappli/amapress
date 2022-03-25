@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpImap\Exceptions;
 
 use Exception;
@@ -9,5 +11,6 @@ use Exception;
  *
  * @author Barbushin Sergey http://linkedin.com/in/barbushin
  */
-class InvalidParameterException extends Exception {
+class InvalidParameterException extends Exception
+{
 }

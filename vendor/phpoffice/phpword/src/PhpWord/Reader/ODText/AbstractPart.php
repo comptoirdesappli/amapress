@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -25,5 +25,6 @@ use PhpOffice\PhpWord\Reader\Word2007\AbstractPart as Word2007AbstractPart;
  * @since 0.10.0
  * @codeCoverageIgnore
  */
-abstract class AbstractPart extends Word2007AbstractPart {
+abstract class AbstractPart extends Word2007AbstractPart
+{
 }

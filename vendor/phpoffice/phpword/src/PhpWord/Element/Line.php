@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,29 +22,32 @@ use PhpOffice\PhpWord\Style\Line as LineStyle;
 /**
  * Line element
  */
-class Line extends AbstractElement {
-	/**
-	 * Line style
-	 *
-	 * @var \PhpOffice\PhpWord\Style\Line
-	 */
-	private $style;
+class Line extends AbstractElement
+{
+    /**
+     * Line style
+     *
+     * @var \PhpOffice\PhpWord\Style\Line
+     */
+    private $style;
 
-	/**
-	 * Create new line element
-	 *
-	 * @param mixed $style
-	 */
-	public function __construct( $style = null ) {
-		$this->style = $this->setNewStyle( new LineStyle(), $style );
-	}
+    /**
+     * Create new line element
+     *
+     * @param mixed $style
+     */
+    public function __construct($style = null)
+    {
+        $this->style = $this->setNewStyle(new LineStyle(), $style);
+    }
 
-	/**
-	 * Get line style
-	 *
-	 * @return \PhpOffice\PhpWord\Style\Line
-	 */
-	public function getStyle() {
-		return $this->style;
-	}
+    /**
+     * Get line style
+     *
+     * @return \PhpOffice\PhpWord\Style\Line
+     */
+    public function getStyle()
+    {
+        return $this->style;
+    }
 }

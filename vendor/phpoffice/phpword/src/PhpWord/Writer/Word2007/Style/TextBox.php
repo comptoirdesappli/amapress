@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -24,35 +24,38 @@ use PhpOffice\PhpWord\Style\TextBox as TextBoxStyle;
  *
  * @since 0.11.0
  */
-class TextBox extends Frame {
-	/**
-	 * Writer inner margin.
-	 */
-	public function writeInnerMargin() {
-		$style = $this->getStyle();
-		if ( ! $style instanceof TextBoxStyle || ! $style->hasInnerMargins() ) {
-			return;
-		}
+class TextBox extends Frame
+{
+    /**
+     * Writer inner margin.
+     */
+    public function writeInnerMargin()
+    {
+        $style = $this->getStyle();
+        if (!$style instanceof TextBoxStyle || !$style->hasInnerMargins()) {
+            return;
+        }
 
-		$xmlWriter = $this->getXmlWriter();
-		$margins   = implode( ', ', $style->getInnerMargin() );
+        $xmlWriter = $this->getXmlWriter();
+        $margins = implode(', ', $style->getInnerMargin());
 
-		$xmlWriter->writeAttribute( 'inset', $margins );
-	}
+        $xmlWriter->writeAttribute('inset', $margins);
+    }
 
-	/**
-	 * Writer border.
-	 */
-	public function writeBorder() {
-		$style = $this->getStyle();
-		if ( ! $style instanceof TextBoxStyle ) {
-			return;
-		}
-		$xmlWriter = $this->getXmlWriter();
+    /**
+     * Writer border.
+     */
+    public function writeBorder()
+    {
+        $style = $this->getStyle();
+        if (!$style instanceof TextBoxStyle) {
+            return;
+        }
+        $xmlWriter = $this->getXmlWriter();
 
-		$xmlWriter->startElement( 'v:stroke' );
-		$xmlWriter->writeAttributeIf( $style->getBorderSize() !== null, 'weight', $style->getBorderSize() . 'pt' );
-		$xmlWriter->writeAttributeIf( $style->getBorderColor() !== null, 'color', $style->getBorderColor() );
-		$xmlWriter->endElement(); // v:stroke
-	}
+        $xmlWriter->startElement('v:stroke');
+        $xmlWriter->writeAttributeIf($style->getBorderSize() !== null, 'weight', $style->getBorderSize() . 'pt');
+        $xmlWriter->writeAttributeIf($style->getBorderColor() !== null, 'color', $style->getBorderColor());
+        $xmlWriter->endElement(); // v:stroke
+    }
 }

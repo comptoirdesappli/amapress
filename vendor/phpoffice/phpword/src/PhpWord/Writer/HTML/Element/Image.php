@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -25,28 +25,30 @@ use PhpOffice\PhpWord\Writer\HTML\Style\Image as ImageStyleWriter;
  *
  * @since 0.10.0
  */
-class Image extends Text {
-	/**
-	 * Write image
-	 *
-	 * @return string
-	 */
-	public function write() {
-		if ( ! $this->element instanceof ImageElement ) {
-			return '';
-		}
-		$content   = '';
-		$imageData = $this->element->getImageStringData( true );
-		if ( $imageData !== null ) {
-			$styleWriter = new ImageStyleWriter( $this->element->getStyle() );
-			$style       = $styleWriter->write();
-			$imageData   = 'data:' . $this->element->getImageType() . ';base64,' . $imageData;
+class Image extends Text
+{
+    /**
+     * Write image
+     *
+     * @return string
+     */
+    public function write()
+    {
+        if (!$this->element instanceof ImageElement) {
+            return '';
+        }
+        $content = '';
+        $imageData = $this->element->getImageStringData(true);
+        if ($imageData !== null) {
+            $styleWriter = new ImageStyleWriter($this->element->getStyle());
+            $style = $styleWriter->write();
+            $imageData = 'data:' . $this->element->getImageType() . ';base64,' . $imageData;
 
-			$content .= $this->writeOpening();
-			$content .= "<img border=\"0\" style=\"{$style}\" src=\"{$imageData}\"/>";
-			$content .= $this->writeClosing();
-		}
+            $content .= $this->writeOpening();
+            $content .= "<img border=\"0\" style=\"{$style}\" src=\"{$imageData}\"/>";
+            $content .= $this->writeClosing();
+        }
 
-		return $content;
-	}
+        return $content;
+    }
 }

@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,68 +22,70 @@ namespace PhpOffice\PhpWord\Writer\Word2007\Element;
  *
  * @since 0.10.0
  */
-class PreserveText extends Text {
-	/**
-	 * Write preserve text element.
-	 */
-	public function write() {
-		$xmlWriter = $this->getXmlWriter();
-		$element   = $this->getElement();
-		if ( ! $element instanceof \PhpOffice\PhpWord\Element\PreserveText ) {
-			return;
-		}
+class PreserveText extends Text
+{
+    /**
+     * Write preserve text element.
+     */
+    public function write()
+    {
+        $xmlWriter = $this->getXmlWriter();
+        $element = $this->getElement();
+        if (!$element instanceof \PhpOffice\PhpWord\Element\PreserveText) {
+            return;
+        }
 
-		$texts = $element->getText();
-		if ( ! is_array( $texts ) ) {
-			$texts = array( $texts );
-		}
+        $texts = $element->getText();
+        if (!is_array($texts)) {
+            $texts = array($texts);
+        }
 
-		$this->startElementP();
+        $this->startElementP();
 
-		foreach ( $texts as $text ) {
-			if ( substr( $text, 0, 1 ) == '{' ) {
-				$text = substr( $text, 1, - 1 );
+        foreach ($texts as $text) {
+            if (substr($text, 0, 1) == '{') {
+                $text = substr($text, 1, -1);
 
-				$xmlWriter->startElement( 'w:r' );
-				$xmlWriter->startElement( 'w:fldChar' );
-				$xmlWriter->writeAttribute( 'w:fldCharType', 'begin' );
-				$xmlWriter->endElement();
-				$xmlWriter->endElement();
+                $xmlWriter->startElement('w:r');
+                $xmlWriter->startElement('w:fldChar');
+                $xmlWriter->writeAttribute('w:fldCharType', 'begin');
+                $xmlWriter->endElement();
+                $xmlWriter->endElement();
 
-				$xmlWriter->startElement( 'w:r' );
+                $xmlWriter->startElement('w:r');
 
-				$this->writeFontStyle();
+                $this->writeFontStyle();
 
-				$xmlWriter->startElement( 'w:instrText' );
-				$xmlWriter->writeAttribute( 'xml:space', 'preserve' );
-				$this->writeText( $text );
-				$xmlWriter->endElement();
-				$xmlWriter->endElement();
+                $xmlWriter->startElement('w:instrText');
+                $xmlWriter->writeAttribute('xml:space', 'preserve');
+                $this->writeText($text);
+                $xmlWriter->endElement();
+                $xmlWriter->endElement();
 
-				$xmlWriter->startElement( 'w:r' );
-				$xmlWriter->startElement( 'w:fldChar' );
-				$xmlWriter->writeAttribute( 'w:fldCharType', 'separate' );
-				$xmlWriter->endElement();
-				$xmlWriter->endElement();
+                $xmlWriter->startElement('w:r');
+                $xmlWriter->startElement('w:fldChar');
+                $xmlWriter->writeAttribute('w:fldCharType', 'separate');
+                $xmlWriter->endElement();
+                $xmlWriter->endElement();
 
-				$xmlWriter->startElement( 'w:r' );
-				$xmlWriter->startElement( 'w:fldChar' );
-				$xmlWriter->writeAttribute( 'w:fldCharType', 'end' );
-				$xmlWriter->endElement();
-				$xmlWriter->endElement();
-			} else {
-				$xmlWriter->startElement( 'w:r' );
+                $xmlWriter->startElement('w:r');
+                $xmlWriter->startElement('w:fldChar');
+                $xmlWriter->writeAttribute('w:fldCharType', 'end');
+                $xmlWriter->endElement();
+                $xmlWriter->endElement();
+            } else {
+                $xmlWriter->startElement('w:r');
 
-				$this->writeFontStyle();
+                $this->writeFontStyle();
 
-				$xmlWriter->startElement( 'w:t' );
-				$xmlWriter->writeAttribute( 'xml:space', 'preserve' );
-				$this->writeText( $this->getText( $text ) );
-				$xmlWriter->endElement();
-				$xmlWriter->endElement();
-			}
-		}
+                $xmlWriter->startElement('w:t');
+                $xmlWriter->writeAttribute('xml:space', 'preserve');
+                $this->writeText($this->getText($text));
+                $xmlWriter->endElement();
+                $xmlWriter->endElement();
+            }
+        }
 
-		$this->endElementP(); // w:p
-	}
+        $this->endElementP(); // w:p
+    }
 }

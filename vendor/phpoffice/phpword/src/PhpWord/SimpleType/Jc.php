@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -30,37 +30,38 @@ use PhpOffice\PhpWord\Shared\AbstractEnum;
  * @see \PhpOffice\PhpWord\SimpleType\JcTable For table alignment modes available since ISO/IEC-29500:2008.
  * @see  http://www.datypic.com/sc/ooxml/t-w_ST_Jc.html
  */
-final class Jc extends AbstractEnum {
-	const START = 'start';
-	const CENTER = 'center';
-	const END = 'end';
-	const BOTH = 'both';
-	const MEDIUM_KASHIDA = 'mediumKashida';
-	const DISTRIBUTE = 'distribute';
-	const NUM_TAB = 'numTab';
-	const HIGH_KASHIDA = 'highKashida';
-	const LOW_KASHIDA = 'lowKashida';
-	const THAI_DISTRIBUTE = 'thaiDistribute';
+final class Jc extends AbstractEnum
+{
+    const START = 'start';
+    const CENTER = 'center';
+    const END = 'end';
+    const BOTH = 'both';
+    const MEDIUM_KASHIDA = 'mediumKashida';
+    const DISTRIBUTE = 'distribute';
+    const NUM_TAB = 'numTab';
+    const HIGH_KASHIDA = 'highKashida';
+    const LOW_KASHIDA = 'lowKashida';
+    const THAI_DISTRIBUTE = 'thaiDistribute';
 
-	/**
-	 * Kept for compatibility with 1st edition of ECMA-376 standard.
-	 * Microsoft Word 2007 and WPS Writer 2016 still rely on it.
-	 *
-	 * @deprecated 0.13.0 For documents based on ISO/IEC 29500:2008 and later use `START` instead.
-	 */
-	const LEFT = 'left';
-	/**
-	 * Kept for compatibility with 1st edition of ECMA-376 standard.
-	 * Microsoft Word 2007 and WPS Writer 2016 still rely on it.
-	 *
-	 * @deprecated 0.13.0 For documents based on ISO/IEC 29500:2008 and later use `END` instead.
-	 */
-	const RIGHT = 'right';
-	/**
-	 * Kept for compatibility with 1st edition of ECMA-376 standard.
-	 * Microsoft Word 2007 and WPS Writer 2016 still rely on it.
-	 *
-	 * @deprecated 0.13.0 For documents based on ISO/IEC 29500:2008 and later use `BOTH` instead.
-	 */
-	const JUSTIFY = 'justify';
+    /**
+     * Kept for compatibility with 1st edition of ECMA-376 standard.
+     * Microsoft Word 2007 and WPS Writer 2016 still rely on it.
+     *
+     * @deprecated 0.13.0 For documents based on ISO/IEC 29500:2008 and later use `START` instead.
+     */
+    const LEFT = 'left';
+    /**
+     * Kept for compatibility with 1st edition of ECMA-376 standard.
+     * Microsoft Word 2007 and WPS Writer 2016 still rely on it.
+     *
+     * @deprecated 0.13.0 For documents based on ISO/IEC 29500:2008 and later use `END` instead.
+     */
+    const RIGHT = 'right';
+    /**
+     * Kept for compatibility with 1st edition of ECMA-376 standard.
+     * Microsoft Word 2007 and WPS Writer 2016 still rely on it.
+     *
+     * @deprecated 0.13.0 For documents based on ISO/IEC 29500:2008 and later use `BOTH` instead.
+     */
+    const JUSTIFY = 'justify';
 }

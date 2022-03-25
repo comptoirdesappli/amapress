@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,21 +22,23 @@ namespace PhpOffice\PhpWord\Writer\Word2007\Style;
  *
  * @since 0.12.0
  */
-class Extrusion extends AbstractStyle {
-	/**
-	 * Write style.
-	 */
-	public function write() {
-		$style = $this->getStyle();
-		if ( ! $style instanceof \PhpOffice\PhpWord\Style\Extrusion ) {
-			return;
-		}
-		$xmlWriter = $this->getXmlWriter();
+class Extrusion extends AbstractStyle
+{
+    /**
+     * Write style.
+     */
+    public function write()
+    {
+        $style = $this->getStyle();
+        if (!$style instanceof \PhpOffice\PhpWord\Style\Extrusion) {
+            return;
+        }
+        $xmlWriter = $this->getXmlWriter();
 
-		$xmlWriter->startElement( 'o:extrusion' );
-		$xmlWriter->writeAttribute( 'on', 't' );
-		$xmlWriter->writeAttributeIf( $style->getType() !== null, 'type', $style->getType() );
-		$xmlWriter->writeAttributeIf( $style->getColor() !== null, 'color', $style->getColor() );
-		$xmlWriter->endElement();
-	}
+        $xmlWriter->startElement('o:extrusion');
+        $xmlWriter->writeAttribute('on', 't');
+        $xmlWriter->writeAttributeIf($style->getType() !== null, 'type', $style->getType());
+        $xmlWriter->writeAttributeIf($style->getColor() !== null, 'color', $style->getColor());
+        $xmlWriter->endElement();
+    }
 }

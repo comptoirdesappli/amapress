@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -20,11 +20,12 @@ namespace PhpOffice\PhpWord\Writer\Word2007\Part;
 /**
  * Word2007 header part writer: word/headerx.xml
  */
-class Header extends Footer {
-	/**
-	 * Root element name
-	 *
-	 * @var string
-	 */
-	protected $rootElement = 'w:hdr';
+class Header extends Footer
+{
+    /**
+     * Root element name
+     *
+     * @var string
+     */
+    protected $rootElement = 'w:hdr';
 }

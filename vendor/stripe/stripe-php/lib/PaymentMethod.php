@@ -18,11 +18,14 @@ namespace Stripe;
  *
  * @property string $id Unique identifier for the object.
  * @property string $object String representing the object's type. Objects of the same type share the same value.
+ * @property \Stripe\StripeObject $acss_debit
+ * @property \Stripe\StripeObject $afterpay_clearpay
  * @property \Stripe\StripeObject $alipay
  * @property \Stripe\StripeObject $au_becs_debit
  * @property \Stripe\StripeObject $bacs_debit
  * @property \Stripe\StripeObject $bancontact
  * @property \Stripe\StripeObject $billing_details
+ * @property \Stripe\StripeObject $boleto
  * @property \Stripe\StripeObject $card
  * @property \Stripe\StripeObject $card_present
  * @property int $created Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -33,6 +36,7 @@ namespace Stripe;
  * @property \Stripe\StripeObject $grabpay
  * @property \Stripe\StripeObject $ideal
  * @property \Stripe\StripeObject $interac_present
+ * @property \Stripe\StripeObject $klarna
  * @property bool $livemode Has the value <code>true</code> if the object exists in live mode or the value <code>false</code> if the object exists in test mode.
  * @property null|\Stripe\StripeObject $metadata Set of <a href="https://stripe.com/docs/api/metadata">key-value pairs</a> that you can attach to an object. This can be useful for storing additional information about the object in a structured format.
  * @property \Stripe\StripeObject $oxxo
@@ -40,6 +44,7 @@ namespace Stripe;
  * @property \Stripe\StripeObject $sepa_debit
  * @property \Stripe\StripeObject $sofort
  * @property string $type The type of the PaymentMethod. An additional hash is included on the PaymentMethod with a name matching this value. It contains additional information specific to the PaymentMethod type.
+ * @property \Stripe\StripeObject $wechat_pay
  */
 class PaymentMethod extends ApiResource
 {
@@ -56,7 +61,7 @@ class PaymentMethod extends ApiResource
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
-     * @return PaymentMethod the attached payment method
+     * @return \Stripe\PaymentMethod the attached payment method
      */
     public function attach($params = null, $opts = null)
     {
@@ -73,7 +78,7 @@ class PaymentMethod extends ApiResource
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
-     * @return PaymentMethod the detached payment method
+     * @return \Stripe\PaymentMethod the detached payment method
      */
     public function detach($params = null, $opts = null)
     {

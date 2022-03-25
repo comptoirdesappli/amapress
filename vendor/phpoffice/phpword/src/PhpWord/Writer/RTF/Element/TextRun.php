@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,22 +22,25 @@ namespace PhpOffice\PhpWord\Writer\RTF\Element;
  *
  * @since 0.10.0
  */
-class TextRun extends AbstractElement {
-	/**
-	 * Write element
-	 *
-	 * @return string
-	 */
-	public function write() {
-		$writer = new Container( $this->parentWriter, $this->element );
+class TextRun extends AbstractElement
+{
+    /**
+     * Write element
+     *
+     * @return string
+     */
+    public function write()
+    {
+        $writer = new Container($this->parentWriter, $this->element);
+        $this->getStyles();
 
-		$content = '';
-		$content .= $this->writeOpening();
-		$content .= '{';
-		$content .= $writer->write();
-		$content .= '}';
-		$content .= $this->writeClosing();
+        $content = '';
+        $content .= $this->writeOpening();
+        $content .= '{';
+        $content .= $writer->write();
+        $content .= '}';
+        $content .= $this->writeClosing();
 
-		return $content;
-	}
+        return $content;
+    }
 }

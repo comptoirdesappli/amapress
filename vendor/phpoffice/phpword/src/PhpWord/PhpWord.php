@@ -11,9 +11,9 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
- */
+*/
 
 namespace PhpOffice\PhpWord;
 
@@ -28,343 +28,398 @@ use PhpOffice\PhpWord\Exception\Exception;
  * @method Collection\Endnotes getEndnotes()
  * @method Collection\Charts getCharts()
  * @method Collection\Comments getComments()
- * @method int addBookmark( Element\Bookmark $bookmark )
- * @method int addTitle( Element\Title $title )
- * @method int addFootnote( Element\Footnote $footnote )
- * @method int addEndnote( Element\Endnote $endnote )
- * @method int addChart( Element\Chart $chart )
- * @method int addComment( Element\Comment $comment )
+ * @method int addBookmark(Element\Bookmark $bookmark)
+ * @method int addTitle(Element\Title $title)
+ * @method int addFootnote(Element\Footnote $footnote)
+ * @method int addEndnote(Element\Endnote $endnote)
+ * @method int addChart(Element\Chart $chart)
+ * @method int addComment(Element\Comment $comment)
  *
- * @method Style\Paragraph addParagraphStyle( string $styleName, array $styles )
- * @method Style\Font addFontStyle( string $styleName, mixed $fontStyle, mixed $paragraphStyle = null )
- * @method Style\Font addLinkStyle( string $styleName, mixed $styles )
- * @method Style\Font addTitleStyle( int $depth, mixed $fontStyle, mixed $paragraphStyle = null )
- * @method Style\Table addTableStyle( string $styleName, mixed $styleTable, mixed $styleFirstRow = null )
- * @method Style\Numbering addNumberingStyle( string $styleName, mixed $styles )
+ * @method Style\Paragraph addParagraphStyle(string $styleName, mixed $styles)
+ * @method Style\Font addFontStyle(string $styleName, mixed $fontStyle, mixed $paragraphStyle = null)
+ * @method Style\Font addLinkStyle(string $styleName, mixed $styles)
+ * @method Style\Font addTitleStyle(mixed $depth, mixed $fontStyle, mixed $paragraphStyle = null)
+ * @method Style\Table addTableStyle(string $styleName, mixed $styleTable, mixed $styleFirstRow = null)
+ * @method Style\Numbering addNumberingStyle(string $styleName, mixed $styles)
  */
-class PhpWord {
-	/**
-	 * Default font settings
-	 *
-	 * @deprecated 0.11.0 Use Settings constants
-	 *
-	 * @const string|int
-	 */
-	const DEFAULT_FONT_NAME = Settings::DEFAULT_FONT_NAME;
-	const DEFAULT_FONT_SIZE = Settings::DEFAULT_FONT_SIZE;
-	const DEFAULT_FONT_COLOR = Settings::DEFAULT_FONT_COLOR;
-	const DEFAULT_FONT_CONTENT_TYPE = Settings::DEFAULT_FONT_CONTENT_TYPE;
+class PhpWord
+{
+    /**
+     * Default font settings
+     *
+     * @deprecated 0.11.0 Use Settings constants
+     *
+     * @const string|int
+     */
+    const DEFAULT_FONT_NAME = Settings::DEFAULT_FONT_NAME;
+    /**
+     * @deprecated 0.11.0 Use Settings constants
+     */
+    const DEFAULT_FONT_SIZE = Settings::DEFAULT_FONT_SIZE;
+    /**
+     * @deprecated 0.11.0 Use Settings constants
+     */
+    const DEFAULT_FONT_COLOR = Settings::DEFAULT_FONT_COLOR;
+    /**
+     * @deprecated 0.11.0 Use Settings constants
+     */
+    const DEFAULT_FONT_CONTENT_TYPE = Settings::DEFAULT_FONT_CONTENT_TYPE;
 
-	/**
-	 * Collection of sections
-	 *
-	 * @var \PhpOffice\PhpWord\Element\Section[]
-	 */
-	private $sections = array();
+    /**
+     * Collection of sections
+     *
+     * @var \PhpOffice\PhpWord\Element\Section[]
+     */
+    private $sections = array();
 
-	/**
-	 * Collections
-	 *
-	 * @var array
-	 */
-	private $collections = array();
+    /**
+     * Collections
+     *
+     * @var array
+     */
+    private $collections = array();
 
-	/**
-	 * Metadata
-	 *
-	 * @var array
-	 * @since 0.12.0
-	 */
-	private $metadata = array();
+    /**
+     * Metadata
+     *
+     * @var array
+     * @since 0.12.0
+     */
+    private $metadata = array();
 
-	/**
-	 * Create new instance
-	 *
-	 * Collections are created dynamically
-	 */
-	public function __construct() {
-		// Collection
-		$collections = array( 'Bookmarks', 'Titles', 'Footnotes', 'Endnotes', 'Charts', 'Comments' );
-		foreach ( $collections as $collection ) {
-			$class                            = 'PhpOffice\\PhpWord\\Collection\\' . $collection;
-			$this->collections[ $collection ] = new $class();
-		}
+    /**
+     * Create new instance
+     *
+     * Collections are created dynamically
+     */
+    public function __construct()
+    {
+        // Reset Media and styles
+        Media::resetElements();
+        Style::resetStyles();
 
-		// Metadata
-		$metadata = array( 'DocInfo', 'Settings', 'Compatibility' );
-		foreach ( $metadata as $meta ) {
-			$class                   = 'PhpOffice\\PhpWord\\Metadata\\' . $meta;
-			$this->metadata[ $meta ] = new $class();
-		}
-	}
+        // Collection
+        $collections = array('Bookmarks', 'Titles', 'Footnotes', 'Endnotes', 'Charts', 'Comments');
+        foreach ($collections as $collection) {
+            $class = 'PhpOffice\\PhpWord\\Collection\\' . $collection;
+            $this->collections[$collection] = new $class();
+        }
 
-	/**
-	 * Dynamic function call to reduce static dependency
-	 *
-	 * @since 0.12.0
-	 *
-	 * @param mixed $function
-	 * @param mixed $args
-	 *
-	 * @throws \BadMethodCallException
-	 *
-	 * @return mixed
-	 */
-	public function __call( $function, $args ) {
-		$function = strtolower( $function );
+        // Metadata
+        $metadata = array('DocInfo', 'Settings', 'Compatibility');
+        foreach ($metadata as $meta) {
+            $class = 'PhpOffice\\PhpWord\\Metadata\\' . $meta;
+            $this->metadata[$meta] = new $class();
+        }
+    }
 
-		$getCollection = array();
-		$addCollection = array();
-		$addStyle      = array();
+    /**
+     * Dynamic function call to reduce static dependency
+     *
+     * @since 0.12.0
+     *
+     * @param mixed $function
+     * @param mixed $args
+     *
+     * @throws \BadMethodCallException
+     *
+     * @return mixed
+     */
+    public function __call($function, $args)
+    {
+        $function = strtolower($function);
 
-		$collections = array( 'Bookmark', 'Title', 'Footnote', 'Endnote', 'Chart', 'Comment' );
-		foreach ( $collections as $collection ) {
-			$getCollection[] = strtolower( "get{$collection}s" );
-			$addCollection[] = strtolower( "add{$collection}" );
-		}
+        $getCollection = array();
+        $addCollection = array();
+        $addStyle = array();
 
-		$styles = array( 'Paragraph', 'Font', 'Table', 'Numbering', 'Link', 'Title' );
-		foreach ( $styles as $style ) {
-			$addStyle[] = strtolower( "add{$style}Style" );
-		}
+        $collections = array('Bookmark', 'Title', 'Footnote', 'Endnote', 'Chart', 'Comment');
+        foreach ($collections as $collection) {
+            $getCollection[] = strtolower("get{$collection}s");
+            $addCollection[] = strtolower("add{$collection}");
+        }
 
-		// Run get collection method
-		if ( in_array( $function, $getCollection ) ) {
-			$key = ucfirst( str_replace( 'get', '', $function ) );
+        $styles = array('Paragraph', 'Font', 'Table', 'Numbering', 'Link', 'Title');
+        foreach ($styles as $style) {
+            $addStyle[] = strtolower("add{$style}Style");
+        }
 
-			return $this->collections[ $key ];
-		}
+        // Run get collection method
+        if (in_array($function, $getCollection)) {
+            $key = ucfirst(str_replace('get', '', $function));
 
-		// Run add collection item method
-		if ( in_array( $function, $addCollection ) ) {
-			$key = ucfirst( str_replace( 'add', '', $function ) . 's' );
+            return $this->collections[$key];
+        }
 
-			/** @var \PhpOffice\PhpWord\Collection\AbstractCollection $collectionObject */
-			$collectionObject = $this->collections[ $key ];
+        // Run add collection item method
+        if (in_array($function, $addCollection)) {
+            $key = ucfirst(str_replace('add', '', $function) . 's');
 
-			return $collectionObject->addItem( isset( $args[0] ) ? $args[0] : null );
-		}
+            /** @var \PhpOffice\PhpWord\Collection\AbstractCollection $collectionObject */
+            $collectionObject = $this->collections[$key];
 
-		// Run add style method
-		if ( in_array( $function, $addStyle ) ) {
-			return forward_static_call_array( array( 'PhpOffice\\PhpWord\\Style', $function ), $args );
-		}
+            return $collectionObject->addItem(isset($args[0]) ? $args[0] : null);
+        }
 
-		// Exception
-		throw new \BadMethodCallException( "Method $function is not defined." );
-	}
+        // Run add style method
+        if (in_array($function, $addStyle)) {
+            return forward_static_call_array(array('PhpOffice\\PhpWord\\Style', $function), $args);
+        }
 
-	/**
-	 * Get document properties object
-	 *
-	 * @return \PhpOffice\PhpWord\Metadata\DocInfo
-	 */
-	public function getDocInfo() {
-		return $this->metadata['DocInfo'];
-	}
+        // Exception
+        throw new \BadMethodCallException("Method $function is not defined.");
+    }
 
-	/**
-	 * Get protection
-	 *
-	 * @return \PhpOffice\PhpWord\Metadata\Protection
-	 * @since 0.12.0
-	 * @deprecated Get the Document protection from PhpWord->getSettings()->getDocumentProtection();
-	 * @codeCoverageIgnore
-	 */
-	public function getProtection() {
-		return $this->getSettings()->getDocumentProtection();
-	}
+    /**
+     * Get document properties object
+     *
+     * @return \PhpOffice\PhpWord\Metadata\DocInfo
+     */
+    public function getDocInfo()
+    {
+        return $this->metadata['DocInfo'];
+    }
 
-	/**
-	 * Get compatibility
-	 *
-	 * @return \PhpOffice\PhpWord\Metadata\Compatibility
-	 * @since 0.12.0
-	 */
-	public function getCompatibility() {
-		return $this->metadata['Compatibility'];
-	}
+    /**
+     * Get protection
+     *
+     * @return \PhpOffice\PhpWord\Metadata\Protection
+     * @since 0.12.0
+     * @deprecated Get the Document protection from PhpWord->getSettings()->getDocumentProtection();
+     * @codeCoverageIgnore
+     */
+    public function getProtection()
+    {
+        return $this->getSettings()->getDocumentProtection();
+    }
 
-	/**
-	 * Get compatibility
-	 *
-	 * @return \PhpOffice\PhpWord\Metadata\Settings
-	 * @since 0.14.0
-	 */
-	public function getSettings() {
-		return $this->metadata['Settings'];
-	}
+    /**
+     * Get compatibility
+     *
+     * @return \PhpOffice\PhpWord\Metadata\Compatibility
+     * @since 0.12.0
+     */
+    public function getCompatibility()
+    {
+        return $this->metadata['Compatibility'];
+    }
 
-	/**
-	 * Get all sections
-	 *
-	 * @return \PhpOffice\PhpWord\Element\Section[]
-	 */
-	public function getSections() {
-		return $this->sections;
-	}
+    /**
+     * Get compatibility
+     *
+     * @return \PhpOffice\PhpWord\Metadata\Settings
+     * @since 0.14.0
+     */
+    public function getSettings()
+    {
+        return $this->metadata['Settings'];
+    }
 
-	/**
-	 * Create new section
-	 *
-	 * @param array $style
-	 *
-	 * @return \PhpOffice\PhpWord\Element\Section
-	 */
-	public function addSection( $style = null ) {
-		$section = new Section( count( $this->sections ) + 1, $style );
-		$section->setPhpWord( $this );
-		$this->sections[] = $section;
+    /**
+     * Get all sections
+     *
+     * @return \PhpOffice\PhpWord\Element\Section[]
+     */
+    public function getSections()
+    {
+        return $this->sections;
+    }
 
-		return $section;
-	}
+    /**
+     * Returns the section at the requested position
+     *
+     * @param int $index
+     * @return \PhpOffice\PhpWord\Element\Section|null
+     */
+    public function getSection($index)
+    {
+        if (array_key_exists($index, $this->sections)) {
+            return $this->sections[$index];
+        }
 
-	/**
-	 * Get default font name
-	 *
-	 * @return string
-	 */
-	public function getDefaultFontName() {
-		return Settings::getDefaultFontName();
-	}
+        return null;
+    }
 
-	/**
-	 * Set default font name.
-	 *
-	 * @param string $fontName
-	 */
-	public function setDefaultFontName( $fontName ) {
-		Settings::setDefaultFontName( $fontName );
-	}
+    /**
+     * Create new section
+     *
+     * @param array $style
+     * @return \PhpOffice\PhpWord\Element\Section
+     */
+    public function addSection($style = null)
+    {
+        $section = new Section(count($this->sections) + 1, $style);
+        $section->setPhpWord($this);
+        $this->sections[] = $section;
 
-	/**
-	 * Get default font size
-	 *
-	 * @return int
-	 */
-	public function getDefaultFontSize() {
-		return Settings::getDefaultFontSize();
-	}
+        return $section;
+    }
 
-	/**
-	 * Set default font size.
-	 *
-	 * @param int $fontSize
-	 */
-	public function setDefaultFontSize( $fontSize ) {
-		Settings::setDefaultFontSize( $fontSize );
-	}
+    /**
+     * Sorts the sections using the callable passed
+     *
+     * @see http://php.net/manual/en/function.usort.php for usage
+     * @param callable $sorter
+     */
+    public function sortSections($sorter)
+    {
+        usort($this->sections, $sorter);
+    }
 
-	/**
-	 * Set default paragraph style definition to styles.xml
-	 *
-	 * @param array $styles Paragraph style definition
-	 *
-	 * @return \PhpOffice\PhpWord\Style\Paragraph
-	 */
-	public function setDefaultParagraphStyle( $styles ) {
-		return Style::setDefaultParagraphStyle( $styles );
-	}
+    /**
+     * Get default font name
+     *
+     * @return string
+     */
+    public function getDefaultFontName()
+    {
+        return Settings::getDefaultFontName();
+    }
 
-	/**
-	 * Load template by filename
-	 *
-	 * @deprecated 0.12.0 Use `new TemplateProcessor($documentTemplate)` instead.
-	 *
-	 * @param  string $filename Fully qualified filename
-	 *
-	 * @throws \PhpOffice\PhpWord\Exception\Exception
-	 *
-	 * @return TemplateProcessor
-	 *
-	 * @codeCoverageIgnore
-	 */
-	public function loadTemplate( $filename ) {
-		if ( file_exists( $filename ) ) {
-			return new TemplateProcessor( $filename );
-		}
-		throw new Exception( "Template file {$filename} not found." );
-	}
+    /**
+     * Set default font name.
+     *
+     * @param string $fontName
+     */
+    public function setDefaultFontName($fontName)
+    {
+        Settings::setDefaultFontName($fontName);
+    }
 
-	/**
-	 * Save to file or download
-	 *
-	 * All exceptions should already been handled by the writers
-	 *
-	 * @param string $filename
-	 * @param string $format
-	 * @param bool $download
-	 *
-	 * @return bool
-	 */
-	public function save( $filename, $format = 'Word2007', $download = false ) {
-		$mime = array(
-			'Word2007' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-			'ODText'   => 'application/vnd.oasis.opendocument.text',
-			'RTF'      => 'application/rtf',
-			'HTML'     => 'text/html',
-			'PDF'      => 'application/pdf',
-		);
+    /**
+     * Get default font size
+     *
+     * @return int
+     */
+    public function getDefaultFontSize()
+    {
+        return Settings::getDefaultFontSize();
+    }
 
-		$writer = IOFactory::createWriter( $this, $format );
+    /**
+     * Set default font size.
+     *
+     * @param int $fontSize
+     */
+    public function setDefaultFontSize($fontSize)
+    {
+        Settings::setDefaultFontSize($fontSize);
+    }
 
-		if ( $download === true ) {
-			header( 'Content-Description: File Transfer' );
-			header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
-			header( 'Content-Type: ' . $mime[ $format ] );
-			header( 'Content-Transfer-Encoding: binary' );
-			header( 'Cache-Control: must-revalidate, post-check=0, pre-check=0' );
-			header( 'Expires: 0' );
-			$filename = 'php://output'; // Change filename to force download
-		}
+    /**
+     * Set default paragraph style definition to styles.xml
+     *
+     * @param array $styles Paragraph style definition
+     * @return \PhpOffice\PhpWord\Style\Paragraph
+     */
+    public function setDefaultParagraphStyle($styles)
+    {
+        return Style::setDefaultParagraphStyle($styles);
+    }
 
-		$writer->save( $filename );
+    /**
+     * Load template by filename
+     *
+     * @deprecated 0.12.0 Use `new TemplateProcessor($documentTemplate)` instead.
+     *
+     * @param  string $filename Fully qualified filename
+     *
+     * @throws \PhpOffice\PhpWord\Exception\Exception
+     *
+     * @return TemplateProcessor
+     *
+     * @codeCoverageIgnore
+     */
+    public function loadTemplate($filename)
+    {
+        if (file_exists($filename)) {
+            return new TemplateProcessor($filename);
+        }
+        throw new Exception("Template file {$filename} not found.");
+    }
 
-		return true;
-	}
+    /**
+     * Save to file or download
+     *
+     * All exceptions should already been handled by the writers
+     *
+     * @param string $filename
+     * @param string $format
+     * @param bool $download
+     * @return bool
+     */
+    public function save($filename, $format = 'Word2007', $download = false)
+    {
+        $mime = array(
+            'Word2007'  => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'ODText'    => 'application/vnd.oasis.opendocument.text',
+            'RTF'       => 'application/rtf',
+            'HTML'      => 'text/html',
+            'PDF'       => 'application/pdf',
+        );
 
-	/**
-	 * Create new section
-	 *
-	 * @deprecated 0.10.0
-	 *
-	 * @param array $settings
-	 *
-	 * @return \PhpOffice\PhpWord\Element\Section
-	 *
-	 * @codeCoverageIgnore
-	 */
-	public function createSection( $settings = null ) {
-		return $this->addSection( $settings );
-	}
+        $writer = IOFactory::createWriter($this, $format);
 
-	/**
-	 * Get document properties object
-	 *
-	 * @deprecated 0.12.0
-	 *
-	 * @return \PhpOffice\PhpWord\Metadata\DocInfo
-	 *
-	 * @codeCoverageIgnore
-	 */
-	public function getDocumentProperties() {
-		return $this->getDocInfo();
-	}
+        if ($download === true) {
+            header('Content-Description: File Transfer');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Content-Type: ' . $mime[$format]);
+            header('Content-Transfer-Encoding: binary');
+            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+            header('Expires: 0');
+            $filename = 'php://output'; // Change filename to force download
+        }
 
-	/**
-	 * Set document properties object
-	 *
-	 * @deprecated 0.12.0
-	 *
-	 * @param \PhpOffice\PhpWord\Metadata\DocInfo $documentProperties
-	 *
-	 * @return self
-	 *
-	 * @codeCoverageIgnore
-	 */
-	public function setDocumentProperties( $documentProperties ) {
-		$this->metadata['Document'] = $documentProperties;
+        $writer->save($filename);
 
-		return $this;
-	}
+        return true;
+    }
+
+    /**
+     * Create new section
+     *
+     * @deprecated 0.10.0
+     *
+     * @param array $settings
+     *
+     * @return \PhpOffice\PhpWord\Element\Section
+     *
+     * @codeCoverageIgnore
+     */
+    public function createSection($settings = null)
+    {
+        return $this->addSection($settings);
+    }
+
+    /**
+     * Get document properties object
+     *
+     * @deprecated 0.12.0
+     *
+     * @return \PhpOffice\PhpWord\Metadata\DocInfo
+     *
+     * @codeCoverageIgnore
+     */
+    public function getDocumentProperties()
+    {
+        return $this->getDocInfo();
+    }
+
+    /**
+     * Set document properties object
+     *
+     * @deprecated 0.12.0
+     *
+     * @param \PhpOffice\PhpWord\Metadata\DocInfo $documentProperties
+     *
+     * @return self
+     *
+     * @codeCoverageIgnore
+     */
+    public function setDocumentProperties($documentProperties)
+    {
+        $this->metadata['Document'] = $documentProperties;
+
+        return $this;
+    }
 }

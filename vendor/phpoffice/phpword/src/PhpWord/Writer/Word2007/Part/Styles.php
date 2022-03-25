@@ -11,14 +11,13 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
 namespace PhpOffice\PhpWord\Writer\Word2007\Part;
 
-use PhpOffice\Common\XMLWriter;
-use PhpOffice\PhpWord\Settings as PhpWordSettings;
+use PhpOffice\PhpWord\Shared\XMLWriter;
 use PhpOffice\PhpWord\Style;
 use PhpOffice\PhpWord\Style\Font as FontStyle;
 use PhpOffice\PhpWord\Style\Paragraph as ParagraphStyle;
@@ -33,231 +32,255 @@ use PhpOffice\PhpWord\Writer\Word2007\Style\Table as TableStyleWriter;
  * @todo Do something with the numbering style introduced in 0.10.0
  * @SuppressWarnings(PHPMD.UnusedPrivateMethod) For writeFontStyle, writeParagraphStyle, and writeTableStyle
  */
-class Styles extends AbstractPart {
-	/**
-	 * Write part
-	 *
-	 * @return string
-	 */
-	public function write() {
-		$xmlWriter = $this->getXmlWriter();
+class Styles extends AbstractPart
+{
+    /**
+     * Write part
+     *
+     * @return string
+     */
+    public function write()
+    {
+        $xmlWriter = $this->getXmlWriter();
 
-		$xmlWriter->startDocument( '1.0', 'UTF-8', 'yes' );
-		$xmlWriter->startElement( 'w:styles' );
-		$xmlWriter->writeAttribute( 'xmlns:r', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships' );
-		$xmlWriter->writeAttribute( 'xmlns:w', 'http://schemas.openxmlformats.org/wordprocessingml/2006/main' );
+        $xmlWriter->startDocument('1.0', 'UTF-8', 'yes');
+        $xmlWriter->startElement('w:styles');
+        $xmlWriter->writeAttribute('xmlns:r', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships');
+        $xmlWriter->writeAttribute('xmlns:w', 'http://schemas.openxmlformats.org/wordprocessingml/2006/main');
 
-		// Write default styles
-		$styles = Style::getStyles();
-		$this->writeDefaultStyles( $xmlWriter, $styles );
+        // Write default styles
+        $styles = Style::getStyles();
+        $this->writeDefaultStyles($xmlWriter, $styles);
 
-		// Write styles
-		if ( count( $styles ) > 0 ) {
-			foreach ( $styles as $styleName => $style ) {
-				if ( $styleName == 'Normal' ) {
-					continue;
-				}
+        // Write styles
+        if (count($styles) > 0) {
+            foreach ($styles as $styleName => $style) {
+                if ($styleName == 'Normal') {
+                    continue;
+                }
 
-				// Get style class and execute if the private method exists
-				$styleClass = substr( get_class( $style ), strrpos( get_class( $style ), '\\' ) + 1 );
-				$method     = "write{$styleClass}Style";
-				if ( method_exists( $this, $method ) ) {
-					$this->$method( $xmlWriter, $styleName, $style );
-				}
-			}
-		}
+                // Get style class and execute if the private method exists
+                $styleClass = substr(get_class($style), strrpos(get_class($style), '\\') + 1);
+                $method = "write{$styleClass}Style";
+                if (method_exists($this, $method)) {
+                    $this->$method($xmlWriter, $styleName, $style);
+                }
+            }
+        }
 
-		$xmlWriter->endElement(); // w:styles
+        $xmlWriter->endElement(); // w:styles
 
-		return $xmlWriter->getData();
-	}
+        return $xmlWriter->getData();
+    }
 
-	/**
-	 * Write default font and other default styles.
-	 *
-	 * @param \PhpOffice\Common\XMLWriter $xmlWriter
-	 * @param \PhpOffice\PhpWord\Style\AbstractStyle[] $styles
-	 */
-	private function writeDefaultStyles( XMLWriter $xmlWriter, $styles ) {
-		$fontName      = PhpWordSettings::getDefaultFontName();
-		$fontSize      = PhpWordSettings::getDefaultFontSize();
-		$language      = $this->getParentWriter()->getPhpWord()->getSettings()->getThemeFontLang();
-		$latinLanguage = ( $language == null || $language->getLatin() === null ) ? 'en-US' : $language->getLatin();
+    /**
+     * Write default font and other default styles.
+     *
+     * @param \PhpOffice\PhpWord\Shared\XMLWriter $xmlWriter
+     * @param \PhpOffice\PhpWord\Style\AbstractStyle[] $styles
+     */
+    private function writeDefaultStyles(XMLWriter $xmlWriter, $styles)
+    {
+        $phpWord = $this->getParentWriter()->getPhpWord();
+        $fontName = $phpWord->getDefaultFontName();
+        $fontSize = $phpWord->getDefaultFontSize();
+        $language = $phpWord->getSettings()->getThemeFontLang();
+        $latinLanguage = ($language == null || $language->getLatin() === null) ? 'en-US' : $language->getLatin();
 
-		// Default font
-		$xmlWriter->startElement( 'w:docDefaults' );
-		$xmlWriter->startElement( 'w:rPrDefault' );
-		$xmlWriter->startElement( 'w:rPr' );
-		$xmlWriter->startElement( 'w:rFonts' );
-		$xmlWriter->writeAttribute( 'w:ascii', $fontName );
-		$xmlWriter->writeAttribute( 'w:hAnsi', $fontName );
-		$xmlWriter->writeAttribute( 'w:eastAsia', $fontName );
-		$xmlWriter->writeAttribute( 'w:cs', $fontName );
-		$xmlWriter->endElement(); // w:rFonts
-		$xmlWriter->startElement( 'w:sz' );
-		$xmlWriter->writeAttribute( 'w:val', $fontSize * 2 );
-		$xmlWriter->endElement(); // w:sz
-		$xmlWriter->startElement( 'w:szCs' );
-		$xmlWriter->writeAttribute( 'w:val', $fontSize * 2 );
-		$xmlWriter->endElement(); // w:szCs
-		$xmlWriter->startElement( 'w:lang' );
-		$xmlWriter->writeAttribute( 'w:val', $latinLanguage );
-		if ( $language != null ) {
-			$xmlWriter->writeAttributeIf( $language->getEastAsia() !== null, 'w:eastAsia', $language->getEastAsia() );
-			$xmlWriter->writeAttributeIf( $language->getBidirectional() !== null, 'w:bidi', $language->getBidirectional() );
-		}
-		$xmlWriter->endElement(); // w:lang
-		$xmlWriter->endElement(); // w:rPr
-		$xmlWriter->endElement(); // w:rPrDefault
-		$xmlWriter->endElement(); // w:docDefaults
+        // Default font
+        $xmlWriter->startElement('w:docDefaults');
+        $xmlWriter->startElement('w:rPrDefault');
+        $xmlWriter->startElement('w:rPr');
+        $xmlWriter->startElement('w:rFonts');
+        $xmlWriter->writeAttribute('w:ascii', $fontName);
+        $xmlWriter->writeAttribute('w:hAnsi', $fontName);
+        $xmlWriter->writeAttribute('w:eastAsia', $fontName);
+        $xmlWriter->writeAttribute('w:cs', $fontName);
+        $xmlWriter->endElement(); // w:rFonts
+        $xmlWriter->startElement('w:sz');
+        $xmlWriter->writeAttribute('w:val', $fontSize * 2);
+        $xmlWriter->endElement(); // w:sz
+        $xmlWriter->startElement('w:szCs');
+        $xmlWriter->writeAttribute('w:val', $fontSize * 2);
+        $xmlWriter->endElement(); // w:szCs
+        $xmlWriter->startElement('w:lang');
+        $xmlWriter->writeAttribute('w:val', $latinLanguage);
+        if ($language != null) {
+            $xmlWriter->writeAttributeIf($language->getEastAsia() !== null, 'w:eastAsia', $language->getEastAsia());
+            $xmlWriter->writeAttributeIf($language->getBidirectional() !== null, 'w:bidi', $language->getBidirectional());
+        }
+        $xmlWriter->endElement(); // w:lang
+        $xmlWriter->endElement(); // w:rPr
+        $xmlWriter->endElement(); // w:rPrDefault
+        $xmlWriter->endElement(); // w:docDefaults
 
-		// Normal style
-		$xmlWriter->startElement( 'w:style' );
-		$xmlWriter->writeAttribute( 'w:type', 'paragraph' );
-		$xmlWriter->writeAttribute( 'w:default', '1' );
-		$xmlWriter->writeAttribute( 'w:styleId', 'Normal' );
-		$xmlWriter->startElement( 'w:name' );
-		$xmlWriter->writeAttribute( 'w:val', 'Normal' );
-		$xmlWriter->endElement(); // w:name
-		if ( isset( $styles['Normal'] ) ) {
-			$styleWriter = new ParagraphStyleWriter( $xmlWriter, $styles['Normal'] );
-			$styleWriter->write();
-		}
-		$xmlWriter->endElement(); // w:style
+        // Normal style
+        $xmlWriter->startElement('w:style');
+        $xmlWriter->writeAttribute('w:type', 'paragraph');
+        $xmlWriter->writeAttribute('w:default', '1');
+        $xmlWriter->writeAttribute('w:styleId', 'Normal');
+        $xmlWriter->startElement('w:name');
+        $xmlWriter->writeAttribute('w:val', 'Normal');
+        $xmlWriter->endElement(); // w:name
+        if (isset($styles['Normal'])) {
+            $normalStyle = $styles['Normal'];
+            // w:pPr
+            if ($normalStyle instanceof Fontstyle && $normalStyle->getParagraph() != null) {
+                $styleWriter = new ParagraphStyleWriter($xmlWriter, $normalStyle->getParagraph());
+                $styleWriter->write();
+            } elseif ($normalStyle instanceof ParagraphStyle) {
+                $styleWriter = new ParagraphStyleWriter($xmlWriter, $normalStyle);
+                $styleWriter->write();
+            }
 
-		// FootnoteReference style
-		if ( ! isset( $styles['FootnoteReference'] ) ) {
-			$xmlWriter->startElement( 'w:style' );
-			$xmlWriter->writeAttribute( 'w:type', 'character' );
-			$xmlWriter->writeAttribute( 'w:styleId', 'FootnoteReference' );
-			$xmlWriter->startElement( 'w:name' );
-			$xmlWriter->writeAttribute( 'w:val', 'Footnote Reference' );
-			$xmlWriter->endElement(); // w:name
-			$xmlWriter->writeElement( 'w:semiHidden' );
-			$xmlWriter->writeElement( 'w:unhideWhenUsed' );
-			$xmlWriter->startElement( 'w:rPr' );
-			$xmlWriter->startElement( 'w:vertAlign' );
-			$xmlWriter->writeAttribute( 'w:val', 'superscript' );
-			$xmlWriter->endElement(); // w:vertAlign
-			$xmlWriter->endElement(); // w:rPr
-			$xmlWriter->endElement(); // w:style
-		}
-	}
+            // w:rPr
+            $styleWriter = new FontStyleWriter($xmlWriter, $normalStyle);
+            $styleWriter->write();
+        }
+        $xmlWriter->endElement(); // w:style
 
-	/**
-	 * Write font style.
-	 *
-	 * @param \PhpOffice\Common\XMLWriter $xmlWriter
-	 * @param string $styleName
-	 * @param \PhpOffice\PhpWord\Style\Font $style
-	 */
-	private function writeFontStyle( XMLWriter $xmlWriter, $styleName, FontStyle $style ) {
-		$paragraphStyle = $style->getParagraph();
-		$styleType      = $style->getStyleType();
-		$type           = ( $styleType == 'title' ) ? 'paragraph' : 'character';
-		if ( ! is_null( $paragraphStyle ) ) {
-			$type = 'paragraph';
-		}
+        // FootnoteReference style
+        if (!isset($styles['FootnoteReference'])) {
+            $xmlWriter->startElement('w:style');
+            $xmlWriter->writeAttribute('w:type', 'character');
+            $xmlWriter->writeAttribute('w:styleId', 'FootnoteReference');
+            $xmlWriter->startElement('w:name');
+            $xmlWriter->writeAttribute('w:val', 'Footnote Reference');
+            $xmlWriter->endElement(); // w:name
+            $xmlWriter->writeElement('w:semiHidden');
+            $xmlWriter->writeElement('w:unhideWhenUsed');
+            $xmlWriter->startElement('w:rPr');
+            $xmlWriter->startElement('w:vertAlign');
+            $xmlWriter->writeAttribute('w:val', 'superscript');
+            $xmlWriter->endElement(); // w:vertAlign
+            $xmlWriter->endElement(); // w:rPr
+            $xmlWriter->endElement(); // w:style
+        }
+    }
 
-		$xmlWriter->startElement( 'w:style' );
-		$xmlWriter->writeAttribute( 'w:type', $type );
+    /**
+     * Write font style.
+     *
+     * @param \PhpOffice\PhpWord\Shared\XMLWriter $xmlWriter
+     * @param string $styleName
+     * @param \PhpOffice\PhpWord\Style\Font $style
+     */
+    private function writeFontStyle(XMLWriter $xmlWriter, $styleName, FontStyle $style)
+    {
+        $paragraphStyle = $style->getParagraph();
+        $styleType = $style->getStyleType();
+        $type = ($styleType == 'title') ? 'paragraph' : 'character';
+        if (!is_null($paragraphStyle)) {
+            $type = 'paragraph';
+        }
 
-		// Heading style
-		if ( $styleType == 'title' ) {
-			$arrStyle  = explode( '_', $styleName );
-			$styleId   = 'Heading' . $arrStyle[1];
-			$styleName = 'heading ' . $arrStyle[1];
-			$styleLink = 'Heading' . $arrStyle[1] . 'Char';
-			$xmlWriter->writeAttribute( 'w:styleId', $styleId );
+        $xmlWriter->startElement('w:style');
+        $xmlWriter->writeAttribute('w:type', $type);
 
-			$xmlWriter->startElement( 'w:link' );
-			$xmlWriter->writeAttribute( 'w:val', $styleLink );
-			$xmlWriter->endElement();
-		} elseif ( ! is_null( $paragraphStyle ) ) {
-			// if type is 'paragraph' it should have a styleId
-			$xmlWriter->writeAttribute( 'w:styleId', $styleName );
-		}
+        // Heading style
+        if ($styleType == 'title') {
+            $arrStyle = explode('_', $styleName);
+            if (count($arrStyle) > 1) {
+                $styleId = 'Heading' . $arrStyle[1];
+                $styleName = 'heading ' . $arrStyle[1];
+                $styleLink = 'Heading' . $arrStyle[1] . 'Char';
+            } else {
+                $styleId = $styleName;
+                $styleName = strtolower($styleName);
+                $styleLink = $styleName . 'Char';
+            }
+            $xmlWriter->writeAttribute('w:styleId', $styleId);
 
-		// Style name
-		$xmlWriter->startElement( 'w:name' );
-		$xmlWriter->writeAttribute( 'w:val', $styleName );
-		$xmlWriter->endElement();
+            $xmlWriter->startElement('w:link');
+            $xmlWriter->writeAttribute('w:val', $styleLink);
+            $xmlWriter->endElement();
+        } elseif (!is_null($paragraphStyle)) {
+            // if type is 'paragraph' it should have a styleId
+            $xmlWriter->writeAttribute('w:styleId', $styleName);
+        }
 
-		// Parent style
-		if ( ! is_null( $paragraphStyle ) ) {
-			if ( $paragraphStyle->getStyleName() != null ) {
-				$xmlWriter->writeElementBlock( 'w:basedOn', 'w:val', $paragraphStyle->getStyleName() );
-			} elseif ( $paragraphStyle->getBasedOn() != null ) {
-				$xmlWriter->writeElementBlock( 'w:basedOn', 'w:val', $paragraphStyle->getBasedOn() );
-			}
-		}
+        // Style name
+        $xmlWriter->startElement('w:name');
+        $xmlWriter->writeAttribute('w:val', $styleName);
+        $xmlWriter->endElement();
 
-		// w:pPr
-		if ( ! is_null( $paragraphStyle ) ) {
-			$styleWriter = new ParagraphStyleWriter( $xmlWriter, $paragraphStyle );
-			$styleWriter->write();
-		}
+        // Parent style
+        if (!is_null($paragraphStyle)) {
+            if ($paragraphStyle->getStyleName() != null) {
+                $xmlWriter->writeElementBlock('w:basedOn', 'w:val', $paragraphStyle->getStyleName());
+            } elseif ($paragraphStyle->getBasedOn() != null) {
+                $xmlWriter->writeElementBlock('w:basedOn', 'w:val', $paragraphStyle->getBasedOn());
+            }
+        }
 
-		// w:rPr
-		$styleWriter = new FontStyleWriter( $xmlWriter, $style );
-		$styleWriter->write();
+        // w:pPr
+        if (!is_null($paragraphStyle)) {
+            $styleWriter = new ParagraphStyleWriter($xmlWriter, $paragraphStyle);
+            $styleWriter->write();
+        }
 
-		$xmlWriter->endElement();
-	}
+        // w:rPr
+        $styleWriter = new FontStyleWriter($xmlWriter, $style);
+        $styleWriter->write();
 
-	/**
-	 * Write paragraph style.
-	 *
-	 * @param \PhpOffice\Common\XMLWriter $xmlWriter
-	 * @param string $styleName
-	 * @param \PhpOffice\PhpWord\Style\Paragraph $style
-	 */
-	private function writeParagraphStyle( XMLWriter $xmlWriter, $styleName, ParagraphStyle $style ) {
-		$xmlWriter->startElement( 'w:style' );
-		$xmlWriter->writeAttribute( 'w:type', 'paragraph' );
-		$xmlWriter->writeAttribute( 'w:customStyle', '1' );
-		$xmlWriter->writeAttribute( 'w:styleId', $styleName );
-		$xmlWriter->startElement( 'w:name' );
-		$xmlWriter->writeAttribute( 'w:val', $styleName );
-		$xmlWriter->endElement();
+        $xmlWriter->endElement();
+    }
 
-		// Parent style
-		$basedOn = $style->getBasedOn();
-		$xmlWriter->writeElementIf( ! is_null( $basedOn ), 'w:basedOn', 'w:val', $basedOn );
+    /**
+     * Write paragraph style.
+     *
+     * @param \PhpOffice\PhpWord\Shared\XMLWriter $xmlWriter
+     * @param string $styleName
+     * @param \PhpOffice\PhpWord\Style\Paragraph $style
+     */
+    private function writeParagraphStyle(XMLWriter $xmlWriter, $styleName, ParagraphStyle $style)
+    {
+        $xmlWriter->startElement('w:style');
+        $xmlWriter->writeAttribute('w:type', 'paragraph');
+        $xmlWriter->writeAttribute('w:customStyle', '1');
+        $xmlWriter->writeAttribute('w:styleId', $styleName);
+        $xmlWriter->startElement('w:name');
+        $xmlWriter->writeAttribute('w:val', $styleName);
+        $xmlWriter->endElement();
 
-		// Next paragraph style
-		$next = $style->getNext();
-		$xmlWriter->writeElementIf( ! is_null( $next ), 'w:next', 'w:val', $next );
+        // Parent style
+        $basedOn = $style->getBasedOn();
+        $xmlWriter->writeElementIf(!is_null($basedOn), 'w:basedOn', 'w:val', $basedOn);
 
-		// w:pPr
-		$styleWriter = new ParagraphStyleWriter( $xmlWriter, $style );
-		$styleWriter->write();
+        // Next paragraph style
+        $next = $style->getNext();
+        $xmlWriter->writeElementIf(!is_null($next), 'w:next', 'w:val', $next);
 
-		$xmlWriter->endElement();
-	}
+        // w:pPr
+        $styleWriter = new ParagraphStyleWriter($xmlWriter, $style);
+        $styleWriter->write();
 
-	/**
-	 * Write table style.
-	 *
-	 * @param \PhpOffice\Common\XMLWriter $xmlWriter
-	 * @param string $styleName
-	 * @param \PhpOffice\PhpWord\Style\Table $style
-	 */
-	private function writeTableStyle( XMLWriter $xmlWriter, $styleName, TableStyle $style ) {
-		$xmlWriter->startElement( 'w:style' );
-		$xmlWriter->writeAttribute( 'w:type', 'table' );
-		$xmlWriter->writeAttribute( 'w:customStyle', '1' );
-		$xmlWriter->writeAttribute( 'w:styleId', $styleName );
-		$xmlWriter->startElement( 'w:name' );
-		$xmlWriter->writeAttribute( 'w:val', $styleName );
-		$xmlWriter->endElement();
-		$xmlWriter->startElement( 'w:uiPriority' );
-		$xmlWriter->writeAttribute( 'w:val', '99' );
-		$xmlWriter->endElement();
+        $xmlWriter->endElement();
+    }
 
-		$styleWriter = new TableStyleWriter( $xmlWriter, $style );
-		$styleWriter->write();
+    /**
+     * Write table style.
+     *
+     * @param \PhpOffice\PhpWord\Shared\XMLWriter $xmlWriter
+     * @param string $styleName
+     * @param \PhpOffice\PhpWord\Style\Table $style
+     */
+    private function writeTableStyle(XMLWriter $xmlWriter, $styleName, TableStyle $style)
+    {
+        $xmlWriter->startElement('w:style');
+        $xmlWriter->writeAttribute('w:type', 'table');
+        $xmlWriter->writeAttribute('w:customStyle', '1');
+        $xmlWriter->writeAttribute('w:styleId', $styleName);
+        $xmlWriter->startElement('w:name');
+        $xmlWriter->writeAttribute('w:val', $styleName);
+        $xmlWriter->endElement();
+        $xmlWriter->startElement('w:uiPriority');
+        $xmlWriter->writeAttribute('w:val', '99');
+        $xmlWriter->endElement();
 
-		$xmlWriter->endElement(); // w:style
-	}
+        $styleWriter = new TableStyleWriter($xmlWriter, $style);
+        $styleWriter->write();
+
+        $xmlWriter->endElement(); // w:style
+    }
 }

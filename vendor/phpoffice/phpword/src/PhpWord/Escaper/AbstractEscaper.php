@@ -11,7 +11,7 @@
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors.
  *
  * @see         https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2017 PHPWord contributors
+ * @copyright   2010-2018 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
@@ -22,23 +22,25 @@ namespace PhpOffice\PhpWord\Escaper;
  *
  * @codeCoverageIgnore
  */
-abstract class AbstractEscaper implements EscaperInterface {
-	/**
-	 * @param string $input
-	 *
-	 * @return string
-	 */
-	abstract protected function escapeSingleValue( $input );
+abstract class AbstractEscaper implements EscaperInterface
+{
+    /**
+     * @param string $input
+     *
+     * @return string
+     */
+    abstract protected function escapeSingleValue($input);
 
-	public function escape( $input ) {
-		if ( is_array( $input ) ) {
-			foreach ( $input as &$item ) {
-				$item = $this->escapeSingleValue( $item );
-			}
-		} else {
-			$input = $this->escapeSingleValue( $input );
-		}
+    public function escape($input)
+    {
+        if (is_array($input)) {
+            foreach ($input as &$item) {
+                $item = $this->escapeSingleValue($item);
+            }
+        } else {
+            $input = $this->escapeSingleValue($input);
+        }
 
-		return $input;
-	}
+        return $input;
+    }
 }

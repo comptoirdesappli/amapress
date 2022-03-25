@@ -21,7 +21,7 @@ namespace Stripe;
  * @property int $discount_amount The integer amount in %s representing the total amount of discount that was credited.
  * @property \Stripe\StripeObject[] $discount_amounts The aggregate amounts calculated per discount for all line items.
  * @property string|\Stripe\Invoice $invoice ID of the invoice.
- * @property \Stripe\Collection $lines Line items that make up the credit note
+ * @property \Stripe\Collection<\Stripe\CreditNoteLineItem> $lines Line items that make up the credit note
  * @property bool $livemode Has the value <code>true</code> if the object exists in live mode or the value <code>false</code> if the object exists in test mode.
  * @property null|string $memo Customer-facing text that appears on the credit note PDF.
  * @property null|\Stripe\StripeObject $metadata Set of <a href="https://stripe.com/docs/api/metadata">key-value pairs</a> that you can attach to an object. This can be useful for storing additional information about the object in a structured format.
@@ -70,7 +70,7 @@ class CreditNote extends ApiResource
     {
         $url = static::classUrl() . '/preview';
         list($response, $opts) = static::_staticRequest('get', $url, $params, $opts);
-        $obj = Util\Util::convertToStripeObject($response->json, $opts);
+        $obj = \Stripe\Util\Util::convertToStripeObject($response->json, $opts);
         $obj->setLastResponse($response);
 
         return $obj;
@@ -82,7 +82,7 @@ class CreditNote extends ApiResource
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
-     * @return CreditNote the voided credit note
+     * @return \Stripe\CreditNote the voided credit note
      */
     public function voidCreditNote($params = null, $opts = null)
     {
@@ -102,7 +102,7 @@ class CreditNote extends ApiResource
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
-     * @return \Stripe\Collection the list of credit note line items
+     * @return \Stripe\Collection<\Stripe\CreditNoteLineItem> the list of credit note line items
      */
     public static function allLines($id, $params = null, $opts = null)
     {
