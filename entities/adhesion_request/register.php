@@ -225,9 +225,18 @@ add_action( 'amapress_row_action_adhesion_request_create_user', 'amapress_row_ac
 function amapress_row_action_adhesion_request_create_user( $post_id ) {
 	$adh_req = AmapressAdhesionRequest::getBy( $post_id );
 	if ( empty( $adh_req->getAmapienIfExists() ) ) {
-		amapress_create_user_if_not_exists( $adh_req->getEmail(),
+		$new_user_id = amapress_create_user_if_not_exists( $adh_req->getEmail(),
 			$adh_req->getFirstName(), $adh_req->getLastName(),
 			$adh_req->getAdresse(), $adh_req->getTelephone() );
+		if ( ! empty( $new_user_id ) ) {
+			if ( amapress_is_admin_or_responsable() ) {
+				delete_user_meta( $new_user_id, 'pw_user_status' );
+				delete_transient( 'new_user_approve_user_statuses' );
+			}
+			if ( $adh_req->getIntermittent() ) {
+				AmapressUser::getBy( $new_user_id )->inscriptionIntermittence();
+			}
+		}
 	}
 
 	wp_redirect_and_exit( wp_get_referer() );
