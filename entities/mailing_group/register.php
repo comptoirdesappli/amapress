@@ -63,19 +63,19 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'required' => true,
 				'is_email' => true,
 			),
-			'desc'         => array(
+			'desc'                   => array(
 				'group' => __( 'Description', 'amapress' ),
 				'name'  => __( 'Description', 'amapress' ),
 				'type'  => 'text',
 			),
-			'subject_pref' => array(
+			'subject_pref'           => array(
 				'group'       => __( 'Description', 'amapress' ),
 				'name'        => __( 'Préfixe Sujet', 'amapress' ),
 				'type'        => 'text',
 				'show_column' => false,
 				'desc'        => __( 'Préfixe à ajouter au sujet des emails relayés', 'amapress' )
 			),
-			'reply_to'     => array(
+			'reply_to'               => array(
 				'group'       => __( 'Description', 'amapress' ),
 				'name'        => __( 'Réponse à', 'amapress' ),
 				'type'        => 'select',
@@ -87,7 +87,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'required'    => true,
 				'show_column' => false,
 			),
-			'keep_sender'  => array(
+			'keep_sender'            => array(
 				'group'       => __( 'Description', 'amapress' ),
 				'name'        => __( 'Emetteur', 'amapress' ),
 				'type'        => 'checkbox',
@@ -95,7 +95,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'show_column' => false,
 				'desc'        => __( 'Préserver (si possible) l\'émetteur original du mail lors de la diffusion. Décoché : envoi de la part de la liste', 'amapress' )
 			),
-			'host'         => array(
+			'host'                   => array(
 				'group'       => __( 'Serveur', 'amapress' ),
 				'name'        => __( 'Serveur', 'amapress' ),
 				'desc'        => __( 'Adresse du serveur IMAP/POP3<br/>Par exemple, pour OVH, le serveur IMAP/POP3 est ssl0.ovh.net', 'amapress' ),
@@ -103,7 +103,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'required'    => true,
 				'show_column' => false,
 			),
-			'port'         => array(
+			'port'                   => array(
 				'group'       => __( 'Serveur', 'amapress' ),
 				'name'        => __( 'Port', 'amapress' ),
 				'desc'        => __( 'Port d\'accès au serveur IMAP/POP3<br/>Ports par défaut : IMAP 143; IMAP SSL 993; POP3 110 ; POP3 SSL 995', 'amapress' ),
@@ -114,7 +114,7 @@ function amapress_register_entities_mailing_groups( $entities ) {
 				'required'    => true,
 				'show_column' => false,
 			),
-			'username'     => array(
+			'username'               => array(
 				'group'        => __( 'Serveur', 'amapress' ),
 				'name'         => __( 'Utilisateur', 'amapress' ),
 				'desc'         => __( 'Nom d\'utilisateur<br/>Par ex, chez OVH, l\'adresse email complète', 'amapress' ),
@@ -736,6 +736,21 @@ add_action( 'init', function () {
 			}
 		} );
 
+		if ( ! wp_next_scheduled( 'amps_mlgf_notif_errors' ) ) {
+			wp_schedule_event( time(), 'twicedaily', 'amps_mlgf_notif_errors' );
+		}
+		add_action( 'amps_mlgf_notif_errors', function () {
+			foreach ( AmapressMailingGroup::getAll() as $mlgrp ) {
+				$errored_count = amapress_mailing_queue_errored_mail_list_count( $mlgrp->ID );
+				if ( $errored_count > 0 ) {
+					$signature = get_bloginfo( 'name' );
+					$subject   = "[{$mlgrp->getSimpleName()}] $errored_count mail(s) sont en erreur";
+					$url       = admin_url( 'admin.php?page=mailinggroup_mailerrors&tab=mailgrp-mailerrors-tab-' . $mlgrp->ID );
+					$message   = sprintf( __( "Bonjour,\n%s mail(s) sont en erreur d'envoi pour %s.\n<a href='%s'>Voir les mails en erreur</a>\n%s", 'amapress' ), $waiting_count, $mlgrp->getName(), $url, $signature );
+					amapress_wp_mail( get_option( 'admin_email' ), $subject, $message );
+				}
+			}
+		} );
 
 		amapress_register_shortcode( 'moderation-mlgrp-count', function () {
 			$cnt = AmapressMailingGroup::getAllWaitingForModerationCount();
