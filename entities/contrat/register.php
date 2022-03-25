@@ -229,7 +229,9 @@ function amapress_register_entities_contrat( $entities ) {
 					}
 
 					$result = $contrat->getContratPapierModelDocStatus();
-					if ( true !== $result ) {
+					if ( null === $result ) {
+						echo amapress_get_admin_notice( __( 'Contrat sans utilisation de contrat papier', 'amapress' ), 'info', false );
+					} elseif ( is_array( $result ) ) {
 						echo amapress_get_admin_notice( $result['message'], $result['status'], false );
 					}
 				}
