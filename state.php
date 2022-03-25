@@ -327,7 +327,7 @@ function amapress_get_state() {
 			$state['05_config'][] = amapress_get_check_state(
 				'error',
 				__( 'Un jeton d\'accès GitHub (Personal Access Token) pour l\'extension Git Updater est requis pour la bonne mise à jour d\'Amapress', 'amapress' ),
-				__( 'Veuillez créer un Personal Access Token en suivant ce <a target="_blank" href="https://github.com/afragen/git-updater/wiki/Messages#personal-github-access-token">lien</a>', 'amapress' ),
+				__( 'Veuillez créer un Personal Access Token en suivant ce <a target="_blank" href="https://git-updater.com/knowledge-base/general-usage/">lien</a>', 'amapress' ),
 				admin_url( 'options-general.php?page=git-updater&tab=git_updater_settings&subtab=github' )
 			);
 		}
