@@ -331,7 +331,7 @@ class AmapressSMTPMailingQueue {
 	 * Processes mailing queue.
 	 */
 	public function processQueue() {
-		$mails = $this->loadDataFromFiles( $this->mlgrp_id, false, [ 'errored', 'waiting' ] );
+		$mails = $this->loadDataFromFiles( $this->mlgrp_id, false, [ 'waiting', 'errored' ] );
 		foreach ( $mails as $file => $data ) {
 			if ( 'errored' == $data['type'] ) {
 				$retries = isset( $data['retries_count'] ) ? $data['retries_count'] : 0;
