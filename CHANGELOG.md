@@ -1,3 +1,13 @@
+# 0.99.145 (2022-03-25)
+
+* **Etat Amapress:** mise à jour lien pour création de token GitHub
+* **Contrats:** bug check status sur contrat papier si pas de contrat docx pour le contrat
+* **Mail Queue:** commencer par les mails en attente avant les mails en erreur
+* **Demandes d'adhésion:** action de création de l'amapien : si admin ou responsable alors approuver le compte + si
+  demande d'être intermittent alors inscrire
+* **Emails groupés:** envoi mail à l'admin si mails en erreur d'envoi
+* ne pas logger certaines erreurs de plugin externes
+
 # 0.99.141 (2022-02-21)
 
 * **Contrats:** autoriser les contrats papiers, valeur par défaut
