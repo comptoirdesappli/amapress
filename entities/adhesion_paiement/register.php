@@ -212,7 +212,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				'custom'               => function ( $post_id ) {
 					$adh = AmapressAdhesion_paiement::getBy( $post_id );
 					if ( $adh->getUser() ) {
-						return implode( ' / ', $adh->getUser()->getAdherentNumber() );
+						return $adh->getUser()->getAdherentNumber();
 					}
 
 					return '';
