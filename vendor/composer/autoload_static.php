@@ -25,10 +25,6 @@ class ComposerStaticInit1b27907b0b8cf08fd0453c0309cfa11f
         array (
             'kamermans\\OAuth2\\' => 17,
         ),
-        'Z' => 
-        array (
-            'Zend\\Stdlib\\' => 12,
-        ),
         'Y' => 
         array (
             'YaLinqo\\' => 8,
@@ -48,7 +44,6 @@ class ComposerStaticInit1b27907b0b8cf08fd0453c0309cfa11f
             'Psr\\Http\\Message\\' => 17,
             'Prophecy\\' => 9,
             'PhpOffice\\PhpWord\\' => 18,
-            'PhpOffice\\Common\\' => 17,
             'PhpImap\\' => 8,
         ),
         'O' => 
@@ -87,10 +82,6 @@ class ComposerStaticInit1b27907b0b8cf08fd0453c0309cfa11f
         array (
             0 => __DIR__ . '/..' . '/kamermans/guzzle-oauth2-subscriber/src',
         ),
-        'Zend\\Stdlib\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/zendframework/zend-stdlib/src',
-        ),
         'YaLinqo\\' => 
         array (
             0 => __DIR__ . '/..' . '/athari/yalinqo/YaLinqo',
@@ -122,10 +113,6 @@ class ComposerStaticInit1b27907b0b8cf08fd0453c0309cfa11f
         'PhpOffice\\PhpWord\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpoffice/phpword/src/PhpWord',
-        ),
-        'PhpOffice\\Common\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/phpoffice/common/src/Common',
         ),
         'PhpImap\\' => 
         array (
@@ -176,6 +163,7 @@ class ComposerStaticInit1b27907b0b8cf08fd0453c0309cfa11f
     );
 
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Datamatrix' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
@@ -586,7 +574,6 @@ class ComposerStaticInit1b27907b0b8cf08fd0453c0309cfa11f
         'PHP_Token_XOR_EQUAL' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_YIELD' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_YIELD_FROM' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
-        'PclZip' => __DIR__ . '/..' . '/pclzip/pclzip/pclzip.lib.php',
         'QRcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/qrcode.php',
         'SebastianBergmann\\Comparator\\ArrayComparator' => __DIR__ . '/..' . '/sebastian/comparator/src/ArrayComparator.php',
         'SebastianBergmann\\Comparator\\Comparator' => __DIR__ . '/..' . '/sebastian/comparator/src/Comparator.php',

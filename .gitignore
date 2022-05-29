@@ -3,3 +3,7 @@ composer*.phar
 /vendor/**/.git
 .idea/
 /tmp/
+/vendor/phpunit/
+/vendor/wp-coding-standards/
+/vendor/squizlabs/
+/vendor/phpcompatibility/
