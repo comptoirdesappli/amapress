@@ -1,5 +1,5 @@
 <?php
-# Copyright (c) 2013-2016, OVH SAS.
+# Copyright (c) 2013-2017, OVH SAS.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -53,8 +53,9 @@ class Api
      * @var array
      */
     private $endpoints = [
-        'ovh-eu'        => 'https://api.ovh.com/1.0',
+        'ovh-eu'        => 'https://eu.api.ovh.com/1.0',
         'ovh-ca'        => 'https://ca.api.ovh.com/1.0',
+        'ovh-us'        => 'https://api.us.ovhcloud.com/1.0',
         'kimsufi-eu'    => 'https://eu.api.kimsufi.com/1.0',
         'kimsufi-ca'    => 'https://ca.api.kimsufi.com/1.0',
         'soyoustart-eu' => 'https://eu.api.soyoustart.com/1.0',
@@ -125,20 +126,23 @@ class Api
         $consumer_key = null,
         Client $http_client = null
     ) {
-        if (!isset($application_key)) {
-            throw new Exceptions\InvalidParameterException("Application key parameter is empty");
-        }
-
-        if (!isset($application_secret)) {
-            throw new Exceptions\InvalidParameterException("Application secret parameter is empty");
-        }
-
         if (!isset($api_endpoint)) {
             throw new Exceptions\InvalidParameterException("Endpoint parameter is empty");
         }
 
-        if (!array_key_exists($api_endpoint, $this->endpoints)) {
-            throw new Exceptions\InvalidParameterException("Unknown provided endpoint");
+        if (preg_match('/^https?:\/\/..*/',$api_endpoint))
+        {
+          $this->endpoint         = $api_endpoint;
+        }
+        else
+        {
+          if (!array_key_exists($api_endpoint, $this->endpoints)) {
+              throw new Exceptions\InvalidParameterException("Unknown provided endpoint");
+          }
+          else
+          {
+            $this->endpoint       = $this->endpoints[$api_endpoint];
+          }
         }
 
         if (!isset($http_client)) {
@@ -149,7 +153,6 @@ class Api
         }
 
         $this->application_key    = $application_key;
-        $this->endpoint           = $this->endpoints[$api_endpoint];
         $this->application_secret = $application_secret;
         $this->http_client        = $http_client;
         $this->consumer_key       = $consumer_key;
@@ -165,8 +168,13 @@ class Api
     private function calculateTimeDelta()
     {
         if (!isset($this->time_delta)) {
-            $response         = $this->http_client->get($this->endpoint . "/auth/time");
-            $serverTimestamp  = (int)(String)$response->getBody();
+            $response         = $this->rawCall(
+                'GET',
+                "/auth/time",
+                null,
+                false
+            );
+            $serverTimestamp  = (int)(string)$response->getBody();
             $this->time_delta = $serverTimestamp - (int)\time();
         }
 
@@ -192,11 +200,13 @@ class Api
         $parameters->redirection = $redirection;
 
         //bypass authentication for this call
-        $response = $this->rawCall(
-            'POST',
-            '/auth/credential',
-            $parameters,
-            false
+        $response = $this->decodeResponse(
+            $this->rawCall(
+                'POST',
+                '/auth/credential',
+                $parameters,
+                true
+            )
         );
 
         $this->consumer_key = $response["consumerKey"];
@@ -216,19 +226,28 @@ class Api
      * @return array
      * @throws \GuzzleHttp\Exception\ClientException if http request is an error
      */
-    private function rawCall($method, $path, $content = null, $is_authenticated = true)
+    protected function rawCall($method, $path, $content = null, $is_authenticated = true, $headers = null)
     {
+        if ( $is_authenticated )
+        {
+            if (!isset($this->application_key)) {
+                throw new Exceptions\InvalidParameterException("Application key parameter is empty");
+            }
+
+            if (!isset($this->application_secret)) {
+                throw new Exceptions\InvalidParameterException("Application secret parameter is empty");
+            }
+        }
+
         $url     = $this->endpoint . $path;
         $request = new Request($method, $url);
-
         if (isset($content) && $method == 'GET') {
-
             $query_string = $request->getUri()->getQuery();
 
             $query = array();
             if (!empty($query_string)) {
                 $queries = explode('&', $query_string);
-                foreach($queries as $element) {
+                foreach ($queries as $element) {
                     $key_value_query = explode('=', $element, 2);
                     $query[$key_value_query[0]] = $key_value_query[1];
                 }
@@ -237,14 +256,10 @@ class Api
             $query = array_merge($query, (array)$content);
 
             // rewrite query args to properly dump true/false parameters
-            foreach($query as $key => $value)
-            {
-                if ($value === false)
-                {
+            foreach ($query as $key => $value) {
+                if ($value === false) {
                     $query[$key] = "false";
-                }
-                elseif ($value === true)
-                {
+                } elseif ($value === true) {
                     $query[$key] = "true";
                 }
             }
@@ -255,19 +270,22 @@ class Api
             $request = $request->withUri($url);
             $body    = "";
         } elseif (isset($content)) {
-            $body = json_encode($content);
+            $body = json_encode($content, JSON_UNESCAPED_SLASHES);
 
             $request->getBody()->write($body);
         } else {
             $body = "";
         }
-
-        $headers = [
-            'Content-Type'      => 'application/json; charset=utf-8',
-            'X-Ovh-Application' => $this->application_key,
-        ];
+        if(!is_array($headers))
+        {
+            $headers = [];
+        }
+        $headers['Content-Type']      = 'application/json; charset=utf-8';
 
         if ($is_authenticated) {
+
+            $headers['X-Ovh-Application'] = $this->application_key;
+
             if (!isset($this->time_delta)) {
                 $this->calculateTimeDelta();
             }
@@ -285,8 +303,18 @@ class Api
         }
 
         /** @var Response $response */
-        $response = $this->http_client->send($request, ['headers' => $headers]);
+        return $this->http_client->send($request, ['headers' => $headers]);
+    }
 
+    /**
+     * Decode a Response object body to an Array
+     *
+     * @param  Response $response
+     *
+     * @return array
+     */
+    private function decodeResponse(Response $response)
+    {
         return json_decode($response->getBody(), true);
     }
 
@@ -295,13 +323,27 @@ class Api
      *
      * @param string $path    path ask inside api
      * @param array  $content content to send inside body of request
+     * @param array  headers  custom HTTP headers to add on the request
+     * @param bool   is_authenticated   if the request need to be authenticated
      *
      * @return array
      * @throws \GuzzleHttp\Exception\ClientException if http request is an error
      */
-    public function get($path, $content = null)
+    public function get($path, $content = null, $headers = null, $is_authenticated = true)
     {
-        return $this->rawCall("GET", $path, $content);
+        if(preg_match('/^\/[^\/]+\.json$/', $path))
+        {
+          // Schema description must be access without authentication
+          return $this->decodeResponse(
+              $this->rawCall("GET", $path, $content, false, $headers)
+          );
+        }
+        else
+        {
+          return $this->decodeResponse(
+              $this->rawCall("GET", $path, $content, $is_authenticated, $headers)
+          );
+        }
     }
 
     /**
@@ -309,13 +351,17 @@ class Api
      *
      * @param string $path    path ask inside api
      * @param array  $content content to send inside body of request
+     * @param array  headers  custom HTTP headers to add on the request
+     * @param bool   is_authenticated   if the request need to be authenticated
      *
      * @return array
      * @throws \GuzzleHttp\Exception\ClientException if http request is an error
      */
-    public function post($path, $content = null)
+    public function post($path, $content = null, $headers = null, $is_authenticated = true)
     {
-        return $this->rawCall("POST", $path, $content);
+        return $this->decodeResponse(
+            $this->rawCall("POST", $path, $content, $is_authenticated, $headers)
+        );
     }
 
     /**
@@ -323,13 +369,17 @@ class Api
      *
      * @param string $path    path ask inside api
      * @param array  $content content to send inside body of request
+     * @param array  headers  custom HTTP headers to add on the request
+     * @param bool   is_authenticated   if the request need to be authenticated
      *
      * @return array
      * @throws \GuzzleHttp\Exception\ClientException if http request is an error
      */
-    public function put($path, $content)
+    public function put($path, $content, $headers = null, $is_authenticated = true)
     {
-        return $this->rawCall("PUT", $path, $content);
+        return $this->decodeResponse(
+            $this->rawCall("PUT", $path, $content, $is_authenticated, $headers)
+        );
     }
 
     /**
@@ -337,13 +387,17 @@ class Api
      *
      * @param string $path    path ask inside api
      * @param array  $content content to send inside body of request
+     * @param array  headers  custom HTTP headers to add on the request
+     * @param bool   is_authenticated   if the request need to be authenticated
      *
      * @return array
      * @throws \GuzzleHttp\Exception\ClientException if http request is an error
      */
-    public function delete($path, $content = null)
+    public function delete($path, $content = null, $headers = null, $is_authenticated = true)
     {
-        return $this->rawCall("DELETE", $path, $content);
+        return $this->decodeResponse(
+            $this->rawCall("DELETE", $path, $content, $is_authenticated, $headers)
+        );
     }
 
     /**

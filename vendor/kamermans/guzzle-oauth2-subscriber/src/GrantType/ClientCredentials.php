@@ -73,7 +73,7 @@ class ClientCredentials implements GrantTypeInterface
     }
 
     /**
-     * @return PostBody
+     * @return PostBody|\Psr\Http\Message\StreamInterface
      */
     protected function getPostBody()
     {
@@ -86,7 +86,11 @@ class ClientCredentials implements GrantTypeInterface
                 $data['scope'] = $this->config['scope'];
             }
 
-            return \GuzzleHttp\Psr7\stream_for(http_build_query($data, '', '&'));
+            if (!empty($this->config['audience'])) {
+                $data['audience'] = $this->config['audience'];
+            }
+
+            return Helper::streamFor(http_build_query($data, '', '&'));
         }
 
         $postBody = new PostBody();
@@ -96,6 +100,10 @@ class ClientCredentials implements GrantTypeInterface
 
         if ($this->config['scope']) {
             $postBody->setField('scope', $this->config['scope']);
+        }
+
+        if (!empty($this->config['audience'])) {
+            $postBody->setField('audience', $this->config['audience']);
         }
 
         return $postBody;
