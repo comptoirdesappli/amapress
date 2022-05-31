@@ -746,7 +746,7 @@ add_action( 'init', function () {
 					$signature = get_bloginfo( 'name' );
 					$subject   = "[{$mlgrp->getSimpleName()}] $errored_count mail(s) sont en erreur";
 					$url       = admin_url( 'admin.php?page=mailinggroup_mailerrors&tab=mailgrp-mailerrors-tab-' . $mlgrp->ID );
-					$message   = sprintf( __( "Bonjour,\n%s mail(s) sont en erreur d'envoi pour %s.\n<a href='%s'>Voir les mails en erreur</a>\n%s", 'amapress' ), $waiting_count, $mlgrp->getName(), $url, $signature );
+					$message   = sprintf( __( "Bonjour,\n%s mail(s) sont en erreur d'envoi pour %s.\n<a href='%s'>Voir les mails en erreur</a>\n%s", 'amapress' ), $errored_count, $mlgrp->getName(), $url, $signature );
 					amapress_wp_mail( get_option( 'admin_email' ), $subject, $message );
 				}
 			}
