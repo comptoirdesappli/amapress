@@ -9,7 +9,7 @@
  * Plugin Name:         Amapress
  * Plugin URI:          https://github.com/comptoirdesappli/amapress
  * Description:         Plugin de Gestion & Communication pour les AMAP
- * Version:             0.99.146
+ * Version:             0.99.147
  * Requires             PHP: 5.6
  * Requires at least:   4.6
  * Author:              Comptoir des Applis
@@ -53,7 +53,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 112 );
-define( 'AMAPRESS_VERSION', '0.99.146' );
+define( 'AMAPRESS_VERSION', '0.99.147' );
 define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL', 60 );
 define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_LIMIT', 4 );
 
@@ -266,7 +266,7 @@ function amapress_debug_backtrace_summary( $ignore_class = null, $skip_frames = 
 	}
 }
 
-function amapress_exception_error_handler( $errno, $errstr, $errfile, $errline, $errcontext ) {
+function amapress_exception_error_handler( $errno, $errstr, $errfile, $errline, $errcontext = null ) {
 	// handle @
 	if ( 0 === error_reporting() ) {
 		return false;
