@@ -1,3 +1,11 @@
+# 0.99.148 (2022-05-31)
+
+* PHP8 compatibility
+
+# 0.99.146 (2022-04-02)
+
+* numéro adhérent dans la liste des adhésions
+
 # 0.99.145 (2022-03-25)
 
 * **Etat Amapress:** mise à jour lien pour création de token GitHub
