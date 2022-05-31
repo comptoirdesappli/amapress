@@ -3,6 +3,8 @@ build:
   nodes:
     analysis:
       dependencies:
+        override:
+          - composer install --ignore-platform-reqs --no-interaction
         before:
           - composer require --dev johnpbloch/wordpress
 
