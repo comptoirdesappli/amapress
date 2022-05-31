@@ -6,7 +6,7 @@ build:
         override:
           - composer install --ignore-platform-reqs --no-interaction
         before:
-          - composer require --dev johnpbloch/wordpress
+          - composer require --ignore-platform-reqs --no-interaction --dev johnpbloch/wordpress
 
 filter:
   excluded_paths:
