@@ -138,7 +138,7 @@ function amapress_register_entities_contrat_paiement( $entities ) {
 				'hidden' => true,
 				'column' => function ( $post_id ) {
 					$paiement = AmapressAmapien_paiement::getBy( $post_id );
-					if ( ! $paiement || ! $paiement->getAdhesion() ) {
+					if ( ! $paiement || ! $paiement->getAdhesion() || ! $paiement->getAdhesion()->getContrat_instance() ) {
 						return '';
 					}
 
