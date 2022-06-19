@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'e07454b4e4223f68a5c905e85ca9089de659b227',
+        'reference' => '60f20fbb538135df8fa6446c4fdc53257c177598',
         'name' => 'sharevb/amapress',
         'dev' => true,
     ),
@@ -38,12 +38,12 @@
             'dev_requirement' => false,
         ),
         'guzzlehttp/guzzle' => array(
-            'pretty_version' => '6.5.6',
-            'version' => '6.5.6.0',
+            'pretty_version' => '6.5.7',
+            'version' => '6.5.7.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../guzzlehttp/guzzle',
             'aliases' => array(),
-            'reference' => 'f092dd734083473658de3ee4bef093ed77d2689c',
+            'reference' => '724562fa861e21a4071c652c8a159934e4f05592',
             'dev_requirement' => false,
         ),
         'guzzlehttp/promises' => array(
@@ -328,7 +328,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'e07454b4e4223f68a5c905e85ca9089de659b227',
+            'reference' => '60f20fbb538135df8fa6446c4fdc53257c177598',
             'dev_requirement' => false,
         ),
         'squizlabs/php_codesniffer' => array(
