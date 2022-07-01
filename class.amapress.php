@@ -4317,7 +4317,7 @@ class Amapress {
 			if ( ! $fileContent ) {
 				throw new Exception( sprintf( __( 'Cannot get content of %s', 'amapress' ), $filename ) );
 			}
-			$client = new GuzzleHttp\Client();
+			$client = new GuzzleHttp\Client( [ 'verify' => ! defined( 'AMAPRESS_VALIDATE_SSL' ) || AMAPRESS_VALIDATE_SSL ] );
 			$resp   = $client->post( $convertws_url, [
 				'auth'      => [
 					$convertws_user,

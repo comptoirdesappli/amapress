@@ -756,6 +756,7 @@ abstract class Amapress_Sympa_MailSystem extends Amapress_MailingSystem {
 				array(
 					'base_uri' => $this->getMailingListBaseUrl(),
 					'cookies'  => $cookies,
+					'verify'   => ! defined( 'AMAPRESS_VALIDATE_SSL' ) || AMAPRESS_VALIDATE_SSL,
 				) );
 			$form_params  = array(
 				'action'       => 'login',

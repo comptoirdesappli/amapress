@@ -852,6 +852,7 @@ function amapress_fetch_helloasso_orders( $date = null, $interactive = false ) {
 
 		$reauth_client      = new GuzzleHttp\Client( [
 			'base_uri' => 'https://api.helloasso.com/oauth2/token',
+			'verify'   => ! defined( 'AMAPRESS_VALIDATE_SSL' ) || AMAPRESS_VALIDATE_SSL,
 		] );
 		$reauth_config      = [
 			'client_id'     => $ha_cid,
@@ -872,6 +873,7 @@ function amapress_fetch_helloasso_orders( $date = null, $interactive = false ) {
 		$client = new GuzzleHttp\Client( [
 			'handler' => $stack,
 			'auth'    => 'oauth',
+			'verify'  => ! defined( 'AMAPRESS_VALIDATE_SSL' ) || AMAPRESS_VALIDATE_SSL
 		] );
 
 		$organizationSlug = $adh_period->getHelloAssoOrganizationSlug();

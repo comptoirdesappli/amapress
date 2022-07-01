@@ -1023,6 +1023,8 @@ class AmapressMailingGroup extends TitanEntity {
 		}
 		if ( $this->isSelfSignedSSL() ) {
 			$encryption .= '/novalidate-cert';
+		} elseif ( defined( 'AMAPRESS_VALIDATE_SSL' ) && AMAPRESS_VALIDATE_SSL == false ) {
+			$encryption .= '/novalidate-cert';
 		}
 
 		$mailbox = new PhpImap\Mailbox(
