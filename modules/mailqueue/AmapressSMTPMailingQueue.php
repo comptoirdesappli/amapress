@@ -393,7 +393,13 @@ class AmapressSMTPMailingQueue {
 		}
 		$errors = AmapressSMTPMailingQueueOriginal::wp_mail( $data['to'], $data['subject'], $data['message'], $data['headers'], $data['attachments'] );
 		if ( ! empty( $errors ) ) {
-			@error_log( __( 'Email send Error : ', 'amapress' ) . implode( ' ; ', $errors ) );
+			$filtered_errors = array_filter( $errors, function ( $errstr ) {
+				return false === strpos( $errstr, 'You have exceeded the limit of' )
+				       && false === strpos( $errstr, 'messages per hour and per IP address' );
+			} );
+			if ( ! empty( $filtered_errors ) ) {
+				@error_log( __( 'Email send Error : ', 'amapress' ) . implode( ' ; ', $filtered_errors ) );
+			}
 			if ( $store_errors ) {
 				self::storeMail( $mlgrp_id, 'errored', $data['to'],
 					$data['subject'], $data['message'], $data['headers'], $data['attachments'],
