@@ -1569,6 +1569,9 @@ class AmapressAdhesion extends TitanEntity {
 			$quants = $this->getVariables_Contrat_quantites( $dist_date );
 			$ret    = [];
 			foreach ( $quants as $quant ) {
+				if ( empty( $quant['contrat_quantite'] ) ) {
+					continue;
+				}
 				$ret[ $quant['contrat_quantite']->ID ] = new AmapressAdhesionQuantite( $quant['contrat_quantite'], $quant['quantite'] );
 			}
 
