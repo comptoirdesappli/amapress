@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '51a9eba6aa7b6cb0ecda6351ef433f79a80011da',
+        'reference' => 'b44d596c4423181a16e08dcacc2ebefe34e3f44e',
         'name' => 'sharevb/amapress',
         'dev' => true,
     ),
@@ -328,7 +328,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '51a9eba6aa7b6cb0ecda6351ef433f79a80011da',
+            'reference' => 'b44d596c4423181a16e08dcacc2ebefe34e3f44e',
             'dev_requirement' => false,
         ),
         'squizlabs/php_codesniffer' => array(
