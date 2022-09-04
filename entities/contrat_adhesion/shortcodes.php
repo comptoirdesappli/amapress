@@ -3388,6 +3388,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					$adh->sendReferentsNotificationMail( false, $notify_email, 'cancel' );
 				}
 
+				$adh->sendCancelMail();
+
 				if ( ! wp_delete_post( $adh->ID, true ) ) {
 					wp_die( $invalid_access_message ); //phpcs:ignore
 				}

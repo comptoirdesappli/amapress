@@ -2638,6 +2638,22 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		], $attachments );
 	}
 
+	public function sendCancelMail() {
+		$inscription = $this;
+		$amapien     = $inscription->getAdherent();
+
+		$mail_subject = Amapress::getOption( 'online_subscription_cancel-mail-subject' );
+		$mail_content = Amapress::getOption( 'online_subscription_cancel-mail-content' );
+
+		$mail_subject = amapress_replace_mail_placeholders( $mail_subject, $amapien, $inscription );
+		$mail_content = amapress_replace_mail_placeholders( $mail_content, $amapien, $inscription );
+
+		$refs_mails = $inscription->getContrat_instance()->getAllReferentsEmails( $this->getLieuId() );
+		amapress_wp_mail( $amapien->getAllEmails(), $mail_subject, $mail_content, [
+			'Reply-To: ' . implode( ',', $refs_mails )
+		] );
+	}
+
 	public function sendReferentsNotificationMail( $send_contrat = false, $notify_email = null, $for_type = 'new' ) {
 		$inscription = $this;
 		$amapien     = $inscription->getAdherent();

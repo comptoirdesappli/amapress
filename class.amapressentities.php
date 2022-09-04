@@ -3145,6 +3145,30 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 										),
 										array(
 											'type' => 'heading',
+											'name' => __( 'Emails - Confirmation Inscription Contrat', 'amapress' ),
+										),
+										array(
+											'id'       => 'online_subscription_cancel-mail-subject',
+											'name'     => __( 'Objet', 'amapress' ),
+											'sanitize' => false,
+											'type'     => 'text',
+											'default'  => __( 'Annulation de votre inscription au contrat %%contrat_titre_complet%%', 'amapress' ),
+										),
+										array(
+											'id'      => 'online_subscription_cancel-mail-content',
+											'name'    => __( 'Contenu', 'amapress' ),
+											'type'    => 'editor',
+											'default' => wpautop( __( "Bonjour %%user:nom_complet%%,\nNous vous confirmons l'annulation de votre inscription au contrat %%contrat_titre%%.\n\n%%nom_site%%", 'amapress' ) ),
+											'desc'    => function ( $option ) {
+												return __( 'Les placeholders suivants sont disponibles:', 'amapress' ) .
+												       AmapressAdhesion::getPlaceholdersHelp( [], false );
+											},
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
 											'name' => __( 'Emails - Notification Référents Nouvelle Inscription Contrat', 'amapress' ),
 										),
 										array(
