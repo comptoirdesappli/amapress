@@ -167,7 +167,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 					return '';
 				}
 			),
-			'adherent_address' => array(
+			'adherent_address'   => array(
 				'csv_import'           => false,
 				'csv_export'           => true,
 				'show_column'          => true,
@@ -186,7 +186,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 					return '';
 				}
 			),
-			'adherent_tel'     => array(
+			'adherent_tel'       => array(
 				'csv_import'           => false,
 				'csv_export'           => true,
 				'show_column'          => true,
@@ -205,7 +205,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 					return '';
 				}
 			),
-			'adherent_num'     => array(
+			'adherent_num'       => array(
 				'csv_import'           => false,
 				'csv_export'           => true,
 				'show_column'          => true,
@@ -224,7 +224,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 					return '';
 				}
 			),
-			'period'           => array(
+			'period'             => array(
 				'name'              => __( 'Période adhésion', 'amapress' ),
 				'type'              => 'select-posts',
 				'post_type'         => AmapressAdhesionPeriod::INTERNAL_POST_TYPE,
@@ -239,7 +239,7 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 				),
 				'csv_required'      => true,
 			),
-			'date'             => array(
+			'date'               => array(
 				'name'         => __( 'Date', 'amapress' ),
 				'type'         => 'date',
 				'required'     => true,
@@ -1079,7 +1079,9 @@ add_action( 'admin_post_nopriv_helloasso', function () {
 	}
 
 	$body = file_get_contents( 'php://input' );
-	@error_log( __( 'HelloAsso callback: ', 'amapress' ) . $body );
+	if ( defined( 'AMAPRESS_LOG_HELLOASSO_CALLBACK' ) && AMAPRESS_LOG_HELLOASSO_CALLBACK ) {
+		@error_log( __( 'HelloAsso callback: ', 'amapress' ) . $body );
+	}
 
 	$json = json_decode( $body );
 	if ( empty( $json ) ) {
