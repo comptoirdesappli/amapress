@@ -4248,8 +4248,10 @@ jQuery(function($) {
         var nb_cheques = parseInt($(this).val());
         if (nb_cheques >= 100)
             nb_cheques = -1;
-        var cheques_dates = $(this).data("cheques-dates").toString();
-        var cheques_dates_display = $(this).data("cheques-dates-display").toString();
+        var cheques_dates = $(this).data("cheques-dates");
+        if (cheques_dates) cheques_dates = cheques_dates.toString();
+        var cheques_dates_display = $(this).data("cheques-dates-display")?.toString();
+        if (cheques_dates_display) cheques_dates_display = cheques_dates_display.toString();
         if (cheques_dates) {
             cheques_dates = cheques_dates.split("|");
             cheques_dates_display = cheques_dates_display.split("|");
