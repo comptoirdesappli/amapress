@@ -82,6 +82,12 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 					return ! empty( $adh ) && ! empty( $adh->getPeriod() ) && ! empty( $adh->getPeriod()->getWordModelId() );
 				},
 			],
+			'mark_bank'              => [
+				'label'     => __( 'Marquer remis', 'amapress' ),
+				'condition' => function ( $adh_id ) {
+					return AmapressAdhesion_paiement::RECEIVED == AmapressAdhesion_paiement::getBy( $adh_id )->getStatus();
+				},
+			],
 		),
 		'views'            => array(
 			'remove'  => array( 'mine' ),
@@ -458,6 +464,15 @@ function amapress_register_entities_adhesion_paiement( $entities ) {
 					'0'  => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
 					'1'  => __( 'Un règlement a été marqué comme reçu suivi de l\'envoi adhésion validée', 'amapress' ),
 					'>1' => '%s règlements ont été marqués comme reçus suivi d\'envoi adhésions validées',
+				),
+			),
+			'amp_adh_pmt_mark_bank'       => array(
+				'label'    => __( 'Marquer remis', 'amapress' ),
+				'messages' => array(
+					'<0' => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'0'  => __( 'Une erreur s\'est produit pendant l\'opération', 'amapress' ),
+					'1'  => __( 'Un règlement a été marqué comme remis avec succès', 'amapress' ),
+					'>1' => '%s règlements ont été marqués comme remis avec succès',
 				),
 			),
 			'amp_adh_pmt_send_valid'      => array(

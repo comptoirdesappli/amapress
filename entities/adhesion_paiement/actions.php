@@ -113,3 +113,24 @@ function amapress_bulk_action_amp_adh_pmt_mark_recv_valid( $sendback, $post_ids 
 
 	return amapress_add_bulk_count( $sendback, count( $post_ids ) );
 }
+
+add_filter( 'amapress_bulk_action_amp_adh_pmt_mark_bank', 'amapress_bulk_action_amp_adh_pmt_mark_bank', 10, 2 );
+function amapress_bulk_action_amp_adh_pmt_mark_bank( $sendback, $post_ids ) {
+	foreach ( $post_ids as $post_id ) {
+		$adh = AmapressAdhesion_paiement::getBy( $post_id, true );
+		$adh->setStatus( AmapressAdhesion_paiement::BANK );
+	}
+
+	return amapress_add_bulk_count( $sendback, count( $post_ids ) );
+}
+
+add_action( 'amapress_row_action_adhesion_paiement_mark_bank', 'amapress_row_action_adhesion_paiement_mark_bank' );
+function amapress_row_action_adhesion_paiement_mark_bank( $post_id ) {
+	$adh = AmapressAdhesion_paiement::getBy( $post_id, true );
+	if ( $adh ) {
+		$adh->setStatus( AmapressAdhesion_paiement::BANK );
+
+	}
+
+	wp_redirect_and_exit( wp_get_referer() );
+}
