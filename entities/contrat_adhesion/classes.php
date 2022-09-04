@@ -2019,7 +2019,7 @@ class AmapressAdhesion extends TitanEntity {
 			}
 			$by_months         = $this->getTotalAmountByMonth();
 			$cheques_options[] = implode( ' ; ', array_map( function ( $month, $month_amount ) {
-				return sprintf( __( '%s: 1 %s de %0.2f €', 'amapress' ),
+				return sprintf( __( '%s %s de %0.2f €', 'amapress' ),
 					'prl' == $this->getMainPaiementType() ? __( 'prélèvement', 'amapress' ) : __( 'chèque', 'amapress' ),
 					$month,
 					$month_amount );
@@ -2197,7 +2197,7 @@ class AmapressAdhesion extends TitanEntity {
 		$dates           = $this->getRemainingDates();
 		$by_month_totals = [];
 		foreach ( $dates as $date ) {
-			$month = date_i18n( 'M', $date );
+			$month = date_i18n( 'M-y', $date );
 			if ( empty( $by_month_totals[ $month ] ) ) {
 				$by_month_totals[ $month ] = 0;
 			}
@@ -2763,7 +2763,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			foreach ( $this->getTotalAmountByMonth() as $month => $month_amount ) {
 				$found = false;
 				foreach ( $pay_dates as $pay_date ) {
-					if ( date_i18n( 'M', $pay_date ) == $month ) {
+					if ( date_i18n( 'M-y', $pay_date ) == $month ) {
 						$new_paiement_date[] = $pay_date;
 						$found               = true;
 						break;

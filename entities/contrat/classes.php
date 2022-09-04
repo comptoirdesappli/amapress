@@ -862,21 +862,6 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsArray( 'amapress_contrat_instance_rattrapage' );
 	}
 
-	/** @return array */
-	public function getRemainingDatesByMonth( $date = null ) {
-		$dates           = $this->getRemainingDates( $date );
-		$by_month_totals = [];
-		foreach ( $dates as $date ) {
-			$month = date_i18n( 'M', $date );
-			if ( empty( $by_month_totals[ $month ] ) ) {
-				$by_month_totals[ $month ] = 0;
-			}
-			$by_month_totals[ $month ] += 1;
-		}
-
-		return $by_month_totals;
-	}
-
 	public function getDateFactor( $dist_date, $quantite_id = null ) {
 		$key         = "AmapressCI_getDateFactor_{$this->ID}_{$dist_date}_{$quantite_id}";
 		$date_factor = wp_cache_get( $key );
@@ -1985,7 +1970,7 @@ class AmapressContrat_instance extends TitanEntity {
 		$dates           = $this->getRemainingDates( $date );
 		$by_month_totals = [];
 		foreach ( $dates as $date ) {
-			$month = date_i18n( 'M', $date );
+			$month = date_i18n( 'M-y', $date );
 			if ( empty( $by_month_totals[ $month ] ) ) {
 				$by_month_totals[ $month ] = 0;
 			}
@@ -2000,7 +1985,7 @@ class AmapressContrat_instance extends TitanEntity {
 		$dates           = $this->getPaiements_Liste_dates();
 		$by_month_totals = [];
 		foreach ( $dates as $date ) {
-			$month = date_i18n( 'M', $date );
+			$month = date_i18n( 'M-y', $date );
 			if ( empty( $by_month_totals[ $month ] ) ) {
 				$by_month_totals[ $month ] = 0;
 			}

@@ -3881,7 +3881,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					if ( abs( $quant->getPrix_unitaire() ) < 0.001 ) {
 						$pay_at_deliv[] = $quant->getTitle();
 					} else {
-						$month = date_i18n( 'M', $date_k );
+						$month = date_i18n( 'M-y', $date_k );
 						if ( empty( $by_month_totals[ $month ] ) ) {
 							$by_month_totals[ $month ] = 0;
 						}
@@ -3981,7 +3981,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					$pay_at_deliv[] = $quant->getTitle();
 				} else {
 					foreach ( $dates as $date_k ) {
-						$month = date_i18n( 'M', $date_k );
+						$month = date_i18n( 'M-y', $date_k );
 						if ( empty( $by_month_totals[ $month ] ) ) {
 							$by_month_totals[ $month ] = 0;
 						}
@@ -4314,7 +4314,7 @@ jQuery(function($) {
 						$pay_by_month_months[] = $month;
 						$found                 = false;
 						foreach ( $pay_dates as $pay_date ) {
-							if ( date_i18n( 'M', $pay_date ) == $month ) {
+							if ( date_i18n( 'M-y', $pay_date ) == $month ) {
 								$pay_by_month_encaiss_dates[] = $pay_date;
 								$found                        = true;
 								break;
