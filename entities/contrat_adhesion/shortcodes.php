@@ -4086,7 +4086,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 									$month_amount );
 							}, array_keys( $by_month_totals ), array_values( $by_month_totals ) ) );
 						}
-						echo "<label for='cheques-$nb_cheque' style='font-weight: normal'><input type='radio' '.$checked.' name='cheques' id='cheques-$nb_cheque' data-cheques-details='$cheques' value='$nb_cheque' class='input-nb-cheques required' />$chq_label</label><br/>";
+						echo "<label for='cheques-$nb_cheque' style='font-weight: normal'><input type='radio' $checked name='cheques' id='cheques-$nb_cheque' data-cheques-details='$cheques' value='$nb_cheque' class='input-nb-cheques required' />$chq_label</label><br/>";
 					} elseif ( $contrat->hasCustomMultiplePaiements() ) {
 						$amounts   = $contrat->getTotalAmountByCustom( $nb_cheque, $total );
 						$cheques   = implode( '|', array_map( function ( $amount ) {
