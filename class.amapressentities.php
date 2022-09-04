@@ -3145,7 +3145,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 										),
 										array(
 											'type' => 'heading',
-											'name' => __( 'Emails - Confirmation Inscription Contrat', 'amapress' ),
+											'name' => __( 'Emails - Annulation Inscription Contrat', 'amapress' ),
 										),
 										array(
 											'id'       => 'online_subscription_cancel-mail-subject',
