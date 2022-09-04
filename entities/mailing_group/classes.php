@@ -355,7 +355,7 @@ class AmapressMailingGroup extends TitanEntity {
 	public function testParams() {
 		try {
 			$mailbox = $this->getMailbox();
-			$mailbox->imap( 'check' );
+			$mailbox->checkMailbox();
 			$mailbox->disconnect();
 
 			return true;
@@ -364,23 +364,6 @@ class AmapressMailingGroup extends TitanEntity {
 
 			return sprintf( __( 'Erreur de connexion %s: %s', 'amapress' ), $proto, $ex->getMessage() );
 		}
-	}
-
-	/**
-	 * @param PhpImap\Mailbox $mailbox
-	 * @param $msgId
-	 * @param bool $markAsSeen
-	 *
-	 * @return mixed
-	 */
-	public function getRawMail( $mailbox, $msgId, $markAsSeen = true ) {
-		$options = ( SE_UID == $mailbox->getImapSearchOption() ) ? FT_UID : 0;
-		if ( ! $markAsSeen ) {
-			$options |= FT_PEEK;
-		}
-		$options |= FT_INTERNAL;
-
-		return str_replace( "\r", '', $mailbox->imap( 'fetchbody', [ $msgId, '', $options ] ) );
 	}
 
 	public function getKeepSender() {
