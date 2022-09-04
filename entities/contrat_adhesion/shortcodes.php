@@ -3754,9 +3754,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 				$checked = checked( $edit_inscription && $edit_inscription->getContrat_quantite_factor( $quantite->ID ) > 0, true, false );
 				$type    = $contrat->isQuantiteMultiple() ? 'checkbox' : 'radio';
+				$desc    = '';
+				if ( ! empty( $quantite->getDescription() ) ) {
+					$desc = '<br/><em>' . esc_html( $quantite->getDescription() ) . '</em>';
+				}
 				echo '<p style="margin-top: 1em; margin-bottom: 0"><label for="' . $id_quant . '">
 			<input id="' . $id_quant . '" name="quants[]" ' . $checked . ' class="quant" value="' . $quantite->ID . '" type="' . $type . '" data-factor-id="' . $id_factor . '" data-price="' . $price . '" data-pricew="' . ( abs( $quantite->getPrix_unitaire() ) < 0.001 ? 1 : 0 ) . '"/> 
-			' . $quant_var_editor . ' ' . esc_html( $quantite->getTitle() ) . ' ' . $price_compute_text . ( abs( $quantite->getPrix_unitaire() ) > 0.001 ? ' = <span id="' . $id_price . '">' . $price . '</span>€</label></p>' : '' );
+			' . $quant_var_editor . ' ' . esc_html( $quantite->getTitle() ) . ' ' . $price_compute_text . ( abs( $quantite->getPrix_unitaire() ) > 0.001 ? ' = <span id="' . $id_price . '">' . $price . '</span>€</label>' . $desc . '</p>' : '' );
 
 				$spec_dates = $quantite->getSpecificDistributionDates();
 				if ( ! empty( $spec_dates ) ) {
