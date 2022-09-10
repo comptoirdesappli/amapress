@@ -74,6 +74,20 @@ class Amapress_MailingListConfiguration extends TitanEntity {
 		return $ret;
 	}
 
+	public function getRawEmails() {
+		$raw_emails = $this->getCustom( 'amapress_mailinglist_raw_users' );
+		if ( ! empty( $raw_emails ) ) {
+			$raw_emails = preg_replace( '/\s+/', ',', $raw_emails );
+			$raw_emails = explode( ',', $raw_emails );
+
+			return array_filter( $raw_emails, function ( $e ) {
+				return ! empty( $e );
+			} );
+		}
+
+		return [];
+	}
+
 	public function getMembersIds() {
 		$ids = [];
 		foreach ( $this->getMembersQueries() as $user_query ) {

@@ -35,6 +35,11 @@ class Amapress_Ouvaton_MailingList extends Amapress_Sympa_MailingList {
 			$this->setModerators( $user_ids );
 		}
 
+		foreach ( $config->getRawEmails() as $email ) {
+			$escaped_email     = esc_sql( strtolower( $email ) );
+			$members_queries[] = "SELECT '{$escaped_email}' as email";
+		}
+
 		if ( empty( $members_queries ) ) {
 			return;
 		}
@@ -70,6 +75,12 @@ class Amapress_Ouvaton_MailingList extends Amapress_Sympa_MailingList {
 		}
 
 		$members_queries = $config->getMembersQueries();
+
+		foreach ( $config->getRawEmails() as $email ) {
+			$escaped_email     = esc_sql( strtolower( $email ) );
+			$members_queries[] = "SELECT '{$escaped_email}' as email";
+		}
+
 		global $wpdb;
 		$sql_query = isset( $this->info['query'] ) ? $this->info['query'] : '';
 		if ( ! empty( $sql_query ) ) {

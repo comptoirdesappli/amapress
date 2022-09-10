@@ -50,16 +50,13 @@ class Amapress_OVH_MailingList extends Amapress_MailingList {
 
 		$members_queries = $config->getMembersQueries();
 
-		if ( empty( $members_queries ) ) {
-			return;
-		}
-
 		$sql_query = Amapress_MailingList::getSqlQuery( $members_queries, $config->getExcludeMembersQueries() );
-		if ( empty( $sql_query ) ) {
-			return;
-		}
+		global $wpdb;
+		$all_emails = empty( $sql_query ) ? [] : $wpdb->get_col( $sql_query );
+		$all_emails = array_merge( $all_emails, $config->getRawEmails() );
+
+		$query_emails = array_unique( Amapress_MailingList::normalizeEmailsArray( $all_emails ) );
 		$sympa_emails = Amapress_MailingList::normalizeEmailsArray( $this->getSystem()->getMLMembersEmails( $this->getName() ) );
-		$query_emails = array_unique( Amapress_MailingList::normalizeEmailsArray( $wpdb->get_col( $sql_query ) ) );
 
 		$to_add = array_diff( $query_emails, $sympa_emails );
 		$to_del = array_diff( $sympa_emails, $query_emails );
@@ -96,13 +93,15 @@ class Amapress_OVH_MailingList extends Amapress_MailingList {
 		$members_queries = $config->getMembersQueries();
 
 		$sql_query = Amapress_MailingList::getSqlQuery( $members_queries, $config->getExcludeMembersQueries() );
-		if ( empty( $sql_query ) ) {
-			return 'manual';
-		}
+		global $wpdb;
+		$all_emails = empty( $sql_query ) ? [] : $wpdb->get_col( $sql_query );
+		$all_emails = array_merge( $all_emails, $config->getRawEmails() );
+
+		$query_emails = array_unique( Amapress_MailingList::normalizeEmailsArray( $all_emails ) );
 		$sympa_emails = Amapress_MailingList::normalizeEmailsArray( $this->getSystem()->getMLMembersEmails( $this->getName() ) );
-		$query_emails = array_unique( Amapress_MailingList::normalizeEmailsArray( $wpdb->get_col( $sql_query ) ) );
-		$was_errored  = $wpdb->last_error;
-		$inter        = array_intersect( $query_emails, $sympa_emails );
+
+		$was_errored = $wpdb->last_error;
+		$inter       = array_intersect( $query_emails, $sympa_emails );
 		if ( empty( $was_errored ) && count( $inter ) == count( $sympa_emails ) && count( $inter ) == count( $query_emails ) ) {
 			return 'sync';
 		} else {

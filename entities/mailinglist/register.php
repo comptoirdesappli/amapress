@@ -158,7 +158,15 @@ function amapress_register_entities_mailinglist( $entities ) {
 				'tags'         => true,
 				'desc'         => __( 'Sélectionner un ou plusieurs amapien(s) ne faisant pas partie d’un des groupes précédents.', 'amapress' ),
 			),
-			'bounces'                => array(
+			'raw_users'     => array(
+				'group'       => __( 'Membres', 'amapress' ),
+				'name'        => __( 'Membres supplémentaires (emails)', 'amapress' ),
+				'type'        => 'textarea',
+				'desc'        => __( 'Liste d\'adresses emails à ajouter à cette Mailing list', 'amapress' ),
+				'show_column' => false,
+				'searchable'  => true,
+			),
+			'bounces'       => array(
 				'group'   => __( 'Membres', 'amapress' ),
 				'name'    => __( 'Taux d\'erreur', 'amapress' ),
 				'type'    => 'custom',

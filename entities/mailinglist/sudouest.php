@@ -179,8 +179,14 @@ add_action( 'admin_post_nopriv_fetch-mailing-members', function () {
 		wp_die( "Mailing list {$_REQUEST['id']} cannot be found" );
 	}
 
+	$members_queries = $ml->getMembersQueries();
+	foreach ( $ml->getRawEmails() as $email ) {
+		$escaped_email     = esc_sql( strtolower( $email ) );
+		$members_queries[] = "SELECT '{$escaped_email}' as email";
+	}
+
 	header( 'Content-type: text/plain' );
-	$sql_query = Amapress_MailingList::getSqlQuery( $ml->getMembersQueries(), $ml->getExcludeMembersQueries() );
+	$sql_query = Amapress_MailingList::getSqlQuery( $members_queries, $ml->getExcludeMembersQueries() );
 	global $wpdb;
 	foreach ( $wpdb->get_col( $sql_query ) as $email ) {
 		$normalized_email = strtolower( $email );
