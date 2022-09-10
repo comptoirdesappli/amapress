@@ -128,6 +128,14 @@ function amapress_register_entities_reminder( $entities ) {
 				'show_column'  => false,
 				'required'     => true,
 			),
+			'raw_users'   => array(
+				'group'       => __( 'Membres', 'amapress' ),
+				'name'        => __( 'Membres supplémentaires (emails)', 'amapress' ),
+				'type'        => 'textarea',
+				'desc'        => __( 'Liste d\'adresses emails supplémentaires', 'amapress' ),
+				'show_column' => false,
+				'searchable'  => true,
+			),
 		),
 	);
 
@@ -141,8 +149,9 @@ add_action( 'amps_reminder', function ( $id ) {
 	}
 	$reminder = new AmapressReminder( $post );
 
-	$target_users = amapress_prepare_message_target_bcc( "user:include=" . implode( ',', $reminder->getMembersIds() ),
+	$target_users                 = amapress_prepare_message_target_bcc( "user:include=" . implode( ',', $reminder->getMembersIds() ),
 		$reminder->getTitle(), "reminder" );
+	$target_users['other_emails'] = $reminder->getRawEmails();
 	amapress_send_message(
 		$reminder->getSubject(),
 		$reminder->getContent(),

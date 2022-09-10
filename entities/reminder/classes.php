@@ -74,6 +74,20 @@ class AmapressReminder extends TitanEntity {
 		return array_unique( $ids );
 	}
 
+	public function getRawEmails() {
+		$raw_emails = $this->getCustom( 'amapress_reminder_raw_users' );
+		if ( ! empty( $raw_emails ) ) {
+			$raw_emails = preg_replace( '/\s+/', ',', $raw_emails );
+			$raw_emails = explode( ',', $raw_emails );
+
+			return array_filter( $raw_emails, function ( $e ) {
+				return ! empty( $e );
+			} );
+		}
+
+		return [];
+	}
+
 	public function getMembersQueries() {
 		$ret   = $this->getCustomAsArray( 'amapress_reminder_queries' );
 		$users = $this->getCustomAsIntArray( 'amapress_reminder_other_users' );

@@ -169,6 +169,10 @@ function amapress_send_message(
 			}
 		}
 
+		if ( ! empty( $opt['other_emails'] ) ) {
+			$emails = array_merge( $emails, $opt['other_emails'] );
+		}
+
 		if ( ! $is_indiv && $new_id ) {
 			update_post_meta( $new_id, 'amapress_message_user_ids', $user_ids );
 		}
