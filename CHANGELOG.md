@@ -1,3 +1,21 @@
+# 0.99.155 (2022-09-10)
+
+* **Assistant d'inscription:**
+  - bug affichage tableau de chèques pour paiement au mois
+  - envoi mail à l'amapien en cas d'annulation de contrat
+  - afficahge description des quantités pour les contrats simples
+* **Contrats:** gestion des paiements par mois si plus de 11 mois + amélioration affichage
+* **Règlements Adhésion:** action et action groupée pour Marquer remis
+* **Mailing List:** champs liste d'email brute (un par ligne)
+* **Remainder:** champs liste d'email brute (un par ligne)
+* **Mailing Groups:** imap checking
+* constante AMAPRESS_LOG_HELLOASSO_CALLBACK pour log des callback HelloAsso (inactif par défaut)
+
+# 0.99.149 (2022-07-01)
+
+* constante AMAPRESS_VALIDATE_SSL pour permettre de désactiver le check SSL si nécessaire
+* dont log send mail quota exceed
+
 # 0.99.148 (2022-05-31)
 
 * PHP8 compatibility
