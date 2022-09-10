@@ -54,8 +54,6 @@ require_once( AMAPRESS__PLUGIN_DIR . 'entities/mailinglist/sudouest.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/mailinglist/google.groups.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/mailinglist/ovh.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/mailinglist/framalist.php' );
-require_once( AMAPRESS__PLUGIN_DIR . 'entities/mailinglist/mailchimp.php' );
-require_once( AMAPRESS__PLUGIN_DIR . 'entities/mailinglist/campaignmonitor.php' );
 
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/reminder/classes.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/reminder/register.php' );

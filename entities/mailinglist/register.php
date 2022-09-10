@@ -57,7 +57,7 @@ function amapress_register_entities_mailinglist( $entities ) {
 				'name'         => __( 'Modération', 'amapress' ),
 				'type'         => 'select',
 				'cache'        => false,
-				'desc'         => __( 'Choisir le type de modération – option proposée par votre gestionnaire de liste (Sympa, Mailchimp, …).', 'amapress' ),
+				'desc'         => __( 'Choisir le type de modération – option proposée par votre gestionnaire de liste (Sympa, …).', 'amapress' ),
 				'options'      => 'amapress_get_mailinglist_moderation_options',
 				'column'       => 'amapress_get_mailinglist_moderation_column',
 				'custom_get'   => 'amapress_get_mailinglist_moderation',
@@ -158,7 +158,7 @@ function amapress_register_entities_mailinglist( $entities ) {
 				'tags'         => true,
 				'desc'         => __( 'Sélectionner un ou plusieurs amapien(s) ne faisant pas partie d’un des groupes précédents.', 'amapress' ),
 			),
-			'raw_users'     => array(
+			'raw_users'              => array(
 				'group'       => __( 'Membres', 'amapress' ),
 				'name'        => __( 'Membres supplémentaires (emails)', 'amapress' ),
 				'type'        => 'textarea',
@@ -166,7 +166,7 @@ function amapress_register_entities_mailinglist( $entities ) {
 				'show_column' => false,
 				'searchable'  => true,
 			),
-			'bounces'       => array(
+			'bounces'                => array(
 				'group'   => __( 'Membres', 'amapress' ),
 				'name'    => __( 'Taux d\'erreur', 'amapress' ),
 				'type'    => 'custom',
