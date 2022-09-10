@@ -1683,7 +1683,7 @@ class AmapressAdhesion extends TitanEntity {
 				$panier = [];
 			}
 			foreach ( $panier as $quant_id => $quant ) {
-				if ( $quant > 0 ) {
+				if ( $quant > 0 && isset( $quant_by_id[ $quant_id ] ) ) {
 					/** @var AmapressContrat_quantite $contrat_quant */
 					$contrat_quant = $quant_by_id[ $quant_id ];
 					$quants[]      = array(
