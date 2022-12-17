@@ -279,6 +279,14 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustom( 'amapress_contrat_instance_special_mention', '' );
 	}
 
+	public function getCoadherentsMention() {
+		return $this->getCustom( 'amapress_contrat_instance_coadh_msg', '' );
+	}
+
+	public function getAllowCoadherents() {
+		return $this->getCustom( 'amapress_contrat_instance_allow_coadh', 1 );
+	}
+
 	public function getPaiementsMention() {
 		return $this->getCustom( 'amapress_contrat_instance_paiements_mention', '' );
 	}

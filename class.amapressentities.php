@@ -3049,6 +3049,22 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 										),
 										array(
 											'type' => 'heading',
+											'name' => __( 'Calendrier de partage', 'amapress' ),
+										),
+										array(
+											'id'      => 'online_subscription_share_calendar',
+											'name'    => __( 'Message', 'amapress' ),
+											'type'    => 'editor',
+											'default' => wpautop( "Choisissez, pour chaque distribution, quel coadhérent doit récupérer le panier" ),
+											'desc'    => function ( $option ) {
+												return __( 'Message au sujet du calendrier de partage entre co-adhérent', 'amapress' ) . '<br/>' . AmapressAdhesion::getPlaceholdersHelp();
+											},
+										),
+										array(
+											'type' => 'save',
+										),
+										array(
+											'type' => 'heading',
 											'name' => __( 'Paiements en ligne (Stripe)', 'amapress' ),
 										),
 										array(

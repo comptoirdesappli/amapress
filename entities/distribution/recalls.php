@@ -619,6 +619,10 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 				if ( ! $adh->getAdherentId() ) {
 					return '';
 				}
+				$coadh_id = $adh->getCoadhIdFromShareCalendarDate( $date );
+				if ( $coadh_id ) {
+					return strval( $coadh_id );
+				}
 				$user = $adh->getAdherent()->getUser();
 				if ( $allow_partial_coadh ) {
 					$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID, false, $date, $adh->getContrat_instanceId() ) );
@@ -634,12 +638,22 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 				continue;
 			}
 
-			$liste_contrats  = [];
-			$contenu_paniers = '';
-			$data            = [];
+			$liste_contrats        = [];
+			$liste_contrats_coadhs = [];
+			$contenu_paniers       = '';
+			$data                  = [];
 			foreach ( $adhs as $adh ) {
 				$has_delivery = false;
 				/** @var AmapressAdhesion $adh */
+				$coadh_id = $adh->getCoadhIdFromShareCalendarDate( $dist->getDate() );
+				if ( $coadh_id ) {
+					$coadh                   = AmapressUser::getBy( $coadh_id );
+					$liste_contrats_coadhs[] = sprintf(
+						__( 'Partage co-adhérents: %s est au tour de %s', 'amapress' ),
+						$adh->getContrat_instance()->getModelTitleWithSubName(),
+						! empty( $coadh ) ? $coadh->getDisplayName() : __( 'inconnu', 'amapress' )
+					);
+				}
 				if ( $adh->getContrat_instance()->isPanierVariable() ) {
 					$real_date = $dist->getRealDateForContrat( $adh->getContrat_instanceId() );
 					$paniers   = $adh->getPaniersVariables();
@@ -710,30 +724,33 @@ add_action( 'amapress_recall_amapiens_distrib', function ( $args ) {
 				if ( Amapress::toBool( Amapress::getOption( 'distribution-amapiens-recall-disable-no-delivery' ) ) ) {
 					continue;
 				}
-				$replacements['livraison_details_prix'] = __( 'Vous n\'avez pas de produit à cette livraison', 'amapress' );
-				$replacements['livraison_details']      = __( 'Vous n\'avez pas de produit à cette livraison', 'amapress' );
-				$replacements['contenu_paniers']        = '';
-				$replacements['liste_contrats']         = '';
+				$replacements['livraison_details_prix']     = __( 'Vous n\'avez pas de produit à cette livraison', 'amapress' );
+				$replacements['livraison_details']          = __( 'Vous n\'avez pas de produit à cette livraison', 'amapress' );
+				$replacements['contenu_paniers']            = '';
+				$replacements['liste_contrats']             = '';
+				$replacements['liste_contrats_coadherents'] = '';
 			} else {
-				$dt_options                             = array(
+				$dt_options                                 = array(
 					'paging'       => false,
 					'init_as_html' => true,
 					'no_script'    => true,
 					'bSort'        => false,
 					'empty_desc'   => __( 'Pas de livraison', 'amapress' ),
 				);
-				$tbl_style                              = '<style>table, th, td { border-collapse: collapse; border: 1pt solid #000; } .odd {background-color: #eee; }</style>';
-				$replacements['livraison_details_prix'] = $tbl_style . amapress_get_datatable(
+				$contrats_coahds                            = '<p><strong>' . implode( ', ', $liste_contrats_coadhs ) . '</strong></p>';
+				$tbl_style                                  = '<style>table, th, td { border-collapse: collapse; border: 1pt solid #000; } .odd {background-color: #eee; }</style>';
+				$replacements['livraison_details_prix']     = $contrats_coahds . $tbl_style . amapress_get_datatable(
 						'dist-recap-' . $dist->ID,
 						$columns_with_price, $data,
 						$dt_options );
-				$replacements['livraison_details']      = $tbl_style . amapress_get_datatable(
+				$replacements['livraison_details']          = $contrats_coahds . $tbl_style . amapress_get_datatable(
 						'dist-recap-' . $dist->ID,
 						$columns_no_price, $data,
 						$dt_options );
-				$replacements['contenu_paniers']        = $contenu_paniers;
-				$replacements['liste_contrats']         = implode( ', ', $liste_contrats );
-				$had_deliveries                         = true;
+				$replacements['contenu_paniers']            = $contenu_paniers;
+				$replacements['liste_contrats']             = implode( ', ', $liste_contrats );
+				$replacements['liste_contrats_coadherents'] = $contrats_coahds;
+				$had_deliveries                             = true;
 			}
 
 			$slot_info  = '';
@@ -927,9 +944,12 @@ function amapress_distribution_all_amapiens_recall_options() {
 					return __( 'La syntaxe [creneau]xxx[/creneau] permet de cibler le texte le texte affiché lorsque des créneaux horaires de récupération de paniers sont en place pour la distribution concernée.<br />Les placeholders suivants sont disponibles:', 'amapress' ) .
 					       AmapressDistribution::getPlaceholdersHelp(
 						       [
-							       'creneau_horaire'        => __( 'Créneau horaire choisi ou affecté', 'amapress' ),
-							       'livraison_details'      => __( 'Tableau détaillant les paniers livrés (sans montants) à cette distribution pour un amapien donné', 'amapress' ),
-							       'livraison_details_prix' => __( 'Tableau détaillant les paniers livrés (avec montants) à cette distribution pour un amapien donné', 'amapress' )
+							       'creneau_horaire'            => __( 'Créneau horaire choisi ou affecté', 'amapress' ),
+							       'contenu_paniers'            => __( 'Contenu des paniers', 'amapress' ),
+							       'liste_contrats'             => __( 'Listes des contrats à la distribution', 'amapress' ),
+							       'liste_contrats_coadherents' => __( 'Listes des contrats avec co-adhérents', 'amapress' ),
+							       'livraison_details'          => __( 'Tableau détaillant les paniers livrés (sans montants) à cette distribution pour un amapien donné', 'amapress' ),
+							       'livraison_details_prix'     => __( 'Tableau détaillant les paniers livrés (avec montants) à cette distribution pour un amapien donné', 'amapress' )
 						       ]
 					       );
 				},

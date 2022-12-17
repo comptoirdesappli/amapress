@@ -278,6 +278,61 @@ add_action( 'amapress_init', function () {
 		$file_name      = basename( $full_file_name );
 		Amapress::sendDocumentFile( $full_file_name, $file_name );
 	}
+
+	if ( isset( $_REQUEST['inscr_assistant'] ) && 'calendar_save' == $_REQUEST['inscr_assistant'] ) {
+		if ( ! amapress_is_user_logged_in() ) {
+			$request_key = ! empty( $_REQUEST['key'] ) ? sanitize_text_field( $_REQUEST['key'] ) : 'public';
+			if ( ! isset( $_REQUEST['inscr_key'] ) || sanitize_text_field( $_REQUEST['inscr_key'] ) != amapress_sha_secret( $request_key ) ) {
+				wp_die( __( 'Accès interdit', 'amapress' ) );
+			}
+		}
+
+		if ( empty( $_REQUEST['user_id'] ) ) {
+			wp_die( __( 'Accès interdit', 'amapress' ) );
+		}
+		$user_id = intval( $_REQUEST['user_id'] );
+
+		if ( empty( $_REQUEST['inscr_id'] ) ) {
+			wp_die( __( 'Accès interdit', 'amapress' ) );
+		}
+
+		$inscr_id = intval( $_REQUEST['inscr_id'] );
+
+		if ( empty( $_REQUEST['hash'] ) || amapress_sha_secret( "{$user_id}:{$inscr_id}" ) != $_REQUEST['hash'] ) {
+			wp_die( __( 'Accès interdit', 'amapress' ) );
+		}
+
+		$user_ids = AmapressContrats::get_related_users( $user_id, true );
+
+		$adh = AmapressAdhesion::getBy( $inscr_id );
+		if ( empty( $adh ) ) {
+			wp_die( __( 'Accès interdit', 'amapress' ) );
+		}
+		if ( ! in_array( $adh->getAdherentId(), $user_ids )
+		     && ! in_array( $adh->getAdherent2Id(), $user_ids )
+		     && ! in_array( $adh->getAdherent3Id(), $user_ids )
+		     && ! in_array( $adh->getAdherent4Id(), $user_ids )
+		) {
+			wp_die( __( 'Ce contrat n\'est pas à vous !', 'amapress' ) ); //phpcs:ignore
+		}
+
+		$current_calendar = $adh->getShareCalendar();
+		//if (empty($current_calendar))
+		$current_calendar = [];
+
+		foreach ( $_POST['calendar'] as $date => $coadh_id ) {
+			$current_calendar[ strval( $date ) ] = $coadh_id;
+		}
+		$adh->setShareCalendar( $current_calendar );
+
+		wp_redirect_and_exit(
+			add_query_arg( [
+				'step'    => 'contrats',
+				'key'     => $_REQUEST['key'],
+				'user_id' => $user_id,
+			] )
+		);
+	}
 } );
 
 function amapress_self_adhesion( $atts, $content = null, $tag ) {
@@ -1320,7 +1375,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			?>
         </h4>
         <p><?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption(
-				$adhesion_intermittent ? 'online_subscription_inter_coords_step_message' : 'online_subscription_coords_step_message' ), null ) ); ?></p>
+		        $adhesion_intermittent ? 'online_subscription_inter_coords_step_message' : 'online_subscription_coords_step_message' ), null ) ); ?></p>
         <p><?php echo $adherents_infos; ?></p>
 		<?php echo $adherents_custom_message; ?>
         <p><?php echo $user_message; ?></p>
@@ -1330,17 +1385,17 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
             <input type="hidden" name="notify_email" value="<?php echo esc_attr( $notify_email ); ?>"/>
             <input type="hidden" name="send_welcome" value="<?php echo esc_attr( $atts['send_welcome'] ); ?>"/>
             <input type="hidden" name="inscr_assistant" value="validate_coords"/>
-	        <?php if ( $is_mes_contrats && ! $activate_adhesion ) { ?>
+			<?php if ( $is_mes_contrats && ! $activate_adhesion ) { ?>
                 <input type="hidden" name="coords_next_step" value="contrats"/>
-	        <?php } elseif ( $activate_agreement ) { ?>
+			<?php } elseif ( $activate_agreement ) { ?>
                 <input type="hidden" name="coords_next_step" value="agreement"/>
-	        <?php } elseif ( $activate_agreement_if_noadh && ! empty( $adh_pmt ) ) { ?>
+			<?php } elseif ( $activate_agreement_if_noadh && ! empty( $adh_pmt ) ) { ?>
                 <input type="hidden" name="coords_next_step"
                        value="<?php echo( $for_logged ? 'coords_logged' : 'coords' ); ?>"/>
-	        <?php } elseif ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
+			<?php } elseif ( $activate_adhesion && empty( $adh_pmt ) ) { ?>
                 <input type="hidden" name="coords_next_step" value="adhesion"/>
-	        <?php } ?>
-	        <?php amapress_echo_honeypots(); ?>
+			<?php } ?>
+			<?php amapress_echo_honeypots(); ?>
             <input type="hidden" name="inscr_key" value="<?php echo esc_attr( amapress_sha_secret( $key ) ); ?>"/>
             <table style="min-width: 50%">
                 <tr>
@@ -1388,7 +1443,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                                   class="<?php echo( $force_upper ? 'force-upper' : '' ); ?> <?php echo( Amapress::toBool( $atts['address_required'] ) ? 'required' : '' ) ?>"><?php echo esc_textarea( $user_address ); ?></textarea>
                     </td>
                 </tr>
-		        <?php if ( $allow_trombi_decline ) { ?>
+				<?php if ( $allow_trombi_decline ) { ?>
                     <tr>
                         <th style="text-align: left; width: auto"></th>
                         <td>
@@ -1397,12 +1452,12 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                             </label>
                         </td>
                     </tr>
-		        <?php } ?>
+				<?php } ?>
             </table>
             <div>
-		        <?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
+				<?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption( 'online_adhesion_coadh_message' ), null ) ); ?>
             </div>
-	        <?php if ( $max_cofoyers >= 1 ) { ?>
+			<?php if ( $max_cofoyers >= 1 ) { ?>
                 <table style="min-width: 50%">
                     <tr>
                         <th colspan="2"><?php _e( 'Membre du foyer 1 / Conjoint', 'amapress' ) ?>
@@ -2633,6 +2688,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						$coadherents_info = $adh->getAdherent()->getCoAdherentsList( true, false, false, $adh->getContrat_instanceId() );
 						if ( empty( $coadherents_info ) ) {
 							$coadherents_info = __( 'aucun', 'amapress' );
+						} else {
+							$coadherents_info .= '<br/><form method="get" action="' . esc_attr( get_permalink() ) . '">
+<input type="hidden" name="key" value="' . $key . '" />
+<input type="hidden" name="step" value="coadhcalendar" />
+<input type="hidden" name="user_id" value="' . $user_id . '" />
+<input type="hidden" name="inscr_id" value="' . $adh->ID . '" />
+<input type="submit" value="' . esc_attr__( 'Editer le calendrier de partage', 'amapress' ) . '" class="btn btn-secondary btn-assist-inscr"
+ 	title="' . esc_attr( __( 'Editer le calendrier de partage des paniers entre co-adhérents', 'amapress' ) ) . '"/>
+</form>';
 						}
 						$coadherents_info = '<br /><strong>' . __( 'Co-adhérents', 'amapress' ) . '</strong> : ' . $coadherents_info;
 						$edit_contrat     = '';
@@ -3097,8 +3161,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				echo '<input name="lieu_id" value="' . $lieux[0]->ID . '" type="hidden" />';
 			}
 
-			if ( Amapress::hasPartialCoAdhesion() ) {
-				echo '<p><strong>' . __( 'Co-adhérents', 'amapress' ) . '</strong></p>';
+			if ( Amapress::hasPartialCoAdhesion() && $contrat->getAllowCoadherents() ) {
+				echo '<br/><p><strong>' . __( 'Co-adhérents', 'amapress' ) . '</strong></p>';
+
+				echo $contrat->getCoadherentsMention();
 
 				if ( $for_logged && amapress_is_user_logged_in() ) {
 					$user_id = wp_get_current_user()->ID;
@@ -3209,6 +3275,111 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$message = amapress_replace_mail_placeholders( $message, AmapressUser::getBy( $user_id ), $adh );
 
 		echo $message; //phpcs:ignore
+
+	} else if ( 'coadhcalendar' == $step ) {
+		if ( $for_logged && amapress_is_user_logged_in() ) {
+			$user_id = wp_get_current_user()->ID;
+		} else {
+			if ( empty( $_REQUEST['user_id'] ) ) {
+				wp_die( $invalid_access_message ); //phpcs:ignore
+			}
+			$user_id = intval( $_REQUEST['user_id'] );
+		}
+
+		if ( empty( $_REQUEST['inscr_id'] ) ) {
+			wp_die( $invalid_access_message ); //phpcs:ignore
+		}
+
+		$user_ids = AmapressContrats::get_related_users( $user_id, true );
+
+		/* @var AmapressAdhesion $adh */
+		$adh = AmapressAdhesion::getBy( intval( $_GET['inscr_id'] ) );
+		if ( empty( $adh ) ) {
+			wp_die( $invalid_access_message ); //phpcs:ignore
+		}
+		if ( ! in_array( $adh->getAdherentId(), $user_ids )
+		     && ! in_array( $adh->getAdherent2Id(), $user_ids )
+		     && ! in_array( $adh->getAdherent3Id(), $user_ids )
+		     && ! in_array( $adh->getAdherent4Id(), $user_ids )
+		) {
+			wp_die( __( 'Ce contrat n\'est pas à vous !', 'amapress' ) ); //phpcs:ignore
+		}
+
+		if ( empty( $adh->getAllAdherents() ) ) {
+			wp_die( $invalid_access_message ); //phpcs:ignore
+		}
+
+		$contrat          = $adh->getContrat_instance();
+		$dates            = $contrat->getRemainingDates();
+		$current_calendar = $adh->getShareCalendar();
+		if ( empty( $current_calendar ) ) {
+			$current_calendar = [];
+			foreach ( $dates as $date ) {
+				$current_calendar[ strval( $date ) ] = null;
+			}
+
+		}
+
+		$coadherents = [];
+		foreach ( $adh->getAllAdherents() as $coadh ) {
+			$coadherents[ $coadh->ID ] = $coadh->getDisplayName();
+		}
+
+		echo '<h4>' . __( 'Calendrier de partage entre co-adhérents', 'amapress' ) . '</h4>';
+
+		echo Amapress::getOption( 'online_subscription_share_calendar' );
+
+		?>
+        <p>
+            <button id="btnAlternate" class="btn btn-secondary">Alterner co-adhérents</button>
+        </p>
+        <script type="text/javascript">
+            jQuery(function ($) {
+                $('#btnAlternate').on('click', function () {
+                    var firstSelect = $(".coadh_select:first");
+                    var optionsCount = $('option', firstSelect).length;
+                    var startIndex = firstSelect.prop('selectedIndex');
+                    $('.coadh_select').each(function () {
+                        $(this).prop('selectedIndex', startIndex);
+                        startIndex = (startIndex + 1) % optionsCount;
+                    });
+                });
+            });
+        </script>
+        <form action="<?php echo esc_attr( get_permalink() ); ?>" method="post" class="amapress_validate">
+            <input type="hidden" name="hash" value="<?php echo amapress_sha_secret( "{$user_id}:{$adh->ID}" ) ?>"/>
+            <input type="hidden" name="key" value="<?php echo esc_attr( $key ); ?>"/>
+            <input type="hidden" name="inscr_key" value="<?php echo esc_attr( amapress_sha_secret( $key ) ); ?>"/>
+            <input type="hidden" name="inscr_assistant" value="calendar_save"/>
+            <input type="hidden" name="user_id" value="<?php echo $user_id ?>"/>
+            <input type="hidden" name="inscr_id" value="<?php echo $adh->ID ?>"/>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Distribution</th>
+                    <th>Co-adhérent</th>
+                </thead>
+                <tbody>
+				<?php
+				$current_date = Amapress::start_of_day( amapress_time() );
+				foreach ( $current_calendar as $date => $coadh_id ) {
+					echo '<tr>';
+					echo '<td>' . date_i18n( 'd/m/Y', intval( $date ) ) . '</td>';
+					echo '<td><select class="coadh_select" ' . disabled( Amapress::start_of_day( $date ) < $current_date, true, false ) . ' name="calendar[' . $date . ']">' . tf_parse_select_options( $coadherents,
+							$coadh_id,
+							false ) . '</select></td>';
+					echo '</tr>';
+				}
+				?>
+                </tbody>
+            </table>
+
+            <br/>
+            <input type="submit" value="<?php echo esc_attr__( 'Enregistrer', 'amapress' ) ?>"
+                   class="btn btn-default btn-assist-inscr"/>
+        </form>
+		<?php
 	} else if ( 'stripe' == $step ) {
 		if ( $for_logged && amapress_is_user_logged_in() ) {
 			$user_id = wp_get_current_user()->ID;

@@ -548,6 +548,30 @@ function amapress_get_custom_content_distribution( $content ) {
 				}
 				amapress_echo_panel_start_no_esc( Amapress::makeLink( $contrat_model->getPermalink(), $contrat_instance->getProperty( 'contrat_type_complet' ), true, true ) . $panier_btns, $icon,
 					'amap-panel-dist amap-panel-dist-' . $lieu_id . ' amap-panel-dist-panier amap-panel-dist-panier-' . $contrat_model->ID );
+
+				$adhesions = AmapressAdhesion::getUserActiveAdhesions(
+					amapress_current_user_id(), $contrat_id, $dist_date
+				);
+				if ( ! empty( $adhesions ) ) {
+					$adhesion   = $adhesions[0];
+					$coadh_info = '';
+					$coadh_id   = $adhesion->getCoadhIdFromShareCalendarDate( $dist_date );
+					if ( $coadh_id ) {
+						$coadh = AmapressUser::getBy( $coadh_id );
+						if ( ! empty( $coadh ) ) {
+							if ( $coadh_id == $user_id ) {
+								$coadh_info = __( 'A votre tour', 'amapress' );
+							} else {
+								$coadh_info = sprintf( __( 'Au tour de %s', 'amapress' ), $coadh->getDisplayName() );
+							}
+						}
+					}
+
+					if ( ! empty( $coadh_info ) ) {
+						echo '<p><strong>' . __( 'Partage de panier : ', 'amapress' ) . $coadh_info . '</strong></p>';
+					}
+				}
+
 				echo AmapressPaniers::getPanierContentHtml( $panier->ID, $lieu_id );
 				amapress_echo_panel_end();
 

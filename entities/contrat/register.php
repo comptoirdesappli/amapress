@@ -781,7 +781,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'model_name'            => array(
+			'model_name'     => array(
 				'name'        => __( 'Nom générique', 'amapress' ),
 				'show_column' => false,
 				'show_on'     => 'edit-only',
@@ -797,7 +797,7 @@ jQuery(function($) {
 					return $contrat->getTitle();
 				}
 			),
-			'name'                  => array(
+			'name'           => array(
 				'name'           => __( 'Nom complémentaire', 'amapress' ),
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
 				'type'           => 'text',
@@ -806,7 +806,25 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'max_adherents'         => array(
+			'allow_coadh'    => array(
+				'name'           => __( 'Autoriser coadhérents', 'amapress' ),
+				'type'           => 'checkbox',
+				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
+				'required'       => true,
+				'desc'           => __( 'Autoriser les co-adhérents sur ce contrat', 'amapress' ),
+				'show_column'    => true,
+				'col_def_hidden' => true,
+			),
+			'coadh_msg'      => array(
+				'name'           => __( 'Message Co-adhérents', 'amapress' ),
+				'type'           => 'number',
+				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
+				'required'       => true,
+				'desc'           => __( 'Message au sujet des co-adhérents', 'amapress' ),
+				'show_column'    => true,
+				'col_def_hidden' => true,
+			),
+			'max_adherents'  => array(
 				'name'           => __( 'Nombre d’amapiens maximum', 'amapress' ),
 				'type'           => 'number',
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
@@ -815,7 +833,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'use_equiv'             => array(
+			'use_equiv'      => array(
 				'name'        => __( 'Maximum en part', 'amapress' ),
 				'type'        => 'checkbox',
 				'default'     => false,
@@ -824,7 +842,7 @@ jQuery(function($) {
 				'group'       => __( '2/6 - Paramètres généraux', 'amapress' ),
 				'desc'        => __( 'Compter les maximums en part (Coefficient de part) en non en inscriptions', 'amapress' ),
 			),
-			'min_engagement'        => array(
+			'min_engagement' => array(
 				'name'           => __( 'Engagement minimum', 'amapress' ),
 				'type'           => 'number',
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),

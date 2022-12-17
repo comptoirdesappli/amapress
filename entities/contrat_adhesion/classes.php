@@ -2038,6 +2038,24 @@ class AmapressAdhesion extends TitanEntity {
 		return $cheques_options;
 	}
 
+	public function getAllAdherents() {
+		$ret = [];
+		if ( $this->getAdherent() ) {
+			$ret[] = $this->getAdherent();
+		}
+		if ( $this->getAdherent2() ) {
+			$ret[] = $this->getAdherent2();
+		}
+		if ( $this->getAdherent3() ) {
+			$ret[] = $this->getAdherent3();
+		}
+		if ( $this->getAdherent4() ) {
+			$ret[] = $this->getAdherent4();
+		}
+
+		return $ret;
+	}
+
 	/** @return AmapressUser */
 	public function getAdherent() {
 		return $this->getCustomAsEntity( 'amapress_adhesion_adherent', 'AmapressUser' );
@@ -2089,6 +2107,30 @@ class AmapressAdhesion extends TitanEntity {
 	public function setAdherent4( $value ) {
 		$this->setCustom( 'amapress_adhesion_adherent4', $value );
 	}
+
+	public function setShareCalendar( $value ) {
+		$this->setCustom( 'amapress_adhesion_coadhcal', $value );
+	}
+
+	/** @return array */
+	public function getShareCalendar() {
+		return $this->getCustomAsArray( 'amapress_adhesion_coadhcal' );
+	}
+
+	/**
+	 * @param int $date
+	 *
+	 * @return int
+	 */
+	public function getCoadhIdFromShareCalendarDate( $date ) {
+		$calendar = $this->getShareCalendar();
+		if ( empty( $calendar ) || empty( $calendar[ strval( $date ) ] ) ) {
+			return 0;
+		}
+
+		return $calendar[ strval( $date ) ];
+	}
+
 
 	/** @return AmapressLieu_distribution */
 	public function getLieu() {

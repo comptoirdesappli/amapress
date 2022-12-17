@@ -1169,6 +1169,18 @@ class AmapressDistribution extends Amapress_EventBase {
 					if ( empty( $quants ) ) {
 						continue;
 					}
+					$coadh_info = '';
+					$coadh_id   = $adhesion->getCoadhIdFromShareCalendarDate( $dist_date );
+					if ( $coadh_id ) {
+						$coadh = AmapressUser::getBy( $coadh_id );
+						if ( ! empty( $coadh ) ) {
+							if ( $coadh_id == $user_id ) {
+								$coadh_info = __( 'A votre tour - ', 'amapress' );
+							} else {
+								$coadh_info = sprintf( __( 'Au tour de %s - ', 'amapress' ), $coadh->getDisplayName() );
+							}
+						}
+					}
 					$contrat_status = in_array( $adhesion->getContrat_instanceId(), $cancelled_contrat_ids ) ? 'cancelled' : '';
 					$ret[]          = new Amapress_EventEntry( array(
 						'ev_id'     => "dist-{$this->ID}-{$adhesion->ID}",
@@ -1180,13 +1192,13 @@ class AmapressDistribution extends Amapress_EventBase {
 						'category'  => __( 'Distributions', 'amapress' ),
 						'priority'  => 30,
 						'lieu'      => $lieu,
-						'label'     => $adhesion->getContrat_instance()->getModelTitle(),
+						'label'     => $coadh_info . $adhesion->getContrat_instance()->getModelTitle(),
 						'icon'      => Amapress::coalesce_icons( Amapress::getOption( "contrat_{$adhesion->getContrat_instance()->getModel()->ID}_icon" ), amapress_get_avatar_url( $adhesion->getContrat_instance()->getModel()->ID, null, 'produit-thumb', 'default_contrat.jpg' ) ),
 						'cancelled' => in_array( $adhesion->getContrat_instanceId(), $cancelled_contrat_ids ),
-						'alt'       => sprintf(
-							__( 'Distribution de %s à %s', 'amapress' ),
-							$adhesion->getContrat_instance()->getModelTitle(),
-							$lieu->getShortName() ),
+						'alt'       => $coadh_info . sprintf(
+								__( 'Distribution de %s à %s', 'amapress' ),
+								$adhesion->getContrat_instance()->getModelTitle(),
+								$lieu->getShortName() ),
 						'href'      => $this->getPermalink()
 					) );
 				}
