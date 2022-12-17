@@ -1,3 +1,11 @@
+# 0.99.160 (2022-12-17)
+
+* **Gestion d'un calendrier de partage entre co-adhérents**
+  - édition du calendrier,
+  - rappels,
+  - calendrier,
+  - affichage dans les distributions
+
 # 0.99.155 (2022-09-10)
 
 * **Assistant d'inscription:**
