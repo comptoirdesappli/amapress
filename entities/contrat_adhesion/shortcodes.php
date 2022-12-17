@@ -3167,10 +3167,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		if ( empty( $adh ) ) {
 			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
-		if ( in_array( $adh->getAdherentId(), $user_ids )
-		     && in_array( $adh->getAdherent2Id(), $user_ids )
-		     && in_array( $adh->getAdherent3Id(), $user_ids )
-		     && in_array( $adh->getAdherent4Id(), $user_ids )
+		if ( ! in_array( $adh->getAdherentId(), $user_ids )
+		     && ! in_array( $adh->getAdherent2Id(), $user_ids )
+		     && ! in_array( $adh->getAdherent3Id(), $user_ids )
+		     && ! in_array( $adh->getAdherent4Id(), $user_ids )
 		) {
 			wp_die( __( 'Ce contrat n\'est pas à vous !', 'amapress' ) ); //phpcs:ignore
 		}
@@ -3230,10 +3230,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		if ( empty( $adh ) ) {
 			wp_die( $invalid_access_message ); //phpcs:ignore
 		}
-		if ( in_array( $adh->getAdherentId(), $user_ids )
-		     && in_array( $adh->getAdherent2Id(), $user_ids )
-		     && in_array( $adh->getAdherent3Id(), $user_ids )
-		     && in_array( $adh->getAdherent4Id(), $user_ids )
+		if ( ! in_array( $adh->getAdherentId(), $user_ids )
+		     && ! in_array( $adh->getAdherent2Id(), $user_ids )
+		     && ! in_array( $adh->getAdherent3Id(), $user_ids )
+		     && ! in_array( $adh->getAdherent4Id(), $user_ids )
 		) {
 			wp_die( __( 'Ce contrat n\'est pas à vous !', 'amapress' ) ); //phpcs:ignore
 		}
@@ -3337,10 +3337,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		$contrat_id = null;
 		if ( isset( $_GET['contrat_id'] ) ) {
 			$adh = AmapressAdhesion::getBy( intval( $_GET['contrat_id'] ) );
-			if ( in_array( $adh->getAdherentId(), $user_ids )
-			     && in_array( $adh->getAdherent2Id(), $user_ids )
-			     && in_array( $adh->getAdherent3Id(), $user_ids )
-			     && in_array( $adh->getAdherent4Id(), $user_ids )
+			if ( ! in_array( $adh->getAdherentId(), $user_ids )
+			     && ! in_array( $adh->getAdherent2Id(), $user_ids )
+			     && ! in_array( $adh->getAdherent3Id(), $user_ids )
+			     && ! in_array( $adh->getAdherent4Id(), $user_ids )
 			) {
 				wp_die( __( 'Ce contrat n\'est pas à vous !', 'amapress' ) ); //phpcs:ignore
 			}
@@ -3366,10 +3366,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		/** @var AmapressAdhesion $adh */
 		$adh = AmapressAdhesion::getBy( intval( $_GET['contrat_id'] ) );
-		if ( in_array( $adh->getAdherentId(), $user_ids )
-		     && in_array( $adh->getAdherent2Id(), $user_ids )
-		     && in_array( $adh->getAdherent3Id(), $user_ids )
-		     && in_array( $adh->getAdherent4Id(), $user_ids )
+		if ( ! in_array( $adh->getAdherentId(), $user_ids )
+		     && ! in_array( $adh->getAdherent2Id(), $user_ids )
+		     && ! in_array( $adh->getAdherent3Id(), $user_ids )
+		     && ! in_array( $adh->getAdherent4Id(), $user_ids )
 		) {
 			wp_die( __( 'Ce contrat n\'est pas à vous !', 'amapress' ) ); //phpcs:ignore
 		}
