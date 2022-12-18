@@ -817,7 +817,7 @@ jQuery(function($) {
 			),
 			'coadh_msg'      => array(
 				'name'           => __( 'Message Co-adhérents', 'amapress' ),
-				'type'           => 'number',
+				'type'           => 'editor',
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
 				'required'       => true,
 				'desc'           => __( 'Message au sujet des co-adhérents', 'amapress' ),
