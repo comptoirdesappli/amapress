@@ -559,7 +559,7 @@ function amapress_get_custom_content_distribution( $content ) {
 					if ( $coadh_id ) {
 						$coadh = AmapressUser::getBy( $coadh_id );
 						if ( ! empty( $coadh ) ) {
-							if ( $coadh_id == $user_id ) {
+							if ( $coadh_id == amapress_current_user_id() ) {
 								$coadh_info = __( 'A votre tour', 'amapress' );
 							} else {
 								$coadh_info = sprintf( __( 'Au tour de %s', 'amapress' ), $coadh->getDisplayName() );
