@@ -2128,7 +2128,20 @@ class AmapressAdhesion extends TitanEntity {
 			return 0;
 		}
 
-		return $calendar[ strval( $date ) ];
+		$coadhid = $calendar[ strval( $date ) ];
+
+		if ( Amapress::hasPartialCoAdhesion() ) {
+			$user_ids = AmapressContrats::get_related_users( $this->getAdherentId(),
+				false, null, $this->getContrat_instanceId() );
+		} else {
+			$user_ids = AmapressContrats::get_related_users( $this->getAdherentId() );
+		}
+
+		if ( ! in_array( $coadhid, $user_ids ) ) {
+			return 0;
+		}
+
+		return $coadhid;
 	}
 
 
