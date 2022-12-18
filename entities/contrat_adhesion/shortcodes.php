@@ -1375,7 +1375,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			?>
         </h4>
         <p><?php echo wp_unslash( amapress_replace_mail_placeholders( Amapress::getOption(
-		        $adhesion_intermittent ? 'online_subscription_inter_coords_step_message' : 'online_subscription_coords_step_message' ), null ) ); ?></p>
+				$adhesion_intermittent ? 'online_subscription_inter_coords_step_message' : 'online_subscription_coords_step_message' ), null ) ); ?></p>
         <p><?php echo $adherents_infos; ?></p>
 		<?php echo $adherents_custom_message; ?>
         <p><?php echo $user_message; ?></p>
@@ -3305,10 +3305,6 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			wp_die( __( 'Ce contrat n\'est pas à vous !', 'amapress' ) ); //phpcs:ignore
 		}
 
-		if ( empty( $adh->getAllAdherents() ) ) {
-			wp_die( $invalid_access_message ); //phpcs:ignore
-		}
-
 		$contrat          = $adh->getContrat_instance();
 		$dates            = $contrat->getRemainingDates();
 		$current_calendar = $adh->getShareCalendar();
@@ -3320,8 +3316,17 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		}
 
+		if ( Amapress::hasPartialCoAdhesion() ) {
+			$coadh_user_ids = AmapressContrats::get_related_users( $adh->getAdherent()->getUser()->ID,
+				false, null, $contrat_instance_id );
+		} else {
+			$coadh_user_ids = AmapressContrats::get_related_users( $adh->getAdherent()->getUser()->ID );
+		}
+
 		$coadherents = [];
-		foreach ( $adh->getAllAdherents() as $coadh ) {
+		foreach ( $coadh_user_ids as $coadh_id ) {
+			$coadh = AmapressUser::getBy( $coadh_id );
+
 			$coadherents[ $coadh->ID ] = $coadh->getDisplayName();
 		}
 
