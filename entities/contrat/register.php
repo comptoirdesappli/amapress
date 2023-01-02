@@ -819,7 +819,7 @@ jQuery(function($) {
 				'name'           => __( 'Message Co-adhérents', 'amapress' ),
 				'type'           => 'editor',
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
-				'required'       => true,
+				'required'       => false,
 				'desc'           => __( 'Message au sujet des co-adhérents', 'amapress' ),
 				'show_column'    => true,
 				'col_def_hidden' => true,
