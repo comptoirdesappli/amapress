@@ -13,6 +13,7 @@ Première *configuration* : aller dans **Tableau de bord>État d'Amapress** : ht
 - Assistant de *préinscription en ligne* avec **génération du contrat**
 - Espace **intermittents** : https://wiki.amapress.fr/admin/espace_intermittents
 - *Garde de paniers*
+- **Gestion des co-adhésions** par contrat (ou global) et d'un **calendrier de partage** entre co-adhérents
 - Gestion des **responsables de distribution** et **listes d'émargement**
 - **Cartes** des amapiens
 - *Gestion multi lieu de distribution*
