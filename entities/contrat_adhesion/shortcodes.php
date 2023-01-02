@@ -2686,9 +2686,13 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 							$contrat_info .= '<br/>' . Amapress::makeLink( 'mailto:' . urlencode( implode( ',', $refs_emails ) ) . '?subject=' . urlencode( sprintf( __( 'Mon inscription %s', 'amapress' ), $adh->getTitle() ) ), __( 'Contacter les référents', 'amapress' ) );
 						}
 						$coadherents_info = $adh->getAdherent()->getCoAdherentsList( true, false, false, $adh->getContrat_instanceId() );
-						if ( empty( $coadherents_info ) ) {
-							$coadherents_info = __( 'aucun', 'amapress' );
+						if ( Amapress::hasPartialCoAdhesion() ) {
+							$coadherents_ids = AmapressContrats::get_related_users( $adh->getAdherentId(),
+								false, null, $adh->getContrat_instanceId(), false );
 						} else {
+							$coadherents_ids = AmapressContrats::get_related_users( $adh->getAdherentId(), false, null, null, false );
+						}
+						if ( count( $coadherents_ids ) > 1 ) {
 							$coadherents_info .= '<br/><form method="get" action="' . esc_attr( get_permalink() ) . '">
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="coadhcalendar" />
@@ -3318,9 +3322,10 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 		if ( Amapress::hasPartialCoAdhesion() ) {
 			$coadh_user_ids = AmapressContrats::get_related_users( $adh->getAdherent()->getUser()->ID,
-				false, null, $contrat_instance_id );
+				false, null, $adh->getContrat_instanceId(), false );
 		} else {
-			$coadh_user_ids = AmapressContrats::get_related_users( $adh->getAdherent()->getUser()->ID );
+			$coadh_user_ids = AmapressContrats::get_related_users( $adh->getAdherent()->getUser()->ID,
+				false, null, null, false );
 		}
 
 		$coadherents = [];
