@@ -1,3 +1,14 @@
+# 0.99.170 (2023-01-02)
+
+* message aux co-adhérents facultatif dans les contrats
+* **Assistant d'inscription:** correction affichage du bouton d'édition du calendrier de partage pour les modes de
+  co-adhésion totale ou partiel
+* **Export CSV:** correction export multidate (par ex, dans les dates spécifiques dans contrat quantités)
+
+# 0.99.165 (2022-12-18)
+
+* correction bugs calendrier de partage
+
 # 0.99.160 (2022-12-17)
 
 * **Gestion d'un calendrier de partage entre co-adhérents**
