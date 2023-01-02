@@ -256,9 +256,5 @@ function amapress_get_formatter( $post_type, $key, $type, $label ) {
 
 			return amapress_get_user_by_id_or_archived( $id )->user_email;
 		};
-	} else if ( strpos( $type, 'multicheck' ) || strpos( $type, 'multidate' ) ) {
-		return function ( $value ) use ( $label, $type ) {
-			return new WP_Error( 'unsupported', "Type $type is not supported ($label)" );
-		};
 	}
 }

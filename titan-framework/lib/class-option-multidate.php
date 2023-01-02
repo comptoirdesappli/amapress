@@ -27,7 +27,7 @@ class TitanFrameworkOptionMultiDate extends TitanFrameworkOption {
 	 * Constructor
 	 *
 	 * @since
-	1.4
+	 * 1.4
 	 */
 	function __construct( $settings, $owner ) {
 		parent::__construct( $settings, $owner );
@@ -42,7 +42,7 @@ class TitanFrameworkOptionMultiDate extends TitanFrameworkOption {
 	/**
 	 * Cleans up the serialized value before saving
 	 *
-	 * @param        string $value The serialized value
+	 * @param string $value The serialized value
 	 *
 	 * @return       string The cleaned value
 	 * @since        1.4
@@ -54,7 +54,7 @@ class TitanFrameworkOptionMultiDate extends TitanFrameworkOption {
 	/**
 	 * Cleans the value for getOption
 	 *
-	 * @param        string $value The raw value of the option
+	 * @param string $value The raw value of the option
 	 *
 	 * @return        mixes The cleaned value
 	 * @since        1.4
@@ -70,6 +70,19 @@ class TitanFrameworkOptionMultiDate extends TitanFrameworkOption {
 			date_i18n( self::$default_date_format, mktime( 15, 32, 55, 11, 22, date( 'Y' ) ) ),
 		);
 	}
+
+	public function columnExportValue( $post_id ) {
+		$value = $this->getValue( $post_id );
+		if ( is_array( $value ) ) {
+			$value = implode( ',', array_map( function ( $date ) {
+				return date_i18n( static::$default_date_format,
+					is_int( $date ) ? $date : TitanEntity::to_date( $date ) );
+			}, $value ) );
+		}
+
+		echo $value;
+	}
+
 
 	/**
 	 * Enqueues the jQuery UI scripts
@@ -146,8 +159,7 @@ class TitanFrameworkOptionMultiDate extends TitanFrameworkOption {
                                 updateInfos();
                             }
                         });
-                    }
-                    else {
+                    } else {
                         $dt.multiDatesPicker({
                             dateFormat: '<?php echo self::$default_jquery_date_format ?>',
                             altField: '#' + $input.attr('id'),
@@ -225,9 +237,9 @@ class TitanFrameworkOptionMultiDate extends TitanFrameworkOption {
 	/**
 	 * Registers the theme customizer control, for displaying the option
 	 *
-	 * @param   WP_Customize $wp_enqueue_script The customize object
-	 * @param   TitanFrameworkCustomizerSection $section The section where this option will be placed
-	 * @param   int $priority The order of this control in the section
+	 * @param WP_Customize $wp_enqueue_script The customize object
+	 * @param TitanFrameworkCustomizerSection $section The section where this option will be placed
+	 * @param int $priority The order of this control in the section
 	 *
 	 * @return  void
 	 * @since   1.7
