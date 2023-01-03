@@ -810,6 +810,7 @@ jQuery(function($) {
 				'name'           => __( 'Autoriser coadhérents', 'amapress' ),
 				'type'           => 'checkbox',
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
+				'default'        => true,
 				'required'       => true,
 				'desc'           => __( 'Autoriser les co-adhérents sur ce contrat', 'amapress' ),
 				'show_column'    => true,
