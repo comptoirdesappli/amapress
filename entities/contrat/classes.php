@@ -3213,9 +3213,15 @@ class AmapressContrat_quantite extends TitanEntity {
 				$confs = '0>10:1';
 			}
 		}
+		$has_no_zero = 0 === strpos( $confs, '!' );
+		if ( $has_no_zero ) {
+			$confs = substr( $confs, 1 );
+		}
 
-		$options      = array();
-		$options['0'] = $this->formatValue( 0 );
+		$options = array();
+		if ( ! $has_no_zero ) {
+			$options['0'] = $this->formatValue( 0 );
+		}
 		foreach ( explode( ';', $confs ) as $conf ) {
 			$m     = array();
 			$float = '(?:\d+(?:[,\.]\d+)?)';
