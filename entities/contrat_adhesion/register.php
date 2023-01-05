@@ -1612,6 +1612,10 @@ function amapress_get_distribution_quantite_datatable(
 			if ( ! $adh->getAdherentId() ) {
 				return '';
 			}
+			$coadh_id = $adh->getCoadhIdFromShareCalendarDate( $date );
+			if ( $coadh_id ) {
+				return strval( $coadh_id );
+			}
 			$user = $adh->getAdherent()->getUser();
 			if ( $allow_partial_coadh ) {
 				$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID, false, $date, $adh->getContrat_instanceId() ) );
@@ -1981,9 +1985,17 @@ function amapress_get_contrat_quantite_datatable(
 					if ( $show_adherents ) {
 						if ( isset( $adhesions[0] ) ) {
 							/** @var AmapressAdhesion $adhesion */
-							$adhesion            = $adhesions[0];
-							$row['adherent']     = $adhesion->getAdherent()->getSortableDisplayName();
-							$row['adherent_tel'] = implode( '/', $adhesion->getAdherent()->getPhoneNumbers( true ) );
+							$adhesion = $adhesions[0];
+							$coadh_id = $adhesion->getCoadhIdFromShareCalendarDate( $final_date );
+							$adherent = $adhesion->getAdherent();
+							if ( $coadh_id ) {
+								$adherent = AmapressUser::getBy( $coadh_id );
+							}
+							if ( empty( $adherent ) ) {
+								$adherent = $adhesion->getAdherent();
+							}
+							$row['adherent']     = $adherent->getSortableDisplayName();
+							$row['adherent_tel'] = implode( '/', $adherent->getPhoneNumbers( true ) );
 						} else {
 							$row['adherent']     = '';
 							$row['adherent_tel'] = '';
@@ -2588,9 +2600,17 @@ function amapress_get_producteurs_finances_datatable(
 					               . '<br />'
 					               . '<em>' . $contrat_instance->getModel()->getProducteur()->getTitle() . '</em>';
 
-					$row['lieu']     = $inscription->getLieu()->getShortName();
+					$row['lieu'] = $inscription->getLieu()->getShortName();
+					$coadh_id    = $inscription->getCoadhIdFromShareCalendarDate( $date );
+					$adherent    = $inscription->getAdherent();
+					if ( $coadh_id ) {
+						$adherent = AmapressUser::getBy( $coadh_id );
+					}
+					if ( empty( $adherent ) ) {
+						$adherent = $inscription->getAdherent();
+					}
 					$row['adherent'] = sprintf( __( '%s<br/>(%s)', 'amapress' ),
-						$inscription->getAdherent()->getSortableDisplayName(), $inscription->getAdherent()->getEmail() );
+						$adherent->getSortableDisplayName(), $adherent->getEmail() );
 
 					$row['pmt'] = Amapress::formatPaymentType( $inscription->getMainPaiementType() );
 

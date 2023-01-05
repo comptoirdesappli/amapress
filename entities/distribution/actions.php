@@ -280,6 +280,10 @@ function getListeEmargement( $dist_id, $show_all_contrats, $for_pdf = false ) {
 			if ( ! $adh->getAdherentId() ) {
 				return '';
 			}
+			$coadh_id = $adh->getCoadhIdFromShareCalendarDate( $date );
+			if ( $coadh_id ) {
+				return strval( $coadh_id );
+			}
 			$user = $adh->getAdherent()->getUser();
 			if ( $allow_partial_coadh ) {
 				$user_ids = array_unique( AmapressContrats::get_related_users( $user->ID, false, $date, $adh->getContrat_instanceId() ) );
