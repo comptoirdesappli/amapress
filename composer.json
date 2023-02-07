@@ -15,10 +15,11 @@
   },
   "require": {
     "kamermans/guzzle-oauth2-subscriber": "~1.0",
-    "tecnickcom/tcpdf": "~6.0",
+    "tecnickcom/tcpdf": "~6.4",
     "guzzlehttp/guzzle": "~6.0",
+    "guzzlehttp/psr7": "^1.6",
     "phpoffice/phpexcel": ">=1.8.1",
-    "phpoffice/phpword": ">=0.18",
+    "phpoffice/phpword": "~0.18",
     "athari/yalinqo": "~2.0",
     "php-imap/php-imap": ">=3.0",
     "fzaninotto/faker": ">=1.8",
