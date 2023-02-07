@@ -11,6 +11,9 @@
   "config": {
     "preferred-install": {
       "*": "dist"
+    },
+    "allow-plugins": {
+      "johnpbloch/wordpress-core-installer": true
     }
   },
   "require": {
