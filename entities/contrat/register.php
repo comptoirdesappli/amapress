@@ -2970,7 +2970,7 @@ function amapress_quantite_editor_line( AmapressContrat_instance $contrat_instan
 	echo "<textarea style='width: 100%; height: 100%' rows='3' class='' name='amapress_quant_data[$id][desc]' placeholder='" . __( "Variante poids, composition, confection", 'amapress' ) . "'>{$description}</textarea>";
 	echo '</td>';
 	echo '<td style="width: 15%">';
-	echo '<span title="' . esc_attr__( 'Quantités proposées par le producteur à l’amapien', 'amapress' ) . '">' . esc_html__( 'Choix quantité', 'amapress' ) . '</span>';
+	echo '<span title="' . esc_attr__( 'Quantités proposées par le producteur à l’amapien, par ex 1>10 ; 1,3,5 ; ajouter ! en début pour forcer à prendre au moins 1', 'amapress' ) . '">' . esc_html__( 'Choix quantité', 'amapress' ) . '</span>';
 	echo "<br/><input style='width: 100%' type='text' class='text' name='amapress_quant_data[$id][quant_conf]' placeholder='" . __( "Nombre autorisé", 'amapress' ) . "' value='$quantite_conf' />";
 	if ( $contrat_instance->isPanierVariable() || $contrat_instance->isQuantiteVariable() ) {
 		echo '<br/><span title="' . esc_attr__( 'Regroupez des produits en carton', 'amapress' ) . '">' . esc_html__( 'Confection', 'amapress' ) . '</span>';
