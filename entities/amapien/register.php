@@ -378,6 +378,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'options'        => array(
 					'mail' => __( 'Email', 'amapress' ),
 					'tel'  => __( 'Téléphone', 'amapress' ),
+					'smt'  => __( 'Messageries instantanées', 'amapress' )
 				),
 				'desc'           => __( 'Moyen de communication préféré', 'amapress' ),
 			),
