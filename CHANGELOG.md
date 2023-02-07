@@ -1,3 +1,19 @@
+# 0.99.185 (2023-02-07)
+
+* Quantité proposée, tooltip "ajouter ! en début pour forcer à prendre au moins 1"
+* ajout Messageries instantanées dans les moyens de contact d'un amapien
+* menu Aide > Recherche Tableau de bord pour rechercher dans le menu, options et paramètres du Tableau de bord
+
+# 0.99.175 (2023-01-05)
+
+* **Quantités contrats:** ajout d'une option !1>25 pour forcer la sélection d'au moins 1 pour un produit
+* affichage des coadhérents suivant le calendrier de partage dans les quantités aux distributions, les finances et la
+  liste d'émargement
+
+# 0.99.171 (2023-01-03)
+
+* autoriser les co-adhérents coché par défaut dans les contrats
+
 # 0.99.170 (2023-01-02)
 
 * message aux co-adhérents facultatif dans les contrats
