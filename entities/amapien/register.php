@@ -1314,6 +1314,12 @@ function amapress_register_admin_bar_menu_items( $items ) {
 				'href'   => admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ),
 				'target' => '_blank',
 			),
+			array(
+				'id'     => 'amapress_shorcodes_searchparams_link',
+				'title'  => '<span class="ab-icon-submenu dashicons-before dashicons-search"></span> ' . __( 'Recherche Tableau de bord', 'amapress' ),
+				'href'   => admin_url( 'admin.php?page=amapress_help_page&tab=searchparams' ),
+				'target' => '_blank',
+			),
 		]
 	);
 

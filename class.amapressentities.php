@@ -6411,7 +6411,7 @@ Sélectionnez les Coordinateurs Amap en charge des réponses à l\'aide des menu
 								),
 							)
 						),
-						'Shortcodes'                                    => array(
+						'Shortcodes'                    => array(
 							'id'         => 'shortcodes',
 							'capability' => 'edit_pages',
 							'options'    => array(
@@ -6489,7 +6489,19 @@ jQuery(document).ready(function($) {
 								)
 							)
 						),
-						'Placeholders - contrat vierge'                 => array(
+						'Recherche Tableau de bord'     => array(
+							'id'         => 'searchparams',
+							'capability' => 'edit_pages',
+							'options'    => array(
+								array(
+									'id'     => 'searchparams_cust',
+									'name'   => __( 'Recherche dans le Tableau de bord', 'amapress' ),
+									'type'   => 'custom',
+									'custom' => 'amapress_searchparams_tab'
+								)
+							)
+						),
+						'Placeholders - contrat vierge' => array(
 							'id'         => 'paper_contrat_placeholders',
 							'capability' => 'manage_contrats',
 							'options'    => array(
@@ -6503,7 +6515,7 @@ jQuery(document).ready(function($) {
 								)
 							)
 						),
-						'Placeholders - production'                     => array(
+						'Placeholders - production'     => array(
 							'id'         => 'pres_prod_contrat_placeholders',
 							'capability' => 'manage_contrats',
 							'options'    => array(

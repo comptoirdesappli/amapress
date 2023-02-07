@@ -178,7 +178,7 @@ function amapress_command_palette_state_items( $items ) {
 						'title'       => wp_strip_all_tags( $check['name'] ),
 						'url'         => $url,
 						'description' => '',
-						'category'    => __( 'Etat d\'Amapress/', 'amapress' ) . $labels[ $categ ],
+						'category'    => __( 'Etat d\'Amapress > ', 'amapress' ) . $labels[ $categ ],
 					];
 				}
 			}
@@ -231,7 +231,7 @@ function amapress_command_palette_shortcodes_items( $items ) {
 	return $items;
 }
 
-add_filter( 'command_palette_items', function ( $items ) {
+function amapress_cmdpalette_amapress_items( $items ) {
 	$items = array_merge(
 		[
 			[
@@ -251,4 +251,107 @@ add_filter( 'command_palette_items', function ( $items ) {
 	$items = amapress_command_palette_shortcodes_items( $items );
 
 	return $items;
-} );
+}
+
+add_filter( 'command_palette_items', 'amapress_cmdpalette_items' );
+
+function amapress_cmdpalette_adminmenu_items( $items ) {
+	global $menu, $submenu;
+
+	function processAdminUrl( $text ) {
+		if ( strpos( $text, '.php' ) !== false ) {
+			return admin_url( $text );
+		}
+
+		return admin_url( 'admin.php?page=' . $text );
+	}
+
+	function removeSpan( $text ) {
+		$text = preg_replace( '/<span.*<\/span>|<span.*\/>/s', '', $text );
+
+		return trim( $text );
+	}
+
+	$items = array_merge( $items, array_map(
+		function ( $menuItem ) use ( $items ) {
+			return
+				[
+					'id'         => $menuItem[2],
+					'category'   => __( 'Menu Tableau de bord', 'amapress' ),
+					'capability' => $menuItem[1],
+					'title'      => removeSpan( $menuItem[0] ),
+					'url'        => processAdminUrl( $menuItem[2] ),
+				];
+		},
+		array_filter( $menu, function ( $menuItem ) {
+			return ! empty( $menuItem[0] );
+		} )
+	) );
+
+	$items_by_id = array_combine( array_map( function ( $item ) {
+		return $item['id'];
+	}, $items ), $items );
+	foreach ( $submenu as $parentMenu => $submenuItems ) {
+		if ( ! isset( $items_by_id[ $parentMenu ] ) ) {
+			continue;
+		}
+		foreach ( $submenuItems as $menuItem ) {
+			$items[] =
+				[
+					'id'         => $menuItem[2] . '-' . $menuItem[1],
+					'capability' => $menuItem[1],
+					'title'      => removeSpan( $menuItem[0] ),
+					'url'        => processAdminUrl( $menuItem[2] ),
+					'category'   => __( 'Menu Tableau de bord > ', 'amapress' ) . $items_by_id[ $parentMenu ]['title'],
+				];
+		}
+	}
+
+	return $items;
+}
+
+function amapress_searchparams_tab() {
+	ob_start();
+	echo '<p>' . __( 'Cette page vous permet de rechercher dans le backoffice pour les paramètres, options et menus.', 'amapress' ) . '</p>';
+	echo '<br/>';
+
+	$searchparams = ! empty( $_REQUEST['searchparam'] ) ? $_REQUEST['searchparam'] : '';
+	echo '<label for="searchparam">' . __( 'Recherche : ', 'amapress' ) . '</label>
+<input type="search" style="display: inline-block; min-width: 50%;" id="searchparam" name="searchparam" value="' . esc_attr( $searchparams ) . '" placeholder="' . __( 'option, paramètre, menu', 'amapress' ) . '" />
+<button type="submit" class="button button-primary"><i class="dashicons dashicons-search" style="vertical-align:middle"></i></button>';
+
+
+	$items = [];
+	if ( ! empty( $_REQUEST['searchparam'] ) ) {
+		$items = amapress_cmdpalette_adminmenu_items( $items );
+		$items = amapress_cmdpalette_amapress_items( $items );
+
+		$searchparams_noaccent = strtolower( remove_accents( $searchparams ) );
+		$items                 = array_filter( $items, function ( $item ) use ( $searchparams_noaccent ) {
+			return ( false !== strpos( remove_accents( strtolower( $item['title'] ) ), $searchparams_noaccent )
+			         || ( ! empty( $item['description'] ) && false !== strpos( remove_accents( strtolower( $item['description'] ) ), $searchparams_noaccent ) ) )
+			       && amapress_current_user_can( $item['capability'] );
+		} );
+	}
+
+	echo '<hr/>';
+	echo '<table id="searchparamstable" class="table display responsive" style="width: 100%">';
+	echo '<thead>
+<th>' . __( 'Catégorie', 'amapress' ) . '</th>
+<th>' . __( 'Elément', 'amapress' ) . '</th>
+</thead>';
+	echo '<tbody>';
+	foreach ( $items as $item ) {
+		echo '<tr>
+<td>' . esc_html( ! empty( $item['category'] ) ? $item['category'] : '' ) . '</td>
+<td>' . Amapress::makeLink( $item['url'], $item['title'], true, true ) .
+		     ( ! empty( $item['description'] ) ? '<br/>' . esc_html( $item['description'] ) : '' ) . '</td>
+</tr>';
+	}
+	echo '</tbody>';
+	echo '</table>';
+	echo '<script type="application/javascript">jQuery(function($) { $("#searchparamstable").DataTable(); })</script>';
+
+
+	return ob_get_clean();
+}
