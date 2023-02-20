@@ -253,8 +253,6 @@ function amapress_cmdpalette_amapress_items( $items ) {
 	return $items;
 }
 
-add_filter( 'command_palette_items', 'amapress_cmdpalette_items' );
-
 function amapress_cmdpalette_adminmenu_items( $items ) {
 	global $menu, $submenu;
 

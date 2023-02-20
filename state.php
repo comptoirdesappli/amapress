@@ -244,9 +244,6 @@ function amapress_get_state() {
 		! defined( 'FREE_PAGES_PERSO' ) && ! defined( 'AMAPRESS_DEMO_MODE' ) ? 'error' : 'info',
 		! defined( 'FREE_PAGES_PERSO' ) && ! defined( 'AMAPRESS_DEMO_MODE' ) ?
 			( 'inactive' == $backup_status ? 'error' : ( 'local' == $backup_status ? 'warning' : 'success' ) ) : 'info' );
-	$state['01_plugins'][] = amapress_check_plugin_install( 'command-palette', __( 'Command Palette', 'amapress' ),
-		__( '<strong>Recommandé</strong> : Permet une recherche complète dans le Tableau de bord, le titre des pages, les panneaux d\'administration, certains réglages...', 'amapress' ),
-		'warning' );
 	$state['01_plugins'][] = amapress_check_plugin_install( 'akismet', __( 'Akismet', 'amapress' ),
 		__( '<strong>Recommandé</strong> : Protège le site du SPAM.', 'amapress' ),
 		'warning' );
