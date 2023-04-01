@@ -5461,6 +5461,13 @@ Retrouvez le shortcode associé avec le filtre docspace-amapiens.
 											'capability' => 'manage_options',
 										),
 										array(
+											'id'         => 'ignerrs',
+											'name'       => __( 'Ignorer les erreurs', 'amapress' ),
+											'type'       => 'textarea',
+											'desc'       => __( 'Ignorer les erreurs/exception listée dans ce champs (une par ligne)', 'amapress' ),
+											'capability' => 'manage_options',
+										),
+										array(
 											'type' => 'save',
 										),
 									),

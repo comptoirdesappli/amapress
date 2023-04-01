@@ -9,7 +9,7 @@
  * Plugin Name:         Amapress
  * Plugin URI:          https://github.com/comptoirdesappli/amapress
  * Description:         Plugin de Gestion & Communication pour les AMAP
- * Version:             0.99.186
+ * Version:             0.99.195
  * Requires             PHP: 5.6
  * Requires at least:   4.6
  * Author:              Comptoir des Applis
@@ -53,7 +53,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 112 );
-define( 'AMAPRESS_VERSION', '0.99.186' );
+define( 'AMAPRESS_VERSION', '0.99.195' );
 define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL', 60 );
 define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_LIMIT', 4 );
 
@@ -272,15 +272,25 @@ function amapress_exception_error_handler( $errno, $errstr, $errfile, $errline, 
 		return false;
 	}
 
+	$ignore_errors = [
+		'Failed to ping bing',
+		'Load_Resend_Welcome_Email',
+		'autoptimize_imgopt_number_field_7',
+		'wp_robots_no_robots'
+	];
+	$ignerrs       = Amapress::getOption( 'ignerrs' );
+	if ( ! empty( $ignerrs ) ) {
+		$ignore_errors = array_filter(
+			array_merge( $ignore_errors,
+				explode( "\n", $ignerrs ),
+				function ( $err ) {
+					return ! empty( trim( $err ) );
+				} ) );
+	}
 	foreach (
-		[
-			'Failed to ping bing',
-			'Load_Resend_Welcome_Email',
-			'autoptimize_imgopt_number_field_7',
-			'wp_robots_no_robots'
-		] as $err_msg
+		$ignore_errors as $err_msg
 	) {
-		if ( strpos( $errstr, $err_msg ) !== false ) {
+		if ( strpos( $errstr, trim( $err_msg ) ) !== false ) {
 			return true;
 		}
 	}
