@@ -253,7 +253,10 @@ function amapress_send_panier_intermittent_available( $intermittence_panier_id )
 		$intermittence_panier_id = $intermittence_panier_id->ID;
 	}
 	$inter    = AmapressIntermittence_panier::getBy( $intermittence_panier_id );
-	$intermit = amapress_prepare_message_target_bcc( "user:amapress_contrat=intermittent", __( 'Les intermittents', 'amapress' ), "intermittent" );
+	$intermit = amapress_prepare_message_target_bcc(
+		'user:amapress_contrat=intermittent',
+		__( 'Les intermittents', 'amapress' ),
+		'intermittent', false, false );
 	amapress_send_message(
 		Amapress::getOption( 'intermittence-panier-dispo-mail-subject' ),
 		Amapress::getOption( 'intermittence-panier-dispo-mail-content' ),
