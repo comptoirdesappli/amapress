@@ -269,7 +269,7 @@ function amapress_get_paniers_intermittents_table(
 					continue;
 				}
 
-				$paniers[]   = "<a href='{$dist->getPermalink()}'>{$contrat_instance->getModelTitle()}</a>";
+				$paniers[]   = "<a id='{$dist->getSlug()}' href='{$dist->getPermalink()}'>{$contrat_instance->getModelTitle()}</a>";
 				$quantites[] = $adhesion->getContrat_quantites_AsString( $date );
 				$prices[]    = $adhesion->getContrat_quantites_Price( $date );
 			}
@@ -306,6 +306,7 @@ function amapress_get_paniers_intermittents_table(
 	ob_start();
 
 	$table_options['init_as_html'] = true;
+	$table_options['initComplete'] = 'function() { try { jQuery(window.location.hash).get(0).scrollIntoView() } catch(e) { console.log(e) } }';
 
 	amapress_echo_datatable( $id, $columns, $data, $table_options );
 	$content = ob_get_clean();
