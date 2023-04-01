@@ -1,3 +1,18 @@
+# 0.99.195 (2023-04-01)
+
+* **Espace intermittents:**
+  - ne pas envoyer le message Panier à réserver à l'amapien qui le propose (s'il n'est pas intermittent)
+  - depuis un mail de Panier disponible, scroller vers le panier en question (ou proche)
+  - option 'Afficher les co-adhérents des amapiens proposant leurs paniers' (si décochée seul l'amapien ayant proposé
+    son panier est affiché sans les informations sur ces co-adhérents)
+* option 'Ignorer les erreurs' pour pouvoir supprimer des logs les erreurs des autres plugins/thèmes (et alléger le
+  log) (Tableau de bord>Réglages>Amapress, onglet Tests)
+
+# 0.99.186 (2023-02-20)
+
+* suppression des références au plugin Command Palette, suite à l'intégration de la recherche dans le tableau de bord "
+  nativement" dans Amapress
+
 # 0.99.185 (2023-02-07)
 
 * Quantité proposée, tooltip "ajouter ! en début pour forcer à prendre au moins 1"
