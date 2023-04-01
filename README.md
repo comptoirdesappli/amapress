@@ -12,22 +12,23 @@ Première *configuration* : aller dans **Tableau de bord>État d'Amapress** : ht
 - Contrat récurrents, paniers modulables, contrat glissants, règlements mensuels, quota
 - Assistant de *préinscription en ligne* avec **génération du contrat**
 - Espace **intermittents** : https://wiki.amapress.fr/admin/espace_intermittents
-- *Garde de paniers*
+- *Garde de paniers* (*faire récupérer son panier par un volontaire/autre amapien*)
 - **Gestion des co-adhésions** par contrat (ou global) et d'un **calendrier de partage** entre co-adhérents
 - Gestion des **responsables de distribution** et **listes d'émargement**
 - **Cartes** des amapiens
 - *Gestion multi lieu de distribution*
 - ***Événements*** et *visites à la ferme*
-- Gestion des membres du *collectif* de l'Amap
-- *Liste d'attente* d'inscription
+- Gestion des membres du *collectif* de l'Amap (*rôles dans le collectif*)
+- **Liste d'attente d'inscription**
 - Gestion du *site vitrine* et *recommandations techniques* : https://wiki.amapress.fr/admin/etat_amapress
-- **Listes de diffusion** (Ouvaton, Sud-Ouest, Framaliste, OVH) et **emails groupés** : https://wiki.amapress.fr/admin/email_groupe
+- **Listes de diffusion** (Ouvaton, Sud-Ouest, Framaliste, OVH) et **emails
+  groupés** : https://wiki.amapress.fr/admin/email_groupe
 - **Agenda** : https://wiki.amapress.fr/amapien/agenda
 - *Recettes*
 - *Régulation* des emails du site
 - **Créneaux de distributions**
 - *Rappels libres périodiques* pour gestion (paiement de la location, de l'hébergement)
-- **Paiements en ligne** des contrats (Stripe)
+- **Paiements en ligne** des contrats (*Stripe*)
 - **Adhésion** via la plateforme **HelloAsso** (paiement en ligne)
 - *Commandes de produits par groupe*
 - **Rappels automatiques par mail** pour la gestion des contrats et des distributions
