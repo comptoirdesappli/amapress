@@ -4674,6 +4674,12 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 											'default' => true,
 										),
 										array(
+											'id'      => 'intermit_coadhs',
+											'name'    => __( 'Afficher les co-adhérents des amapiens proposant leurs paniers', 'amapress' ),
+											'type'    => 'checkbox',
+											'default' => true,
+										),
+										array(
 											'id'      => 'intermit_adhesion_req',
 											'name'    => __( 'Adhésion obligatoire pour les intermittents', 'amapress' ),
 											'type'    => 'checkbox',

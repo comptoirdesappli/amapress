@@ -115,15 +115,16 @@ function amapress_get_paniers_intermittents_table(
 
 	$show_columns = wp_parse_args( $show_columns,
 		array(
-			'date'      => true,
-			'panier'    => true,
-			'quantite'  => true,
-			'lieu'      => true,
-			'prix'      => true,
-			'adherent'  => true,
-			'message'   => true,
-			'repreneur' => true,
-			'etat'      => true,
+			'date'        => true,
+			'panier'      => true,
+			'quantite'    => true,
+			'lieu'        => true,
+			'prix'        => true,
+			'adherent'    => true,
+			'coadherents' => Amapress::toBool( Amapress::getOption( 'intermit_coadhs' ) ),
+			'message'     => true,
+			'repreneur'   => true,
+			'etat'        => true,
 		) );
 
 	$columns = array();
@@ -273,7 +274,12 @@ function amapress_get_paniers_intermittents_table(
 				$prices[]    = $adhesion->getContrat_quantites_Price( $date );
 			}
 		}
-		$users     = AmapressContrats::get_related_users( $ad->getAdherentId() );
+		if ( $show_columns['coadherents'] ) {
+			$users = AmapressContrats::get_related_users(
+				$ad->getAdherentId() );
+		} else {
+			$users = [ $ad->getAdherentId() ];
+		}
 		$adherents = '';
 		foreach ( $users as $user ) {
 			$amapien = AmapressUser::getBy( $user );
@@ -281,6 +287,7 @@ function amapress_get_paniers_intermittents_table(
 				$adherents .= $amapien->getDisplay( $show_options );
 			}
 		}
+
 		$data[] = array(
 			'panier'       => implode( ', ', $paniers ),
 			'lieu'         => "<a href='{$lieu->getPermalink()}'>{$lieu->getShortName()}</a>",
