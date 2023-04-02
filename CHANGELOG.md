@@ -1,3 +1,7 @@
+# 0.99.196 (2023-04-02)
+
+* fix error handler
+
 # 0.99.195 (2023-04-01)
 
 * **Espace intermittents:**
