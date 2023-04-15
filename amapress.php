@@ -106,7 +106,7 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 		$to = get_option( 'admin_email' );
 	}
 	if ( empty( $subject ) || empty( $message ) ) {
-		throw new Exception( 'Empty mail ???' );
+		return false;
 	}
 	if ( is_array( $to ) ) {
 		$to = implode( ', ', $to );
