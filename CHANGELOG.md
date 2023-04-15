@@ -1,3 +1,7 @@
+# 0.99.197 (2023-04-16)
+
+* fix for some WordPress 6.2 deprecations
+
 # 0.99.196 (2023-04-02)
 
 * fix error handler
@@ -9,8 +13,7 @@
   - depuis un mail de Panier disponible, scroller vers le panier en question (ou proche)
   - option 'Afficher les co-adhérents des amapiens proposant leurs paniers' (si décochée seul l'amapien ayant proposé
     son panier est affiché sans les informations sur ces co-adhérents)
-* option 'Ignorer les erreurs' pour pouvoir supprimer des logs les erreurs des autres plugins/thèmes (et alléger le
-  log) (Tableau de bord>Réglages>Amapress, onglet Tests)
+* option 'Ignorer les erreurs' pour pouvoir supprimer des logs les erreurs des autres plugins/thèmes (et alléger le log) (Tableau de bord>Réglages>Amapress, onglet Tests)
 
 # 0.99.186 (2023-02-20)
 

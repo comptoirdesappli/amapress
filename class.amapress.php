@@ -301,19 +301,19 @@ class Amapress {
 			if ( $object ) {
 				return $object->ID;
 			}
-			$object = get_page_by_title( $name, OBJECT, $post_type );
+			$object = amapress_get_page_by_title( $name, $post_type );
 			if ( $object ) {
 				return $object->ID;
 			} else {
 				$name = preg_replace( '/\x{2019}/u', '\'', $name );
 				if ( $orig_name != $name ) {
-					$object = get_page_by_title( $name, OBJECT, $post_type );
+					$object = amapress_get_page_by_title( $name, $post_type );
 					if ( $object ) {
 						return $object->ID;
 					} else {
 						$name = wptexturize( $name );
 						if ( $orig_name != $name ) {
-							$object = get_page_by_title( $name, OBJECT, $post_type );
+							$object = amapress_get_page_by_title( $name, $post_type );
 							if ( $object ) {
 								return $object->ID;
 							}

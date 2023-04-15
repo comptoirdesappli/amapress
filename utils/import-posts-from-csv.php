@@ -731,12 +731,12 @@ class Amapress_Import_Posts_CSV {
 							}
 
 							if ( ! $post && isset( $postdata['post_title'] ) ) {
-								$post = get_page_by_title( $postdata['post_title'], OBJECT, amapress_unsimplify_post_type( $post_type ) );
+								$post = amapress_get_page_by_title( $postdata['post_title'], amapress_unsimplify_post_type( $post_type ) );
 								if ( ! $post ) {
-									$post = get_page_by_title( preg_replace( '/\x{2019}/u', '\'', $postdata['post_title'] ), OBJECT, amapress_unsimplify_post_type( $post_type ) );
+									$post = amapress_get_page_by_title( preg_replace( '/\x{2019}/u', '\'', $postdata['post_title'] ), amapress_unsimplify_post_type( $post_type ) );
 								}
 								if ( ! $post ) {
-									$post = get_page_by_title( wptexturize( $postdata['post_title'] ), OBJECT, amapress_unsimplify_post_type( $post_type ) );
+									$post = amapress_get_page_by_title( wptexturize( $postdata['post_title'] ), amapress_unsimplify_post_type( $post_type ) );
 								}
 							}
 						}
