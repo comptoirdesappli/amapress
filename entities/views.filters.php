@@ -265,6 +265,11 @@ function amapress_adhesion_period_views() {
 		"post_type=amps_adh_per&amapress_date=future",
 		__( 'A venir', 'amapress' ) );
 
+	amapress_add_view_button(
+		$ret, 'archived',
+		"post_type=amps_adh_per&amapress_status=archived",
+		'Archivés' );
+
 	return $ret;
 }
 
@@ -348,6 +353,11 @@ function amapress_contrat_instance_views() {
 		$ret, 'to_renew',
 		"post_type=amps_contrat_inst&amapress_date=renew",
 		'A renouveler' );
+
+	amapress_add_view_button(
+		$ret, 'archived',
+		"post_type=amps_contrat_inst&amapress_status=archived",
+		'Archivés' );
 
 	return $ret;
 }

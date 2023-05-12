@@ -371,7 +371,17 @@ function amapress_filter_posts( WP_Query $query ) {
 	}
 	if ( ! empty( $query->query_vars['amapress_status'] ) ) {
 		$amapress_status = $query->query_vars['amapress_status'];
-		if ( AmapressDistribution::POST_TYPE == $pt ) {
+		if ( 'archived' == $amapress_status ) {
+			if ( AmapressContrat_instance::POST_TYPE == $pt || AmapressAdhesionPeriod::POST_TYPE == $pt ) {
+				amapress_add_meta_query( $query, array(
+					array(
+						'key'     => "amapress_{$pt}_archived",
+						'value'   => 1,
+						'compare' => '=',
+					)
+				) );
+			}
+		} else if ( AmapressDistribution::POST_TYPE == $pt ) {
 			if ( 'change_lieu' == $amapress_status ) {
 				amapress_add_meta_query( $query, array(
 					array(
