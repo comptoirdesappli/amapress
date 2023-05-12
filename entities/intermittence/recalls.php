@@ -190,13 +190,6 @@ function amapress_intermittence_dispo_recall_options() {
 			},
 		),
 		array(
-			'id'      => 'intermittence-recall-dispo-all',
-			'name'    => __( 'Envoyer à tous les amapiens', 'amapress' ),
-			'type'    => 'checkbox',
-			'desc'    => __( 'Envoyer à tous les amapiens (qu\'ils soient inscrits intermittents ou non)', 'amapress' ),
-			'default' => false,
-		),
-		array(
 			'id'           => 'intermittence-recall-dispo-cc',
 			'name'         => __( 'Cc', 'amapress' ),
 			'type'         => 'select-users',

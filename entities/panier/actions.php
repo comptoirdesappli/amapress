@@ -252,11 +252,18 @@ function amapress_send_panier_intermittent_available( $intermittence_panier_id )
 	if ( is_a( $intermittence_panier_id, 'WP_Post' ) ) {
 		$intermittence_panier_id = $intermittence_panier_id->ID;
 	}
-	$inter    = AmapressIntermittence_panier::getBy( $intermittence_panier_id );
-	$intermit = amapress_prepare_message_target_bcc(
-		'user:amapress_contrat=intermittent',
-		__( 'Les intermittents', 'amapress' ),
-		'intermittent', false, false );
+	$inter = AmapressIntermittence_panier::getBy( $intermittence_panier_id );
+	if ( Amapress::getOption( 'intermittence-recall-dispo-all' ) ) {
+		$intermit = amapress_prepare_message_target_bcc(
+			'user:amapress_contrat=active',
+			__( 'Tous les amapiens', 'amapress' ),
+			'intermittent', false, false );
+	} else {
+		$intermit = amapress_prepare_message_target_bcc(
+			'user:amapress_contrat=intermittent',
+			__( 'Les intermittents', 'amapress' ),
+			'intermittent', false, false );
+	}
 	amapress_send_message(
 		Amapress::getOption( 'intermittence-panier-dispo-mail-subject' ),
 		Amapress::getOption( 'intermittence-panier-dispo-mail-content' ),

@@ -4309,6 +4309,13 @@ Nous vous confirmons votre adhésion à %%nom_site%%\n
 								__( 'Email - Panier disponible', 'amapress' )                             => array(
 									'options' => array(
 										array(
+											'id'      => 'intermittence-recall-dispo-all',
+											'name'    => __( 'Envoyer à tous les amapiens', 'amapress' ),
+											'type'    => 'checkbox',
+											'desc'    => __( 'Envoyer à tous les amapiens (qu\'ils soient inscrits intermittents ou non)', 'amapress' ),
+											'default' => false,
+										),
+										array(
 											'name' => __( 'Email aux intermittents', 'amapress' ),
 											'type' => 'heading',
 										),
