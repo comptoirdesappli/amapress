@@ -1,3 +1,8 @@
+# 0.99.200 (2023-05-12)
+
+* **Espace intermittents:** option pour envoyer le mail de 'Paniers disponibles' à tous les amapiens
+* filtres contrats et périodes d'adhésion archivées
+
 # 0.99.197 (2023-04-16)
 
 * fix for some WordPress 6.2 deprecations
