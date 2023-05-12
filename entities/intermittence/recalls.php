@@ -62,7 +62,11 @@ add_action( 'amapress_recall_dispo_panier_intermittent', function ( $args ) {
 		return;
 	}
 
-	$intermit = amapress_prepare_message_target_bcc( 'user:amapress_contrat=intermittent', __( 'Les intermittents', 'amapress' ), "intermittent" );
+	if ( Amapress::getOption( 'intermittence-recall-dispo-all' ) ) {
+		$intermit = amapress_prepare_message_target_bcc( 'user:amapress_contrat=active', __( 'Tous les amapiens', 'amapress' ), "intermittent" );
+	} else {
+		$intermit = amapress_prepare_message_target_bcc( 'user:amapress_contrat=intermittent', __( 'Les intermittents', 'amapress' ), "intermittent" );
+	}
 	amapress_send_message(
 		Amapress::getOption( 'intermittence-recall-dispo-mail-subject' ),
 		Amapress::getOption( 'intermittence-recall-dispo-mail-content' ),
@@ -184,6 +188,13 @@ function amapress_intermittence_dispo_recall_options() {
 
 				] );
 			},
+		),
+		array(
+			'id'      => 'intermittence-recall-dispo-all',
+			'name'    => __( 'Envoyer à tous les amapiens', 'amapress' ),
+			'type'    => 'checkbox',
+			'desc'    => __( 'Envoyer à tous les amapiens (qu\'ils soient inscrits intermittents ou non)', 'amapress' ),
+			'default' => false,
 		),
 		array(
 			'id'           => 'intermittence-recall-dispo-cc',
