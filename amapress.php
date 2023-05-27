@@ -746,7 +746,9 @@ Archiver ces éléments permettra de nettoyer le site des anciens amapiens et de
 			admin_url( 'users.php?amapress_role=archivable' ),
 			$archivables_users
 		);
-		if ( ! empty( $message ) ) {
+		if ( $archivables_users > 0
+		     || ! empty( $archivables_periods )
+		     || ! empty( $archivables_contrats ) ) {
 			amapress_wp_mail( get_option( 'admin_email' ),
 				$subject,
 				wpautop( $message ) );
