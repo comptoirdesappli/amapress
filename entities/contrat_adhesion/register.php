@@ -2460,7 +2460,7 @@ function amapress_get_contrat_quantite_datatable(
 				count( array_unique( array_map( function ( $d ) {
 					return $d['adherent'];
 				}, $data ) ) )
-				: $last_row["all_adhs"] );
+				: ( null == $last_row ? 0 : $last_row["all_adhs"] ) );
 			$output .= implode( ', ', $output_quants );
 			$output .= '</p>';
 
