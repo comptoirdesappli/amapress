@@ -399,6 +399,8 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			return 'too_late';
 		}
 
+		$askers    = $this->getAsk();
+		$repreneur = $this->getRepreneur();
 		$this->setStatus( 'cancelled' );
 		$this->setAdherentCancelMessage( $message );
 		$this->setAsk( array() );
@@ -408,22 +410,21 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			Amapress::getOption( 'intermittence-panier-cancel-from-adherent-adherent-mail-subject' ),
 			Amapress::getOption( 'intermittence-panier-cancel-from-adherent-adherent-mail-content' ),
 			$user_id,
-			$this, $attachments, null, null, $this->getRepreneur() ? [
-			'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmailsWithCoAdherents() )
-		] : [] );
+			$this, $attachments
+		);
 
 
-		if ( $this->getRepreneur() ) {
-			$attachments = $this->getIntermittenceICal( $this->getRepreneurId(), true );
+		if ( $repreneur ) {
+			$attachments = $this->getIntermittenceICal( $repreneur->ID, true );
 			amapress_mail_to_current_user(
 				Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-subject' ),
 				Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-content' ),
-				$this->getRepreneurId(),
+				$repreneur->ID,
 				$this, $attachments, null, null, [
 				'Reply-To: ' . implode( ',', $this->getAdherent()->getAllEmailsWithCoAdherents() )
 			] );
 		} else {
-			foreach ( $this->getAsk() as $ask ) {
+			foreach ( $askers as $ask ) {
 				$attachments = $this->getIntermittenceICal( $ask['user'], true );
 				amapress_mail_to_current_user(
 					Amapress::getOption( 'intermittence-panier-cancel-from-adherent-repreneur-mail-subject' ),

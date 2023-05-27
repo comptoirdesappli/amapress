@@ -1,3 +1,9 @@
+# 0.99.203 (2023-05-27)
+
+* **Système des intermittents**: envoi de mail de refus aux demandeurs/repreneurs si l'amapien annule avant validation
+  des demandes
+* mails de contrats/périodes d'adhésions/utilisateurs archivables uniquement si au moins un est archivable
+
 # 0.99.201 (2023-05-12)
 
 * **Espace intermittents:** option pour envoyer le mail de 'Paniers disponibles' à tous les amapiens
