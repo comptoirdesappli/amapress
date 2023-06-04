@@ -54,7 +54,7 @@ class AmapressLieu_distribution extends TitanEntity implements iAmapress_Event_L
 	public function getContact_externe() {
 		$this->ensure_init();
 
-		return wpautop( stripslashes( $this->getCustom( 'amapress_lieu_distribution_contact_externe' ) ) );
+		return wpautop( stripslashes( $this->getCustomAsString( 'amapress_lieu_distribution_contact_externe' ) ) );
 	}
 
 	/** @return AmapressUser */
@@ -68,7 +68,7 @@ class AmapressLieu_distribution extends TitanEntity implements iAmapress_Event_L
 	}
 
 	public function getShortName() {
-		$ret = $this->getCustom( 'amapress_lieu_distribution_shortname', null );
+		$ret = $this->getCustomAsString( 'amapress_lieu_distribution_shortname', null );
 		if ( empty( $ret ) ) {
 			$ret = $this->getTitle();
 		}
@@ -81,7 +81,7 @@ class AmapressLieu_distribution extends TitanEntity implements iAmapress_Event_L
 	}
 
 	public function getInstructions_privee() {
-		return wpautop( stripslashes( $this->getCustom( 'amapress_lieu_distribution_instructions_privee' ) ) );
+		return wpautop( stripslashes( $this->getCustomAsString( 'amapress_lieu_distribution_instructions_privee' ) ) );
 	}
 
 	public function getHeure_debut() {
@@ -93,15 +93,15 @@ class AmapressLieu_distribution extends TitanEntity implements iAmapress_Event_L
 	}
 
 	public function getAdresse() {
-		return $this->getCustom( 'amapress_lieu_distribution_adresse' );
+		return $this->getCustomAsString( 'amapress_lieu_distribution_adresse' );
 	}
 
 	public function getCode_postal() {
-		return $this->getCustom( 'amapress_lieu_distribution_code_postal' );
+		return $this->getCustomAsString( 'amapress_lieu_distribution_code_postal' );
 	}
 
 	public function getVille() {
-		return $this->getCustom( 'amapress_lieu_distribution_ville' );
+		return $this->getCustomAsString( 'amapress_lieu_distribution_ville' );
 	}
 
 	public function isAdresseLocalized() {
@@ -119,15 +119,15 @@ class AmapressLieu_distribution extends TitanEntity implements iAmapress_Event_L
 	}
 
 	public function getAcces() {
-		return wpautop( stripslashes( $this->getCustom( 'amapress_lieu_distribution_acces' ) ) );
+		return wpautop( stripslashes( $this->getCustomAsString( 'amapress_lieu_distribution_acces' ) ) );
 	}
 
 	public function getAccesRaw() {
-		return stripslashes( $this->getCustom( 'amapress_lieu_distribution_acces' ) );
+		return stripslashes( $this->getCustomAsString( 'amapress_lieu_distribution_acces' ) );
 	}
 
 	public function getAdresseAcces() {
-		return stripslashes( $this->getCustom( 'amapress_lieu_distribution_adresse_acces' ) );
+		return stripslashes( $this->getCustomAsString( 'amapress_lieu_distribution_adresse_acces' ) );
 	}
 
 	public function getAdresseAccesLatitude() {

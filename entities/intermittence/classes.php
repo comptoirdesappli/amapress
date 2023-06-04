@@ -192,7 +192,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 	}
 
 	public function getStatus() {
-		return $this->getCustom( 'amapress_intermittence_panier_status' );
+		return $this->getCustomAsString( 'amapress_intermittence_panier_status' );
 	}
 
 	public function setStatus( $value ) {
@@ -202,13 +202,13 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 	public function getAdherentMessage() {
 		$this->ensure_init();
 
-		return $this->getCustom( 'amapress_intermittence_panier_adh_message' );
+		return $this->getCustomAsString( 'amapress_intermittence_panier_adh_message' );
 	}
 
 	public function getAdherentCancelMessage() {
 		$this->ensure_init();
 
-		return $this->getCustom( 'amapress_intermittence_panier_adh_cancel_message' );
+		return $this->getCustomAsString( 'amapress_intermittence_panier_adh_cancel_message' );
 	}
 
 	public function setAdherentMessage( $value ) {

@@ -112,7 +112,7 @@ class AmapressDistribution extends Amapress_EventBase {
 	}
 
 	public function getInformations() {
-		return stripslashes( $this->getCustom( 'amapress_distribution_info', '' ) );
+		return stripslashes( $this->getCustomAsString( 'amapress_distribution_info', '' ) );
 	}
 
 	public function getDate() {
@@ -280,7 +280,7 @@ class AmapressDistribution extends Amapress_EventBase {
 	}
 
 	public function getGardienComment( $gardien_id ) {
-		return $this->getCustom( "amapress_distribution_gardien_{$gardien_id}_comment" );
+		return $this->getCustomAsString( "amapress_distribution_gardien_{$gardien_id}_comment" );
 	}
 
 	public function getPaniersGarde() {

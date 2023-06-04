@@ -3763,7 +3763,7 @@ add_filter( 'amapress_gestion-contrats_page_contrat_paiements_default_hidden_col
 } );
 
 add_action( 'admin_menu', function () {
-	add_submenu_page( null, __( 'Récapitulatif de commande', 'amapress' ),
+	add_submenu_page( '', __( 'Récapitulatif de commande', 'amapress' ),
 		'', 'edit_adhesion', 'amps_inscr_details',
 		function () {
 			$contrat_id = null;

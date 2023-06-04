@@ -183,6 +183,14 @@ class TitanEntity {
 		return isset( $this->custom[ $name ] ) ? $this->custom[ $name ] : $default;
 	}
 
+	protected function getCustomAsString( $name, $default = '' ) {
+		$this->ensure_init();
+
+		return ! empty( $this->custom[ $name ] ) ?
+			$this->custom[ $name ] :
+			( ! empty( $default ) ? $default : '' );
+	}
+
 	protected function getCustomAsEntity( $name, $classname, $default = null ) {
 		$this->ensure_init();
 

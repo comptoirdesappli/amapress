@@ -24,7 +24,7 @@ class AmapressProduit extends TitanEntity {
 	}
 
 	public function getContent_model() {
-		return $this->getCustom( 'amapress_produit_content_model' );
+		return $this->getCustomAsString( 'amapress_produit_content_model' );
 	}
 
 	public function getQuantite_variable() {

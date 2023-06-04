@@ -48,15 +48,15 @@ class AmapressAdhesionPeriod extends TitanEntity {
 	}
 
 	public function getName() {
-		return wp_unslash( $this->getCustom( 'amapress_adhesion_period_name' ) );
+		return wp_unslash( $this->getCustomAsString( 'amapress_adhesion_period_name' ) );
 	}
 
 	public function getCategory() {
-		return wp_unslash( $this->getCustom( 'amapress_adhesion_period_categ' ) );
+		return wp_unslash( $this->getCustomAsString( 'amapress_adhesion_period_categ' ) );
 	}
 
 	public function getOnlineDescription() {
-		return wp_unslash( $this->getCustom( 'amapress_adhesion_period_online_desc' ) );
+		return wp_unslash( $this->getCustomAsString( 'amapress_adhesion_period_online_desc' ) );
 	}
 
 	public function getCustomCheck( $index ) {
@@ -64,7 +64,7 @@ class AmapressAdhesionPeriod extends TitanEntity {
 	}
 
 	public function getPaymentInfo() {
-		return wp_unslash( $this->getCustom( 'amapress_adhesion_period_pmt_info' ) );
+		return wp_unslash( $this->getCustomAsString( 'amapress_adhesion_period_pmt_info' ) );
 	}
 
 	public function getWordModelId() {
@@ -117,7 +117,7 @@ class AmapressAdhesionPeriod extends TitanEntity {
 	}
 
 	public function getHelloAssoFormUrl() {
-		return trim( $this->getCustom( 'amapress_adhesion_period_hla_form_url' ) );
+		return trim( $this->getCustomAsString( 'amapress_adhesion_period_hla_form_url' ) );
 	}
 
 	public function getHelloAssoOrganizationSlug() {

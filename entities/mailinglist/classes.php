@@ -42,11 +42,11 @@ class Amapress_MailingListConfiguration extends TitanEntity {
 	}
 
 	public function getName() {
-		return $this->getCustom( 'amapress_mailinglist_name' );
+		return $this->getCustomAsString( 'amapress_mailinglist_name' );
 	}
 
 	public function getDescription() {
-		return $this->getCustom( 'amapress_mailinglist_desc' );
+		return $this->getCustomAsString( 'amapress_mailinglist_desc' );
 	}
 
 	public function getAddress() {
@@ -75,7 +75,7 @@ class Amapress_MailingListConfiguration extends TitanEntity {
 	}
 
 	public function getRawEmails() {
-		$raw_emails = $this->getCustom( 'amapress_mailinglist_raw_users' );
+		$raw_emails = $this->getCustomAsString( 'amapress_mailinglist_raw_users' );
 		if ( ! empty( $raw_emails ) ) {
 			$raw_emails = preg_replace( '/\s+/', ',', $raw_emails );
 			$raw_emails = explode( ',', $raw_emails );

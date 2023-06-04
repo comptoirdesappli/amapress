@@ -83,7 +83,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 
 	/** @return string */
 	public function getMainPaiementType() {
-		return $this->getCustom( 'amapress_adhesion_paiement_pmt_type', 'chq' );
+		return $this->getCustomAsString( 'amapress_adhesion_paiement_pmt_type', 'chq' );
 	}
 
 	public function getMainPaiementTypeFormatted() {
@@ -122,19 +122,19 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 	}
 
 	public function getStatus() {
-		return $this->getCustom( 'amapress_adhesion_paiement_status', self::NOT_RECEIVED );
+		return $this->getCustomAsString( 'amapress_adhesion_paiement_status', self::NOT_RECEIVED );
 	}
 
 	public function getNumero() {
-		return $this->getCustom( 'amapress_adhesion_paiement_numero' );
+		return $this->getCustomAsString( 'amapress_adhesion_paiement_numero' );
 	}
 
 	public function getBanque() {
-		return $this->getCustom( 'amapress_adhesion_paiement_banque' );
+		return $this->getCustomAsString( 'amapress_adhesion_paiement_banque' );
 	}
 
 	public function getEmetteur() {
-		return $this->getCustom( 'amapress_adhesion_paiement_emetteur' );
+		return $this->getCustomAsString( 'amapress_adhesion_paiement_emetteur' );
 	}
 
 	public function getAmount( $type = null ) {
@@ -1035,7 +1035,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 	}
 
 	public function getMessage() {
-		return $this->getCustom( 'amapress_adhesion_paiement_message' );
+		return $this->getCustomAsString( 'amapress_adhesion_paiement_message' );
 	}
 
 
@@ -1066,7 +1066,7 @@ class AmapressAdhesion_paiement extends Amapress_EventBase {
 	}
 
 	public function getHelloAssoUrl() {
-		return $this->getCustom( 'amapress_adhesion_paiement_hla_url' );
+		return $this->getCustomAsString( 'amapress_adhesion_paiement_hla_url' );
 	}
 
 	public function getHelloAssoAmount() {

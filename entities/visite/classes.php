@@ -77,15 +77,15 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 	}
 
 	public function getLieu_externe_nom() {
-		return $this->getCustom( 'amapress_visite_lieu_externe_nom' );
+		return $this->getCustomAsString( 'amapress_visite_lieu_externe_nom' );
 	}
 
 	public function getLieu_externe_adresse() {
-		return $this->getCustom( 'amapress_visite_lieu_externe_adresse' );
+		return $this->getCustomAsString( 'amapress_visite_lieu_externe_adresse' );
 	}
 
 	public function getLieu_externe_acces() {
-		return stripslashes( $this->getCustom( 'amapress_visite_lieu_externe_acces' ) );
+		return stripslashes( $this->getCustomAsString( 'amapress_visite_lieu_externe_acces' ) );
 	}
 
 	public function isLieu_externe_AdresseLocalized() {
@@ -118,11 +118,11 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 	}
 
 	public function getStatus() {
-		return $this->getCustom( 'amapress_visite_status', 'confirmed' );
+		return $this->getCustomAsString( 'amapress_visite_status', 'confirmed' );
 	}
 
 	public function getAu_programme() {
-		return wpautop( stripslashes( $this->getCustom( 'amapress_visite_au_programme' ) ) );
+		return wpautop( stripslashes( $this->getCustomAsString( 'amapress_visite_au_programme' ) ) );
 	}
 
 	/** @return AmapressUser[] */

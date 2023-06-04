@@ -85,7 +85,7 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 	}
 
 	public function getStatus() {
-		return $this->getCustom( 'amapress_contrat_paiement_status', self::NOT_RECEIVED );
+		return $this->getCustomAsString( 'amapress_contrat_paiement_status', self::NOT_RECEIVED );
 	}
 
 	public function getAmount() {
@@ -93,11 +93,11 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 	}
 
 	public function getNumero() {
-		return $this->getCustom( 'amapress_contrat_paiement_numero', '' );
+		return $this->getCustomAsString( 'amapress_contrat_paiement_numero', '' );
 	}
 
 	public function getType() {
-		$ret = $this->getCustom( 'amapress_contrat_paiement_type', '' );
+		$ret = $this->getCustomAsString( 'amapress_contrat_paiement_type', '' );
 		if ( empty( $ret ) ) {
 			$ret = 'chq';
 		}
@@ -110,12 +110,12 @@ class AmapressAmapien_paiement extends Amapress_EventBase {
 	}
 
 	public function getBanque() {
-		return $this->getCustom( 'amapress_contrat_paiement_banque', '' );
+		return $this->getCustomAsString( 'amapress_contrat_paiement_banque', '' );
 	}
 
 
 	public function getEmetteur() {
-		return $this->getCustom( 'amapress_contrat_paiement_emetteur', '' );
+		return $this->getCustomAsString( 'amapress_contrat_paiement_emetteur', '' );
 	}
 
 	public static function cleanOrphans() {

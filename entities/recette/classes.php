@@ -19,7 +19,7 @@ class AmapressRecette extends TitanEntity {
 //    }
 
 	public function getContent_model() {
-		return $this->getCustom( 'amapress_recette_content_model' );
+		return $this->getCustomAsString( 'amapress_recette_content_model' );
 	}
 
 	public function getProduits() {

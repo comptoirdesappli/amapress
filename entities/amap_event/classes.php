@@ -76,19 +76,19 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 	}
 
 	public function getLieu_externe_nom() {
-		return $this->getCustom( 'amapress_amap_event_lieu_externe_nom' );
+		return $this->getCustomAsString( 'amapress_amap_event_lieu_externe_nom' );
 	}
 
 	public function getLieu_externe_adresse() {
-		return $this->getCustom( 'amapress_amap_event_lieu_externe_adresse' );
+		return $this->getCustomAsString( 'amapress_amap_event_lieu_externe_adresse' );
 	}
 
 	public function getLieu_externe_acces() {
-		return stripslashes( $this->getCustom( 'amapress_amap_event_lieu_externe_acces' ) );
+		return stripslashes( $this->getCustomAsString( 'amapress_amap_event_lieu_externe_acces' ) );
 	}
 
 	public function getLieu_externe_adresse_acces() {
-		return stripslashes( $this->getCustom( 'amapress_amap_event_lieu_externe_adresse_acces' ) );
+		return stripslashes( $this->getCustomAsString( 'amapress_amap_event_lieu_externe_adresse_acces' ) );
 	}
 
 	public function isLieu_externe_AdresseLocalized() {
@@ -120,18 +120,18 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 	}
 
 	public function getTypeDisplay() {
-		switch ( $this->getCustom( 'amapress_amap_event_type', 'lieu' ) ) {
+		switch ( $this->getCustomAsString( 'amapress_amap_event_type', 'lieu' ) ) {
 			case 'lieu':
 				return __( 'Lieu de distribution', 'amapress' );
 			case 'lieu_externe':
 				return __( 'Adresse externe', 'amapress' );
 			default:
-				return $this->getCustom( 'amapress_amap_event_type' );
+				return $this->getCustomAsString( 'amapress_amap_event_type' );
 		}
 	}
 
 	public function getType() {
-		return $this->getCustom( 'amapress_amap_event_type', 'lieu' );
+		return $this->getCustomAsString( 'amapress_amap_event_type', 'lieu' );
 	}
 
 	/** @return AmapressLieu_distribution */

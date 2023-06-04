@@ -1958,7 +1958,7 @@ class AmapressAdhesion extends TitanEntity {
 
 	/** @return string */
 	public function getMainPaiementType() {
-		return $this->getCustom( 'amapress_adhesion_pmt_type', 'chq' );
+		return $this->getCustomAsString( 'amapress_adhesion_pmt_type', 'chq' );
 	}
 
 	public function hasPaiementDateFin() {
@@ -2155,11 +2155,11 @@ class AmapressAdhesion extends TitanEntity {
 	}
 
 	public function getMessage() {
-		return $this->getCustom( 'amapress_adhesion_message' );
+		return $this->getCustomAsString( 'amapress_adhesion_message' );
 	}
 
 	public function getProducteurMessage() {
-		return wp_unslash( $this->getCustom( 'amapress_adhesion_prod_msg' ) );
+		return wp_unslash( $this->getCustomAsString( 'amapress_adhesion_prod_msg' ) );
 	}
 
 	public function getDon_Distribution() {
@@ -2171,19 +2171,19 @@ class AmapressAdhesion extends TitanEntity {
 	}
 
 	public function getStatusDisplay() {
-		switch ( $this->getCustom( 'amapress_adhesion_status' ) ) {
+		switch ( $this->getCustomAsString( 'amapress_adhesion_status' ) ) {
 
 			case self::TO_CONFIRM:
 				return 'A confirmer';
 			case self::CONFIRMED:
 				return __( 'Confirmée', 'amapress' );
 			default:
-				return $this->getCustom( 'amapress_adhesion_status' );
+				return $this->getCustomAsString( 'amapress_adhesion_status' );
 		}
 	}
 
 	public function getStatus() {
-		return $this->getCustom( 'amapress_adhesion_status' );
+		return $this->getCustomAsString( 'amapress_adhesion_status' );
 	}
 
 	public function setStatus( $status ) {

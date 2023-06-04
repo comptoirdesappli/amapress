@@ -57,12 +57,12 @@ class AmapressContrat extends TitanEntity {
 //	}
 
 	public function getInstructionsDistribution() {
-		return wpautop( stripslashes( $this->getCustom( 'amapress_contrat_instr_distrib' ) ) );
+		return wpautop( stripslashes( $this->getCustomAsString( 'amapress_contrat_instr_distrib' ) ) );
 	}
 
 	/** @return string */
 	public function getCode() {
-		return $this->getCustom( 'amapress_contrat_code', $this->getTitle() );
+		return $this->getCustomAsString( 'amapress_contrat_code', $this->getTitle() );
 	}
 
 	/** @return AmapressProducteur */
@@ -272,15 +272,15 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getProducteur_Message_Instructions() {
-		return wp_unslash( $this->getCustom( 'amapress_contrat_instance_prod_msg_desc' ) );
+		return wp_unslash( $this->getCustomAsString( 'amapress_contrat_instance_prod_msg_desc' ) );
 	}
 
 	public function getSpecialMention() {
-		return $this->getCustom( 'amapress_contrat_instance_special_mention', '' );
+		return $this->getCustomAsString( 'amapress_contrat_instance_special_mention', '' );
 	}
 
 	public function getCoadherentsMention() {
-		return $this->getCustom( 'amapress_contrat_instance_coadh_msg', '' );
+		return $this->getCustomAsString( 'amapress_contrat_instance_coadh_msg', '' );
 	}
 
 	public function getAllowCoadherents() {
@@ -288,11 +288,11 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getPaiementsMention() {
-		return $this->getCustom( 'amapress_contrat_instance_paiements_mention', '' );
+		return $this->getCustomAsString( 'amapress_contrat_instance_paiements_mention' );
 	}
 
 	public function getPaiementsOrdre() {
-		$ret = $this->getCustom( 'amapress_contrat_instance_paiements_ordre', '' );
+		$ret = $this->getCustomAsString( 'amapress_contrat_instance_paiements_ordre' );
 		if ( empty( $ret ) && $this->getModel() && $this->getModel()->getProducteur() && $this->getModel()->getProducteur()->getUser() ) {
 			$ret = $this->getModel()->getProducteur()->getUser()->getDisplayName();
 		}
@@ -351,11 +351,11 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getDon_DistributionLabel() {
-		return stripslashes( $this->getCustom( 'amapress_contrat_instance_don_dist_lbl', __( 'Don par distribution', 'amapress' ) ) );
+		return stripslashes( $this->getCustomAsString( 'amapress_contrat_instance_don_dist_lbl', __( 'Don par distribution', 'amapress' ) ) );
 	}
 
 	public function getDon_DistributionDescription() {
-		return stripslashes( $this->getCustom( 'amapress_contrat_instance_don_dist_desc', '' ) );
+		return stripslashes( $this->getCustomAsString( 'amapress_contrat_instance_don_dist_desc' ) );
 	}
 
 	public function getPayByMonth() {
@@ -407,7 +407,7 @@ class AmapressContrat_instance extends TitanEntity {
 
 	/** @return string */
 	public function getSubName() {
-		return $this->getCustom( 'amapress_contrat_instance_name' );
+		return $this->getCustomAsString( 'amapress_contrat_instance_name' );
 	}
 
 	/** @return int */
@@ -435,7 +435,7 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getContratInfo() {
-		$info = $this->getCustom( 'amapress_contrat_instance_contrat_info' );
+		$info = $this->getCustomAsString( 'amapress_contrat_instance_contrat_info' );
 
 		$placeholders = [];
 		foreach ( self::getProperties( amapress_time() ) as $prop_name => $prop ) {
@@ -445,7 +445,7 @@ class AmapressContrat_instance extends TitanEntity {
 			$placeholders[ 'total_' . $prop_name ] = $prop;
 		}
 
-		$info = $res = preg_replace_callback( '/\%\%(?<opt>[\w\d_-]+)(?:\:(?<subopt>[\w\d_-]+))?(?:,(?<fmt>[^%]+))?\%\%/i',
+		$info = preg_replace_callback( '/\%\%(?<opt>[\w\d_-]+)(?:\:(?<subopt>[\w\d_-]+))?(?:,(?<fmt>[^%]+))?\%\%/i',
 			function ( $m ) use ( $placeholders ) {
 				$opt = isset( $m['opt'] ) ? $m['opt'] : '';
 //				$subopt = isset( $m['subopt'] ) ? $m['subopt'] : '';
@@ -611,7 +611,7 @@ class AmapressContrat_instance extends TitanEntity {
 
 	/** @return string */
 	public function getOnlineContratRaw() {
-		return $this->getCustom( 'amapress_contrat_instance_contrat' );
+		return $this->getCustomAsString( 'amapress_contrat_instance_contrat' );
 	}
 
 	public function hasOnlineContrat() {
@@ -3153,13 +3153,13 @@ class AmapressContrat_quantite extends TitanEntity {
 	}
 
 	public function getCode() {
-		return $this->getCustom( 'amapress_contrat_quantite_code' );
+		return $this->getCustomAsString( 'amapress_contrat_quantite_code' );
 	}
 
 	public function getDescription() {
 		$cnt = $this->getContent();
 		if ( empty( $cnt ) ) {
-			$cnt = $this->getCustom( 'amapress_contrat_quantite_description' );
+			$cnt = $this->getCustomAsString( 'amapress_contrat_quantite_description' );
 		}
 
 		return stripslashes( $cnt );
@@ -3180,7 +3180,7 @@ class AmapressContrat_quantite extends TitanEntity {
 	}
 
 	public function getPriceUnit() {
-		return $this->getCustom( 'amapress_contrat_quantite_unit' );
+		return $this->getCustomAsString( 'amapress_contrat_quantite_unit' );
 	}
 
 	public function getPriceUnitDisplay() {
@@ -3201,7 +3201,7 @@ class AmapressContrat_quantite extends TitanEntity {
 	}
 
 	public function getQuantiteConfig() {
-		return $this->getCustom( 'amapress_contrat_quantite_quantite_config' );
+		return $this->getCustomAsString( 'amapress_contrat_quantite_quantite_config' );
 	}
 
 	public function getQuantiteOptions( $max = - 1 ) {

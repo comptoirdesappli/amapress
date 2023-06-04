@@ -186,7 +186,7 @@ class Amapress_EventBase extends TitanEntity {
 		if ( false === $res ) {
 			$active_slots = $this->getSlots();
 			$key          = 'amapress_' . static::POST_TYPE . '_slots_conf';
-			$slots_conf   = $this->getCustom( $key, Amapress::getOption( $key ) );
+			$slots_conf   = $this->getCustomAsString( $key, Amapress::getOption( $key ) );
 			$res          = [];
 			if ( ! empty( $slots_conf ) ) {
 				foreach ( explode( '|', $slots_conf ) as $conf ) {

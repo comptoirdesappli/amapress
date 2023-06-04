@@ -43,7 +43,7 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function getName() {
-		return $this->getCustom( 'amapress_mailing_group_name' );
+		return $this->getCustomAsString( 'amapress_mailing_group_name' );
 	}
 
 	public function getSimpleName() {
@@ -55,7 +55,7 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function getDescription() {
-		return $this->getCustom( 'amapress_mailing_group_desc' );
+		return $this->getCustomAsString( 'amapress_mailing_group_desc' );
 	}
 
 	public function getAdminMembersLink() {
@@ -144,11 +144,11 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function getReplyTo() {
-		return $this->getCustom( 'amapress_mailing_group_reply_to', 'sender' );
+		return $this->getCustomAsString( 'amapress_mailing_group_reply_to', 'sender' );
 	}
 
 	public function getSubjectPrefix() {
-		$subject_prefix = $this->getCustom( 'amapress_mailing_group_subject_pref' );
+		$subject_prefix = $this->getCustomAsString( 'amapress_mailing_group_subject_pref' );
 		if ( ! empty( $subject_prefix ) ) {
 			return $subject_prefix;
 		}
@@ -157,11 +157,11 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function getModeration() {
-		return $this->getCustom( 'amapress_mailing_group_moderation' );
+		return $this->getCustomAsString( 'amapress_mailing_group_moderation' );
 	}
 
 	public function getHost() {
-		return $this->getCustom( 'amapress_mailing_group_host' );
+		return $this->getCustomAsString( 'amapress_mailing_group_host' );
 	}
 
 	public function getPort() {
@@ -169,19 +169,19 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function getUsername() {
-		return $this->getCustom( 'amapress_mailing_group_username' );
+		return $this->getCustomAsString( 'amapress_mailing_group_username' );
 	}
 
 	public function getPassword() {
-		return $this->getCustom( 'amapress_mailing_group_password' );
+		return $this->getCustomAsString( 'amapress_mailing_group_password' );
 	}
 
 	public function getProtocol() {
-		return $this->getCustom( 'amapress_mailing_group_protocol', 'imap' );
+		return $this->getCustomAsString( 'amapress_mailing_group_protocol', 'imap' );
 	}
 
 	public function getEncryption() {
-		return $this->getCustom( 'amapress_mailing_group_encryption', 'ssl' );
+		return $this->getCustomAsString( 'amapress_mailing_group_encryption', 'ssl' );
 	}
 
 	public function isSelfSignedSSL() {
@@ -189,7 +189,7 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function getSmtpHost() {
-		return $this->getCustom( 'amapress_mailing_group_smtp_host' );
+		return $this->getCustomAsString( 'amapress_mailing_group_smtp_host' );
 	}
 
 	public function getSmtpMaxMailsPerHour() {
@@ -201,7 +201,7 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function getSmtpEncryption() {
-		$enc  = $this->getCustom( 'amapress_mailing_group_smtp_encryption', '' );
+		$enc  = $this->getCustomAsString( 'amapress_mailing_group_smtp_encryption', '' );
 		$port = $this->getSmtpPort();
 		if ( 465 == $port ) {
 			$enc = 'ssl';
@@ -221,11 +221,11 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	public function getSmtpUserName() {
-		return $this->getCustom( 'amapress_mailing_group_smtp_auth_username' );
+		return $this->getCustomAsString( 'amapress_mailing_group_smtp_auth_username' );
 	}
 
 	public function getSmtpPassword() {
-		return $this->getCustom( 'amapress_mailing_group_smtp_auth_password' );
+		return $this->getCustomAsString( 'amapress_mailing_group_smtp_auth_password' );
 	}
 
 	public function getIncludeAdhesionRequest() {
@@ -747,7 +747,7 @@ class AmapressMailingGroup extends TitanEntity {
 	}
 
 	private function getRawEmails() {
-		$raw_emails = $this->getCustom( 'amapress_mailing_group_raw_users' );
+		$raw_emails = $this->getCustomAsString( 'amapress_mailing_group_raw_users' );
 		if ( ! empty( $raw_emails ) ) {
 			$raw_emails = preg_replace( '/\s+/', ',', $raw_emails );
 			$raw_emails = explode( ',', $raw_emails );

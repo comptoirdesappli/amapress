@@ -43,7 +43,7 @@ class AmapressReminder extends TitanEntity {
 	}
 
 	public function getInterval() {
-		return $this->getCustom( 'amapress_reminder_interval' );
+		return $this->getCustomAsString( 'amapress_reminder_interval' );
 	}
 
 	public function getOtherDays() {
@@ -51,11 +51,11 @@ class AmapressReminder extends TitanEntity {
 	}
 
 	public function getSubject() {
-		return stripslashes( $this->getCustom( 'amapress_reminder_subject' ) );
+		return stripslashes( $this->getCustomAsString( 'amapress_reminder_subject' ) );
 	}
 
 	public function getContent() {
-		return stripslashes( $this->getCustom( 'amapress_reminder_content' ) );
+		return stripslashes( $this->getCustomAsString( 'amapress_reminder_content' ) );
 	}
 
 	public function getMembersIds() {
@@ -75,7 +75,7 @@ class AmapressReminder extends TitanEntity {
 	}
 
 	public function getRawEmails() {
-		$raw_emails = $this->getCustom( 'amapress_reminder_raw_users' );
+		$raw_emails = $this->getCustomAsString( 'amapress_reminder_raw_users' );
 		if ( ! empty( $raw_emails ) ) {
 			$raw_emails = preg_replace( '/\s+/', ',', $raw_emails );
 			$raw_emails = explode( ',', $raw_emails );

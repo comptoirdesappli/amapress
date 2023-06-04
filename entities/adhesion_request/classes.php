@@ -75,27 +75,27 @@ class AmapressAdhesionRequest extends TitanEntity {
 	}
 
 	public function getEmail() {
-		return $this->getCustom( 'amapress_adhesion_request_email' );
+		return $this->getCustomAsString( 'amapress_adhesion_request_email' );
 	}
 
 	public function getFirstName() {
-		return $this->getCustom( 'amapress_adhesion_request_first_name' );
+		return $this->getCustomAsString( 'amapress_adhesion_request_first_name' );
 	}
 
 	public function getLastName() {
-		return $this->getCustom( 'amapress_adhesion_request_last_name' );
+		return $this->getCustomAsString( 'amapress_adhesion_request_last_name' );
 	}
 
 	public function getAdresse() {
-		return $this->getCustom( 'amapress_adhesion_request_adresse' );
+		return $this->getCustomAsString( 'amapress_adhesion_request_adresse' );
 	}
 
 	public function getTelephone() {
-		return $this->getCustom( 'amapress_adhesion_request_telephone' );
+		return $this->getCustomAsString( 'amapress_adhesion_request_telephone' );
 	}
 
 	public function getOtherInfo() {
-		return $this->getCustom( 'amapress_adhesion_request_other_info' );
+		return $this->getCustomAsString( 'amapress_adhesion_request_other_info' );
 	}
 
 	public function getIntermittent() {

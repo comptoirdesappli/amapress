@@ -67,19 +67,19 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 	}
 
 	public function getLieu_externe_nom() {
-		return $this->getCustom( 'amapress_assemblee_generale_lieu_externe_nom' );
+		return $this->getCustomAsString( 'amapress_assemblee_generale_lieu_externe_nom' );
 	}
 
 	public function getLieu_externe_adresse() {
-		return $this->getCustom( 'amapress_assemblee_generale_lieu_externe_adresse' );
+		return $this->getCustomAsString( 'amapress_assemblee_generale_lieu_externe_adresse' );
 	}
 
 	public function getLieu_externe_acces() {
-		return stripslashes( $this->getCustom( 'amapress_assemblee_generale_lieu_externe_acces' ) );
+		return stripslashes( $this->getCustomAsString( 'amapress_assemblee_generale_lieu_externe_acces' ) );
 	}
 
 	public function getLieu_externe_adresse_acces() {
-		return stripslashes( $this->getCustom( 'amapress_assemblee_generale_lieu_externe_adresse_acces' ) );
+		return stripslashes( $this->getCustomAsString( 'amapress_assemblee_generale_lieu_externe_adresse_acces' ) );
 	}
 
 	public function isLieu_externe_AdresseLocalized() {
@@ -111,11 +111,11 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 	}
 
 	public function getType() {
-		return $this->getCustom( 'amapress_assemblee_generale_type', 'lieu' );
+		return $this->getCustomAsString( 'amapress_assemblee_generale_type', 'lieu' );
 	}
 
 	public function getOrdre_du_jour() {
-		return wpautop( stripslashes( $this->getCustom( 'amapress_assemblee_generale_ordre_du_jour' ) ) );
+		return wpautop( stripslashes( $this->getCustomAsString( 'amapress_assemblee_generale_ordre_du_jour' ) ) );
 	}
 
 	/** @return AmapressLieu_distribution */

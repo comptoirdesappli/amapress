@@ -83,7 +83,7 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 	public function getAcces() {
 		$this->ensure_init();
 
-		return wpautop( stripslashes( $this->getCustom( 'amapress_producteur_acces' ) ) );
+		return wpautop( stripslashes( $this->getCustomAsString( 'amapress_producteur_acces' ) ) );
 	}
 
 	/** @return int */
@@ -294,7 +294,7 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 	}
 
 	public function getNomExploitation() {
-		$v = $this->getCustom( 'amapress_producteur_nom_exploitation' );
+		$v = $this->getCustomAsString( 'amapress_producteur_nom_exploitation' );
 		if ( empty( $v ) ) {
 			$v = $this->getUser() ? $this->getUser()->getDisplayName() : '';
 		}
@@ -303,7 +303,7 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 	}
 
 	public function getAdresseExploitation() {
-		$v = $this->getCustom( 'amapress_producteur_adresse_exploitation' );
+		$v = $this->getCustomAsString( 'amapress_producteur_adresse_exploitation' );
 		if ( empty( $v ) ) {
 			$v = $this->getUser() ? $this->getUser()->getFormattedAdresse() : '';
 		}
@@ -342,7 +342,7 @@ class AmapressProducteur extends TitanEntity implements iAmapress_Event_Lieu {
 	}
 
 	public function getFormattedAdresseExploitationHtml() {
-		$v = $this->getCustom( 'amapress_producteur_adresse_exploitation' );
+		$v = $this->getCustomAsString( 'amapress_producteur_adresse_exploitation' );
 		if ( ! empty( $v ) ) {
 			return wpautop( $v );
 		}

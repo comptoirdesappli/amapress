@@ -55,7 +55,7 @@ class AmapressPanier extends Amapress_EventBase {
 	}
 
 	public function getStatus() {
-		return $this->getCustom( 'amapress_panier_status' );
+		return $this->getCustomAsString( 'amapress_panier_status' );
 	}
 
 	/**
@@ -64,9 +64,9 @@ class AmapressPanier extends Amapress_EventBase {
 	 * @return string
 	 */
 	public function getContenu( $quantite ) {
-		$ret = $this->getCustom( 'amapress_panier_contenu_' . $quantite->ID );
+		$ret = $this->getCustomAsString( 'amapress_panier_contenu_' . $quantite->ID );
 		if ( empty( $ret ) ) {
-			$ret = $this->getCustom( 'amapress_panier_contenu' );
+			$ret = $this->getCustomAsString( 'amapress_panier_contenu' );
 		}
 
 		return stripslashes( $ret );
