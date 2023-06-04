@@ -123,7 +123,7 @@ class TitanFrameworkMetaBox {
 		}
 	}
 
-	function column_user_display( $v = '', $column_name, $user_id ) {
+	function column_user_display( $v = '', $column_name = '', $user_id = null ) {
 		$exists = false;
 		/** @var TitanFrameworkOption $opt */
 		$opt = null;
@@ -153,7 +153,7 @@ class TitanFrameworkMetaBox {
 		return $v;
 	}
 
-	function column_export( $v = '', $colname, $cptid ) {
+	function column_export( $v = '', $colname = '', $cptid = null ) {
 		$exists = false;
 		/** @var TitanFrameworkOption $opt */
 		$opt = null;
@@ -185,7 +185,7 @@ class TitanFrameworkMetaBox {
 		}
 	}
 
-	function column_user_export( $v = '', $column_name, $user_id ) {
+	function column_user_export( $v = '', $column_name = '', $user_id = null ) {
 		$exists = false;
 		/** @var TitanFrameworkOption $opt */
 		$opt = null;

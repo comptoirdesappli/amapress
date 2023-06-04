@@ -335,7 +335,7 @@ add_action( 'amapress_init', function () {
 	}
 } );
 
-function amapress_self_adhesion( $atts, $content = null, $tag ) {
+function amapress_self_adhesion( $atts, $content = '', $tag = '' ) {
 	$atts                       = wp_parse_args( $atts );
 	$atts['for_logged']         = 'false';
 	$atts['allow_inscriptions'] = 'false';
@@ -344,7 +344,7 @@ function amapress_self_adhesion( $atts, $content = null, $tag ) {
 	return amapress_self_inscription( $atts, $content, $tag );
 }
 
-function amapress_logged_self_adhesion( $atts, $content = null, $tag ) {
+function amapress_logged_self_adhesion( $atts, $content = '', $tag = '' ) {
 	$atts                       = wp_parse_args( $atts );
 	$atts['for_logged']         = 'true';
 	$atts['check_honeypots']    = 'false';
@@ -355,7 +355,7 @@ function amapress_logged_self_adhesion( $atts, $content = null, $tag ) {
 	return amapress_self_inscription( $atts, $content, $tag );
 }
 
-function amapress_inter_self_adhesion( $atts, $content = null, $tag ) {
+function amapress_inter_self_adhesion( $atts, $content = '', $tag = '' ) {
 	$atts                         = wp_parse_args( $atts );
 	$atts['for_logged']           = 'false';
 	$atts['allow_inscriptions']   = 'false';
@@ -371,7 +371,7 @@ function amapress_inter_self_adhesion( $atts, $content = null, $tag ) {
 	return amapress_self_inscription( $atts, $content, $tag );
 }
 
-function amapress_inter_logged_self_adhesion( $atts, $content = null, $tag ) {
+function amapress_inter_logged_self_adhesion( $atts, $content = '', $tag = '' ) {
 	$atts                         = wp_parse_args( $atts );
 	$atts['for_logged']           = 'true';
 	$atts['check_honeypots']      = 'false';
@@ -389,7 +389,7 @@ function amapress_inter_logged_self_adhesion( $atts, $content = null, $tag ) {
 	return amapress_self_inscription( $atts, $content, $tag );
 }
 
-function amapress_logged_self_inscription( $atts, $content = null, $tag ) {
+function amapress_logged_self_inscription( $atts, $content = '', $tag = '' ) {
 	$atts                    = wp_parse_args( $atts );
 	$atts['for_logged']      = 'true';
 	$atts['check_honeypots'] = 'false';
@@ -398,7 +398,7 @@ function amapress_logged_self_inscription( $atts, $content = null, $tag ) {
 	return amapress_self_inscription( $atts, $content, $tag );
 }
 
-function amapress_mes_contrats( $atts, $content = null, $tag ) {
+function amapress_mes_contrats( $atts, $content = '', $tag = '' ) {
 	$atts                    = wp_parse_args( $atts );
 	$atts['for_logged']      = 'true';
 	$atts['check_honeypots'] = 'false';
@@ -435,7 +435,7 @@ function amapress_step_text( $step_id, $steps_nums, $steps_count ) {
 /**
  * @param $atts
  */
-function amapress_self_inscription( $atts, $content = null, $tag ) {
+function amapress_self_inscription( $atts, $content = '', $tag = '' ) {
 	amapress_ensure_no_cache();
 
 	$step              = isset( $_REQUEST['step'] ) ? sanitize_key( $_REQUEST['step'] ) : 'email';
