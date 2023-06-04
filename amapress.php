@@ -286,52 +286,6 @@ function amapress_debug_backtrace_summary( $ignore_class = null, $skip_frames = 
 	}
 }
 
-function amapress_exception_error_handler( $errno, $errstr, $errfile, $errline, $errcontext = null ) {
-	// handle @
-	if ( 0 === error_reporting() ) {
-		return false;
-	}
-
-	$ignore_errors = [
-		'Failed to ping bing',
-		'Load_Resend_Welcome_Email',
-		'autoptimize_imgopt_number_field_7',
-		'wp_robots_no_robots'
-	];
-	$ignerrs       = Amapress::getOption( 'ignerrs' );
-	if ( ! empty( $ignerrs ) ) {
-		$ignore_errors = array_filter(
-			array_merge( $ignore_errors,
-				explode( "\n", $ignerrs ) ),
-			function ( $err ) {
-				return ! empty( trim( $err ) );
-			} );
-	}
-	foreach (
-		$ignore_errors as $err_msg
-	) {
-		if ( strpos( $errstr, trim( $err_msg ) ) !== false ) {
-			return true;
-		}
-	}
-	if ( strpos( $errstr, 'You have exceeded the limit of' ) !== false
-	     && strpos( $errstr, 'messages per hour and per IP address' ) !== false ) {
-		return true;
-	}
-
-	if ( ( defined( 'WP_DEBUG' ) && WP_DEBUG ) || ini_get( 'log_errors' ) ) {
-		$message = sprintf( __( '%s in %s on line %s, backtrace: %s, url: %s, user: %s', 'amapress' ),
-			$errstr, $errfile, $errline,
-			amapress_debug_backtrace_summary(),
-			$_SERVER['REQUEST_URI'], get_current_user_id() );
-		error_log( $message );
-	}
-
-	return true;
-}
-
-set_error_handler( 'amapress_exception_error_handler', E_ALL | E_STRICT );
-
 function amapress_wpmail_content_type() {
 	return 'text/html';
 }
@@ -426,6 +380,53 @@ require_once( AMAPRESS__PLUGIN_DIR . 'utils/cmdpal.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/hidden.columns.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/row.actions.php' );
 require_once( AMAPRESS__PLUGIN_DIR . 'entities/bulk.actions.php' );
+
+
+function amapress_exception_error_handler( $errno, $errstr, $errfile, $errline, $errcontext = null ) {
+	// handle @
+	if ( 0 === error_reporting() ) {
+		return false;
+	}
+
+	$ignore_errors = [
+		'Failed to ping bing',
+		'Load_Resend_Welcome_Email',
+		'autoptimize_imgopt_number_field_7',
+		'wp_robots_no_robots'
+	];
+	$ignerrs       = Amapress::getOption( 'ignerrs' );
+	if ( ! empty( $ignerrs ) ) {
+		$ignore_errors = array_filter(
+			array_merge( $ignore_errors,
+				explode( "\n", $ignerrs ) ),
+			function ( $err ) {
+				return ! empty( trim( $err ) );
+			} );
+	}
+	foreach (
+		$ignore_errors as $err_msg
+	) {
+		if ( strpos( $errstr, trim( $err_msg ) ) !== false ) {
+			return true;
+		}
+	}
+	if ( strpos( $errstr, 'You have exceeded the limit of' ) !== false
+	     && strpos( $errstr, 'messages per hour and per IP address' ) !== false ) {
+		return true;
+	}
+
+	if ( ( defined( 'WP_DEBUG' ) && WP_DEBUG ) || ini_get( 'log_errors' ) ) {
+		$message = sprintf( __( '%s in %s on line %s, backtrace: %s, url: %s, user: %s', 'amapress' ),
+			$errstr, $errfile, $errline,
+			amapress_debug_backtrace_summary(),
+			$_SERVER['REQUEST_URI'], get_current_user_id() );
+		error_log( $message );
+	}
+
+	return true;
+}
+
+set_error_handler( 'amapress_exception_error_handler', E_ALL | E_STRICT );
 
 function amapress_mail_from( $old ) {
 	$new = Amapress::getOption( 'email_from_mail' );
