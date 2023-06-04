@@ -1817,8 +1817,8 @@ function amapress_get_contrat_quantite_datatable(
 			'show_fact_details'       => $contrat_instance->isQuantiteVariable(),
 			'show_equiv_quantite'     => from( $contrat_instance_quantites )->distinct( function ( $c ) {
 					/** @var AmapressContrat_quantite $c */
-					return $c->getQuantite();
-				} )->count() > 1,
+					return strval( $c->getQuantite() );
+				} )->count() > 1.0,
 			'no_script'               => false,
 			'mode'                    => 'both',
 			'for_placeholder'         => false,

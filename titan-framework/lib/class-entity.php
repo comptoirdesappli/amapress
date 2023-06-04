@@ -282,7 +282,7 @@ class TitanEntity {
 	protected function getCustomAsDateArray( $name ) {
 		$this->ensure_init();
 
-		return array_map( 'self::to_date', $this->getCustomAsArray( $name ) );
+		return array_map( 'TitanEntity::to_date', $this->getCustomAsArray( $name ) );
 	}
 
 	protected function getCustomAsDate( $name ) {

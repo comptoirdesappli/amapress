@@ -420,9 +420,10 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function hasEquivalentQuant() {
-		return from( AmapressContrats::get_contrat_quantites( $this->ID, null, false ) )->distinct( function ( $c ) {
+		return from( AmapressContrats::get_contrat_quantites( $this->ID, null, false )
+		       )->distinct( function ( $c ) {
 				/** @var AmapressContrat_quantite $c */
-				return $c->getQuantite();
+				return strval( $c->getQuantite() );
 			} )->count() > 1;
 	}
 
