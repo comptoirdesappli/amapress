@@ -739,8 +739,7 @@ $('#$id').change(function(){
 			return $value;
 		}
 
-//		if (!is_string($value)) var_dump($value);
-		return stripslashes( $value );
+		return stripslashes( ! empty( $value ) ? $value : '' );
 	}
 
 	/* overridden */

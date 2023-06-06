@@ -293,7 +293,7 @@ class TitanFrameworkOptionCode extends TitanFrameworkOption {
 	 * @since    1.3
 	 */
 	public function cleanValueForGetting( $value ) {
-		return stripslashes( $value );
+		return stripslashes( ! empty( $value ) ? $value : '' );
 	}
 
 

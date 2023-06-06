@@ -556,18 +556,18 @@ Vous pouvez également utiliser l\'un des QRCode suivants :
 		/** @var AmapressLieu_distribution $user_lieu */
 //        foreach ($user_lieux as $lieu_id) {
 		for ( $i = 1; $i <= ( $show_responsables ? $lieux_needed_resps[ $lieu_id ] : 0 ); $i ++ ) {
-			$role_name = stripslashes( Amapress::getOption( "resp_role_{$lieu_id}_$i-name" ) );
+			$role_name = stripslashes( Amapress::getOption( "resp_role_{$lieu_id}_$i-name", '' ) );
 			if ( empty( $role_name ) ) {
-				$role_name = stripslashes( Amapress::getOption( "resp_role_$i-name" ) );
+				$role_name = stripslashes( Amapress::getOption( "resp_role_$i-name", '' ) );
 			}
 			if ( empty( $role_name ) ) {
 				$role_name = sprintf( __( 'Responsable %d', 'amapress' ), $i );
 			} else {
 				$has_role_names = true;
 			}
-			$role_desc = stripslashes( Amapress::getOption( "resp_role_{$lieu_id}_$i-desc" ) );
+			$role_desc = stripslashes( Amapress::getOption( "resp_role_{$lieu_id}_$i-desc", '' ) );
 			if ( empty( $role_name ) ) {
-				$role_desc = stripslashes( Amapress::getOption( "resp_role_$i-desc" ) );
+				$role_desc = stripslashes( Amapress::getOption( "resp_role_$i-desc", '' ) );
 			}
 			if ( $has_role_names ) {
 				$role_desc = '<br/><span class="role-distrib-desc">' . $role_desc . '</span>';

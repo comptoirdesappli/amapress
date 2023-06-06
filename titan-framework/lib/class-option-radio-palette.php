@@ -71,7 +71,7 @@ class TitanFrameworkOptionRadioPalette extends TitanFrameworkOption {
 		if ( is_array( $value ) ) {
 			return $value;
 		}
-		$value = stripslashes( $value );
+		$value = stripslashes( ! empty( $value ) ? $value : '' );
 		if ( is_serialized( $value ) ) {
 			return unserialize( $value );
 		}

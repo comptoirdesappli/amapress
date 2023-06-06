@@ -202,7 +202,7 @@ class TitanFrameworkOptionSortable extends TitanFrameworkOption {
 	 * @since    1.4
 	 */
 	public function cleanValueForSaving( $value ) {
-		return stripslashes( $value );
+		return stripslashes( ! empty( $value ) ? $value : '' );
 	}
 
 
@@ -218,6 +218,7 @@ class TitanFrameworkOptionSortable extends TitanFrameworkOption {
 		if ( is_array( $value ) ) {
 			return $value;
 		}
+		$value = ! empty( $value ) ? $value : '';
 		if ( is_serialized( stripslashes( $value ) ) ) {
 			return unserialize( $value );
 		}

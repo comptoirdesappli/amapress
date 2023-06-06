@@ -864,9 +864,9 @@ class AmapressDistribution extends Amapress_EventBase {
 			return '';
 		}
 
-		$name = Amapress::getOption( "resp_role_{$this->getLieuId()}_$role-name" );
+		$name = Amapress::getOption( "resp_role_{$this->getLieuId()}_$role-name", '' );
 		if ( empty( $name ) ) {
-			$name = Amapress::getOption( "resp_role_$role-name" );
+			$name = Amapress::getOption( "resp_role_$role-name", '' );
 		}
 
 		return stripslashes( $name );
@@ -878,9 +878,9 @@ class AmapressDistribution extends Amapress_EventBase {
 			return '';
 		}
 
-		$desc = Amapress::getOption( "resp_role_{$this->getLieuId()}_$role-desc" );
+		$desc = Amapress::getOption( "resp_role_{$this->getLieuId()}_$role-desc", '' );
 		if ( empty( $desc ) ) {
-			$desc = Amapress::getOption( "resp_role_$role-desc" );
+			$desc = Amapress::getOption( "resp_role_$role-desc", '' );
 		}
 
 		return stripslashes( $desc );

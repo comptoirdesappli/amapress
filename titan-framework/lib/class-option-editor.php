@@ -47,10 +47,10 @@ class TitanFrameworkOptionEditor extends TitanFrameworkOption {
 
 	public function cleanValueForGetting( $value ) {
 		if ( $this->settings['wpautop'] ) {
-			return wpautop( stripslashes( $value ) );
+			return wpautop( stripslashes( ! empty( $value ) ? $value : '' ) );
 		}
 
-		return stripslashes( $value );
+		return stripslashes( ! empty( $value ) ? $value : '' );
 	}
 
 	/*

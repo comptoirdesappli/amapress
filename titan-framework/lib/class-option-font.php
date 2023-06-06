@@ -949,7 +949,7 @@ class TitanFrameworkOptionFont extends TitanFrameworkOption {
 			$value = serialize( $value );
 		}
 
-		return stripslashes( $value );
+		return stripslashes( ! empty( $value ) ? $value : '' );
 	}
 
 
