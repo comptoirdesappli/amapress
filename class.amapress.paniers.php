@@ -492,29 +492,20 @@ class AmapressPaniers {
 			);
 		}
 		if ( ! empty( $args['status'] ) ) {
-			$ret = array_filter(
+			$statuses = is_array( $args['status'] ) ? $args['status'] : [ $args['status'] ];
+			$me       = AmapressContrats::get_related_users( amapress_current_user_id() );
+			$ret      = array_filter(
 				$ret,
-				function ( $ip ) use ( $args ) {
+				function ( $ip ) use ( $statuses, $me ) {
 					/** @var AmapressIntermittence_panier $ip */
-					return $ip->getStatus() == $args['status'];
-				}
-			);
-			if ( $args['status'] == 'to_exchange' ) {
-				$me  = AmapressContrats::get_related_users( amapress_current_user_id() );
-				$ret = array_filter(
-					$ret,
-					function ( $ip ) use ( $me ) {
-						/** @var AmapressIntermittence_panier $ip */
+					$is_ok = in_array( $ip->getStatus(), $statuses );
+					if ( $is_ok && 'to_exchange' == $ip->getStatus() ) {
 						return ! in_array( $ip->getAdherentId(), $me );
 					}
-				);
-//				$meta_query[] = array(
-//					'key'     => 'amapress_intermittence_panier_adherent',
-//					'value'   => AmapressContrats::get_related_users( amapress_current_user_id() ),
-//					'compare' => 'NOT IN',
-//					'type'    => 'NUMERIC',
-//				);
-			}
+
+					return $is_ok;
+				}
+			);
 		}
 		if ( ! empty( $args['date'] ) ) {
 //			$meta_query[] = array(
@@ -556,18 +547,6 @@ class AmapressPaniers {
 			}
 		}
 
-//		$args  = array(
-//			'post_type'      => AmapressIntermittence_panier::INTERNAL_POST_TYPE,
-//			'posts_per_page' => - 1,
-//			'meta_query'     => $meta_query
-//		);
-//		$posts = get_posts(
-//			$args
-//		);
-//
-//		return array_map( function ( $p ) {
-//			return AmapressIntermittence_panier::getBy( $p );
-//		}, $posts );
 		return $ret;
 	}
 

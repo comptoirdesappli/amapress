@@ -49,7 +49,9 @@ function amapress_all_paniers_intermittents_shortcode( $atts ) {
 		'check_adhesion'          => Amapress::toBool( Amapress::getOption( 'intermit_adhesion_req' ) ),
 		'check_adhesion_received' => false,
 		'enabled_for_resp'        => false,
+		'show_waiting'            => false,
 	), $atts );
+	$show_waiting            = Amapress::toBool( $atts['show_waiting'] );
 	$check_adhesion          = Amapress::toBool( $atts['check_adhesion'] );
 	$check_adhesion_received = Amapress::toBool( $atts['check_adhesion_received'] );
 	if ( ! Amapress::toBool( $atts['enabled_for_resp'] ) && amapress_is_admin_or_responsable() ) {
@@ -75,7 +77,9 @@ function amapress_all_paniers_intermittents_shortcode( $atts ) {
 		}
 	}
 	$query = array(
-		'status' => 'to_exchange',
+		'status' => $show_waiting ?
+			[ AmapressIntermittence_panier::TO_EXCHANGE, AmapressIntermittence_panier::EXCHANGE_VALIDATE_WAIT ] :
+			AmapressIntermittence_panier::TO_EXCHANGE,
 	);
 //    $ret = '';
 	if ( ! empty( $atts['contrat'] ) ) {
