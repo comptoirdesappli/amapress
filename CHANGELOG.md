@@ -1,3 +1,13 @@
+# 0.99.215 (2023-06-11)
+
+* **Espace intermittents:** ajout d'un paramètres show_waiting sur le shortcode [les-paniers-intermittents] (paniers
+  disponibles) pour afficher les paniers en attente de validation de l'échange.
+* plus de compatibilité PHP 8.1 et 8.2 (warnings)
+
+# 0.99.210 (2023-06-04)
+
+* compatibilité PHP 8.1 et 8.2 (error handler et autres deprecations)
+
 # 0.99.203 (2023-05-27)
 
 * **Système des intermittents**: envoi de mail de refus aux demandeurs/repreneurs si l'amapien annule avant validation
