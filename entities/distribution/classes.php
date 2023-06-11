@@ -1707,8 +1707,7 @@ class AmapressDistribution extends Amapress_EventBase {
 	}
 
 	/** @return AmapressDistribution[] */
-	public
-	static function getNextDistribs(
+	public static function getNextDistribs(
 		$date = null, $weeks = 1, $min_weeks = 0
 	) {
 		if ( ! $date ) {

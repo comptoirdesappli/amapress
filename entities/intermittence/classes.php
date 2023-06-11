@@ -809,8 +809,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 	}
 
 	/** @return AmapressIntermittence_panier[] */
-	public
-	static function get_paniers_intermittents(
+	public static function get_paniers_intermittents(
 		$start_date, $end_date, $order = 'NONE'
 	) {
 		return self::query_events(
@@ -825,8 +824,7 @@ class AmapressIntermittence_panier extends Amapress_EventBase {
 			$order );
 	}
 
-	public
-	static function get_next_panier_intermittent(
+	public static function get_next_panier_intermittent(
 		$date = null, $order = 'NONE'
 	) {
 		if ( ! $date ) {

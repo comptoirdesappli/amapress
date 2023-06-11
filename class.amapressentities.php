@@ -6726,11 +6726,9 @@ jQuery(function($) {
 	}
 
 
-	public
-	static $predef_subpages = array();
+	public static $predef_subpages = array();
 
-	public
-	static function getPostType(
+	public static function getPostType(
 		$type_name
 	) {
 		$post_types = self::getPostTypes();
@@ -6738,8 +6736,7 @@ jQuery(function($) {
 		return isset( $post_types[ $type_name ] ) ? $post_types[ $type_name ] : array();
 	}
 
-	public
-	static function getPostTypes() {
+	public static function getPostTypes() {
 		if ( ! self::$post_types_initialized ) {
 			self::init_posts();
 			self::$post_types_initialized = true;
@@ -6753,8 +6750,7 @@ jQuery(function($) {
 		self::$post_types = apply_filters( 'amapress_register_entities', array() );
 	}
 
-	public
-	static function getPostFieldsLabels(
+	public static function getPostFieldsLabels(
 		$post_type = null
 	) {
 		$key    = "amapress_getPostFieldsLabels_{$post_type}";
@@ -6786,8 +6782,7 @@ jQuery(function($) {
 		return $labels;
 	}
 
-	public
-	static function getPostFieldsValidators() {
+	public static function getPostFieldsValidators() {
 		$key    = "amapress_getPostFieldsValidators";
 		$labels = wp_cache_get( $key );
 		if ( false === $labels ) {
@@ -6813,8 +6808,7 @@ jQuery(function($) {
 		return $labels;
 	}
 
-	public
-	static function getFilteredFields(
+	public static function getFilteredFields(
 		$post_type
 	) {
 		$key    = "amapress_getFilteredFields_{$post_type}";
@@ -6837,8 +6831,7 @@ jQuery(function($) {
 		return $fields;
 	}
 
-	public
-	static function getPostTypeFields(
+	public static function getPostTypeFields(
 		$post_type
 	) {
 		$key = "amapress_getPostTypeFields_{$post_type}";
@@ -6863,8 +6856,7 @@ jQuery(function($) {
 		return $res;
 	}
 
-	public
-	static function getPostFieldsFormatters() {
+	public static function getPostFieldsFormatters() {
 		$key    = "amapress_getPostFieldsFormatters";
 		$labels = wp_cache_get( $key );
 		if ( false === $labels ) {

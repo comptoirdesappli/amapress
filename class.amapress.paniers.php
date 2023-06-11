@@ -155,8 +155,7 @@ class AmapressPaniers {
 		return $res;
 	}
 
-	public
-	static function getPanierVariableCommandes(
+	public static function getPanierVariableCommandes(
 		$contrat_instance_id, $date, $lieu_id = null
 	) {
 		$columns = array(
@@ -282,8 +281,7 @@ class AmapressPaniers {
 //    }
 
 	/** @return AmapressDistribution */
-	public
-	static function getDistribution(
+	public static function getDistribution(
 		$date, $lieu
 	) {
 		$dists = get_posts( array(
@@ -322,8 +320,7 @@ class AmapressPaniers {
 	 *
 	 * @return string
 	 */
-	public
-	static function isIntermittent(
+	public static function isIntermittent(
 		$panier_id, $lieu_id, $user_id = null
 	) {
 		$panier = AmapressPanier::getBy( $panier_id );
@@ -354,15 +351,13 @@ class AmapressPaniers {
 		return false;
 	}
 
-	public
-	static function getUserPaniersIntermittents() {
+	public static function getUserPaniersIntermittents() {
 		return self::getPanierIntermittents( array(
 			'adherent' => amapress_current_user_id(),
 		) );
 	}
 
-	public
-	static function getPaniersIntermittentsToBuy() {
+	public static function getPaniersIntermittentsToBuy() {
 		return self::getPanierIntermittents( array(
 			'status' => 'to_exchange',
 		) );
@@ -371,8 +366,7 @@ class AmapressPaniers {
 	/**
 	 * @return AmapressIntermittence_panier[]
 	 */
-	public
-	static function getPanierIntermittents(
+	public static function getPanierIntermittents(
 		$args
 	) {
 		$args = wp_parse_args(
@@ -551,8 +545,7 @@ class AmapressPaniers {
 	}
 
 	/** @return AmapressPanier */
-	public
-	static function getPanierForDist(
+	public static function getPanierForDist(
 		$dist_date, $contrat_instance_id
 	) {
 		$res = get_posts(
@@ -605,8 +598,7 @@ class AmapressPaniers {
 	}
 
 	/** @return AmapressPanier[] */
-	public
-	static function getPaniersForDist(
+	public static function getPaniersForDist(
 		$dist_date
 	) {
 		$res = get_posts( array(
@@ -647,8 +639,7 @@ class AmapressPaniers {
 		}, $res );
 	}
 
-	public
-	static function getPanierQuantiteTable(
+	public static function getPanierQuantiteTable(
 		$table_id, $quantites, $options = array()
 	) {
 		$options = wp_parse_args( $options,
@@ -706,8 +697,7 @@ class AmapressPaniers {
 		}
 	}
 
-	public
-	static function getPanierContentHtml(
+	public static function getPanierContentHtml(
 		$panier_id, $lieu_id = null
 	) {
 		global $post;
