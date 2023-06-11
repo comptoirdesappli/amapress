@@ -20,6 +20,7 @@ class AmapressPaniers {
 			return $res;
 		}
 
+		$res      = array();
 		$contrats = [ AmapressContrat_instance::getBy( $contrat_id ) ];
 		/** @var AmapressContrat_instance $contrat */
 		foreach ( $contrats as $contrat ) {
