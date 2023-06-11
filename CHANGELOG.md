@@ -1,6 +1,11 @@
+# 0.99.216 (2023-06-11)
+
+* notification pour indiquer qu'il existe la **Recherche dans le Tableau de bord** (pour trouver un paramètre, une
+  fonctionnalité ou un menu)
+
 # 0.99.215 (2023-06-11)
 
-* **Espace intermittents:** ajout d'un paramètres show_waiting sur le shortcode [les-paniers-intermittents] (paniers
+* **Espace intermittents:** ajout d'un paramètres `show_waiting` sur le shortcode `[les-paniers-intermittents]` (paniers
   disponibles) pour afficher les paniers en attente de validation de l'échange.
 * plus de compatibilité PHP 8.1 et 8.2 (warnings)
 
