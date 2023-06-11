@@ -9,7 +9,7 @@
  * Plugin Name:         Amapress
  * Plugin URI:          https://github.com/comptoirdesappli/amapress
  * Description:         Plugin de Gestion & Communication pour les AMAP
- * Version:             0.99.215
+ * Version:             0.99.216
  * Requires             PHP: 5.6
  * Requires at least:   4.6
  * Author:              Comptoir des Applis
@@ -53,7 +53,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 112 );
-define( 'AMAPRESS_VERSION', '0.99.215' );
+define( 'AMAPRESS_VERSION', '0.99.216' );
 define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL', 60 );
 define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_LIMIT', 4 );
 
@@ -1664,7 +1664,21 @@ if ( ! defined( 'AMAPRESS_ALLOW_XMLRPC' ) ) {
 }
 
 add_action( 'admin_init', function () {
-	if ( current_user_can( 'manage_options' ) && ( ! wp_doing_ajax() ) ) {
+	if ( wp_doing_ajax() ) {
+		return;
+	}
+
+	if ( current_user_can( 'edit_pages' ) ) {
+		amapress_add_admin_notice(
+			sprintf( __( 'À la recherche d\'un paramètre, d\'une fonctionnalité ou d\'un menu du Tableau de bord ? Pensez à l\'outil %s.', 'amapress' ),
+				Amapress::makeLink(
+					admin_url( 'admin.php?page=amapress_help_page&tab=searchparams' ),
+					'<span class="dashicons-before dashicons-search"></span> Recherche Tableau de bord',
+					false, true ) ),
+			'info', false, false );
+	}
+
+	if ( current_user_can( 'manage_options' ) ) {
 		$dir_name = basename( dirname( __FILE__ ) );
 		if ( 'amapress' != $dir_name ) {
 			amapress_add_admin_notice( sprintf( __( 'Le nom du dossier d\'Amapress doit être "amapress" pour le bon fonctionnement de la mise à jour par Git Updater (actuellement, %s. Merci de renommer "%s" et de réactiver Amapress', 'amapress' ), $dir_name, dirname( __FILE__ ) ),
