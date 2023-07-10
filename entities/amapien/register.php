@@ -1393,6 +1393,7 @@ function amapress_add_infos_to_user_editor( WP_User $user ) {
 	}
 	echo '<script type="text/javascript">
 jQuery(function($) {
+  $("#email2,#email3,#email4").attr("type","email");
   $(".user-role-wrap").insertAfter($("#fonctions_role_desc").closest("tr"));
   $("#role").addClass("check_amap_role");
   jQuery.validator.addMethod("check_amap_role", function (value, element) {
@@ -1400,6 +1401,7 @@ jQuery(function($) {
   }, "<p class=\'error\'>' . esc_js( __( 'Vous ne pouvez pas diminuer son rôle. L\'utilisateur est actuellement : ', 'amapress' ) ) . str_replace( '"', "'", $ref_prod_message ) . '. ' . esc_js( __( 'Vous devez le déassocier de ce(s) producteur(s) avant de changer son rôle.', 'amapress' ) ) . '</p>");
 });
 </script>';
+	echo '<style type="text/css">#email2-error, #email3-error, #email4-error { color:red; display: block; font-weight: bold }</style>';
 }
 
 add_filter( 'manage_users_columns', 'amapress_add_user_lastname_column' );
