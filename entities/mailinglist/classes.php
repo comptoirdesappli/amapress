@@ -352,9 +352,15 @@ abstract class Amapress_MailingList {
 	}
 
 	public static function normalizeEmailsArray( $emails ) {
-		return array_map( function ( $email ) {
+		$ret = array_map( function ( $email ) {
 			return strtolower( $email );
 		}, $emails );
+		$ret = array_filter( $ret, function ( $email ) {
+			return false === strpos( $email, '@nomail.org' )
+			       && false !== strpos( $email, '@' );
+		} );
+
+		return $ret;
 	}
 
 	public static function getSqlQuery( $queries, $exclude_queries ) {
