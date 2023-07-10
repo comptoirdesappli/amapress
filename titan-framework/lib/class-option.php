@@ -302,6 +302,8 @@ class TitanFrameworkOption {
 				case 'edit':
 				case 'edit-only':
 					return ! self::isOnEditScreen();
+				case 'list':
+					return ! self::isOnNewScreen() && ! self::isOnEditScreen();
 			}
 		}
 
@@ -342,6 +344,8 @@ class TitanFrameworkOption {
 				case 'edit':
 				case 'edit-only':
 					return ! self::isOnEditScreen();
+				case 'list':
+					return self::isOnNewScreen() || self::isOnEditScreen();
 			}
 		}
 

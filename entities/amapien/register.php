@@ -9,7 +9,7 @@ function amapress_register_entities_amapien( $entities ) {
 	$entities['user'] = array(
 		'internal_name'            => 'user',
 		'csv_required_fields'      => array( 'user_email', 'first_name', 'last_name' ),
-		'other_def_hidden_columns' => array( 'bbp_user_role', 'posts', 'name' ),
+		'other_def_hidden_columns' => array( 'email3', 'email4', 'bbp_user_role', 'posts', 'name' ),
 		'bulk_actions'             => array(
 			'amp_resend_welcome' => array(
 				'label'    => __( 'Renvoyer l\'email de bienvenue', 'amapress' ),
@@ -36,12 +36,33 @@ function amapress_register_entities_amapien( $entities ) {
 //                'type' => 'text',
 //                'desc' => __('Rôle dans l\'AMAP', 'amapress'),
 //            ),
-			'head_amapress4'    => array(
+			'email2'         => array(
+				'name'       => __( 'Email 2', 'amapress' ),
+				'type'       => 'readonly',
+				'show_on'    => 'list',
+				'bare_id'    => true,
+				'searchable' => true,
+			),
+			'email3'         => array(
+				'name'       => __( 'Email 3', 'amapress' ),
+				'type'       => 'readonly',
+				'show_on'    => 'list',
+				'bare_id'    => true,
+				'searchable' => true,
+			),
+			'email4'         => array(
+				'name'       => __( 'Email 4', 'amapress' ),
+				'type'       => 'readonly',
+				'show_on'    => 'list',
+				'bare_id'    => true,
+				'searchable' => true,
+			),
+			'head_amapress4' => array(
 				'id'   => 'fonctions_sect',
 				'name' => __( 'Fonctions', 'amapress' ),
 				'type' => 'heading',
 			),
-			'all_roles'         => array(
+			'all_roles'      => array(
 				'name'        => __( 'Fonctions actuelles', 'amapress' ),
 				'show_column' => false,
 				'type'        => 'custom',
@@ -66,7 +87,7 @@ function amapress_register_entities_amapien( $entities ) {
 					return $roles;
 				}
 			),
-			'role_desc'         => array(
+			'role_desc'      => array(
 				'type'        => 'custom',
 				'name'        => __( 'Rôle sur le site', 'amapress' ),
 				'show_column' => false,
@@ -388,7 +409,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'    => 'heading',
 				'show_on' => 'edit-only',
 			),
-			'adhesions'         => array(
+			'adhesions'      => array(
 				'name'                     => __( 'Adhésions', 'amapress' ),
 				'show_column'              => true,
 				'col_def_hidden'           => true,
@@ -414,7 +435,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'                     => 'related-posts',
 				'query'                    => 'post_type=amps_adh_pmt&amapress_user=%%id%%&orderby=title&order=asc',
 			),
-			'adh_lieu'  => array(
+			'adh_lieu'       => array(
 				'name'           => __( 'Lieu d\'adhésion', 'amapress' ),
 				'type'           => 'custom',
 				'desc'           => __( 'Lieu d\'adhésion', 'amapress' ),
@@ -435,7 +456,7 @@ function amapress_register_entities_amapien( $entities ) {
 					}
 				},
 			),
-			'contrats'  => array(
+			'contrats'       => array(
 				'name'                     => __( 'Contrats', 'amapress' ),
 				'show_column'              => true,
 				'related_posts_count_func' => function ( $user_id ) {
