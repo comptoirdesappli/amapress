@@ -942,7 +942,8 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			$ret[] = trim( $this->custom['email4'] );
 		}
 		$ret = array_filter( $ret, function ( $email ) {
-			return false === strpos( $email, '@nomail.org' );
+			return false === strpos( $email, '@nomail.org' )
+			       && false !== strpos( $email, '@' );
 		} );
 
 		return array_unique( $ret );
