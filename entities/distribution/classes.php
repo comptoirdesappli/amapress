@@ -1548,7 +1548,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						return AmapressDistributions::get_required_responsables( $distrib->ID ) - count( $distrib->getResponsables() );
 					}
 				],
-				'lien-resp-distrib-ical'            => [
+				'lien-resp-distrib-ical'        => [
 					'desc' => __( 'Lien ical pour les responsables de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return add_query_arg(
@@ -1559,13 +1559,13 @@ class AmapressDistribution extends Amapress_EventBase {
 							Amapress_Agenda_ICAL_Export::get_link_href() );
 					}
 				],
-				'lien-distrib-ical'                 => [
+				'lien-distrib-ical'             => [
 					'desc' => __( 'Lien ical de cette distribution', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						return $distrib->getProperty( 'lien-evenement-ical' );
 					}
 				],
-				'liste-resp-email-phone'            => [
+				'liste-resp-email-phone'        => [
 					'desc' => __( 'Liste des responsables de distribution avec emails et numéros de téléphone', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$responsables = $distrib->getResponsables();
@@ -1577,7 +1577,23 @@ class AmapressDistribution extends Amapress_EventBase {
 						return '<ul>' . implode( '', $responsables ) . '</ul>';
 					}
 				],
-				'liste-resp-email-phone-bcc'        => [
+				'liste-resp-avatar-email-phone' => [
+					'desc' => __( 'Liste des responsables de distribution avec avatar, emails et numéros de téléphone', 'amapress' ),
+					'func' => function ( AmapressDistribution $distrib ) {
+						$responsables = $distrib->getResponsables();
+						$responsables = array_map( function ( $p ) {
+							/** @var AmapressUser $p */
+							return '<li>' . sprintf( __( '%s <a href="mailto:%s">%s</a> (%s)', 'amapress' ),
+									get_avatar( $p->ID ),
+									implode( ',', $p->getAllEmails() ),
+									esc_html( $p->getDisplayName() ),
+									$p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+						}, $responsables );
+
+						return '<ul>' . implode( '', $responsables ) . '</ul>';
+					}
+				],
+				'liste-resp-email-phone-bcc'    => [
 					'desc' => __( 'Liste des responsables de distribution avec emails et numéros de téléphone', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$responsables = $distrib->getResponsables();
@@ -1590,7 +1606,22 @@ class AmapressDistribution extends Amapress_EventBase {
 						return '<ul>' . implode( '', $responsables ) . '</ul>';
 					}
 				],
-				'liste-resp-phone'                  => [
+				'liste-resp-avatar-phone'       => [
+					'desc' => __( 'Liste des responsables de distribution avec avatar et numéros de téléphone', 'amapress' ),
+					'func' => function ( AmapressDistribution $distrib ) {
+						$responsables = $distrib->getResponsables();
+						$responsables = array_map( function ( $p ) {
+							/** @var AmapressUser $p */
+							return '<li>' . sprintf( __( '%s %s (%s)', 'amapress' ),
+									get_avatar( $p->ID ),
+									esc_html( $p->getDisplayName() ),
+									$p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+						}, $responsables );
+
+						return '<ul>' . implode( '', $responsables ) . '</ul>';
+					}
+				],
+				'liste-resp-phone'              => [
 					'desc' => __( 'Liste des responsables de distribution avec numéros de téléphone', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$responsables = $distrib->getResponsables();
@@ -1602,7 +1633,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						return '<ul>' . implode( '', $responsables ) . '</ul>';
 					}
 				],
-				'liste-gardiens-email-phone'        => [
+				'liste-gardiens-email-phone'    => [
 					'desc' => __( 'Liste des gardiens de paniers avec emails et numéros de téléphone', 'amapress' ),
 					'func' => function ( AmapressDistribution $distrib ) {
 						$gardiens = $distrib->getGardiens();
