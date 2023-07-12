@@ -22,7 +22,7 @@ class AmapressDistribution extends Amapress_EventBase {
 	public static function getBy( $post_or_id, $no_cache = false ) {
 		if ( is_a( $post_or_id, 'WP_Post' ) ) {
 			$post_id = $post_or_id->ID;
-		} else if ( is_a( $post_or_id, 'AmapressDistribution' ) ) {
+		} elseif ( is_a( $post_or_id, 'AmapressDistribution' ) ) {
 			$post_id = $post_or_id->ID;
 		} else {
 			$post_id = intval( $post_or_id );
@@ -51,7 +51,7 @@ class AmapressDistribution extends Amapress_EventBase {
 			},
 			get_posts(
 				array(
-					'post_type'      => AmapressDistribution::INTERNAL_POST_TYPE,
+					'post_type'      => self::INTERNAL_POST_TYPE,
 					'posts_per_page' => - 1,
 				)
 			)
@@ -761,7 +761,7 @@ class AmapressDistribution extends Amapress_EventBase {
 		}
 		if ( in_array( $multi_user_id, $responsables ) ) {
 			return 'already_in_list';
-		} else if ( count( $responsables ) >= $needed_responsables ) {
+		} elseif ( count( $responsables ) >= $needed_responsables ) {
 			return 'list_full';
 		} else {
 			$responsables[] = $multi_user_id;
@@ -981,7 +981,7 @@ class AmapressDistribution extends Amapress_EventBase {
 							'compare' => 'IN',
 							'type'    => 'NUMERIC',
 						),
-						amapress_prepare_like_in_array( "amapress_distribution_contrats", $contrat_instance_id )
+						amapress_prepare_like_in_array( 'amapress_distribution_contrats', $contrat_instance_id )
 					),
 					array(
 						array(
@@ -994,7 +994,7 @@ class AmapressDistribution extends Amapress_EventBase {
 				);
 		}
 		$dists = get_posts( array(
-			'post_type'      => AmapressDistribution::INTERNAL_POST_TYPE,
+			'post_type'      => self::INTERNAL_POST_TYPE,
 			'posts_per_page' => - 1,
 			'meta_query'     => $meta,
 			'orderby'        => 'meta_value_num',
@@ -1087,7 +1087,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'label'     => $contrat->getModelTitle(),
 					'cancelled' => in_array( $contrat->ID, $cancelled_contrat_ids ),
 					'alt'       => sprintf(
-						__( 'Distribution de %s à %s', 'amapress' ),
+						__( 'Distribution de %1$s à %2$s', 'amapress' ),
 						$contrat->getModelTitle(),
 						$lieu->getShortName() ),
 					'class'     => "agenda-distrib agenda-contrat-{$contrat->getModel()->ID} $contrat_status",
@@ -1196,7 +1196,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						'icon'      => Amapress::coalesce_icons( Amapress::getOption( "contrat_{$adhesion->getContrat_instance()->getModel()->ID}_icon" ), amapress_get_avatar_url( $adhesion->getContrat_instance()->getModel()->ID, null, 'produit-thumb', 'default_contrat.jpg' ) ),
 						'cancelled' => in_array( $adhesion->getContrat_instanceId(), $cancelled_contrat_ids ),
 						'alt'       => $coadh_info . sprintf(
-								__( 'Distribution de %s à %s', 'amapress' ),
+								__( 'Distribution de %1$s à %2$s', 'amapress' ),
 								$adhesion->getContrat_instance()->getModelTitle(),
 								$lieu->getShortName() ),
 						'href'      => $this->getPermalink()
@@ -1225,7 +1225,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					} else {
 						$status_count['me_exchanged'] += 1;
 					}
-				} else if ( $panier->getRepreneurId() == $user_id ) {
+				} elseif ( $panier->getRepreneurId() == $user_id ) {
 					$status_count['me_recup'] += 1;
 				} else {
 					if ( $panier->getStatus() == 'to_exchange' ) {
@@ -1241,7 +1241,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'ev_id'    => "intermittence-{$this->ID}-to-exchange",
 					'date'     => $date,
 					'date_end' => $date_end,
-					'class'    => "agenda-inter agenda-inter-my-to-exchange",
+					'class'    => 'agenda-inter agenda-inter-my-to-exchange',
 					'type'     => 'intermittence',
 					'category' => __( 'Paniers à échanger', 'amapress' ),
 					'priority' => 10,
@@ -1257,7 +1257,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'ev_id'       => "intermittence-{$this->ID}-exchanged",
 					'date'        => $date,
 					'date_end'    => $date_end,
-					'class'       => "agenda-inter agenda-inter-exchanged",
+					'class'       => 'agenda-inter agenda-inter-exchanged',
 					'type'        => 'intermittence',
 					'category'    => __( 'Paniers échangé', 'amapress' ),
 					'priority'    => 5,
@@ -1275,7 +1275,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'ev_id'       => "intermittence-{$this->ID}-recup",
 					'date'        => $date,
 					'date_end'    => $date_end,
-					'class'       => "agenda-inter agenda-inter-panier-recup",
+					'class'       => 'agenda-inter agenda-inter-panier-recup',
 					'type'        => 'inter-recup',
 					'category'    => __( 'Paniers à récupérer', 'amapress' ),
 					'priority'    => 15,
@@ -1295,7 +1295,7 @@ class AmapressDistribution extends Amapress_EventBase {
 					'ev_id'    => "intermittence-{$this->ID}-to-exchange",
 					'date'     => $date,
 					'date_end' => $date_end,
-					'class'    => "agenda-inter agenda-inter-to-exchange",
+					'class'    => 'agenda-inter agenda-inter-to-exchange',
 					'type'     => 'intermittence',
 					'category' => __( 'Paniers dispo', 'amapress' ),
 					'priority' => 10,
@@ -1565,7 +1565,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						$responsables = $distrib->getResponsables();
 						$responsables = array_map( function ( $p ) {
 							/** @var AmapressUser $p */
-							return '<li>' . sprintf( __( '<a href="mailto:%s">%s</a> (%s)', 'amapress' ), implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+							return '<li>' . sprintf( __( '<a href="mailto:%1$s">%2$s</a> (%3$s)', 'amapress' ), implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
 						}, $responsables );
 
 						return '<ul>' . implode( '', $responsables ) . '</ul>';
@@ -1577,7 +1577,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						$responsables = $distrib->getResponsables();
 						$responsables = array_map( function ( $p ) {
 							/** @var AmapressUser $p */
-							return '<li>' . sprintf( __( '%s <a href="mailto:%s">%s</a> (%s)', 'amapress' ),
+							return '<li>' . sprintf( __( '%1$s <a href="mailto:%2$s">%3$s</a> (%4$s)', 'amapress' ),
 									get_avatar( $p->ID ),
 									implode( ',', $p->getAllEmails() ),
 									esc_html( $p->getDisplayName() ),
@@ -1594,7 +1594,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						$site_email   = Amapress::getOption( 'email_from_mail' );
 						$responsables = array_map( function ( $p ) use ( $site_email ) {
 							/** @var AmapressUser $p */
-							return '<li>' . sprintf( __( '<a href="mailto:%s?bcc=%s">%s</a> (%s)', 'amapress' ), $site_email, implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+							return '<li>' . sprintf( __( '<a href="mailto:%1$s?bcc=%2$s">%3$s</a> (%4$s)', 'amapress' ), $site_email, implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
 						}, $responsables );
 
 						return '<ul>' . implode( '', $responsables ) . '</ul>';
@@ -1606,7 +1606,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						$responsables = $distrib->getResponsables();
 						$responsables = array_map( function ( $p ) {
 							/** @var AmapressUser $p */
-							return '<li>' . sprintf( __( '%s %s (%s)', 'amapress' ),
+							return '<li>' . sprintf( __( '%1$s %2$s (%3$s)', 'amapress' ),
 									get_avatar( $p->ID ),
 									esc_html( $p->getDisplayName() ),
 									$p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
@@ -1621,7 +1621,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						$responsables = $distrib->getResponsables();
 						$responsables = array_map( function ( $p ) {
 							/** @var AmapressUser $p */
-							return '<li>' . sprintf( __( '%s (%s)', 'amapress' ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+							return '<li>' . sprintf( __( '%1$s (%2$s)', 'amapress' ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
 						}, $responsables );
 
 						return '<ul>' . implode( '', $responsables ) . '</ul>';
@@ -1633,7 +1633,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						$gardiens = $distrib->getGardiens();
 						$gardiens = array_map( function ( $p ) {
 							/** @var AmapressUser $p */
-							return '<li>' . sprintf( __( '<a href="mailto:%s">%s</a> (%s)', 'amapress' ), implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+							return '<li>' . sprintf( __( '<a href="mailto:%1$s">%2$s</a> (%3$s)', 'amapress' ), implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
 						}, $gardiens );
 
 						return '<ul>' . implode( '', $gardiens ) . '</ul>';
@@ -1646,7 +1646,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						$site_email = Amapress::getOption( 'email_from_mail' );
 						$gardiens   = array_map( function ( $p ) use ( $site_email ) {
 							/** @var AmapressUser $p */
-							return '<li>' . sprintf( __( '<a href="mailto:%s?bcc=%s">%s</a> (%s)', 'amapress' ), $site_email, implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+							return '<li>' . sprintf( __( '<a href="mailto:%1$s?bcc=%2$s">%3$s</a> (%4$s)', 'amapress' ), $site_email, implode( ',', $p->getAllEmails() ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
 						}, $gardiens );
 
 						return '<ul>' . implode( '', $gardiens ) . '</ul>';
@@ -1658,7 +1658,7 @@ class AmapressDistribution extends Amapress_EventBase {
 						$gardiens = $distrib->getGardiens();
 						$gardiens = array_map( function ( $p ) {
 							/** @var AmapressUser $p */
-							return '<li>' . sprintf( __( '%s (%s)', 'amapress' ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
+							return '<li>' . sprintf( __( '%1$s (%2$s)', 'amapress' ), esc_html( $p->getDisplayName() ), $p->getTelTo( 'both', false, false, ', ' ) ) . '</li>';
 						}, $gardiens );
 
 						return '<ul>' . implode( '', $gardiens ) . '</ul>';
@@ -1739,7 +1739,7 @@ class AmapressDistribution extends Amapress_EventBase {
 			$date = amapress_time();
 		}
 		$next_week_date = Amapress::add_a_week( amapress_time(), $weeks - 1 );
-		$dists          = AmapressDistribution::get_distributions( Amapress::start_of_week( Amapress::end_of_week( $date ) ), Amapress::end_of_week( $next_week_date ) );
+		$dists          = self::get_distributions( Amapress::start_of_week( Amapress::end_of_week( $date ) ), Amapress::end_of_week( $next_week_date ) );
 
 		$num_weeks = count( array_unique( array_map( function ( $d ) {
 			/** @var AmapressDistribution $d */
@@ -1747,7 +1747,7 @@ class AmapressDistribution extends Amapress_EventBase {
 		}, $dists ) ) );
 
 		if ( $num_weeks < $min_weeks ) {
-			$next_dists = AmapressDistribution::get_next_distributions( Amapress::start_of_day( Amapress::add_days( Amapress::end_of_week( $next_week_date ), 1 ) ) );
+			$next_dists = self::get_next_distributions( Amapress::start_of_day( Amapress::add_days( Amapress::end_of_week( $next_week_date ), 1 ) ) );
 			while ( ! empty( $next_dists ) && $num_weeks < $min_weeks ) {
 				$dists[]   = array_shift( $next_dists );
 				$num_weeks = count( array_unique( array_map( function ( $d ) {

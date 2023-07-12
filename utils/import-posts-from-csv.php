@@ -125,6 +125,7 @@ class Amapress_Import_Posts_CSV {
 			}
 
 			wp_redirect( add_query_arg( 'import', 'file', wp_get_referer() ) );
+
 			exit;
 		}
 	}
@@ -179,13 +180,13 @@ class Amapress_Import_Posts_CSV {
 					echo '<div class="error"><p><strong>' . __( 'Ne peut pas extraire les données du fichier uploadé ou aucun fichier n\'a été uploadé.', 'amapress' ) . '</strong></p></div>';
 					break;
 				case 'fail':
-					echo '<div class="error"><p><strong>' . sprintf( __( 'Aucun %s n\'a pu être importé%s.', 'amapress' ), $post_type, $error_log_msg ) . '</strong></p></div>';
+					echo '<div class="error"><p><strong>' . sprintf( __( 'Aucun %1$s n\'a pu être importé%2$s.', 'amapress' ), $post_type, $error_log_msg ) . '</strong></p></div>';
 					break;
 				case 'errors':
 					if ( $remain > 0 ) {
-						echo '<div class="error"><p><strong>' . sprintf( __( '%d %s(s) ont été importés et %d autres pas%s.', 'amapress' ), $imports, $post_type, $remain, $error_log_msg ) . '</strong></p></div>';
+						echo '<div class="error"><p><strong>' . sprintf( __( '%1$d %2$s(s) ont été importés et %3$d autres pas%4$s.', 'amapress' ), $imports, $post_type, $remain, $error_log_msg ) . '</strong></p></div>';
 					} else {
-						echo '<div class="error"><p><strong>' . sprintf( __( '%d %s(s) ont été importés%s.', 'amapress' ), $imports, $post_type, $error_log_msg ) . '</strong></p></div>';
+						echo '<div class="error"><p><strong>' . sprintf( __( '%1$d %2$s(s) ont été importés%3$s.', 'amapress' ), $imports, $post_type, $error_log_msg ) . '</strong></p></div>';
 					}
 					break;
 				case 'success':
@@ -225,7 +226,7 @@ class Amapress_Import_Posts_CSV {
         </table>
         <p class="submit">
             <button name="action" value="import"
-                    class="button button-primary"><?php _e( 'Importer', 'amapress' ) ?></button>
+                    class="button button-primary"><?php _e( 'Importer', 'amapress' ); ?></button>
         </p>
         <!--	</form>-->
 		<?php
@@ -280,7 +281,7 @@ class Amapress_Import_Posts_CSV {
 			}
 			if ( isset( $option->settings['custom_multi'] ) && is_callable( $option->settings['custom_multi'], false ) ) {
 				$multi_options = call_user_func( $option->settings['custom_multi'], $option, $post_id );
-			} else if ( is_a( $option, 'TitanFrameworkOptionSelect' ) ) {
+			} elseif ( is_a( $option, 'TitanFrameworkOptionSelect' ) ) {
 				/**
 				 * @var TitanFrameworkOptionSelect $option
 				 */
@@ -307,10 +308,11 @@ class Amapress_Import_Posts_CSV {
 					'taxonomy'   => $tax_name,
 					'hide_empty' => false,
 					'fields'     => 'names',
-				) );;
+				) );
+
 		}
 		$fields = array_merge( array_combine( $data_keys, $data_keys ), $meta_keys );
-		$fields = apply_filters( "amapress_posts_model_fields", $fields );
+		$fields = apply_filters( 'amapress_posts_model_fields', $fields );
 		$fields = apply_filters( "amapress_posts_{$pt}_model_fields", $fields );
 
 		$options      = array();
@@ -337,9 +339,9 @@ class Amapress_Import_Posts_CSV {
 					$arg['field'] = $field;
 					$key          = $field . $key;
 				} else {
-					$header = apply_filters( "amapress_posts_get_field_display_name", $field, $pt );
+					$header = apply_filters( 'amapress_posts_get_field_display_name', $field, $pt );
 					$header = apply_filters( "amapress_posts_{$pt}_get_field_display_name", $header );
-					$desc   = apply_filters( "amapress_posts_get_field_desc", $desc, $field, $pt );
+					$desc   = apply_filters( 'amapress_posts_get_field_desc', $desc, $field, $pt );
 					$desc   = apply_filters( "amapress_posts_{$pt}_get_field_desc", $desc );
 				}
 				$arg['header'] = $header;
@@ -364,11 +366,11 @@ class Amapress_Import_Posts_CSV {
 		$required_headers = apply_filters( 'amapress_csv_posts_import_required_headers', $data_keys, $post_type, $headers );
 		$required_headers = apply_filters( "amapress_csv_posts_{$post_type}_import_required_headers", $required_headers, $headers );
 
-		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
+		require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
 
 		$objPHPExcel = new PHPExcel();
-		$objPHPExcel->getProperties()->setCreator( "Amapress" )
-		            ->setLastModifiedBy( "Amapress" )
+		$objPHPExcel->getProperties()->setCreator( 'Amapress' )
+		            ->setLastModifiedBy( 'Amapress' )
 		            ->setTitle( $filename );
 		$objPHPExcel->setActiveSheetIndex( 0 );
 		$sheet = $objPHPExcel->getActiveSheet();
@@ -462,7 +464,7 @@ class Amapress_Import_Posts_CSV {
 		$postcustom_fields = apply_filters( "amapress_import_posts_{$post_type}_custom_fields", array(), $post_type );
 //		$postmulti_fields = apply_filters("amapress_import_posts_{$post_type}_is_multi_field", array(), $post_type);
 
-		include( plugin_dir_path( __FILE__ ) . 'class-readcsv.php' );
+		include plugin_dir_path( __FILE__ ) . 'class-readcsv.php';
 
 		$has_multi      = false;
 		$imported_posts = 0;
@@ -501,7 +503,7 @@ class Amapress_Import_Posts_CSV {
 
 						$col_name = Amapress::num2alpha( $index );
 
-						$field_name = apply_filters( "amapress_import_posts_get_field_name", $field_name, $post_type, $col_name );
+						$field_name = apply_filters( 'amapress_import_posts_get_field_name', $field_name, $post_type, $col_name );
 
 						return apply_filters( "amapress_import_{$post_type}_get_field_name", $field_name, $post_type, $col_name );
 					}, array_values( $headers ), array_keys( $headers ) );
@@ -527,7 +529,7 @@ class Amapress_Import_Posts_CSV {
 					$required_headers = apply_filters( "amapress_csv_posts_{$post_type}_import_required_headers", $required_headers, $headers_mapped );
 					foreach ( array_diff( $required_headers, $headers_mapped ) as $field_name ) {
 						$had_errors  = true;
-						$header_name = apply_filters( "amapress_posts_get_field_display_name", $field_name, $post_type );
+						$header_name = apply_filters( 'amapress_posts_get_field_display_name', $field_name, $post_type );
 						if ( is_wp_error( $header_name ) ) {
 							$errors[ $rkey ][] = $header_name;
 						} else {
@@ -556,16 +558,16 @@ class Amapress_Import_Posts_CSV {
 					}
 
 					if ( in_array( $column_name, $required_headers ) && empty( $column ) ) {
-						$column = new WP_Error( 'required_value_missing', sprintf( __( 'Colonne %s : valeur requise pour la colonne %s.', 'amapress' ), $col_name, $headers[ $ckey ] ) );
+						$column = new WP_Error( 'required_value_missing', sprintf( __( 'Colonne %1$s : valeur requise pour la colonne %2$s.', 'amapress' ), $col_name, $headers[ $ckey ] ) );
 					}
 
 					if ( in_array( $column_name, $postdata_fields ) ) {
 						$postdata[ $column_name ] = $column;
-					} else if ( in_array( $column_name, $postdata_taxonomies ) ) {
+					} elseif ( in_array( $column_name, $postdata_taxonomies ) ) {
 						$posttaxo[ $column_name ] = $column;
-					} else if ( in_array( $column_name, $postcustom_fields ) ) {
+					} elseif ( in_array( $column_name, $postcustom_fields ) ) {
 						$postcustom[ $column_name ] = $column;
-					} else if ( apply_filters( "amapress_import_posts_{$post_type}_is_multi_field", false, $column_name ) === true ) {
+					} elseif ( apply_filters( "amapress_import_posts_{$post_type}_is_multi_field", false, $column_name ) === true ) {
 						$postmulti[ $column_name ] = $column;
 						$has_multi                 = true;
 					} else {
@@ -577,9 +579,9 @@ class Amapress_Import_Posts_CSV {
 				$postmeta = apply_filters( "amapress_import_{$post_type}_apply_default_values_to_posts_meta", $postmeta, $postdata, $posttaxo, $post_type, $postmulti );
 				$posttaxo = apply_filters( "amapress_import_{$post_type}_apply_default_values_to_posts_taxonomy", $posttaxo, $postdata, $postmeta, $post_type, $postmulti );
 
-				$postdata = apply_filters( "amapress_import_apply_default_values_to_posts_data", $postdata, $postmeta, $posttaxo, $post_type, $postmulti );
-				$postmeta = apply_filters( "amapress_import_apply_default_values_to_posts_meta", $postmeta, $postdata, $posttaxo, $post_type, $postmulti );
-				$posttaxo = apply_filters( "amapress_import_apply_default_values_to_posts_taxonomy", $posttaxo, $postdata, $postmeta, $post_type, $postmulti );
+				$postdata = apply_filters( 'amapress_import_apply_default_values_to_posts_data', $postdata, $postmeta, $posttaxo, $post_type, $postmulti );
+				$postmeta = apply_filters( 'amapress_import_apply_default_values_to_posts_meta', $postmeta, $postdata, $posttaxo, $post_type, $postmulti );
+				$posttaxo = apply_filters( 'amapress_import_apply_default_values_to_posts_taxonomy', $posttaxo, $postdata, $postmeta, $post_type, $postmulti );
 
 				// A plugin may need to filter the data and meta
 				$postdata  = apply_filters( "amapress_import_{$post_type}_data", $postdata, $postmeta, $posttaxo, $postmulti );
@@ -587,13 +589,13 @@ class Amapress_Import_Posts_CSV {
 				$posttaxo  = apply_filters( "amapress_import_{$post_type}_taxonomy", $posttaxo, $postdata, $postmeta, $postmulti );
 				$postmulti = apply_filters( "amapress_import_{$post_type}_multi", $postmulti, $postdata, $postmeta, $posttaxo );
 
-				$postdata  = apply_filters( "amapress_import_posts_data", $postdata, $postmeta, $posttaxo, $post_type, $postmulti );
-				$postmeta  = apply_filters( "amapress_import_posts_meta", $postmeta, $postdata, $posttaxo, $post_type, $postmulti );
-				$posttaxo  = apply_filters( "amapress_import_posts_taxonomy", $posttaxo, $postdata, $postmeta, $post_type, $postmulti );
-				$postmulti = apply_filters( "amapress_import_posts_multi", $postmulti, $postdata, $postmeta, $post_type, $posttaxo );
+				$postdata  = apply_filters( 'amapress_import_posts_data', $postdata, $postmeta, $posttaxo, $post_type, $postmulti );
+				$postmeta  = apply_filters( 'amapress_import_posts_meta', $postmeta, $postdata, $posttaxo, $post_type, $postmulti );
+				$posttaxo  = apply_filters( 'amapress_import_posts_taxonomy', $posttaxo, $postdata, $postmeta, $post_type, $postmulti );
+				$postmulti = apply_filters( 'amapress_import_posts_multi', $postmulti, $postdata, $postmeta, $post_type, $posttaxo );
 
 
-				$had_errors = false;
+				$had_errors                = false;
 				if ( is_wp_error( $postdata ) ) {
 					$errors[ $rkey ][] = $postdata;
 					$had_errors        = true;
@@ -651,7 +653,7 @@ class Amapress_Import_Posts_CSV {
 				$postdata['post_status'] = 'publish';
 
 				// Something to be done before importing one user?
-				do_action( "amapress_pre_import", $postdata, $postmeta, $posttaxo, $postcustom );
+				do_action( 'amapress_pre_import', $postdata, $postmeta, $posttaxo, $postcustom );
 				do_action( "amapress_pre_{$post_type}_import", $postdata, $postmeta, $posttaxo, $postcustom );
 
 //                if (empty($postmulti))
@@ -674,9 +676,9 @@ class Amapress_Import_Posts_CSV {
 						$postmeta = apply_filters( "amapress_import_{$post_type}_apply_multi_to_posts_meta", $postmeta, $multi_key, $multi_value, $postdata, $posttaxo, $post_type, $postmulti );
 						$posttaxo = apply_filters( "amapress_import_{$post_type}_apply_multi_to_posts_taxonomy", $posttaxo, $multi_key, $multi_value, $postdata, $postmeta, $post_type, $postmulti );
 
-						$postdata = apply_filters( "amapress_import_apply_multi_to_posts_data", $postdata, $multi_key, $multi_value, $postmeta, $posttaxo, $post_type, $postmulti );
-						$postmeta = apply_filters( "amapress_import_apply_multi_to_posts_meta", $postmeta, $multi_key, $multi_value, $postdata, $posttaxo, $post_type, $postmulti );
-						$posttaxo = apply_filters( "amapress_import_apply_multi_to_posts_taxonomy", $posttaxo, $multi_key, $multi_value, $postdata, $postmeta, $post_type, $postmulti );
+						$postdata = apply_filters( 'amapress_import_apply_multi_to_posts_data', $postdata, $multi_key, $multi_value, $postmeta, $posttaxo, $post_type, $postmulti );
+						$postmeta = apply_filters( 'amapress_import_apply_multi_to_posts_meta', $postmeta, $multi_key, $multi_value, $postdata, $posttaxo, $post_type, $postmulti );
+						$posttaxo = apply_filters( 'amapress_import_apply_multi_to_posts_taxonomy', $posttaxo, $multi_key, $multi_value, $postdata, $postmeta, $post_type, $postmulti );
 
 						if ( is_wp_error( $postdata ) ) {
 							$errors[ $rkey ][] = $postdata;
@@ -749,7 +751,7 @@ class Amapress_Import_Posts_CSV {
 							continue;
 						}
 						if ( ! $post ) {
-							$post = apply_filters( "amapress_import_resolve_post", null, $post_type, $postdata, $postmeta, $posttaxo, $postcustom );
+							$post = apply_filters( 'amapress_import_resolve_post', null, $post_type, $postdata, $postmeta, $posttaxo, $postcustom );
 							if ( is_wp_error( $post ) ) {
 								$errors[ $rkey ][] = $post;
 								continue;
@@ -820,7 +822,7 @@ class Amapress_Import_Posts_CSV {
 
 						// Some plugins may need to do things after one user has been imported. Who know?
 						do_action( "amapress_post_{$post_type}_import", $post_id, $postdata, $postmeta, $posttaxo, $postcustom );
-						do_action( "amapress_post_import", $post_id, $post_type, $postdata, $postmeta, $posttaxo, $postcustom );
+						do_action( 'amapress_post_import', $post_id, $post_type, $postdata, $postmeta, $posttaxo, $postcustom );
 
 						$imported_posts ++;
 						$post_ids[] = $post_id;
@@ -837,7 +839,7 @@ class Amapress_Import_Posts_CSV {
 
 
 		// One more thing to do after all imports?
-		do_action( "amapress_posts_import", $post_ids, $errors );
+		do_action( 'amapress_posts_import', $post_ids, $errors );
 		do_action( "amapress_{$post_type}_posts_import", $post_ids, $errors );
 
 		global $amapress_csv_import_errors;

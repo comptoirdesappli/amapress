@@ -19,6 +19,7 @@ class AmapressExport_Users {
 		$url = add_query_arg( 'amapress_export', 'csv' );
 		if ( ! empty( $name ) ) {
 			$url = add_query_arg( 'amapress_export_name', $name, $url );
+
 		}
 		if ( ! empty( $columns ) ) {
 			$url = add_query_arg( 'amapress_export_columns', $columns, $url );
@@ -92,11 +93,11 @@ class AmapressExport_Users {
 	) {
 		$data = self::generate_export_data( $query_string, $base_export_name, $title, $columns );
 
-		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
+		require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
 
 		$objPHPExcel = new PHPExcel();
-		$objPHPExcel->getProperties()->setCreator( "Amapress" )
-		            ->setLastModifiedBy( "Amapress" )
+		$objPHPExcel->getProperties()->setCreator( 'Amapress' )
+		            ->setLastModifiedBy( 'Amapress' )
 		            ->setTitle( ! empty( $title ) ? $title : $data['export_name'] );
 		$objPHPExcel->setActiveSheetIndex( 0 )->fromArray( array_merge( [ $data['csv_headers'] ], $data['csv_data'] ) );
 		$objPHPExcel->getActiveSheet()->setTitle( $data['export_name'] );
@@ -150,7 +151,7 @@ class AmapressExport_Users {
 		$meta_keys = $wpdb->get_results( "SELECT distinct(meta_key) FROM $wpdb->usermeta" );
 		$meta_keys = wp_list_pluck( $meta_keys, 'meta_key' );
 		$fields    = array_merge( $data_keys, $meta_keys );
-		$fields    = apply_filters( "amapress_users_export_fields", $fields, $export_name );
+		$fields    = apply_filters( 'amapress_users_export_fields', $fields, $export_name );
 		$fields    = apply_filters( "amapress_{$export_name}_export_fields", $fields, $export_name );
 
 		$include_data = [];
@@ -184,7 +185,7 @@ class AmapressExport_Users {
 			} elseif ( in_array( $field, $exclude_data ) ) {
 				unset( $fields[ $key ] );
 			} else {
-				$header = apply_filters( "amapress_users_get_field_display_name", $field );
+				$header = apply_filters( 'amapress_users_get_field_display_name', $field );
 				$header = wp_specialchars_decode( $header );
 				$header = html_entity_decode( $header );
 				if ( empty( $header ) ) {

@@ -83,7 +83,7 @@ class Amapress_Import_Users_CSV {
 					'taxonomy'   => $tax_name,
 					'hide_empty' => false,
 					'fields'     => 'names',
-				) );;
+				) );
 		}
 		$fields = array_merge( array_combine( $data_keys, $data_keys ), $meta_keys );
 
@@ -102,8 +102,8 @@ class Amapress_Import_Users_CSV {
 				$headers_desc[ $key ] = __( 'Saisir une ou plusieurs des étiquettes suivantes séparées par des virgules', 'amapress' );
 				$options[ $key ]      = $taxonomies_values[ $field ];
 			} else {
-				$header = apply_filters( "amapress_users_get_field_display_name", $field );
-				$desc   = apply_filters( "amapress_users_get_field_desc", '', $field );
+				$header = apply_filters( 'amapress_users_get_field_display_name', $field );
+				$desc   = apply_filters( 'amapress_users_get_field_desc', '', $field );
 				if ( empty( $header ) ) {
 					unset( $fields[ $key ] );
 					continue;
@@ -115,7 +115,7 @@ class Amapress_Import_Users_CSV {
 					if ( empty( $desc ) ) {
 						$desc = $option->getDesc();
 					}
-				} else if ( 'role' == $key || 'roles' == $key ) {
+				} elseif ( 'role' == $key || 'roles' == $key ) {
 					global $wp_roles;
 					$roles = [];
 					foreach ( $wp_roles->roles as $name => $role ) {
@@ -141,11 +141,11 @@ class Amapress_Import_Users_CSV {
 			'last_name'
 		) );
 
-		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
+		require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
 
 		$objPHPExcel = new PHPExcel();
-		$objPHPExcel->getProperties()->setCreator( "Amapress" )
-		            ->setLastModifiedBy( "Amapress" )
+		$objPHPExcel->getProperties()->setCreator( 'Amapress' )
+		            ->setLastModifiedBy( 'Amapress' )
 		            ->setTitle( $filename );
 		$objPHPExcel->setActiveSheetIndex( 0 );
 		$sheet = $objPHPExcel->getActiveSheet();
@@ -300,7 +300,7 @@ class Amapress_Import_Users_CSV {
 					echo '<div class="error"><p><strong>' . sprintf( __( 'Aucun utilisateur n\'a pu être importé%s.', 'amapress' ), $error_log_msg ) . '</strong></p></div>';
 					break;
 				case 'errors':
-					echo '<div class="error"><p><strong>' . sprintf( __( '%d utilisateur(s) ont été importés et %d autre(s) pas%s.', 'amapress' ), $imports, $remain, $error_log_msg ) . '</strong></p></div>';
+					echo '<div class="error"><p><strong>' . sprintf( __( '%1$d utilisateur(s) ont été importés et %2$d autre(s) pas%3$s.', 'amapress' ), $imports, $remain, $error_log_msg ) . '</strong></p></div>';
 					break;
 				case 'success':
 					echo '<div class="updated"><p><strong>' . __( 'Les utilisateurs ont été importés avec succès.', 'amapress' ) . '</strong></p></div>';
@@ -329,7 +329,7 @@ class Amapress_Import_Users_CSV {
                         </legend>
                         <label for="new_user_notification">
                             <input id="new_user_notification" name="new_user_notification" type="checkbox" value="1"/>
-					        <?php _e( 'Envoyer aux nouveaux utilisateurs', 'amapress' ) ?>
+					        <?php _e( 'Envoyer aux nouveaux utilisateurs', 'amapress' ); ?>
                         </label>
                     </fieldset>
                 </td>
@@ -342,7 +342,7 @@ class Amapress_Import_Users_CSV {
                             <span><?php _e( 'Changement de mot de passe', 'amapress' ); ?></span></legend>
                         <label for="password_nag">
                             <input id="password_nag" name="password_nag" type="checkbox" value="1"/>
-					        <?php _e( 'Afficher l\'interface de changement de mot de passe au premier login', 'amapress' ) ?>
+					        <?php _e( 'Afficher l\'interface de changement de mot de passe au premier login', 'amapress' ); ?>
                         </label>
                     </fieldset>
                 </td>
@@ -363,7 +363,7 @@ class Amapress_Import_Users_CSV {
         </table>
         <p class="submit">
             <button name="action" value="import"
-                    class="button button-primary"><?php _e( 'Importer', 'amapress' ) ?></button>
+                    class="button button-primary"><?php _e( 'Importer', 'amapress' ); ?></button>
         </p>
         <!--		</form>-->
 		<?php
@@ -415,7 +415,7 @@ class Amapress_Import_Users_CSV {
 			'role'
 		);
 
-		include( plugin_dir_path( __FILE__ ) . 'class-readcsv.php' );
+		include plugin_dir_path( __FILE__ ) . 'class-readcsv.php';
 
 		// Loop through the file lines
 //		$file_handle = @fopen( $filename, 'r' );
@@ -423,9 +423,9 @@ class Amapress_Import_Users_CSV {
 		try {
 			$csv_reader = new ReadCSV( $filename ); // Skip any UTF-8 byte order mark.
 
-			$first          = true;
-			$rkey           = 0;
-			$imported_users = 0;
+			$first                  = true;
+			$rkey                   = 0;
+			$imported_users         = 0;
 			$total_users    = 0;
 			while ( ( $line = $csv_reader->get_row() ) !== null ) {
 				$rkey ++;
@@ -452,7 +452,7 @@ class Amapress_Import_Users_CSV {
 
 						$col_name = Amapress::num2alpha( $index );
 
-						return apply_filters( "amapress_import_users_get_field_name", $field_name, $col_name );
+						return apply_filters( 'amapress_import_users_get_field_name', $field_name, $col_name );
 					}, array_values( $headers ), array_keys( $headers ) );
 //					$headers_col_names = array_map( function ( $index ) {
 //						return Amapress::num2alpha( $index );
@@ -475,11 +475,11 @@ class Amapress_Import_Users_CSV {
 					$required_headers = apply_filters( 'amapress_csv_users_import_required_headers', array() );
 					foreach ( array_diff( $required_headers, $headers_mapped ) as $field_name ) {
 						$had_errors  = true;
-						$header_name = apply_filters( "amapress_users_get_field_display_name", $field_name );
+						$header_name = apply_filters( 'amapress_users_get_field_display_name', $field_name );
 						if ( is_wp_error( $header_name ) ) {
 							$errors[ $rkey ][] = $header_name;
 						} else {
-							$errors[ $rkey ][] = new WP_Error( 'required_header_missing', sprintf( __( "Il manque une colonne %s.", 'amapress' ), $header_name ) );
+							$errors[ $rkey ][] = new WP_Error( 'required_header_missing', sprintf( __( 'Il manque une colonne %s.', 'amapress' ), $header_name ) );
 						}
 					}
 					if ( $had_errors ) {
@@ -504,7 +504,7 @@ class Amapress_Import_Users_CSV {
 					}
 
 					if ( in_array( $column_name, $required_headers ) && empty( $column ) ) {
-						$column = new WP_Error( 'required_value_missing', sprintf( __( "Colonne %s : valeur requise pour la colonne %s.", 'amapress' ), $col_name, $headers[ $ckey ] ) );
+						$column = new WP_Error( 'required_value_missing', sprintf( __( 'Colonne %1$s : valeur requise pour la colonne %2$s.', 'amapress' ), $col_name, $headers[ $ckey ] ) );
 					}
 
 					if ( in_array( $column_name, $userdata_fields ) ) {
@@ -574,7 +574,7 @@ class Amapress_Import_Users_CSV {
 						if ( $user ) {
 							$user_link         = Amapress::makeLink( admin_url( 'user-edit.php?user_id=' . $user->ID ), $login, true, true );
 							$search_link       = Amapress::makeLink( admin_url( 'users.php?s=' . $userdata['last_name'] ), __( 'Rechercher ', 'amapress' ) . $userdata['last_name'], true, true );
-							$errors[ $rkey ][] = new WP_Error( 'user_with_different_mail', sprintf( __( 'Un utilisateur avec le login \'%s\' existe déjà avec l\'email %s.', 'amapress' ), $user_link, $user->user_email ) . $search_link );
+							$errors[ $rkey ][] = new WP_Error( 'user_with_different_mail', sprintf( __( 'Un utilisateur avec le login \'%1$s\' existe déjà avec l\'email %2$s.', 'amapress' ), $user_link, $user->user_email ) . $search_link );
 							continue;
 						}
 					}
@@ -602,10 +602,10 @@ class Amapress_Import_Users_CSV {
 
 				if ( empty( $userdata['user_login'] ) ) {
 					if ( ! empty( $userdata['first_name'] ) and ! empty( $userdata['last_name'] ) ) {
-						$userdata['user_login'] = sprintf( __( '%s.%s', 'amapress' ), strtolower( $userdata['first_name'] ), strtolower( $userdata['last_name'] ) );
+						$userdata['user_login'] = sprintf( __( '%1$s.%2$s', 'amapress' ), strtolower( $userdata['first_name'] ), strtolower( $userdata['last_name'] ) );
 //                    } else if (!empty($userdata['last_name'])) {
 //                        $userdata['user_login'] = sprintf( __('%s.%s', 'amapress'), strtolower($userdata['first_name']), strtolower($userdata['last_name']));
-					} else if ( ! empty( $userdata['user_email'] ) ) {
+					} elseif ( ! empty( $userdata['user_email'] ) ) {
 						$userdata['user_login'] = $userdata['user_email'];
 					}
 				}

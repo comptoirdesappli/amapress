@@ -60,6 +60,7 @@ class AmapressExport_Posts {
 				$amapress_export_columns
 			);
 
+
 			if ( null == $objPHPExcel ) {
 				$referer = add_query_arg( 'error', 'empty', wp_get_referer() );
 				wp_redirect( remove_query_arg( 'amapress_export', $referer ) );
@@ -99,11 +100,11 @@ class AmapressExport_Posts {
 	) {
 		$data = self::generate_export_data( $query_string, $base_export_name, $title, $columns );
 
-		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
+		require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
 
 		$objPHPExcel = new PHPExcel();
-		$objPHPExcel->getProperties()->setCreator( "Amapress" )
-		            ->setLastModifiedBy( "Amapress" )
+		$objPHPExcel->getProperties()->setCreator( 'Amapress' )
+		            ->setLastModifiedBy( 'Amapress' )
 		            ->setTitle( ! empty( $title ) ? $title : $data['export_name'] );
 		$objPHPExcel->setActiveSheetIndex( 0 )->fromArray( array_merge( [ $data['csv_headers'] ], $data['csv_data'] ) );
 		$objPHPExcel->getActiveSheet()->setTitle( $data['export_name'] );
@@ -133,7 +134,7 @@ class AmapressExport_Posts {
 		$export_name = ! empty( $base_export_name ) ? $base_export_name : $pt;
 
 		$exclude_data = array();
-		$exclude_data = apply_filters( "amapress_posts_export_exclude_data", $exclude_data, $export_name );
+		$exclude_data = apply_filters( 'amapress_posts_export_exclude_data', $exclude_data, $export_name );
 		$exclude_data = apply_filters( "amapress_posts_{$export_name}_export_exclude_data", $exclude_data );
 
 		global $wpdb;
@@ -167,7 +168,7 @@ class AmapressExport_Posts {
 			$taxonomies_names[ $tax_name ] = $tax->label;
 		}
 		$fields = array_merge( $data_keys, $meta_keys );
-		$fields = apply_filters( "amapress_posts_export_fields", $fields, $export_name );
+		$fields = apply_filters( 'amapress_posts_export_fields', $fields, $export_name );
 		$fields = apply_filters( "amapress_{$export_name}_export_fields", $fields, $export_name );
 
 		$include_data = [];
@@ -200,11 +201,11 @@ class AmapressExport_Posts {
 				unset( $fields[ $key ] );
 			} elseif ( in_array( $field, $exclude_data ) ) {
 				unset( $fields[ $key ] );
-			} else if ( in_array( $field, $taxonomies_names ) ) {
+			} elseif ( in_array( $field, $taxonomies_names ) ) {
 				$headers[]    = $taxonomies_names[ $field ];
 				$header_ids[] = $field;
 			} else {
-				$header = apply_filters( "amapress_posts_get_field_display_name", $field, $pt );
+				$header = apply_filters( 'amapress_posts_get_field_display_name', $field, $pt );
 				$header = apply_filters( "amapress_posts_{$pt}_get_field_display_name", $header );
 				$header = wp_specialchars_decode( $header );
 				$header = html_entity_decode( $header );
@@ -223,11 +224,11 @@ class AmapressExport_Posts {
 			$data = array();
 			foreach ( $fields as $field ) {
 				if ( in_array( $field, $taxonomies_names ) ) {
-					$value = implode( ', ', wp_get_post_terms( $post->ID, $field, array( "fields" => "names" ) ) );
+					$value = implode( ', ', wp_get_post_terms( $post->ID, $field, array( 'fields' => 'names' ) ) );
 				} else {
 					$value = ! empty( $post->{$field} ) ? TitanEntity::prepare_custom_field_value( $post->{$field} ) : '';
 				}
-				$value  = apply_filters( "amapress_posts_export_prepare_value", $value, $field, $post );
+				$value  = apply_filters( 'amapress_posts_export_prepare_value', $value, $field, $post );
 				$value  = apply_filters( "amapress_posts_{$pt}_export_prepare_value", $value, $field, $post );
 				$data[] = is_array( $value ) ? serialize( $value ) : $value;
 			}

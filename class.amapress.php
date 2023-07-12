@@ -15,7 +15,7 @@ class Amapress {
 	private static $titan = null;
 
 	public static function getTitanInstance() {
-		if ( self::$titan == null ) {
+		if ( null == self::$titan ) {
 			self::$titan = TitanFramework::getInstance( 'amapress' );
 		}
 
@@ -24,12 +24,12 @@ class Amapress {
 
 	public static function hasRespDistribRoles() {
 		for ( $i = 1; $i <= 10; $i ++ ) {
-			if ( ! empty( Amapress::getOption( "resp_role_$i-name" ) ) ) {
+			if ( ! empty( self::getOption( "resp_role_$i-name" ) ) ) {
 				return true;
 			}
 
-			foreach ( Amapress::get_lieu_ids() as $lieu_id ) {
-				if ( ! empty( Amapress::getOption( "resp_role_{$lieu_id}_$i-name" ) ) ) {
+			foreach ( self::get_lieu_ids() as $lieu_id ) {
+				if ( ! empty( self::getOption( "resp_role_{$lieu_id}_$i-name" ) ) ) {
 					return true;
 				}
 			}
@@ -122,7 +122,7 @@ class Amapress {
 					} else {
 						$t = term_exists( $v, 'amps_paiement_category' );
 					}
-					Amapress::setOption( $k, $t['term_id'] );
+					self::setOption( $k, $t['term_id'] );
 				}
 				update_option( 'amapress_init_adh_terms', 1 );
 			}
@@ -226,11 +226,11 @@ class Amapress {
 	}
 
 	public static function getPageLink( $name ) {
-		return get_page_link( Amapress::getOption( $name ) );
+		return get_page_link( self::getOption( $name ) );
 	}
 
 	public static function getMesInfosSublink( $relative ) {
-		$optionsPage = Amapress::resolve_post_id( Amapress::getOption( 'mes-infos-page' ), 'page' );
+		$optionsPage = self::resolve_post_id( self::getOption( 'mes-infos-page' ), 'page' );
 
 		return trailingslashit( get_page_link( $optionsPage ) ) . $relative;
 	}
@@ -425,7 +425,7 @@ class Amapress {
 	}
 
 	public static function get_lieu_id( $lieu ) {
-		return Amapress::resolve_post_id( $lieu, AmapressLieu_distribution::INTERNAL_POST_TYPE );
+		return self::resolve_post_id( $lieu, AmapressLieu_distribution::INTERNAL_POST_TYPE );
 	}
 
 //	public static function init_post_capabilities( $singular, $plural ) {
@@ -1848,7 +1848,7 @@ class Amapress {
 	public static function image_crop_dimensions( $default, $orig_w, $orig_h, $new_w, $new_h, $crop ) {
 		if ( ! $crop ) {
 			return null;
-		} // let the wordpress default function handle this
+		} // let the WordPress default function handle this
 
 		$aspect_ratio = $orig_w / $orig_h;
 		$size_ratio   = max( $new_w / $orig_w, $new_h / $orig_h );
@@ -2160,8 +2160,8 @@ class Amapress {
 
 		$ret                = '';
 		$generated_ids      = [];
-		$around_address_lat = Amapress::get_lieux()[0]->getAdresseLatitude();
-		$around_address_lng = Amapress::get_lieux()[0]->getAdresseLongitude();
+		$around_address_lat = self::get_lieux()[0]->getAdresseLatitude();
+		$around_address_lng = self::get_lieux()[0]->getAdresseLongitude();
 		$relative_time      = 0;
 
 		$user_roles_terms      = AmapDemoBase::dumpTerms( AmapressUser::AMAP_ROLE );
@@ -2199,7 +2199,7 @@ class Amapress {
 //'amapress_lieu_distribution_long
 //'amapress_lieu_distribution_lat
 //'amapress_lieu_distribution_location_type
-			} else if ( AmapressProducteur::INTERNAL_POST_TYPE == $post['post_type'] ) {
+			} elseif ( AmapressProducteur::INTERNAL_POST_TYPE == $post['post_type'] ) {
 				//amapress_producteur_adresse_exploitation
 				//amapress_producteur_adresse_exploitation_lat
 				//amapress_producteur_adresse_exploitation_long
@@ -2207,7 +2207,7 @@ class Amapress {
 				unset( $postmeta['amapress_producteur_resume'] );
 				unset( $postmeta['amapress_producteur_presentation'] );
 				unset( $postmeta['amapress_producteur_historique'] );
-			} else if ( AmapressAdhesion::INTERNAL_POST_TYPE == $post['post_type'] ) {
+			} elseif ( AmapressAdhesion::INTERNAL_POST_TYPE == $post['post_type'] ) {
 				if ( isset( $postmeta['amapress_adhesion_contrat_quantite'] ) ) {
 					$arr  = $postmeta['amapress_adhesion_contrat_quantite'];
 					$arr2 = [];
@@ -2354,7 +2354,7 @@ class Amapress {
 				if ( is_array( $v ) ) {
 					if ( count( $v ) > 1 ) {
 						return $v;
-					} else if ( isset( $v[0] ) ) {
+					} elseif ( isset( $v[0] ) ) {
 						return $v[0];
 					} else {
 						return array_shift( $v );
@@ -2403,7 +2403,7 @@ class Amapress {
 					if ( 'select-users' == $fields[ $k ]['type'] || 'select-posts' == $fields[ $k ]['type']
 					     || 'multicheck-users' == $fields[ $k ]['type'] || 'multicheck-posts' == $fields[ $k ]['type'] ) {
 						$v_exports = [];
-						foreach ( Amapress::get_array( $v ) as $sub_id ) {
+						foreach ( self::get_array( $v ) as $sub_id ) {
 							$ret = self::generate_test( intval( $sub_id ),
 									amapress_simplify_post_type( isset( $fields[ $k ]['post_type'] ) ? $fields[ $k ]['post_type'] : 'user' ),
 									$generated_ids, $unset_post_title, $relative_time, $update_user_callback, $update_post_callback, $media, $anonymize ) . $ret;
@@ -2466,7 +2466,7 @@ class Amapress {
 				if ( isset( $fields[ $k ] ) && ( 'select-users' == $fields[ $k ]['type'] || 'select-posts' == $fields[ $k ]['type']
 				                                 || 'multicheck-users' == $fields[ $k ]['type'] || 'multicheck-posts' == $fields[ $k ]['type'] ) ) {
 					$vs = [];
-					foreach ( Amapress::get_array( $v ) as $sub_id ) {
+					foreach ( self::get_array( $v ) as $sub_id ) {
 						$ret = self::generate_test( intval( $sub_id ),
 								amapress_simplify_post_type( isset( $fields[ $k ]['post_type'] ) ? $fields[ $k ]['post_type'] : 'user' ),
 								$generated_ids, $unset_post_title, $relative_time, $update_user_callback, $update_post_callback, $media, $anonymize ) . $ret;
@@ -2482,7 +2482,7 @@ class Amapress {
 					} else {
 						$v = $vs;
 					}
-				} else if ( '_thumbnail_id' == $k || isset( $fields[ $k ] ) && ( 'upload' == $fields[ $k ]['type'] ) ) {
+				} elseif ( '_thumbnail_id' == $k || isset( $fields[ $k ] ) && ( 'upload' == $fields[ $k ]['type'] ) ) {
 					if ( is_array( $v ) ) {
 						$v = array_shift( $v );
 					}
@@ -2506,16 +2506,16 @@ class Amapress {
 					} else {
 						$v = 0;
 					}
-				} else if ( isset( $fields[ $k ] ) && 'multidate' == $fields[ $k ]['type'] ) {
+				} elseif ( isset( $fields[ $k ] ) && 'multidate' == $fields[ $k ]['type'] ) {
 					$v = 'implode(", ", [' . implode( ', ', array_map( function ( $d ) use ( $relative_time ) {
 							return 'date_i18n("d/m/Y", $now+' . ( intval( $d ) - Amapress::start_of_day( $relative_time ) ) . ')';
 						}, array_map(
 							'TitanEntity::to_date',
 							TitanEntity::get_array( $v ) ) ) ) . '])¤';
-				} else if ( isset( $fields[ $k ] )
-				            && ( 'date' == $fields[ $k ]['type']
-				                 || 'amapress_panier_date_subst' == $k ) ) {
-					$v = 'now+' . ( intval( $v ) - Amapress::start_of_day( $relative_time ) );
+				} elseif ( isset( $fields[ $k ] )
+				           && ( 'date' == $fields[ $k ]['type']
+				                || 'amapress_panier_date_subst' == $k ) ) {
+					$v = 'now+' . ( intval( $v ) - self::start_of_day( $relative_time ) );
 				}
 				$filtered_post_meta[ $k ] = $v;
 			}
@@ -2602,7 +2602,7 @@ class Amapress {
 	public static function init_post_metaboxes() {
 		self::init_options_default();
 
-		if ( ! Amapress::isBackOfficePage() && ! Amapress::isDoingCron() && ( ! isset( $_POST['action'] ) || strpos( $_POST['action'], 'tf_select' ) === false ) ) {
+		if ( ! self::isBackOfficePage() && ! self::isDoingCron() && ( ! isset( $_POST['action'] ) || strpos( $_POST['action'], 'tf_select' ) === false ) ) {
 			return;
 		}
 
@@ -2650,11 +2650,11 @@ class Amapress {
 			array(
 				'id'   => 'amps_sc_edit_help',
 				'type' => 'note',
-				'desc' => Amapress::makeInternalLink(
+				'desc' => self::makeInternalLink(
 						admin_url( 'admin.php?page=amapress_help_page&tab=shortcodes' ),
 						__( 'Liste des shortcodes', 'amapress' ) ) .
 				          '<br/>' .
-				          Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/shortcodes' ),
+				          self::makeWikiLink( 'https://wiki.amapress.fr/admin/shortcodes' ),
 			)
 		);
 
@@ -2683,7 +2683,7 @@ class Amapress {
 				'name'        => __( 'Rediriger non connectés vers', 'amapress' ),
 				'type'        => 'select-pages',
 				'desc'        => __( 'Par défaut : les internautes non connectés sont redirigés vers la page de connexion<br/>', 'amapress' )
-				                 . Amapress::makeWikiLink( 'https://wiki.amapress.fr/admin/protection' ),
+				                 . self::makeWikiLink( 'https://wiki.amapress.fr/admin/protection' ),
 				'show_column' => false,
 			)
 		);
@@ -2698,13 +2698,13 @@ class Amapress {
 		$tp = AmapressEntities::getPostTypes();
 		//https://codex.wordpress.org/Plugin_API/Admin_Screen_Reference
 		if ( $screen_id == 'users' ) {
-		} else if ( $screen_id == 'user-new' ) {
+		} elseif ( $screen_id == 'user-new' ) {
 			return $tp['user']['help_new'];
-		} else if ( $screen_id == 'user-edit' ) {
+		} elseif ( $screen_id == 'user-edit' ) {
 			return $tp['user']['help_edit'];
-		} else if ( $screen_id == 'profile' ) {
+		} elseif ( $screen_id == 'profile' ) {
 			return $tp['user']['help_profile'];
-		} else if ( $screen_id == 'admin' ) { //Import Tool
+		} elseif ( $screen_id == 'admin' ) { //Import Tool
 		} else {
 			$matches = array();
 			preg_match( '/settings_page_(.+)/', $screen_id, $matches );
@@ -2738,11 +2738,11 @@ class Amapress {
 //			}
 			$screen = get_current_screen();
 			if ( ! empty( $screen->id ) ) {
-				$help_tabs_list = Amapress::get_help_tabs( $screen->id );
+				$help_tabs_list = self::get_help_tabs( $screen->id );
 				if ( $help_tabs_list && ! empty( $help_tabs_list['summary'] ) ) {
 					?>
                     <div class="notice notice-info">
-                        <p><?php echo $help_tabs_list['summary'] ?></p>
+                        <p><?php echo $help_tabs_list['summary']; ?></p>
                     </div>
 					<?php
 				}
@@ -2755,7 +2755,7 @@ class Amapress {
 		if ( is_admin() ) {
 			$screen = get_current_screen();
 			if ( ! empty( $screen->id ) && ! $screen->get_help_tabs() ) {
-				$help_tabs_list = Amapress::get_help_tabs( $screen->id );
+				$help_tabs_list = self::get_help_tabs( $screen->id );
 				if ( ! empty( $help_tabs_list ) ) {
 					// Loop through tabs
 					foreach ( $help_tabs_list as $key => $help_tabs ) {
@@ -2848,7 +2848,7 @@ class Amapress {
 
 		if ( 'customize.php' != $pagenow ) {
 
-			if ( Amapress::getOption( 'feedback' ) ) {
+			if ( self::getOption( 'feedback' ) ) {
 				wp_enqueue_style( 'amapress-feedback', plugins_url( '/css/feedback.css', __FILE__ ) );
 				wp_enqueue_script( 'amapress-feedback', plugins_url( '/js/feedback.js', __FILE__ ), array( 'jquery' ) );
 				//https://html2canvas.hertzen.com/dist/html2canvas.min.js
@@ -2899,7 +2899,7 @@ class Amapress {
 	public static function amapress_insert_front_scripts() {
 		$plugin_version = AMAPRESS_VERSION;
 
-		if ( Amapress::getOption( 'feedback' ) ) {
+		if ( self::getOption( 'feedback' ) ) {
 			wp_enqueue_style( 'amapress-feedback', plugins_url( '/css/feedback.css', __FILE__ ) );
 			wp_enqueue_script( 'amapress-feedback', plugins_url( '/js/feedback.js', __FILE__ ), array( 'jquery' ) );
 		}
@@ -2988,8 +2988,8 @@ class Amapress {
 	}
 
 	static function amapress_this_month_dashboard_widget_function() {
-		$start_date    = Amapress::start_of_week( amapress_time() );
-		$end_date      = Amapress::add_a_month( amapress_time() );
+		$start_date    = self::start_of_week( amapress_time() );
+		$end_date      = self::add_a_month( amapress_time() );
 		$month_paniers = array_filter( AmapressPanier::get_paniers( $start_date, $end_date ),
 			function ( $panier ) {
 				return $panier->getContrat_instance()->hasPanier_CustomContent();
@@ -2997,7 +2997,7 @@ class Amapress {
 		$month_dists   = AmapressDistribution::get_distributions( $start_date, $end_date );
 		$month_visites = AmapressVisite::get_visites( $start_date, $end_date );
 
-		echo '<p>' . Amapress::makeLink(
+		echo '<p>' . self::makeLink(
 				admin_url( 'admin.php?page=contrats_quantites_next_distrib' ),
 				__( 'Quantités à la prochaine distribution', 'amapress' ), true, true ) . '</p>';
 
@@ -3025,7 +3025,7 @@ class Amapress {
 		} else {
 			echo '<p>' . sprintf(
 					__( 'Distributions / <a target="_blank" href="%s">Inscriptions des responsables</a> :', 'amapress' ),
-					Amapress::get_inscription_distrib_page_href() ) . '</p>';
+					self::get_inscription_distrib_page_href() ) . '</p>';
 			echo '<ul>';
 			foreach ( $month_dists as $dist ) {
 				$url   = admin_url( 'post.php?post=' . $dist->ID . '&action=edit' );
@@ -3034,13 +3034,13 @@ class Amapress {
 				echo '<li><a target="_blank" href=' . $url . '>';
 				if ( count( $resps ) == 0 ) {
 					echo $dist->getTitle() . '</a> - <strong style="color:red">' . __( 'Pas de responsables', 'amapress' ) . '</strong>';
-				} else if ( $req > count( $resps ) ) {
+				} elseif ( $req > count( $resps ) ) {
 					$miss = $req - count( $resps );
 					echo $dist->getTitle() . '</a> - <strong>' . sprintf( __( '%d responsable(s) manquants', 'amapress' ), $miss ) . '</strong>';
 				} else {
 					echo $dist->getTitle() . '</a> - ' . __( 'Complet', 'amapress' );
 				}
-				echo ' / ' . Amapress::makeLink( $dist->getListeEmargementHref(), __( 'Liste d\'émargement', 'amapress' ), true, true );
+				echo ' / ' . self::makeLink( $dist->getListeEmargementHref(), __( 'Liste d\'émargement', 'amapress' ), true, true );
 				echo '</li>';
 			}
 			echo '</ul>';
@@ -3055,10 +3055,10 @@ class Amapress {
 				$url   = admin_url( 'post.php?post=' . $dist->ID . '&action=edit' );
 				$resps = AmapressDistributions::get_visite_participants( $dist->ID );
 				if ( count( $resps ) == 0 ) {
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . __( 'Pas de participants', 'amapress' ) . "</strong></li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - <strong style='color:red'>" . __( 'Pas de participants', 'amapress' ) . '</strong></li>';
 				} else {
 					$cnt = count( $resps );
-					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . sprintf( __( '%d participant(s)', 'amapress' ), $cnt ) . "</li>";
+					echo "<li><a href='$url'>{$dist->getTitle()}</a> - " . sprintf( __( '%d participant(s)', 'amapress' ), $cnt ) . '</li>';
 				}
 			}
 			echo '</ul>';
@@ -3066,13 +3066,13 @@ class Amapress {
 	}
 
 	static function amapress_entities_dashboard_widget_function() {
-		$lieux    = Amapress::get_lieux();
+		$lieux    = self::get_lieux();
 		$contrats = AmapressContrats::get_active_contrat_instances();
 
 		//contrats
 		$adm = admin_url( 'edit.php?post_type=amps_contrat_inst' );
 		$cnt = count( $contrats );
-		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> contrats actifs. Contrat(s) ouvert(s) à l\'inscription :</p>', 'amapress' ), $adm, $cnt );
+		echo sprintf( __( '<p><a href=\'%1$s\'>(%2$s)</a> contrats actifs. Contrat(s) ouvert(s) à l\'inscription :</p>', 'amapress' ), $adm, $cnt );
 		echo wpautop( amapress_replace_mail_placeholders( '%%contrats_en_cours_by_inscr_end%%', null, null ) );
 
 		//adhérents
@@ -3084,7 +3084,7 @@ class Amapress {
 			)
 		);
 		$adm = admin_url( 'edit.php?post_type=amps_adh_pmt&amapress_date=active' );
-		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> adhésions</p>', 'amapress' ), $adm, $cnt );
+		echo sprintf( __( '<p><a href=\'%1$s\'>(%2$s)</a> adhésions</p>', 'amapress' ), $adm, $cnt );
 
 		//inscriptions
 		$ads = get_posts(
@@ -3095,7 +3095,7 @@ class Amapress {
 		);
 		$adm = admin_url( 'edit.php?post_type=amps_adhesion' );
 		$cnt = count( $ads );
-		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> inscriptions :</p>', 'amapress' ), $adm, $cnt );
+		echo sprintf( __( '<p><a href=\'%1$s\'>(%2$s)</a> inscriptions :</p>', 'amapress' ), $adm, $cnt );
 		echo '<ul>';
 		foreach ( $lieux as $lieu ) {
 			$ads_lieu = get_posts(
@@ -3113,7 +3113,7 @@ class Amapress {
 			);
 			$adm      = admin_url( 'edit.php?post_type=amps_adhesion&meta_key=amapress_adhesion_lieu&meta_value=' . $lieu->ID );
 			$cnt      = count( $ads_lieu );
-			echo sprintf( __( '<li>%s: <a href=\'%s\'>(%s)</a> inscriptions</li>', 'amapress' ), $lieu->getTitle(), $adm, $cnt );
+			echo sprintf( __( '<li>%1$s: <a href=\'%2$s\'>(%3$s)</a> inscriptions</li>', 'amapress' ), $lieu->getTitle(), $adm, $cnt );
 		}
 		echo '</ul>';
 		echo '<ul>';
@@ -3133,14 +3133,14 @@ class Amapress {
 			);
 			$adm         = admin_url( 'edit.php?post_type=amps_adhesion&meta_key=amapress_adhesion_contrat_instance&meta_value=' . $contrat->ID );
 			$cnt         = count( $ads_contrat );
-			echo sprintf( __( '<li>%s: <a href=\'%s\'>(%s)</a> inscriptions</li>', 'amapress' ), $contrat->getTitle(), $adm, $cnt );
+			echo sprintf( __( '<li>%1$s: <a href=\'%2$s\'>(%3$s)</a> inscriptions</li>', 'amapress' ), $contrat->getTitle(), $adm, $cnt );
 		}
 		echo '</ul>';
 
 		//lieux distrib
 		$adm = admin_url( 'edit.php?post_type=amps_lieu' );
 		$cnt = count( $lieux );
-		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> lieu(x) de distribution</p>', 'amapress' ), $adm, $cnt );
+		echo sprintf( __( '<p><a href=\'%1$s\'>(%2$s)</a> lieu(x) de distribution</p>', 'amapress' ), $adm, $cnt );
 
 		//producteurs
 		$cnt = get_posts_count(
@@ -3150,7 +3150,7 @@ class Amapress {
 			)
 		);
 		$adm = admin_url( 'edit.php?post_type=amps_producteur' );
-		echo sprintf( __( '<p><a href=\'%s\'>(%s)</a> producteurs</p>', 'amapress' ), $adm, $cnt );
+		echo sprintf( __( '<p><a href=\'%1$s\'>(%2$s)</a> producteurs</p>', 'amapress' ), $adm, $cnt );
 	}
 
 
@@ -3367,12 +3367,12 @@ class Amapress {
 			$items2[] = $item;
 		}
 
-		$walker  = new Walker_Nav_Menu_Checklist( array() );
-		$walker2 = new Walker_Nav_Menu_Checklist( array() );
+		$walker                     = new Walker_Nav_Menu_Checklist( array() );
+		$walker2                    = new Walker_Nav_Menu_Checklist( array() );
 
 		?>
         <div id="amapress" class="posttypediv">
-            <h4><?php _e( 'Types', 'amapress' ) ?></h4>
+            <h4><?php _e( 'Types', 'amapress' ); ?></h4>
 
             <div id="tabs-panel-amapress" class="tabs-panel tabs-panel-active">
                 <ul id="amapress-checklist" class="categorychecklist form-no-clear">
@@ -3382,7 +3382,7 @@ class Amapress {
                 </ul>
             </div>
             <!-- /.tabs-panel -->
-            <h4><?php _e( 'Liens', 'amapress' ) ?></h4>
+            <h4><?php _e( 'Liens', 'amapress' ); ?></h4>
 
             <div id="tabs-panel-amapress-links" class="tabs-panel tabs-panel-active">
                 <ul id="amapress-checklist-links" class="categorychecklist form-no-clear">
@@ -3422,7 +3422,7 @@ class Amapress {
 						break;
 					}
 				}
-			} else if ( $item->type == 'amapress-custom-latest' && ! is_admin() ) {
+			} elseif ( $item->type == 'amapress-custom-latest' && ! is_admin() ) {
 				amapress_ensure_no_cache();
 
 				$types = array_merge( [ 'post' ], array_keys( AmapressEntities::getPostTypes() ) );
@@ -3445,7 +3445,7 @@ class Amapress {
 					$item->url        = $next_distrib->getPermalink();
 					$item->attr_title = $next_distrib->getTitle();
 				}
-			} else if ( $item->type == 'amapress-custom-link' ) {
+			} elseif ( $item->type == 'amapress-custom-link' ) {
 				foreach ( AmapressEntities::$special_pages as $post_type => $post_conf ) {
 					if ( $item->object == 'amapress_link_' . trim( $post_type, '/' ) ) {
 						$item->url = $post_type;
@@ -3578,8 +3578,8 @@ class Amapress {
 			}
 			$used[] = $contrat->ID;
 			$lbl    = in_array( $contrat->ID, $active_contrats_ids ) ?
-				Amapress::getOption( 'front_produits_button_text_if_adherent', __( 'Adhérent', 'amapress' ) ) :
-				Amapress::getOption( 'front_produits_button_text_if_not_adherent', __( 'Découvrir', 'amapress' ) );
+				self::getOption( 'front_produits_button_text_if_adherent', __( 'Adhérent', 'amapress' ) ) :
+				self::getOption( 'front_produits_button_text_if_not_adherent', __( 'Découvrir', 'amapress' ) );
 			//$btn_url = in_array($contrat->ID, $active_contrats) ? trailingslashit(get_post_permalink($contrat->ID)).'details/' : __('Je m\'inscris', 'amapress');
 			$btn_url = trailingslashit( get_post_permalink( $contrat->ID ) );
 			$url     = amapress_get_avatar_url( $contrat->ID, null, 'produit-thumb', 'default_contrat.jpg' );
@@ -3650,7 +3650,7 @@ class Amapress {
 		}
 
 		$alt = esc_attr( $alt );
-		if ( preg_match( "/fa-|glyphicon-|ion-|wi-|map-icon-|octicon-|typcn-|el-|md-/", $name ) ) {
+		if ( preg_match( '/fa-|glyphicon-|ion-|wi-|map-icon-|octicon-|typcn-|el-|md-/', $name ) ) {
 			return "<i class='$name' title='$alt'></i>";
 		} else {
 			return "<span class='$name' title='$alt'></span>";
@@ -3659,6 +3659,7 @@ class Amapress {
 
 	/**
 	 * Attached to activate_{ plugin_basename( __FILES__ ) } by register_activation_hook()
+	 *
 	 * @static
 	 */
 	public static function plugin_activation() {
@@ -3673,6 +3674,7 @@ class Amapress {
 
 	/**
 	 * Removes all connection options
+	 *
 	 * @static
 	 */
 	public static function plugin_deactivation() {
@@ -3706,7 +3708,7 @@ class Amapress {
 		$html, $pdf_name = null, $orientation = 'P', $format = 'A4'
 	) {
 		$pdf_bytes = self::createPdfFromHtml( $html, $pdf_name, 'S', $orientation, $format );
-		$filename  = Amapress::getAttachmentDir() . '/' . $pdf_name;
+		$filename  = self::getAttachmentDir() . '/' . $pdf_name;
 
 		file_put_contents( $filename, $pdf_bytes );
 
@@ -3716,7 +3718,7 @@ class Amapress {
 	public static function createPdfFromHtml(
 		$html, $pdf_name = null, $dest = false, $orientation = 'P', $format = 'A4'
 	) {
-		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
+		require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
 		if ( isset( $_GET['test'] ) ) {
 			wp_die( $html );
 		}
@@ -3775,7 +3777,7 @@ class Amapress {
 	public static function createXLSXFromPHPExcelAsMailAttachment(
 		$objPHPExcel, $excel_file_name
 	) {
-		$filename = Amapress::getAttachmentDir() . '/' . $excel_file_name;
+		$filename = self::getAttachmentDir() . '/' . $excel_file_name;
 
 		return self::createXLSXFromPHPExcelAsFile( $objPHPExcel, $filename );
 	}
@@ -3802,7 +3804,7 @@ class Amapress {
 	public static function createXLSXFromHtml(
 		$html, $title = null
 	) {
-		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
+		require_once AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php';
 		if ( isset( $_GET['test'] ) ) {
 			wp_die( $html );
 		}
@@ -3827,17 +3829,17 @@ class Amapress {
 		$full_file_name, $out_file_name
 	) {
 		if ( ! file_exists( $full_file_name ) ) {
-			wp_die( sprintf( __( 'Le fichier %s n\'existe pas (%s)', 'amapress' ), $out_file_name, $full_file_name ) );
+			wp_die( sprintf( __( 'Le fichier %1$s n\'existe pas (%2$s)', 'amapress' ), $out_file_name, $full_file_name ) );
 		}
 		if ( strpos( $out_file_name, '.docx' ) !== false ) {
 			header( 'Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document' );
-		} else if ( strpos( $out_file_name, '.xlsx' ) !== false ) {
+		} elseif ( strpos( $out_file_name, '.xlsx' ) !== false ) {
 			header( 'Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' );
-		} else if ( strpos( $out_file_name, '.odt' ) !== false ) {
+		} elseif ( strpos( $out_file_name, '.odt' ) !== false ) {
 			header( 'Content-Type: application/vnd.oasis.opendocument.text' );
-		} else if ( strpos( $out_file_name, '.pdf' ) !== false ) {
+		} elseif ( strpos( $out_file_name, '.pdf' ) !== false ) {
 			header( 'Content-Type: application/pdf' );
-		} else if ( strpos( $out_file_name, '.eml' ) !== false ) {
+		} elseif ( strpos( $out_file_name, '.eml' ) !== false ) {
 			header( 'Content-Type: message/rfc822' );
 
 		} else {
@@ -3929,7 +3931,7 @@ class Amapress {
 		header( 'Cache-Control: cache, must-revalidate' ); // HTTP/1.1
 		header( 'Pragma: public' ); // HTTP/1.0
 		$objWriter = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
-		Amapress::outputExcel( $objWriter );
+		self::outputExcel( $objWriter );
 		die();
 	}
 
@@ -3943,7 +3945,7 @@ class Amapress {
 		$html, $excel_file_name, $title
 	) {
 		$objPHPExcel = self::createXLSXFromHtml( $html, $title );
-		$filename    = Amapress::getAttachmentDir() . '/' . $excel_file_name;
+		$filename    = self::getAttachmentDir() . '/' . $excel_file_name;
 		$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
 		$objWriter->save( $filename );
 
@@ -3954,7 +3956,7 @@ class Amapress {
 		$query, $excel_file_name, $title
 	) {
 		$objPHPExcel = AmapressExport_Posts::generate_phpexcel_sheet( $query, null, $title );
-		$filename    = Amapress::getAttachmentDir() . '/' . $excel_file_name;
+		$filename    = self::getAttachmentDir() . '/' . $excel_file_name;
 		$objWriter   = PHPExcel_IOFactory::createWriter( $objPHPExcel, 'Excel2007' );
 		$objWriter->save( $filename );
 
@@ -3983,7 +3985,7 @@ class Amapress {
 	public static function cleanFilesOlderThanDays(
 		$dir, $days
 	) {
-		$files = glob( trailingslashit( $dir ) . "*" );
+		$files = glob( trailingslashit( $dir ) . '*' );
 		$now   = time();
 
 		foreach ( $files as $file ) {
@@ -4002,10 +4004,10 @@ class Amapress {
 		$dir     = wp_upload_dir()['basedir'] . '/amapress-archives/';
 		$created = wp_mkdir_p( $dir );
 		if ( $created ) {
-			$handle = @fopen( $dir . '.htaccess', "w" );
+			$handle = @fopen( $dir . '.htaccess', 'w' );
 			fwrite( $handle, 'DENY FROM ALL' );
 			fclose( $handle );
-			$handle = @fopen( $dir . 'index.php', "w" );
+			$handle = @fopen( $dir . 'index.php', 'w' );
 			fclose( $handle );
 		}
 
@@ -4021,10 +4023,10 @@ class Amapress {
 		$dir     = wp_upload_dir()['basedir'] . '/amapress-contrats/';
 		$created = wp_mkdir_p( $dir );
 		if ( $created ) {
-			$handle = @fopen( $dir . '.htaccess', "w" );
+			$handle = @fopen( $dir . '.htaccess', 'w' );
 			fwrite( $handle, 'DENY FROM ALL' );
 			fclose( $handle );
-			$handle = @fopen( $dir . 'index.php', "w" );
+			$handle = @fopen( $dir . 'index.php', 'w' );
 			fclose( $handle );
 		}
 
@@ -4040,10 +4042,10 @@ class Amapress {
 		$dir     = wp_upload_dir()['basedir'] . '/amapress-mail-attachments/';
 		$created = wp_mkdir_p( $dir );
 		if ( $created ) {
-			$handle = @fopen( $dir . '.htaccess', "w" );
+			$handle = @fopen( $dir . '.htaccess', 'w' );
 			fwrite( $handle, 'DENY FROM ALL' );
 			fclose( $handle );
-			$handle = @fopen( $dir . 'index.php', "w" );
+			$handle = @fopen( $dir . 'index.php', 'w' );
 			fclose( $handle );
 		}
 
@@ -4054,10 +4056,10 @@ class Amapress {
 		$dir     = wp_upload_dir()['basedir'] . '/amapress-tmp/';
 		$created = wp_mkdir_p( $dir );
 		if ( $created ) {
-			$handle = @fopen( $dir . '.htaccess', "w" );
+			$handle = @fopen( $dir . '.htaccess', 'w' );
 			fwrite( $handle, 'DENY FROM ALL' );
 			fclose( $handle );
-			$handle = @fopen( $dir . 'index.php', "w" );
+			$handle = @fopen( $dir . 'index.php', 'w' );
 			fclose( $handle );
 		}
 
@@ -4068,10 +4070,10 @@ class Amapress {
 		$dir     = wp_upload_dir()['basedir'] . '/amapress-role-log/';
 		$created = wp_mkdir_p( $dir );
 		if ( $created ) {
-			$handle = @fopen( $dir . '.htaccess', "w" );
+			$handle = @fopen( $dir . '.htaccess', 'w' );
 			fwrite( $handle, 'DENY FROM ALL' );
 			fclose( $handle );
-			$handle = @fopen( $dir . 'index.php', "w" );
+			$handle = @fopen( $dir . 'index.php', 'w' );
 			fclose( $handle );
 		}
 
@@ -4085,7 +4087,7 @@ class Amapress {
 			) {
 				$amapien = AmapressUser::getBy( $user );
 				amapress_log_to_role_log_file( $log_file,
-					sprintf( __( '%s est "%s"', 'amapress' ),
+					sprintf( __( '%1$s est "%2$s"', 'amapress' ),
 						amapress_get_user_edit_link( $amapien ),
 						$amapien->getAmapRolesString() ) . "\n",
 					$amapien->getAmapRolesString(), '' );
@@ -4115,8 +4117,8 @@ class Amapress {
 				                true, true
 			                ) . '</p>';
 		}
-		$contact_page .= wp_unslash( Amapress::getOption( 'contrat_info_anonymous' ) );
-		$cf_id        = Amapress::getOption( 'preinscription-form' );
+		$contact_page .= wp_unslash( self::getOption( 'contrat_info_anonymous' ) );
+		$cf_id        = self::getOption( 'preinscription-form' );
 		if ( $cf_id ) {
 			$cf_post = get_post( $cf_id );
 			if ( $cf_post ) {
@@ -4294,9 +4296,9 @@ class Amapress {
 	public static function convertToPDF(
 		$filename, $throw_if_fail = false
 	) {
-		$convertws_url  = Amapress::getOption( 'convertws_url' );
-		$convertws_user = Amapress::getOption( 'convertws_user' );
-		$convertws_pass = Amapress::getOption( 'convertws_pass' );
+		$convertws_url  = self::getOption( 'convertws_url' );
+		$convertws_user = self::getOption( 'convertws_user' );
+		$convertws_pass = self::getOption( 'convertws_pass' );
 
 		if ( empty( $convertws_url ) || empty( $convertws_user ) || empty( $convertws_pass ) ) {
 			return $filename;
@@ -4410,7 +4412,7 @@ class Amapress {
 		$tel = preg_replace( '/\+33\s*(?:\(\s*0\s*\)|0)?/', '0', $tel );
 		$tel = preg_replace( '/\D+/', '', $tel );
 		if ( $with_spaces ) {
-			$tel = preg_replace( '/^(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/', "$1 $2 $3 $4 $5", $tel );
+			$tel = preg_replace( '/^(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/', '$1 $2 $3 $4 $5', $tel );
 			$tel = str_replace( ' ', "\xC2\xA0", $tel );
 		}
 
@@ -4435,7 +4437,7 @@ class Amapress {
 
 	public static function hasPartialCoAdhesion() {
 		if ( null === self::$has_partial_coadhesion ) {
-			self::$has_partial_coadhesion = Amapress::getOption( 'allow_partial_coadh' );
+			self::$has_partial_coadhesion = self::getOption( 'allow_partial_coadh' );
 		}
 
 		return self::$has_partial_coadhesion;
@@ -4446,7 +4448,7 @@ class Amapress {
 		$sample_value = 'xxx'
 	) {
 		return sprintf(
-			__( 'Pour une sécurité renforcée, vous pouvez définir une constante <code>define(\'%s\', \'%s\');</code> dans <code>wp-config.php</code> et laisser ce champs vide', 'amapress' ),
+			__( 'Pour une sécurité renforcée, vous pouvez définir une constante <code>define(\'%1$s\', \'%2$s\');</code> dans <code>wp-config.php</code> et laisser ce champs vide', 'amapress' ),
 			$const_name, $sample_value
 		);
 	}
