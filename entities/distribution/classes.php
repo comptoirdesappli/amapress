@@ -1329,12 +1329,6 @@ class AmapressDistribution extends Amapress_EventBase {
 						return Amapress::makeLink( Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $dist->getSlug() );
 					}
 				],
-				'liste-paniers'                     => [
-					'desc' => __( 'Lien vers la page "Paniers disponibles"', 'amapress' ),
-					'func' => function ( AmapressDistribution $dist ) {
-						return Amapress::makeLink( Amapress::getPageLink( 'paniers-intermittents-page' ) . '#' . $dist->getSlug() );
-					}
-				],
 				'mes-echanges'                      => [
 					'desc' => __( 'Lien vers la page "Mes paniers échangés"', 'amapress' ),
 					'func' => function ( AmapressDistribution $dist ) {
