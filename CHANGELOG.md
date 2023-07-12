@@ -1,3 +1,13 @@
+# 0.99.220 (2023-07-12)
+
+* **Rappels:** email aux amapiens à la prochaine distribution, placeholder %liste-resp-avatar-email-phone% et
+  %liste-resp-avatar-phone% pour afficher les avatars des responsables de distribution
+* email 2, 3 et 4, validation champs type email
+* filtre les emails (2, 3...) des amapiens, s'assure que contient un @
+* filtre les emails dans les mailinglistes/emails groupés pour exclure les [@nomail](https://github.com/nomail).org et
+  sans @
+* possibilité d'affichage (colonnes 2 visible par défaut), tri et recherche dans Email 2, 3 et 4
+
 # 0.99.216 (2023-06-11)
 
 * notification pour indiquer qu'il existe la **Recherche dans le Tableau de bord** (pour trouver un paramètre, une
