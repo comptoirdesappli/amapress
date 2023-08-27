@@ -712,17 +712,13 @@ line-height: 1.1;
 //	echo '<br/>';
 	echo do_shortcode( '[inscription-distrib show_title=false for_emargement=true for_pdf=' . $for_pdf . ' show_past=false show_adresse=false show_roles=false show_for_resp=true show_avatar=' . ( $for_pdf ? 0 : 1 ) . ' max_dates=' . Amapress::getOption( 'liste-emargement-next-resp-count', 8 ) . ' date=' . $from_date . ' lieu=' . $dist_lieu_id . ']' );
 
-	$lieux_ids = Amapress::get_lieu_ids();
-	if ( count( $lieux_ids ) > 1 ) {
+	$lieux = Amapress::get_principal_lieux();
+	if ( count( $lieux ) > 1 ) {
 		if ( ! $for_pdf ) {
 			echo '<br/>';
 		}
-		foreach ( $lieux_ids as $lieu_id ) {
-			if ( $lieu_id == $dist_lieu_id ) {
-				continue;
-			}
-			$lieu = AmapressLieu_distribution::getBy( $lieu_id );
-			if ( ! $lieu ) {
+		foreach ( $lieux as $lieu ) {
+			if ( $lieu->ID == $dist_lieu_id ) {
 				continue;
 			}
 			echo '<h3 class="liste-emargement-next-resps">';
