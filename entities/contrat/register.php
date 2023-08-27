@@ -1721,7 +1721,16 @@ jQuery(function($) {
 //						}
 //					},
 			),
-			'pmt_user_input'        => array(
+			'show_distrib_dates' => array(
+				'name'        => __( 'Afficher dates distribs', 'amapress' ),
+				'type'        => 'checkbox',
+				'group'       => __( '5/6 - Pré-inscription en ligne', 'amapress' ),
+				'default'     => true,
+				'required'    => true,
+				'desc'        => __( 'Afficher les dates de distributions dans l\'Assistant d\'Inscription pour ce contrat', 'amapress' ),
+				'show_column' => false,
+			),
+			'pmt_user_input' => array(
 				'name'        => __( 'Libellé règlements', 'amapress' ),
 				'type'        => 'checkbox',
 				'group'       => __( '5/6 - Pré-inscription en ligne', 'amapress' ),

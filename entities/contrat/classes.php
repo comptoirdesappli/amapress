@@ -854,6 +854,11 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_ended', 0 );
 	}
 
+	public function allowShowDistributionDates() {
+		return $this->getCustomAsInt( 'amapress_contrat_instance_show_distrib_dates', 1 );
+	}
+
+
 	private $liste_dates = null;
 
 	public function getListe_dates() {

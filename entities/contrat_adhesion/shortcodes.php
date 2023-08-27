@@ -3706,43 +3706,53 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$dates_factors += $contrat->getDateFactor( $d );
 		}
 
+		$show_distrib_dates     = $contrat->allowShowDistributionDates();
+		$distrib_dates_end_text = $show_distrib_dates ? __( ' :', 'amapress' ) : __( '.', 'amapress' );
+
 		$rattrapage_renvoi = '';
-		if ( ! empty( $rattrapage ) ) {
+		if ( $show_distrib_dates && ! empty( $rattrapage ) ) {
 			$rattrapage_renvoi = '<a href="#dist_rattrapages">*</a>';
 		}
-//		echo $contrat->getOnlineContrat();
+
 		if ( count( $contrat->getListe_dates() ) == count( $dates ) ) {
 			if ( ! $use_contrat_term ) {
-				echo '<p style="padding-bottom: 0; margin-bottom: 0">' . sprintf( __( 'Cette commande comporte “<strong>%d</strong>” distributions (étalées sur “<strong>%s</strong>” dates%s) :', 'amapress' ), $dates_factors, count( $dates ), $rattrapage_renvoi ) . '</p>';
+				echo '<p style="padding-bottom: 0; margin-bottom: 0">' . sprintf( __( 'Cette commande comporte “<strong>%d</strong>” distributions (étalées sur “<strong>%s</strong>” dates%s)%s', 'amapress' ),
+						$dates_factors, count( $dates ), $rattrapage_renvoi, $distrib_dates_end_text ) . '</p>';
 			} else {
-				echo '<p style="padding-bottom: 0; margin-bottom: 0">' . sprintf( __( 'Ce contrat comporte “<strong>%d</strong>” distributions (étalées sur “<strong>%s</strong>” dates%s) :', 'amapress' ), $dates_factors, count( $dates ), $rattrapage_renvoi ) . '</p>';
+				echo '<p style="padding-bottom: 0; margin-bottom: 0">' . sprintf( __( 'Ce contrat comporte “<strong>%d</strong>” distributions (étalées sur “<strong>%s</strong>” dates%s)%s', 'amapress' ),
+						$dates_factors, count( $dates ), $rattrapage_renvoi, $distrib_dates_end_text ) . '</p>';
 			}
 		} else {
 			if ( ! $use_contrat_term ) {
-				echo '<p style="padding-bottom: 0; margin-bottom: 0">' . sprintf( __( 'Il reste “<strong>%d</strong>” distributions (étalées sur “<strong>%s</strong>” dates%s) avant la fin de cette commande :', 'amapress' ), $dates_factors, count( $dates ), $rattrapage_renvoi ) . '</p>';
+				echo '<p style="padding-bottom: 0; margin-bottom: 0">' . sprintf( __( 'Il reste “<strong>%d</strong>” distributions (étalées sur “<strong>%s</strong>” dates%s) avant la fin de cette commande%s', 'amapress' ),
+						$dates_factors, count( $dates ), $rattrapage_renvoi, $distrib_dates_end_text ) . '</p>';
 			} else {
-				echo '<p style="padding-bottom: 0; margin-bottom: 0">' . sprintf( __( 'Il reste “<strong>%d</strong>” distributions (étalées sur “<strong>%s</strong>” dates%s) avant la fin de ce contrat :', 'amapress' ), $dates_factors, count( $dates ), $rattrapage_renvoi ) . '</p>';
+				echo '<p style="padding-bottom: 0; margin-bottom: 0">' . sprintf( __( 'Il reste “<strong>%d</strong>” distributions (étalées sur “<strong>%s</strong>” dates%s) avant la fin de ce contrat%s', 'amapress' ),
+						$dates_factors, count( $dates ), $rattrapage_renvoi, $distrib_dates_end_text ) . '</p>';
 			}
 		}
-		echo '<ul style="list-style-type: disc; padding-top: 0; margin-top: 0">';
-		foreach ( $grouped_dates_array as $entry ) {
-			echo '<li style="margin-left: 35px">' . esc_html( $entry ) . '</li>';
-		}
-		echo '</ul>';
 
-		$reports = [];
-		foreach ( $dates as $d ) {
-			$real_date = $contrat->getRealDateForDistribution( $d );
-			if ( Amapress::start_of_day( $real_date ) != Amapress::start_of_day( $d ) ) {
-				$reports[] = sprintf( __( 'livraison du %s reportée au %s', 'amapress' ), date_i18n( 'd/m/Y', $d ), date_i18n( 'd/m/Y', $real_date ) );
+		if ( $show_distrib_dates ) {
+			echo '<ul style="list-style-type: disc; padding-top: 0; margin-top: 0">';
+			foreach ( $grouped_dates_array as $entry ) {
+				echo '<li style="margin-left: 35px">' . esc_html( $entry ) . '</li>';
 			}
-		}
-		if ( ! empty( $reports ) ) {
-			echo '<p>' . __( 'Report(s) de livraison : ', 'amapress' ) . implode( ', ', $reports ) . '</p>';
-		}
+			echo '</ul>';
 
-		if ( ! empty( $rattrapage ) ) {
-			echo '<p><a id="dist_rattrapages">*</a>' . __( 'Distribution(s) de rattrapage : ', 'amapress' ) . implode( ', ', $rattrapage ) . '</p>';
+			$reports = [];
+			foreach ( $dates as $d ) {
+				$real_date = $contrat->getRealDateForDistribution( $d );
+				if ( Amapress::start_of_day( $real_date ) != Amapress::start_of_day( $d ) ) {
+					$reports[] = sprintf( __( 'livraison du %s reportée au %s', 'amapress' ), date_i18n( 'd/m/Y', $d ), date_i18n( 'd/m/Y', $real_date ) );
+				}
+			}
+			if ( ! empty( $reports ) ) {
+				echo '<p>' . __( 'Report(s) de livraison : ', 'amapress' ) . implode( ', ', $reports ) . '</p>';
+			}
+
+			if ( ! empty( $rattrapage ) ) {
+				echo '<p><a id="dist_rattrapages">*</a>' . __( 'Distribution(s) de rattrapage : ', 'amapress' ) . implode( ', ', $rattrapage ) . '</p>';
+			}
 		}
 
 		if ( $contrat->isQuantiteMultiple() || $contrat->isPanierVariable() ) {
