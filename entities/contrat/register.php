@@ -853,22 +853,25 @@ jQuery(function($) {
 				'readonly'       => 'amapress_is_contrat_instance_readonly',
 				'desc'           => __( 'Montant minimum demandé par le producteur pour un contrat', 'amapress' ),
 			),
-//			'word_paper_model'      => array(
-//				'name'            => __( 'Contrat vierge', 'amapress' ),
-//				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-//				'type'            => 'upload',
-//				'show_column'     => false,
-//				'show_download'   => true,
-//				'show_title'      => true,
-//				'selector-button' => __('Utiliser ce modèle', 'amapress'),
-//				'selector-title'  => __('Sélectionnez/téléversez un modèle de contrat personnalisé DOCX', 'amapress'),
-//				'group'           => __('2/6 - Paramètres généraux', 'amapress'),
-//				'desc'            => '
-//                <p><strong>Vous pouvez configurer ' . Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ) . ' et laisser ce champs vide. Le contrat général sera utilisé automatiquement.</strong></p>
-//				<p>Sinon configurez un contrat vierge à partir d’un contrat papier existant (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="' . admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ) . '">Plus d\'info</a>)</p>
-//				<p>Vous pouvez télécharger <a target="_blank" href="' . esc_attr( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) ) . '">ici</a> l\'un des modèles DOCX génériques utilisables comme contrat vierge. Vous aurez à personnaliser le logo de votre AMAP et les engagements.</p>',
-//			),
-			'contrat_info'          => array(
+			'word_paper_model'   => array(
+				'name'            => __( 'Contrat vierge', 'amapress' ),
+				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+				'type'            => 'upload',
+				'show_column'     => false,
+				'show_download'   => true,
+				'show_title'      => true,
+				'selector-button' => __( 'Utiliser ce modèle', 'amapress' ),
+				'selector-title'  => __( 'Sélectionnez/téléversez un modèle de contrat vierge DOCX', 'amapress' ),
+				'group'           => __( '2/6 - Paramètres généraux', 'amapress' ),
+				'desc'            => function ( $o ) {
+					return sprintf( '
+                <p><strong>Vous pouvez configurer %s et laisser ce champs vide. Le contrat général sera utilisé automatiquement.</strong></p>
+				<p>Sinon configurez un contrat vierge à partir d’un contrat papier existant (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="%s">Plus d\'info</a>)</p>
+				<p>Vous pouvez télécharger <a target="_blank" href="%s">ici</a> l\'un des modèles DOCX génériques utilisables comme contrat vierge. Vous aurez à personnaliser le logo de votre AMAP et les engagements.</p>',
+						Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ), admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ), esc_attr( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) ) );
+				},
+			),
+			'contrat_info'       => array(
 				'name'        => __( 'Termes du contrat', 'amapress' ),
 				'type'        => 'editor',
 				'show_column' => false,

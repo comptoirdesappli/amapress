@@ -3311,7 +3311,8 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'show_title'      => true,
 											'selector-button' => __( 'Utiliser ce modèle', 'amapress' ),
 											'selector-title'  => __( 'Sélectionnez/téléversez un modèle de contrat personnalisé DOCX', 'amapress' ),
-											'desc'            => __( 'Générer un contrat vierge (par défaut pour tous les contrats sans modèle spécifique) à partir d’un contrat papier existant (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="', 'amapress' ) . admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ) . '">Plus d\'info</a>)',
+											'desc'            => sprintf( __( 'Générer un contrat vierge (par défaut pour tous les contrats sans modèle spécifique) à partir d’un contrat papier existant (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="%s">Plus d\'info</a>)', 'amapress' ),
+												admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ) ),
 										),
 										array(
 											'type' => 'heading',
@@ -3340,7 +3341,7 @@ Vous pouvez maintenant fermer cette fenêtre/onglet et regarder votre messagerie
 											'show_download'   => true,
 											'show_title'      => true,
 											'selector-button' => __( 'Utiliser ce modèle', 'amapress' ),
-											'selector-title'  => __( 'Sélectionnez/téléversez un modèle de contrat personnalisé DOCX', 'amapress' ),
+											'selector-title'  => __( 'Sélectionnez/téléversez un modèle de contrat vierge personnalisé DOCX', 'amapress' ),
 											'desc'            => __( 'Générer un contrat vierge "paniers modulables" (par défaut pour tous les contrats sans modèle spécifique) à partir d’un contrat papier existant (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="', 'amapress' ) . admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ) . '">Plus d\'info</a>)',
 										),
 										array(
@@ -6431,7 +6432,7 @@ Sélectionnez les Coordinateurs Amap en charge des réponses à l\'aide des menu
 								),
 							)
 						),
-						'Shortcodes'                    => array(
+						'Shortcodes'                                    => array(
 							'id'         => 'shortcodes',
 							'capability' => 'edit_pages',
 							'options'    => array(
@@ -6509,7 +6510,7 @@ jQuery(document).ready(function($) {
 								)
 							)
 						),
-						'Recherche Tableau de bord'     => array(
+						'Recherche Tableau de bord'                     => array(
 							'id'         => 'searchparams',
 							'capability' => 'edit_pages',
 							'options'    => array(
@@ -6521,7 +6522,7 @@ jQuery(document).ready(function($) {
 								)
 							)
 						),
-						'Placeholders - contrat vierge' => array(
+						'Placeholders - contrat vierge'                 => array(
 							'id'         => 'paper_contrat_placeholders',
 							'capability' => 'manage_contrats',
 							'options'    => array(
@@ -6535,7 +6536,7 @@ jQuery(document).ready(function($) {
 								)
 							)
 						),
-						'Placeholders - production'     => array(
+						'Placeholders - production'                     => array(
 							'id'         => 'pres_prod_contrat_placeholders',
 							'capability' => 'manage_contrats',
 							'options'    => array(
