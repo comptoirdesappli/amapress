@@ -806,7 +806,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'allow_coadh'    => array(
+			'allow_coadh'        => array(
 				'name'           => __( 'Autoriser coadhérents', 'amapress' ),
 				'type'           => 'checkbox',
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
@@ -815,6 +815,9 @@ jQuery(function($) {
 				'desc'           => __( 'Autoriser les co-adhérents sur ce contrat', 'amapress' ),
 				'show_column'    => true,
 				'col_def_hidden' => true,
+				'hidden'         => function ( $option ) {
+					return ! Amapress::hasPartialCoAdhesion();
+				},
 			),
 			'coadh_msg'      => array(
 				'name'           => __( 'Message Co-adhérents', 'amapress' ),
@@ -825,7 +828,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'max_adherents'  => array(
+			'max_adherents'      => array(
 				'name'           => __( 'Nombre d’amapiens maximum', 'amapress' ),
 				'type'           => 'number',
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
@@ -834,7 +837,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'use_equiv'      => array(
+			'use_equiv'          => array(
 				'name'        => __( 'Maximum en part', 'amapress' ),
 				'type'        => 'checkbox',
 				'default'     => false,
@@ -843,7 +846,7 @@ jQuery(function($) {
 				'group'       => __( '2/6 - Paramètres généraux', 'amapress' ),
 				'desc'        => __( 'Compter les maximums en part (Coefficient de part) en non en inscriptions', 'amapress' ),
 			),
-			'min_engagement' => array(
+			'min_engagement'     => array(
 				'name'           => __( 'Engagement minimum', 'amapress' ),
 				'type'           => 'number',
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
@@ -880,7 +883,7 @@ jQuery(function($) {
 					return sprintf( __( 'Termes du contrats (Pour les utilisateurs avancés : à compléter avec des marquages substitutifs de type "%%%%xxx%%%%" <a target="_blank" href="%s">Plus d\'info</a>)', 'amapress' ), admin_url( 'admin.php?page=amapress_help_page&tab=pres_prod_contrat_placeholders' ) );
 				},
 			),
-			'special_mention'       => array(
+			'special_mention'    => array(
 				'name'        => __( 'Mention', 'amapress' ),
 				'type'        => 'textarea',
 				'group'       => __( '2/6 - Paramètres généraux', 'amapress' ),
@@ -1633,7 +1636,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'date_ouverture'        => array(
+			'date_ouverture'     => array(
 				'name'           => __( 'Ouverture', 'amapress' ),
 				'type'           => 'date',
 				'group'          => __( '5/6 - Pré-inscription en ligne', 'amapress' ),
@@ -1677,7 +1680,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'date_cloture'          => array(
+			'date_cloture'       => array(
 				'name'           => __( 'Clôture', 'amapress' ),
 				'type'           => 'date',
 				'group'          => __( '5/6 - Pré-inscription en ligne', 'amapress' ),
@@ -1730,7 +1733,7 @@ jQuery(function($) {
 				'desc'        => __( 'Afficher les dates de distributions dans l\'Assistant d\'Inscription pour ce contrat', 'amapress' ),
 				'show_column' => false,
 			),
-			'pmt_user_input' => array(
+			'pmt_user_input'     => array(
 				'name'        => __( 'Libellé règlements', 'amapress' ),
 				'type'        => 'checkbox',
 				'group'       => __( '5/6 - Pré-inscription en ligne', 'amapress' ),
@@ -1739,7 +1742,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => __( 'Permettre aux amapiens de renseigner les numéros des chèques dans l’assistant de pré-inscription en ligne', 'amapress' ),
 			),
-			'pmt_user_dates'        => array(
+			'pmt_user_dates'     => array(
 				'name'        => __( 'Dates règlements', 'amapress' ),
 				'type'        => 'checkbox',
 				'group'       => __( '5/6 - Pré-inscription en ligne', 'amapress' ),
@@ -1748,7 +1751,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => __( 'Permettre aux amapiens de choisir les dates de paiement des chèques dans l’assistant de pré-inscription en ligne', 'amapress' ),
 			),
-			'word_model'            => array(
+			'word_model'         => array(
 				'name'            => __( 'Contrat personnalisé', 'amapress' ),
 				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
@@ -1761,10 +1764,11 @@ jQuery(function($) {
 				'desc'            => function ( $o ) {
 					return sprintf( __( '<p><strong>Vous pouvez configurer %s et laisser ce champs vide. Le contrat général sera utilisé automatiquement.</strong></p>
 <p>Sinon, configurez un modèle de contrat à imprimer  pour chaque adhérent (Pour les utilisateurs avancés : à configurer avec des marquages substitutifs de type "${xxx}" <a target="_blank" href="%s">Plus d\'info</a>)</p>
-<p>Vous pouvez télécharger <a target="_blank" href="%s">ici</a> l\'un des modèles DOCX génériques utilisables comme contrat vierge. Vous aurez à personnaliser le logo de votre AMAP et les engagements.</p>', 'amapress' ), Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ), admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ), esc_attr( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) ) );
+<p>Vous pouvez télécharger <a target="_blank" href="%s">ici</a> l\'un des modèles DOCX génériques utilisables comme contrat vierge. Vous aurez à personnaliser le logo de votre AMAP et les engagements.</p>', 'amapress' ),
+						Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ), admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ), esc_attr( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) ) );
 				},
 			),
-			'allow_word'            => array(
+			'allow_word'         => array(
 				'name'        => __( 'Utiliser contrat DOCX?', 'amapress' ),
 				'type'        => 'checkbox',
 				'default'     => true,
