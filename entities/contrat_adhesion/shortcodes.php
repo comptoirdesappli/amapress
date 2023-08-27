@@ -1116,7 +1116,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			amapress_echo_honeypots();
 			?>
             <input type="submit" value="<?php _e( 'Valider', 'amapress' ); ?>"
-                   class="btn btn-default btn-assist-inscr"/>
+                   class="btn btn-default btn-assist-inscr btn-assist-inscr-validate"/>
         </form>
 		<?php
 	} else if ( 'coords' == $step || 'coords_logged' == $step ) {
@@ -1930,7 +1930,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				}
 			}
 			?>
-            <input style="min-width: 50%" type="submit" class="btn btn-default btn-assist-inscr"
+            <input style="min-width: 50%" type="submit"
+                   class="btn btn-default btn-assist-inscr btn-assist-inscr-validate"
                    value="<?php echo esc_attr__( 'Valider', 'amapress' ) ?>"/>
         </form>
 		<?php
@@ -1974,7 +1975,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
                 </label>
             </p>
             <p>
-                <input style="min-width: 50%" type="submit" class="btn btn-default btn-assist-inscr"
+                <input style="min-width: 50%" type="submit"
+                       class="btn btn-default btn-assist-inscr btn-assist-inscr-validate"
                        value="<?php echo esc_attr__( 'Valider', 'amapress' ) ?>"/>
             </p>
         </form>
@@ -2220,7 +2222,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					'adh_id'          => $adh_paiement->ID,
 					'inscr_key'       => amapress_sha_secret( $key )
 				] ),
-				$adhesion_print_button_text, true, true, 'btn btn-default'
+				$adhesion_print_button_text, true, true, 'btn btn-default btn-assist-inscr btn-assist-inscr-print'
 			);
 			$online_subscription_greating_adhesion = str_replace( '%%print_button%%', $print_bulletin, $online_subscription_greating_adhesion );
 		} else {
@@ -2239,7 +2241,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="contrats" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Poursuivre', 'amapress' ) . '" />
+<input class="btn btn-default btn-assist-inscr btn-assist-inscr-next" type="submit" value="' . esc_attr__( 'Poursuivre', 'amapress' ) . '" />
 </form></p>';
 		}
 	} else if ( 'norenew' == $step ) {
@@ -2374,14 +2376,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="' . ( $skip_coords ? ( $activate_agreement ? 'agreement' : 'adhesion' ) : ( $for_logged ? 'coords_logged' : 'coords' ) ) . '" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr( wp_unslash( Amapress::getOption( 'online_subscription_adh_button_text' ) ) ) . '" />
+<input class="btn btn-default btn-assist-inscr btn-assist-inscr-adh" type="submit" value="' . esc_attr( wp_unslash( Amapress::getOption( 'online_subscription_adh_button_text' ) ) ) . '" />
 </form></p>';
 						}
 						if ( ! empty( $adh_period->getHelloAssoFormUrl() ) ) {
 							echo '<p>' . Amapress::makeButtonLink(
 									$adh_period->getHelloAssoFormUrl(),
 									wp_unslash( Amapress::getOption( 'online_subscription_adh_hla_button_text' ) ),
-									true, false, 'btn btn-default btn-assist-inscr' ) . '</p>';
+									true, false, 'btn btn-default btn-assist-inscr btn-assist-inscr-helloasso' ) . '</p>';
 							echo '<p class="helloasso-adhesion-note"><em>' . sprintf( __( 'L\'adhésion via HelloAsso nécessite d\'utiliser l\'adresse email et le nom associé au compte avec laquelle vous êtes actuellement connecté. Vous êtes connecté en tant que <strong>%s</strong>. Votre adresse email est <strong>%s</strong>', 'amapress' ),
 									$amapien->getDisplayName(), $amapien->getEmail() ) . '</em></p>';
 						}
@@ -2433,7 +2435,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 										'adh_id'          => $adh_cur_pmt->ID,
 										'inscr_key'       => amapress_sha_secret( $key )
 									] ),
-									$adhesion_print_button_text, true, true, 'btn btn-default'
+									$adhesion_print_button_text, true, true, 'btn btn-default btn-assist-inscr btn-assist-inscr-print'
 								);
 							}
 
@@ -2536,7 +2538,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="step" value="inscr_contrat_date_lieu"/>
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $principal_contrats[0]->ID . '"/>
-<input type="submit" class="btn btn-default btn-assist-inscr" value="' . esc_attr__( 'Confirmer', 'amapress' ) . '"/>
+<input type="submit" class="btn btn-default btn-assist-inscr btn-assist-inscr-validate" value="' . esc_attr__( 'Confirmer', 'amapress' ) . '"/>
 </form>';
 						?>
                     </p>
@@ -2562,7 +2564,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="step" value="inscr_contrat_date_lieu"/>
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $principal_contrat->ID . '"/>
-<input type="submit" class="btn btn-default btn-assist-inscr" value="' . esc_attr__( 'Confirmer', 'amapress' ) . '"/>
+<input type="submit" class="btn btn-default btn-assist-inscr btn-assist-inscr-validate" value="' . esc_attr__( 'Confirmer', 'amapress' ) . '"/>
 </form>';
 							?>
                         </p>
@@ -2643,7 +2645,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 								'inscr_id'        => $adh->ID,
 								'inscr_key'       => amapress_sha_secret( $key )
 							] ),
-							$contrat_print_button_text, true, true, 'btn btn-default'
+							$contrat_print_button_text, true, true, 'btn btn-default btn-assist-inscr btn-assist-inscr-print'
 						);
 					}
 					if ( $adh->getContrat_instance()->isPanierVariable() ) {
@@ -2698,7 +2700,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="step" value="coadhcalendar" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="inscr_id" value="' . $adh->ID . '" />
-<input type="submit" value="' . esc_attr__( 'Editer le calendrier de partage', 'amapress' ) . '" class="btn btn-secondary btn-assist-inscr"
+<input type="submit" value="' . esc_attr__( 'Editer le calendrier de partage', 'amapress' ) . '" class="btn btn-secondary btn-assist-inscr btn-assist-inscr-calendar"
  	title="' . esc_attr( __( 'Editer le calendrier de partage des paniers entre co-adhérents', 'amapress' ) ) . '"/>
 </form>';
 						}
@@ -2710,7 +2712,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="step" value="stripe" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="inscr_id" value="' . $adh->ID . '" />
-<input type="submit" value="' . esc_attr__( 'Payer en ligne', 'amapress' ) . '" class="btn btn-danger btn-assist-inscr"
+<input type="submit" value="' . esc_attr__( 'Payer en ligne', 'amapress' ) . '" class="btn btn-danger btn-assist-inscr btn-assist-inscr-stripe"
  	title="' . esc_attr( __( 'Payer en ligne et valider l\'inscription. ', 'amapress' ) . ( $adh->canSelfEdit() ? __( 'Une fois payée, l\'inscription ne sera plus modifiable.', 'amapress' ) : '' ) ) . '"/>
 </form>';
 						}
@@ -2726,7 +2728,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $adh->getContrat_instanceId() . '" />
 <input type="hidden" name="edit_inscr_id" value="' . $adh->ID . '" />
-<input type="submit" value="' . esc_attr__( 'Modifier', 'amapress' ) . '" class="btn btn-default btn-assist-inscr" />
+<input type="submit" value="' . esc_attr__( 'Modifier', 'amapress' ) . '" class="btn btn-default btn-assist-inscr btn-assist-inscr-edit" />
 </form>';
 							if ( ! $adh->getContrat_instance()->isCommandeVariable() ) {
 								$edit_contrat .= '<form method="get" style="display: inline-block; margin-left: 5px" action="' . esc_attr( $inscription_url ) . '">
@@ -2735,7 +2737,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $adh->ID . '" />
 <input type="hidden" name="cancel_inscr_id" value="' . $adh->ID . '" />
-<input type="submit" value="' . esc_attr__( 'Annuler', 'amapress' ) . '" class="btn btn-default btn-assist-inscr" />
+<input type="submit" value="' . esc_attr__( 'Annuler', 'amapress' ) . '" class="btn btn-default btn-assist-inscr btn-assist-inscr-cancel" />
 </form>';
 							}
 						}
@@ -3210,7 +3212,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			?>
             <br/>
             <input type="submit" value="<?php echo esc_attr__( 'Valider', 'amapress' ) ?>"
-                   class="btn btn-default btn-assist-inscr"/>
+                   class="btn btn-default btn-assist-inscr btn-assist-inscr-validate"/>
         </form>
 		<?php
 	} else if ( 'stripe_callback' == $step ) {
@@ -3272,7 +3274,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				'inscr_id'        => $adh->ID,
 				'inscr_key'       => amapress_sha_secret( $key )
 			] ),
-			$contrat_print_button_text, true, true, 'btn btn-default'
+			$contrat_print_button_text, true, true, 'btn btn-default btn-assist-inscr btn-assist-inscr-print'
 		);
 		$message       = str_replace( '%%print_button%%', $print_contrat, $message );
 
@@ -3387,7 +3389,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
             <br/>
             <input type="submit" value="<?php echo esc_attr__( 'Enregistrer', 'amapress' ) ?>"
-                   class="btn btn-default btn-assist-inscr"/>
+                   class="btn btn-default btn-assist-inscr btn-assist-inscr-save"/>
         </form>
 		<?php
 	} else if ( 'stripe' == $step ) {
@@ -3605,7 +3607,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					'inscr_id'        => $adh->ID,
 					'inscr_key'       => amapress_sha_secret( $key )
 				] ),
-				$contrat_print_button_text, true, true, 'btn btn-default'
+				$contrat_print_button_text, true, true, 'btn btn-default btn-assist-inscr btn-assist-inscr-print'
 			);
 		}
 		if ( $adh->getContrat_instance()->isPanierVariable() ) {
@@ -3992,7 +3994,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			     '<hr/></p>';
 		}
 		echo '<p style="margin-top: 1em;">' . __( 'Total: ', 'amapress' ) . '<span id="total">0</span>€</p>';
-		echo '<p><input type="submit" class="btn btn-default btn-assist-inscr" value="' . esc_attr__( 'Valider', 'amapress' ) . '" /></p>';
+		echo '<p><input type="submit" class="btn btn-default btn-assist-inscr btn-assist-inscr-validate" value="' . esc_attr__( 'Valider', 'amapress' ) . '" /></p>';
 		echo '</form>';
 
 		if ( $admin_mode && ! empty( $quants_full ) ) {
@@ -4621,7 +4623,7 @@ $paiements_dates
 		} else {
 			echo '<p><input type="checkbox" checked="checked" id="inscr_confirm_mail" name="inscr_confirm_mail" /><label for="inscr_confirm_mail"> ' . __( 'Confirmer par email à l\'adhérent', 'amapress' ) . '</label></p>';
 		}
-		echo '<input type="submit" value="' . esc_attr__( 'Valider', 'amapress' ) . '" class="btn btn-default btn-assist-inscr" />';
+		echo '<input type="submit" value="' . esc_attr__( 'Valider', 'amapress' ) . '" class="btn btn-default btn-assist-inscr btn-assist-inscr-validate" />';
 		echo '</form>';
 	} else if ( 'inscr_contrat_create' == $step ) {
 		if ( empty( $_REQUEST['user_id'] ) ) {
@@ -4885,7 +4887,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 						'inscr_id'        => $inscription->ID,
 						'inscr_key'       => amapress_sha_secret( $key )
 					] ),
-					$contrat_print_button_text, true, true, 'btn btn-default'
+					$contrat_print_button_text, true, true, 'btn btn-default btn-assist-inscr btn-assist-inscr-print'
 				);
 			}
 			if ( $inscription->getContrat_instance()->isPanierVariable() ) {
@@ -4909,7 +4911,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 <input type="hidden" name="step" value="stripe" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="inscr_id" value="' . $inscription->ID . '" />
-<input type="submit" value="' . esc_attr__( 'Payer en ligne et valider l\'inscription', 'amapress' ) . '" class="btn btn-danger btn-assist-inscr" />
+<input type="submit" value="' . esc_attr__( 'Payer en ligne et valider l\'inscription', 'amapress' ) . '" class="btn btn-danger btn-assist-inscr btn-assist-inscr-stripe" />
 </form>';
 			}
 			if ( $inscription->canSelfEdit() ) {
@@ -4923,7 +4925,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $inscription->getContrat_instanceId() . '" />
 <input type="hidden" name="edit_inscr_id" value="' . $inscription->ID . '" />
-<input type="submit" value="' . esc_attr__( 'Modifier', 'amapress' ) . '" class="btn btn-default btn-assist-inscr" />
+<input type="submit" value="' . esc_attr__( 'Modifier', 'amapress' ) . '" class="btn btn-default btn-assist-inscr btn-assist-inscr-edit" />
 </form>';
 				if ( strpos( $online_contrats_end_step_edit_message, '%%modify_button%%' ) !== false ) {
 					$online_contrats_end_step_edit_message = str_replace( '%%modify_button%%', $modify_button, $online_contrats_end_step_edit_message );
@@ -4938,7 +4940,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 <input type="hidden" name="user_id" value="' . $user_id . '" />
 <input type="hidden" name="contrat_id" value="' . $inscription->ID . '" />
 <input type="hidden" name="cancel_inscr_id" value="' . $inscription->ID . '" />
-<input type="submit" value="' . esc_attr__( 'Annuler', 'amapress' ) . '" class="btn btn-default btn-assist-inscr" />
+<input type="submit" value="' . esc_attr__( 'Annuler', 'amapress' ) . '" class="btn btn-default btn-assist-inscr btn-assist-inscr-cancel" />
 </form>';
 					if ( strpos( $online_contrats_end_step_edit_message, '%%cancel_button%%' ) !== false ) {
 						$online_contrats_end_step_edit_message = str_replace( '%%cancel_button%%', $cancel_button, $online_contrats_end_step_edit_message );
@@ -4964,7 +4966,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="contrats" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Ajouter de nouveaux contrats', 'amapress' ) . '" />
+<input class="btn btn-default btn-assist-inscr btn-assist-inscr-add-new" type="submit" value="' . esc_attr__( 'Ajouter de nouveaux contrats', 'amapress' ) . '" />
 </form></p>';
 			} else {
 				if ( ! empty( $user_subscribable_contrats ) ) {
@@ -4989,7 +4991,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="contrats" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Ajouter de nouveaux contrats', 'amapress' ) . '" />
+<input class="btn btn-default btn-assist-inscr btn-assist-inscr-add-new" type="submit" value="' . esc_attr__( 'Ajouter de nouveaux contrats', 'amapress' ) . '" />
 </form></p>';
 				} else {
 					if ( ! $use_contrat_term ) {
@@ -5003,7 +5005,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="contrats" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Ajouter de nouveaux contrats', 'amapress' ) . '" />
+<input class="btn btn-default btn-assist-inscr btn-assist-inscr-add-new" type="submit" value="' . esc_attr__( 'Ajouter de nouveaux contrats', 'amapress' ) . '" />
 </form></p>';
 				}
 			}
@@ -5030,7 +5032,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
 <input type="hidden" name="key" value="' . $key . '" />
 <input type="hidden" name="step" value="the_end" />
 <input type="hidden" name="user_id" value="' . $user_id . '" />
-<input class="btn btn-default btn-assist-inscr" type="submit" value="' . esc_attr__( 'Terminer', 'amapress' ) . '" />
+<input class="btn btn-default btn-assist-inscr btn-assist-inscr-end" type="submit" value="' . esc_attr__( 'Terminer', 'amapress' ) . '" />
 </form></p>';
 			}
 		} else {
