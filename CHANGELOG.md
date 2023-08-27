@@ -1,11 +1,21 @@
+# 0.99.230 (2023-08-27)
+
+* **Contrats:**
+  - ne pas afficher l'option *Autoriser coadhérents* sur les contrats si l'AMAP n'est pas en coadhésion partielle
+  - rétablissement du champs *Contrat Vierge* dans l'édition des contrats (contrat vierge/vide pour impression papier)
+* **Liste émargement:** n'afficher les responsables de distribution que des autres lieux principaux (et pas des lieu
+  secondaires)
+* **Assistant d'inscription:**
+  - option dans chaque contrat pour ne pas afficher la liste des dates de distributions
+  - ajout de classes *btn-assist-inscr-xxx* sur les différents boutons de l'Assistant d'Inscription/1dhésion
+
 # 0.99.220 (2023-07-12)
 
 * **Rappels:** email aux amapiens à la prochaine distribution, placeholder %liste-resp-avatar-email-phone% et
   %liste-resp-avatar-phone% pour afficher les avatars des responsables de distribution
 * email 2, 3 et 4, validation champs type email
 * filtre les emails (2, 3...) des amapiens, s'assure que contient un @
-* filtre les emails dans les mailinglistes/emails groupés pour exclure les [@nomail](https://github.com/nomail).org et
-  sans @
+* filtre les emails dans les mailinglistes/emails groupés pour exclure les *xxx@nomail.org* et sans @
 * possibilité d'affichage (colonnes 2 visible par défaut), tri et recherche dans Email 2, 3 et 4
 
 # 0.99.216 (2023-06-11)
