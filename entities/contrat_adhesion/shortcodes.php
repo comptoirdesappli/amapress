@@ -2927,14 +2927,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 						}
 					} else {
 						$deliveries_dates = '';
-						if ( count( $contrat->getListe_dates() ) <= $show_max_deliv_dates ) {
+						if ( $contrat->allowShowDistributionDates() && count( $contrat->getListe_dates() ) <= $show_max_deliv_dates ) {
 							$deliveries_dates = sprintf( __( ' - Livraison(s) %s -', 'amapress' ),
 								implode( ', ', array_map( function ( $d ) {
 									return date_i18n( 'd/m/Y', $d );
 								}, $contrat->getListe_dates() ) )
 							);
 						}
-						if ( $show_close_date ) {
+						if ( $contrat->allowShowDistributionDates() && $show_close_date ) {
 							$deliveries_dates .= sprintf( __( ' - <strong>Clôture inscriptions %s</strong>', 'amapress' ),
 								date_i18n( 'd/m/Y', $contrat->getDate_cloture() )
 							);
