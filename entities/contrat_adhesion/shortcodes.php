@@ -58,7 +58,10 @@ add_action( 'amapress_init', function () {
 			delete_user_meta( $user_id, 'amapress_user_hidaddr' );
 		}
 
-		if ( ! empty( $_REQUEST['coadh1_email'] ) ) {
+		if ( isset( $_REQUEST['coadh1_remove'] ) ) {
+			$amapien = AmapressUser::getBy( $user_id, true );
+			$amapien->removeCoadherent( $amapien->getCoAdherent1Id(), $notify_email );
+		} elseif ( ! empty( $_REQUEST['coadh1_email'] ) ) {
 			$coadh1_email = sanitize_email( $_REQUEST['coadh1_email'] );
 			if ( ! empty( $coadh1_email ) ) {
 				$coadh1_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh1_first_name'] ) ? $_REQUEST['coadh1_first_name'] : '' );
@@ -72,12 +75,12 @@ add_action( 'amapress_init', function () {
 					$amapien->addCoadherent( $coadh1_user_id, $notify_email );
 				}
 			}
-		} else if ( isset( $_REQUEST['coadh1_remove'] ) ) {
-			$amapien = AmapressUser::getBy( $user_id, true );
-			$amapien->removeCoadherent( $amapien->getCoAdherent1Id(), $notify_email );
 		}
 
-		if ( ! empty( $_REQUEST['coadh2_email'] ) ) {
+		if ( isset( $_REQUEST['coadh2_remove'] ) ) {
+			$amapien = AmapressUser::getBy( $user_id, true );
+			$amapien->removeCoadherent( $amapien->getCoAdherent2Id(), $notify_email );
+		} elseif ( ! empty( $_REQUEST['coadh2_email'] ) ) {
 			$coadh2_email = sanitize_email( $_REQUEST['coadh2_email'] );
 			if ( ! empty( $coadh2_email ) ) {
 				$coadh2_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh2_first_name'] ) ? $_REQUEST['coadh2_first_name'] : '' );
@@ -91,12 +94,12 @@ add_action( 'amapress_init', function () {
 					$amapien->addCoadherent( $coadh2_user_id, $notify_email );
 				}
 			}
-		} else if ( isset( $_REQUEST['coadh2_remove'] ) ) {
-			$amapien = AmapressUser::getBy( $user_id, true );
-			$amapien->removeCoadherent( $amapien->getCoAdherent2Id(), $notify_email );
 		}
 
-		if ( ! empty( $_REQUEST['coadh3_email'] ) ) {
+		if ( isset( $_REQUEST['coadh3_remove'] ) ) {
+			$amapien = AmapressUser::getBy( $user_id, true );
+			$amapien->removeCoadherent( $amapien->getCoAdherent3Id(), $notify_email );
+		} elseif ( ! empty( $_REQUEST['coadh3_email'] ) ) {
 			$coadh3_email = sanitize_email( $_REQUEST['coadh3_email'] );
 			if ( ! empty( $coadh3_email ) ) {
 				$coadh3_user_firt_name = sanitize_text_field( ! empty( $_REQUEST['coadh3_first_name'] ) ? $_REQUEST['coadh3_first_name'] : '' );
@@ -110,9 +113,6 @@ add_action( 'amapress_init', function () {
 					$amapien->addCoadherent( $coadh3_user_id, $notify_email );
 				}
 			}
-		} else if ( isset( $_REQUEST['coadh3_remove'] ) ) {
-			$amapien = AmapressUser::getBy( $user_id, true );
-			$amapien->removeCoadherent( $amapien->getCoAdherent3Id(), $notify_email );
 		}
 
 		if ( isset( $_REQUEST['cofoy1_remove'] ) ) {
