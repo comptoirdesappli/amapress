@@ -411,6 +411,7 @@ function amapress_mes_contrats( $atts, $content = '', $tag = '' ) {
 	unset( $atts['track_no_renews_email'] );
 	unset( $atts['send_no_renews_message'] );
 	unset( $atts['notify_email'] );
+	unset( $atts['allow_intermittents_inscription'] );
 	unset( $atts['allow_coadherents_inscription'] );
 	unset( $atts['allow_coadherents_access'] );
 	unset( $atts['allow_coadherents_adhesion'] );
@@ -491,6 +492,7 @@ function amapress_self_inscription( $atts, $content = '', $tag = '' ) {
 			'allow_adhesion_lieu'                 => 'false',
 			'custom_checks_label'                 => '',
 			'allow_adhesion_message'              => 'false',
+			'allow_intermittents_inscription'     => 'true',
 			'allow_coadherents_access'            => 'true',
 			'allow_coadherents_inscription'       => 'true',
 			'allow_coadherents_adhesion'          => 'true',
@@ -556,6 +558,7 @@ function amapress_self_inscription( $atts, $content = '', $tag = '' ) {
 	$activate_agreement_if_noadh         = Amapress::toBool( $atts['agreement_new_only'] );
 	$allow_remove_coadhs                 = Amapress::toBool( $atts['allow_remove_coadhs'] );
 	$allow_remove_cofoys                 = Amapress::toBool( $atts['allow_remove_cofoyers'] );
+	$allow_intermittents_inscription     = Amapress::toBool( $atts['allow_intermittents_inscription'] );
 	$allow_coadherents_inscription       = Amapress::toBool( $atts['allow_coadherents_inscription'] );
 	$allow_coadherents_adhesion          = Amapress::toBool( $atts['allow_coadherents_adhesion'] );
 	$show_adherents_infos                = Amapress::toBool( $atts['show_adherents_infos'] );
@@ -2496,7 +2499,14 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 		}
 		if ( ! $admin_mode && ! $has_principal_contrat && $allow_inscriptions ) {
 			$display_remaining_contrats = false;
-			if ( ! $allow_coadherents_inscription && $amapien->isCoAdherent() ) {
+			if ( ! $allow_intermittents_inscription && $amapien->isIntermittent() ) {
+				if ( ! $use_contrat_term ) {
+					echo '<p><strong>' . __( 'Les commandes ne sont pas ouvertes aux intermittents.', 'amapress' ) . '</strong></p>';
+				} else {
+					echo '<p><strong>' . __( 'L\'inscription aux contrats n\'est pas ouverte aux intermittents.', 'amapress' ) . '</strong></p>';
+				}
+				$display_remaining_contrats = false;
+			} elseif ( ! $allow_coadherents_inscription && $amapien->isCoAdherent() ) {
 				if ( ! $use_contrat_term ) {
 					echo '<p><strong>' . __( 'Les commandes doivent être faites par l\'adhérent principal.', 'amapress' ) . '</strong></p>';
 				} else {
