@@ -2672,15 +2672,24 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 					} else {
 						$rattrapage = $adh->getProperty( 'dates_rattrapages' );
 						if ( ! Amapress::toBool( $atts['show_details_button'] ) ) {
+							$show_distrib_dates     = $adh->getContrat_instance()->allowShowDistributionDates();
+							$distrib_dates_end_text = $show_distrib_dates ? __( ' : ', 'amapress' ) : __( '.', 'amapress' );
+
 							if ( $adh->getContrat_instance()->isPanierVariable() ) {
-								$contrat_info = sprintf( __( 'Vous avez composé votre panier "%s" (%s) pour %s distribution(s) pour un montant total de %s € (%s)<br/>%s dates distributions : %s%s', 'amapress' ),
+								$contrat_info = sprintf( __( 'Vous avez composé votre panier "%s" (%s) pour %s distribution(s) pour un montant total de %s € (%s)<br/>%s dates distributions%s%s%s', 'amapress' ),
 									$adh->getContrat_instance()->getModelTitle(), Amapress::makeLink( add_query_arg( [
 										'step'       => 'details',
 										'contrat_id' => $adh->ID
-									] ), __( 'Détails', 'amapress' ), true, true ), $adh->getProperty( 'nb_distributions' ), $adh->getProperty( 'total' ), $adh->getProperty( 'option_paiements' ), $adh->getProperty( 'nb_dates' ), $adh->getProperty( 'dates_distribution_par_mois' ), ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
+									] ), __( 'Détails', 'amapress' ), true, true ), $adh->getProperty( 'nb_distributions' ), $adh->getProperty( 'total' ), $adh->getProperty( 'option_paiements' ),
+									$adh->getProperty( 'nb_dates' ),
+									$show_distrib_dates ? $adh->getProperty( 'dates_distribution_par_mois' ) : '', $distrib_dates_end_text,
+									$show_distrib_dates && ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
 							} else {
-								$contrat_info = sprintf( __( 'Vous avez choisi le(s) panier(s) "%s" pour %s distribution(s) pour un montant total de %s € (%s)<br/>%s dates distributions : %s%s', 'amapress' ),
-									$adh->getProperty( 'quantites' ), $adh->getProperty( 'nb_distributions' ), $adh->getProperty( 'total' ), $adh->getProperty( 'option_paiements' ), $adh->getProperty( 'nb_dates' ), $adh->getProperty( 'dates_distribution_par_mois' ), ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
+								$contrat_info = sprintf( __( 'Vous avez choisi le(s) panier(s) "%s" pour %s distribution(s) pour un montant total de %s € (%s)<br/>%s dates distributions%s%s%s', 'amapress' ),
+									$adh->getProperty( 'quantites' ), $adh->getProperty( 'nb_distributions' ), $adh->getProperty( 'total' ), $adh->getProperty( 'option_paiements' ),
+									$adh->getProperty( 'nb_dates' ),
+									$show_distrib_dates ? $adh->getProperty( 'dates_distribution_par_mois' ) : '', $distrib_dates_end_text,
+									$show_distrib_dates && ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
 							}
 						} else {
 							$contrat_info = '';
@@ -2944,7 +2953,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 								}, $contrat->getListe_dates() ) )
 							);
 						}
-						if ( $contrat->allowShowDistributionDates() && $show_close_date ) {
+						if ( $show_close_date ) {
 							$deliveries_dates .= sprintf( __( ' - <strong>Clôture inscriptions %s</strong>', 'amapress' ),
 								date_i18n( 'd/m/Y', $contrat->getDate_cloture() )
 							);
@@ -3627,11 +3636,23 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			] ), __( 'Livraisons', 'amapress' ), true, true, 'btn btn-default' );
 
 		}
+
+		$show_distrib_dates     = $adh->getContrat_instance()->allowShowDistributionDates();
+		$distrib_dates_end_text = $show_distrib_dates ? __( ' : ', 'amapress' ) : __( '.', 'amapress' );
+
 		$rattrapage = $adh->getProperty( 'dates_rattrapages' );
 		if ( $adh->getContrat_instance()->isPanierVariable() ) {
-			$contrat_info = sprintf( __( '<p>Vous avez composé votre panier "%s" pour %s distribution(s) pour un montant total de %s €</p><h3>Distributions</h3><p>%s dates distributions : %s%s</p>', 'amapress' ), $adh->getContrat_instance()->getModelTitle(), $adh->getProperty( 'nb_distributions' ), $adh->getProperty( 'total' ), $adh->getProperty( 'nb_dates' ), $adh->getProperty( 'dates_distribution_par_mois' ), ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
+			$contrat_info = sprintf( __( '<p>Vous avez composé votre panier "%s" pour %s distribution(s) pour un montant total de %s €</p><h3>Distributions</h3><p>%s dates distributions%s%s%s</p>', 'amapress' ),
+				$adh->getContrat_instance()->getModelTitle(), $adh->getProperty( 'nb_distributions' ), $adh->getProperty( 'total' ),
+				$adh->getProperty( 'nb_dates' ),
+				$show_distrib_dates ? $adh->getProperty( 'dates_distribution_par_mois' ) : '',
+				$show_distrib_dates && ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
 		} else {
-			$contrat_info = sprintf( __( '<p>Vous avez choisi le(s) panier(s) "%s" pour %s distribution(s) pour un montant total de %s €</p><h3>Distributions</h3><p>%s dates distributions : %s%s</p>', 'amapress' ), $adh->getProperty( 'quantites' ), $adh->getProperty( 'nb_distributions' ), $adh->getProperty( 'total' ), $adh->getProperty( 'nb_dates' ), $adh->getProperty( 'dates_distribution_par_mois' ), ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
+			$contrat_info = sprintf( __( '<p>Vous avez choisi le(s) panier(s) "%s" pour %s distribution(s) pour un montant total de %s €</p><h3>Distributions</h3><p>%s dates distributions%s%s%s</p>', 'amapress' ),
+				$adh->getProperty( 'quantites' ), $adh->getProperty( 'nb_distributions' ), $adh->getProperty( 'total' ),
+				$adh->getProperty( 'nb_dates' ),
+				$show_distrib_dates ? $adh->getProperty( 'dates_distribution_par_mois' ) : '',
+				$show_distrib_dates && ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
 		}
 
 		$contrat_info .= '<h3>' . __( 'Lieu', 'amapress' ) . '</h3><p>' . Amapress::makeLink( $adh->getLieu()->getPermalink(), $adh->getProperty( 'lieu' ), true, true ) . '</p>';
