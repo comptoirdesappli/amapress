@@ -125,7 +125,7 @@ class Amapress_Ouvaton_MailSystem extends Amapress_Sympa_MailSystem {
 		$resp      = self::$client->get( "edit_list_request/$name/description" );
 		if ( 200 == $resp->getStatusCode() ) {
 			$body = $resp->getBody();
-			preg_match( '/id\="single_param.subject.name"\s+value="(?<desc>[^"]+)"/', $body, $m );
+			preg_match( '/id\="(?:single_)?param.subject.name"\s+value="(?<desc>[^"]+)"/', $body, $m );
 			$list_info['desc'] = ( $m['desc'] );
 			preg_match( '/Emails?\s*\((?<waiting>\d+)\)/', $body, $m );
 			$list_info['waiting'] = isset( $m['waiting'] ) ? intval( $m['waiting'] ) : 0;
@@ -133,7 +133,7 @@ class Amapress_Ouvaton_MailSystem extends Amapress_Sympa_MailSystem {
 			$list_info['members_count'] = isset( $m['members_count'] ) ? intval( $m['members_count'] ) : 0;
 			preg_match( '/Taux\s*d\'erreurs\s*:\s*(?:\<span\>)?(?<bounce_rate>\d+(?:,\d+)?)/', $body, $m );
 			$list_info['bounce_rate'] = isset( $m['bounce_rate'] ) ? $m['bounce_rate'] : 0;
-			preg_match_all( '/id\="single_param.(?:owner|moderator).\d+.email"\s+value="(?<mod>[^"]+)"/', $body, $m, PREG_SET_ORDER );
+			preg_match_all( '/id\="(?:single_)?param.(?:owner|moderator).\d+.email"\s+value="(?<mod>[^"]+)"/', $body, $m, PREG_SET_ORDER );
 			$list_info['moderators']        = array();
 			$list_info['moderators_emails'] = array();
 			foreach ( $m as $mm ) {
@@ -166,7 +166,7 @@ class Amapress_Ouvaton_MailSystem extends Amapress_Sympa_MailSystem {
 			$list_info['data_source']  = self::parseSelect( $body, 'single_param.user_data_source', $source_modes );
 			$list_info['data_sources'] = $source_modes;
 
-			if ( preg_match( '/id\="single_param.include_sql_query.0.sql_query"\s+value="(?<mode>[^"]*)"/', $body, $m ) ) {
+			if ( preg_match( '/id\="(?:single_)?param.include_sql_query.0.sql_query"\s+value="(?<mode>[^"]*)"/', $body, $m ) ) {
 				$list_info['query'] = html_entity_decode( $m['mode'] );
 			} elseif ( preg_match( '/id\="param.include_sql_query.0.sql_query"\s+value="(?<mode>[^"]*)"/', $body, $m ) ) {
 				$list_info['query'] = html_entity_decode( $m['mode'] );
