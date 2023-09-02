@@ -1,3 +1,16 @@
+# 0.99.240 (2023-09-02)
+
+* **Assistant d'inscription:**
+  - correction prise en compte de l'affichage des dates de distributions suivant le contrat
+  - correction suppression de coadhérents
+  - ajout d'un paramètre `allow_intermittents_inscription` pour interdire l'accès aux inscriptions aux intermittents
+* **Comptes:** lien pour *voir l'adhérent principal* d'un coadhérent et pour *délier un coadhérent*
+* **Mailinglistes:** prise en compte des nouvelles versions de Sympa
+
+# 0.99.235 (2023-08-29)
+
+* **Assistant d'inscription:** meilleure prise en compte de l'affichage conditionnel des dates de distributions
+
 # 0.99.230 (2023-08-27)
 
 * **Contrats:**
