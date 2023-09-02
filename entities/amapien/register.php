@@ -738,7 +738,33 @@ function amapress_register_entities_amapien( $entities ) {
 					return $user && in_array( $user->ID, $user_ids );
 				},
 				'show_on'    => 'editor',
-			)
+			),
+			'show_principal'   => [
+				'label'     => __( 'Adhérent principal', 'amapress' ),
+				'condition' => function ( $user_id ) {
+					$user = AmapressUser::getBy( $user_id );
+
+					return $user && $user->isCoAdherent();
+				},
+				'href'      => function ( $user_id ) {
+					$user = AmapressUser::getBy( $user_id );
+					if ( ! $user ) {
+						return '';
+					}
+
+					return admin_url( 'user-edit.php?user_id=' . $user->getPrincipalUserIds()[0] );
+				}
+			],
+			'remove_coadhesion' => array(
+				'label'      => __( 'Délier coadhérent', 'amapress' ),
+				'confirm'    => true,
+				'capability' => 'manage_contrats',
+				'condition'  => function ( $user_id ) {
+					$user = AmapressUser::getBy( $user_id );
+
+					return $user && $user->isCoAdherent();
+				},
+			),
 		),
 	);
 
@@ -1483,6 +1509,24 @@ function amapress_row_action_user_remove_collectif( $user_id ) {
 		$producteur = AmapressProducteur::getBy( $ref['producteur'] );
 		if ( $producteur ) {
 			$producteur->removeReferent( $user->ID );
+		}
+	}
+
+	wp_redirect_and_exit( wp_get_referer() );
+}
+
+add_action( 'amapress_row_action_user_remove_coadhesion', 'amapress_row_action_user_remove_coadhesion' );
+function amapress_row_action_user_remove_coadhesion( $user_id ) {
+	$user = AmapressUser::getBy( $user_id );
+	if ( ! $user ) {
+		wp_die( __( 'Amapien introuvable', 'amapress' ) );
+	}
+
+	foreach ( $user->getPrincipalUserIds() as $principal_user_id ) {
+		$principal = AmapressUser::getBy( $principal_user_id );
+		if ( $principal ) {
+			$principal->removeCoadherent( $user_id, true, false );
+			$principal->removeCoadherent( $user_id, true, true );
 		}
 	}
 
