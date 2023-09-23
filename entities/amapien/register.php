@@ -36,33 +36,33 @@ function amapress_register_entities_amapien( $entities ) {
 //                'type' => 'text',
 //                'desc' => __('Rôle dans l\'AMAP', 'amapress'),
 //            ),
-			'email2'         => array(
+			'email2'            => array(
 				'name'       => __( 'Email 2', 'amapress' ),
 				'type'       => 'readonly',
 				'show_on'    => 'list',
 				'bare_id'    => true,
 				'searchable' => true,
 			),
-			'email3'         => array(
+			'email3'            => array(
 				'name'       => __( 'Email 3', 'amapress' ),
 				'type'       => 'readonly',
 				'show_on'    => 'list',
 				'bare_id'    => true,
 				'searchable' => true,
 			),
-			'email4'         => array(
+			'email4'            => array(
 				'name'       => __( 'Email 4', 'amapress' ),
 				'type'       => 'readonly',
 				'show_on'    => 'list',
 				'bare_id'    => true,
 				'searchable' => true,
 			),
-			'head_amapress4' => array(
+			'head_amapress4'    => array(
 				'id'   => 'fonctions_sect',
 				'name' => __( 'Fonctions', 'amapress' ),
 				'type' => 'heading',
 			),
-			'all_roles'      => array(
+			'all_roles'         => array(
 				'name'        => __( 'Fonctions actuelles', 'amapress' ),
 				'show_column' => false,
 				'type'        => 'custom',
@@ -87,7 +87,7 @@ function amapress_register_entities_amapien( $entities ) {
 					return $roles;
 				}
 			),
-			'role_desc'      => array(
+			'role_desc'         => array(
 				'type'        => 'custom',
 				'name'        => __( 'Rôle sur le site', 'amapress' ),
 				'show_column' => false,
@@ -109,7 +109,7 @@ function amapress_register_entities_amapien( $entities ) {
 <br />Ouvre tous les droits sur le site</p>', 'amapress' ) . '</div>';
 				}
 			),
-			'amap_roles'     => array(
+			'amap_roles'        => array(
 				'name'        => __( 'Membre du collectif - Rôle dans l’Amap', 'amapress' ),
 				'type'        => 'multicheck-categories',
 				'taxonomy'    => AmapressUser::AMAP_ROLE,
@@ -123,7 +123,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'csv'         => false,
 //                'searchable' => true,
 			),
-			'adh_type'       => array(
+			'adh_type'          => array(
 				'name'          => __( 'Type', 'amapress' ),
 				'type'          => 'custom',
 				'show_column'   => true,
@@ -140,13 +140,13 @@ function amapress_register_entities_amapien( $entities ) {
 					echo $amapien ? $amapien->getAdherentTypeDisplay() : '';
 				}
 			),
-			'num_adh'        => array(
+			'num_adh'           => array(
 				'name'       => __( 'Numéro d\'adhérent', 'amapress' ),
 				'type'       => 'text',
 				'desc'       => __( 'Numéro d\'adhérent', 'amapress' ),
 				'searchable' => true,
 			),
-			'amapien_groups' => array(
+			'amapien_groups'    => array(
 				'name'        => __( 'Groupes d\'amapien', 'amapress' ),
 				'type'        => 'multicheck-categories',
 				'taxonomy'    => AmapressUser::AMAPIEN_GROUP,
@@ -157,7 +157,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'csv'         => false,
 //                'searchable' => true,
 			),
-			'diffusion'      => array(
+			'diffusion'         => array(
 				'name'        => __( 'Diffusion', 'amapress' ),
 				'type'        => 'custom',
 				'show_column' => false,
@@ -409,7 +409,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'    => 'heading',
 				'show_on' => 'edit-only',
 			),
-			'adhesions'      => array(
+			'adhesions'         => array(
 				'name'                     => __( 'Adhésions', 'amapress' ),
 				'show_column'              => true,
 				'col_def_hidden'           => true,
@@ -435,7 +435,7 @@ function amapress_register_entities_amapien( $entities ) {
 				'type'                     => 'related-posts',
 				'query'                    => 'post_type=amps_adh_pmt&amapress_user=%%id%%&orderby=title&order=asc',
 			),
-			'adh_lieu'       => array(
+			'adh_lieu'          => array(
 				'name'           => __( 'Lieu d\'adhésion', 'amapress' ),
 				'type'           => 'custom',
 				'desc'           => __( 'Lieu d\'adhésion', 'amapress' ),
@@ -456,7 +456,7 @@ function amapress_register_entities_amapien( $entities ) {
 					}
 				},
 			),
-			'contrats'       => array(
+			'contrats'          => array(
 				'name'                     => __( 'Contrats', 'amapress' ),
 				'show_column'              => true,
 				'related_posts_count_func' => function ( $user_id ) {
@@ -684,12 +684,12 @@ function amapress_register_entities_amapien( $entities ) {
 			'exp_csv'   => true,
 		),
 		'row_actions'              => array(
-			'add_inscription'  => [
+			'add_inscription'   => [
 				'label'  => __( 'Ajout Inscription', 'amapress' ),
 				'href'   => admin_url( 'admin.php?page=amapress_gestion_amapiens_page&tab=add_inscription&user_id=%id%' ),
 				'target' => '_blank',
 			],
-			'relocate'         => array(
+			'relocate'          => array(
 				'label'     => __( 'Géolocaliser', 'amapress' ),
 				'condition' => function ( $user_id ) {
 					$user = AmapressUser::getBy( $user_id );
@@ -698,7 +698,7 @@ function amapress_register_entities_amapien( $entities ) {
 				},
 				'confirm'   => true,
 			),
-			'send_email'       => [
+			'send_email'        => [
 				'label' => __( 'Email', 'amapress' ),
 				'href'  => function ( $user_id ) {
 					$user = AmapressUser::getBy( $user_id );
@@ -709,7 +709,7 @@ function amapress_register_entities_amapien( $entities ) {
 					return 'mailto:' . implode( ',', $user->getAllEmails() );
 				}
 			],
-			'send_email_coadh' => [
+			'send_email_coadh'  => [
 				'label' => __( 'Email (coadhérents)', 'amapress' ),
 				'href'  => function ( $user_id ) {
 					$user = AmapressUser::getBy( $user_id );
@@ -720,11 +720,11 @@ function amapress_register_entities_amapien( $entities ) {
 					return 'mailto:' . implode( ',', $user->getAllEmailsWithAllCoAdherents() );
 				}
 			],
-			'resend_welcome'   => array(
+			'resend_welcome'    => array(
 				'label'   => __( 'Renvoyer l\'email de bienvenue', 'amapress' ),
 				'confirm' => true,
 			),
-			'remove_collectif' => array(
+			'remove_collectif'  => array(
 				'label'      => __( 'Supprimer du collectif', 'amapress' ),
 				'confirm'    => true,
 				'capability' => 'manage_contrats',
@@ -739,7 +739,7 @@ function amapress_register_entities_amapien( $entities ) {
 				},
 				'show_on'    => 'editor',
 			),
-			'show_principal'   => [
+			'show_principal'    => [
 				'label'     => __( 'Adhérent principal', 'amapress' ),
 				'condition' => function ( $user_id ) {
 					$user = AmapressUser::getBy( $user_id );
@@ -1522,13 +1522,7 @@ function amapress_row_action_user_remove_coadhesion( $user_id ) {
 		wp_die( __( 'Amapien introuvable', 'amapress' ) );
 	}
 
-	foreach ( $user->getPrincipalUserIds() as $principal_user_id ) {
-		$principal = AmapressUser::getBy( $principal_user_id );
-		if ( $principal ) {
-			$principal->removeCoadherent( $user_id, true, false );
-			$principal->removeCoadherent( $user_id, true, true );
-		}
-	}
+	$user->deassociateAllCoadherents( get_option( 'admin_email' ) );
 
 	wp_redirect_and_exit( wp_get_referer() );
 }

@@ -476,6 +476,7 @@ function amapress_self_inscription( $atts, $content = '', $tag = '' ) {
 			'check_adhesion_received_or_previous' => Amapress::getOption( 'check_adh_rcv_p' ),
 			'track_no_renews'                     => 'false',
 			'track_no_renews_email'               => get_option( 'admin_email' ),
+			'no_renew_deassociate'                => 'true',
 			'send_no_renews_message'              => 'false',
 			'notify_email'                        => '',
 			'max_produit_label_width'             => '10em',
@@ -1143,6 +1144,11 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				update_user_meta( $user->ID, 'amapress_user_no_renew', 1 );
 				update_user_meta( $user->ID, 'amapress_user_no_renew_reason', $reason );
 				ob_clean();
+
+				if ( Amapress::toBool( $atts['no_renew_deassociate'] ) ) {
+					$amapien = AmapressUser::getBy( $user );
+					$amapien->deassociateAllCoadherents( $notify_email );
+				}
 
 				$track_no_renews_email = $atts['track_no_renews_email'];
 				if ( empty( $track_no_renews_email ) ) {

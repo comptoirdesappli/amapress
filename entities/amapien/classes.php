@@ -830,6 +830,22 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		return false;
 	}
 
+	public function deassociateAllCoadherents( $notify_email = null ) {
+		foreach ( $this->getPrincipalUserIds() as $principal_user_id ) {
+			$principal = self::getBy( $principal_user_id );
+			if ( $principal ) {
+				$principal->removeCoadherent( $this->ID, $notify_email, false );
+				$principal->removeCoadherent( $this->ID, $notify_email, true );
+			}
+		}
+		$users = AmapressContrats::get_related_users( $this->ID,
+			true, null, null, true, true );
+		foreach ( $users as $user_id ) {
+			$this->removeCoadherent( $user_id, $notify_email, false );
+			$this->removeCoadherent( $user_id, $notify_email, true );
+		}
+	}
+
 	public function getPrincipalUserIds() {
 		$this->ensureInitCoadherents();
 		if ( null === $this->principal_user_ids ) {

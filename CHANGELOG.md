@@ -1,3 +1,8 @@
+# 0.99.245 (2023-09-23)
+
+* **Assistant d'inscription:** paramètre `no_renew_deassociate` (true par défaut), pour permettre de déassocier tous les
+  co-adhérents de l'amapien qui ne renouvèle pas (et leur permettre de s'inscrire)
+
 # 0.99.240 (2023-09-02)
 
 * **Assistant d'inscription:**
