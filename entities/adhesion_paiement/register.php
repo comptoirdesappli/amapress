@@ -903,7 +903,7 @@ function amapress_fetch_helloasso_orders( $date = null, $interactive = false ) {
 		$response = $client->get( "https://api.helloasso.com/v5/organizations/{$organizationSlug}/forms/Membership/{$formSlug}/orders",
 			[
 				'query' => [
-					'pageSize'    => 200,
+					'pageSize'    => 100,
 					'from'        => date( 'c', Amapress::add_days( amapress_time(), - 14 ) ),
 					'withDetails' => 'true'
 				]
