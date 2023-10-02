@@ -752,7 +752,12 @@ function amapress_register_entities_amapien( $entities ) {
 						return '';
 					}
 
-					return admin_url( 'user-edit.php?user_id=' . $user->getPrincipalUserIds()[0] );
+					$principal_ids = $user->getPrincipalUserIds();
+					if ( empty( $principal_ids ) ) {
+						$principal_ids = [ $user->ID ];
+					}
+
+					return admin_url( 'user-edit.php?user_id=' . array_shift( $principal_ids ) );
 				}
 			],
 			'remove_coadhesion' => array(
