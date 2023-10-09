@@ -3833,6 +3833,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 				$multiple       = $quant->getGroupMultiple();
 				$grp_class_name = '';
+				$quant_fix      = $contrat->isPanierFix() ? 'quant-fix' : '';
 				$quant_cmd      = $contrat->isCommandeVariable() ? 'quant-cmd' : '';
 				$has_group      = preg_match( '/^\s*\[([^\]]+)\]/', $quant->getTitle(), $matches );
 				if ( $has_group ) {
@@ -3857,7 +3858,7 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				foreach ( $dates as $date ) {
 					$options = $quant->getQuantiteOptions( $contrat->getRemainingQuantiteForMax( $quant->ID, $lieu_id, $date ) );
 					$ed      = '';
-					$ed      .= "<select style='max-width: none;min-width: 0' data-grp-class='$grp_class_name' data-price='0' data-price-unit='$price_unit' name='panier_vars[$date][{$quant->ID}]' id='panier_vars-$date-{$quant->ID}' class='quant-var $quant_cmd $grp_class_name'>";
+					$ed      .= "<select style='max-width: none;min-width: 0' data-grp-class='$grp_class_name' data-price='0' data-price-unit='$price_unit' name='panier_vars[$date][{$quant->ID}]' id='panier_vars-$date-{$quant->ID}' class='quant-var $quant_fix $quant_cmd $grp_class_name'>";
 					$ed      .= tf_parse_select_options( $options,
 						$edit_inscription
 							? $edit_inscription->getContrat_quantite_factor( $quant->ID, $date )
@@ -5146,6 +5147,22 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
                 "<?php echo esc_js( __( 'Le montant total doit être supérieur à {0}€', 'amapress' ) ); ?>"
             );
 
+            jQuery.validator.addMethod(
+                "quant_fix",
+                function (value, element, params) {
+                    var values = new Map();
+                    var parent = $(element).closest("tr");
+                    jQuery(parent).find(".quant-fix").each(function () {
+                        var quant = parseFloat(jQuery(this).val());
+                        if (quant > 0)
+                            values.set(quant, 1);
+                    });
+                    if (values.size === 1) return true;
+                    return false;
+                },
+                "<?php echo esc_js( __( 'La quantité doit être soit 0, soit la même à toutes les distributions', 'amapress' ) ); ?>"
+            );
+
             jQuery('.don-input').change(function () {
                 computeTotal();
             });
@@ -5235,6 +5252,13 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
                 }
                 if (!$this.is('.quant-cmd'))
                     $this.rules('add', opt);
+            });
+            jQuery('.quant-fix').each(function () {
+                var $this = jQuery(this);
+                var opt = {
+                    quant_fix: true,
+                };
+                $this.rules('add', opt);
             });
             jQuery('.amapress_validate .quant').change(function () {
                 var $this = jQuery(this);

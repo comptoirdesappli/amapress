@@ -781,7 +781,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'model_name'     => array(
+			'model_name'            => array(
 				'name'        => __( 'Nom générique', 'amapress' ),
 				'show_column' => false,
 				'show_on'     => 'edit-only',
@@ -797,7 +797,7 @@ jQuery(function($) {
 					return $contrat->getTitle();
 				}
 			),
-			'name'           => array(
+			'name'                  => array(
 				'name'           => __( 'Nom complémentaire', 'amapress' ),
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
 				'type'           => 'text',
@@ -806,7 +806,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'allow_coadh'        => array(
+			'allow_coadh'           => array(
 				'name'           => __( 'Autoriser coadhérents', 'amapress' ),
 				'type'           => 'checkbox',
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
@@ -819,7 +819,7 @@ jQuery(function($) {
 					return ! Amapress::hasPartialCoAdhesion();
 				},
 			),
-			'coadh_msg'      => array(
+			'coadh_msg'             => array(
 				'name'           => __( 'Message Co-adhérents', 'amapress' ),
 				'type'           => 'editor',
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
@@ -828,7 +828,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'max_adherents'      => array(
+			'max_adherents'         => array(
 				'name'           => __( 'Nombre d’amapiens maximum', 'amapress' ),
 				'type'           => 'number',
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
@@ -837,7 +837,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'use_equiv'          => array(
+			'use_equiv'             => array(
 				'name'        => __( 'Maximum en part', 'amapress' ),
 				'type'        => 'checkbox',
 				'default'     => false,
@@ -846,7 +846,7 @@ jQuery(function($) {
 				'group'       => __( '2/6 - Paramètres généraux', 'amapress' ),
 				'desc'        => __( 'Compter les maximums en part (Coefficient de part) en non en inscriptions', 'amapress' ),
 			),
-			'min_engagement'     => array(
+			'min_engagement'        => array(
 				'name'           => __( 'Engagement minimum', 'amapress' ),
 				'type'           => 'number',
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
@@ -874,7 +874,7 @@ jQuery(function($) {
 						Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ), admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ), esc_attr( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) ) );
 				},
 			),
-			'contrat_info'       => array(
+			'contrat_info'          => array(
 				'name'        => __( 'Termes du contrat', 'amapress' ),
 				'type'        => 'editor',
 				'show_column' => false,
@@ -883,7 +883,7 @@ jQuery(function($) {
 					return sprintf( __( 'Termes du contrats (Pour les utilisateurs avancés : à compléter avec des marquages substitutifs de type "%%%%xxx%%%%" <a target="_blank" href="%s">Plus d\'info</a>)', 'amapress' ), admin_url( 'admin.php?page=amapress_help_page&tab=pres_prod_contrat_placeholders' ) );
 				},
 			),
-			'special_mention'    => array(
+			'special_mention'       => array(
 				'name'        => __( 'Mention', 'amapress' ),
 				'type'        => 'textarea',
 				'group'       => __( '2/6 - Paramètres généraux', 'amapress' ),
@@ -1164,6 +1164,7 @@ jQuery(function($) {
 						__( 'Choix multiple - quantités libres', 'amapress' ),
 						__( 'Paniers modulables', 'amapress' ),
 						__( 'Commandes variables', 'amapress' ),
+						__( 'Paniers modulables (fixes)', 'amapress' ),
 					];
 				},
 				'csv_validator'     => function ( $value ) {
@@ -1171,6 +1172,7 @@ jQuery(function($) {
 						case __( 'Choix unique - quantité déterminée', 'amapress' ):
 							return [
 								'amapress_contrat_instance_panier_variable'   => 0,
+								'amapress_contrat_instance_panier_fix'        => 0,
 								'amapress_contrat_instance_commande_variable' => 0,
 								'amapress_contrat_instance_quantite_multi'    => 0,
 								'amapress_contrat_instance_quantite_variable' => 0,
@@ -1178,6 +1180,7 @@ jQuery(function($) {
 						case __( 'Choix multiple - quantités déterminées', 'amapress' ):
 							return [
 								'amapress_contrat_instance_panier_variable'   => 0,
+								'amapress_contrat_instance_panier_fix'        => 0,
 								'amapress_contrat_instance_commande_variable' => 0,
 								'amapress_contrat_instance_quantite_multi'    => 1,
 								'amapress_contrat_instance_quantite_variable' => 0,
@@ -1185,6 +1188,7 @@ jQuery(function($) {
 						case __( 'Choix unique - quantité libre', 'amapress' ):
 							return [
 								'amapress_contrat_instance_panier_variable'   => 0,
+								'amapress_contrat_instance_panier_fix'        => 0,
 								'amapress_contrat_instance_commande_variable' => 0,
 								'amapress_contrat_instance_quantite_multi'    => 0,
 								'amapress_contrat_instance_quantite_variable' => 1,
@@ -1192,6 +1196,7 @@ jQuery(function($) {
 						case __( 'Choix multiple - quantités libres', 'amapress' ):
 							return [
 								'amapress_contrat_instance_panier_variable'   => 0,
+								'amapress_contrat_instance_panier_fix'        => 0,
 								'amapress_contrat_instance_commande_variable' => 0,
 								'amapress_contrat_instance_quantite_multi'    => 1,
 								'amapress_contrat_instance_quantite_variable' => 1,
@@ -1199,6 +1204,7 @@ jQuery(function($) {
 						case __( 'Paniers modulables', 'amapress' ):
 							return [
 								'amapress_contrat_instance_panier_variable'   => 1,
+								'amapress_contrat_instance_panier_fix'        => 0,
 								'amapress_contrat_instance_commande_variable' => 0,
 								'amapress_contrat_instance_quantite_multi'    => 0,
 								'amapress_contrat_instance_quantite_variable' => 0,
@@ -1206,6 +1212,14 @@ jQuery(function($) {
 						case __( 'Commandes variables', 'amapress' ):
 							return [
 								'amapress_contrat_instance_panier_variable'   => 1,
+								'amapress_contrat_instance_commande_variable' => 1,
+								'amapress_contrat_instance_quantite_multi'    => 0,
+								'amapress_contrat_instance_quantite_variable' => 0,
+							];
+						case __( 'Paniers modulables (fixes)', 'amapress' ):
+							return [
+								'amapress_contrat_instance_panier_variable'   => 1,
+								'amapress_contrat_instance_panier_fix'        => 1,
 								'amapress_contrat_instance_commande_variable' => 1,
 								'amapress_contrat_instance_quantite_multi'    => 0,
 								'amapress_contrat_instance_quantite_variable' => 0,
@@ -1220,6 +1234,8 @@ jQuery(function($) {
 					if ( $contrat_instance->isPanierVariable() ) {
 						if ( $contrat_instance->isCommandeVariable() ) {
 							$status[] = __( 'Commandes variables', 'amapress' );
+						} else if ( $contrat_instance->isPanierFix() ) {
+							$status[] = __( 'Paniers modulables (fixes)', 'amapress' );
 						} else {
 							$status[] = __( 'Paniers modulables', 'amapress' );
 						}
@@ -1252,6 +1268,8 @@ jQuery(function($) {
 						if ( $contrat_instance->isPanierVariable() ) {
 							if ( $contrat_instance->isCommandeVariable() ) {
 								$type = 'commande_var';
+							} else if ( $contrat_instance->isPanierFix() ) {
+								$type = 'panier_fix';
 							} else {
 								$type = 'panier_var';
 							}
@@ -1269,15 +1287,6 @@ jQuery(function($) {
 							}
 						}
 					}
-
-//		$types = [
-//			'quant_fix'       => __('Choix unique - quantité déterminée', 'amapress'),
-//			'quant_fix_multi' => __('Choix multiple - quantités déterminées', 'amapress'),
-//			'quant_var'       => __('Choix unique - quantité libre', 'amapress'),
-//			'quant_var_multi' => __('Choix multiple -  quantités libres', 'amapress'),
-//			'panier_var'      => __('Paniers modulables', 'amapress'),
-//			'commande_var'      => __('Commandes variables', 'amapress'),
-//		];
 					ob_start();
 					?>
                     <p><?php _e( 'Choisissez le type d’option(s) proposée(s) dans le contrat d’origine concernant la composition des paniers.', 'amapress' ) ?></p>
@@ -1316,6 +1325,13 @@ jQuery(function($) {
                         </label><br/><span
                                 class="description"><?php _e( '(Par ex : “Brie”, “Epicerie”...)', 'amapress' ) ?></span>
                     </p>
+                    <p><input type="radio" class="required" <?php checked( 'panier_fix', $type ) ?>
+                              name="amapress_quantite_type" id="amp_panier_fix" value="panier_fix"/><label
+                                for="amp_panier_fix"><strong><?php _e( 'Paniers modulables (fixes)', 'amapress' ) ?></strong><?php _e( ' : ', 'amapress' ) ?>
+							<?php _e( 'L’adhérent compose à l’avance un panier fixe pour chaque distribution (la quantité doit être 0 ou la même pour toutes les distributions)', 'amapress' ) ?>
+                        </label><br/><span
+                                class="description"><?php _e( '(Par ex : contrat avec possibilité de ne pas prendre certaines semaines)', 'amapress' ) ?></span>
+                    </p>
                     <p><input type="radio" class="required" <?php checked( 'commande_var', $type ) ?>
                               name="amapress_quantite_type" id="amp_commande_var" value="commande_var"/><label
                                 for="amp_panier_var"><strong><?php _e( 'Commandes variables', 'amapress' ) ?></strong><?php _e( ' : ', 'amapress' ) ?>
@@ -1329,6 +1345,10 @@ jQuery(function($) {
 				'save'              => function ( $post_id ) {
 					if ( isset( $_POST['amapress_quantite_type'] ) ) {
 						$amapress_quantite_type = $_POST['amapress_quantite_type'];
+						delete_post_meta(
+							$post_id,
+							'amapress_contrat_instance_panier_fix'
+						);
 						delete_post_meta(
 							$post_id,
 							'amapress_contrat_instance_panier_variable'
@@ -1388,6 +1408,24 @@ jQuery(function($) {
 								update_post_meta(
 									$post_id,
 									'amapress_contrat_instance_panier_variable',
+									1
+								);
+								break;
+							case 'panier_fix':
+								delete_post_meta(
+									$post_id,
+									'amapress_contrat_instance_quantite_multi' );
+								delete_post_meta(
+									$post_id,
+									'amapress_contrat_instance_quantite_variable' );
+								update_post_meta(
+									$post_id,
+									'amapress_contrat_instance_panier_variable',
+									1
+								);
+								update_post_meta(
+									$post_id,
+									'amapress_contrat_instance_panier_fix',
 									1
 								);
 								break;
@@ -1636,7 +1674,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'date_ouverture'     => array(
+			'date_ouverture'        => array(
 				'name'           => __( 'Ouverture', 'amapress' ),
 				'type'           => 'date',
 				'group'          => __( '5/6 - Pré-inscription en ligne', 'amapress' ),
@@ -1680,7 +1718,7 @@ jQuery(function($) {
 						}
 					},
 			),
-			'date_cloture'       => array(
+			'date_cloture'          => array(
 				'name'           => __( 'Clôture', 'amapress' ),
 				'type'           => 'date',
 				'group'          => __( '5/6 - Pré-inscription en ligne', 'amapress' ),
@@ -1724,7 +1762,7 @@ jQuery(function($) {
 //						}
 //					},
 			),
-			'show_distrib_dates' => array(
+			'show_distrib_dates'    => array(
 				'name'        => __( 'Afficher dates distribs', 'amapress' ),
 				'type'        => 'checkbox',
 				'group'       => __( '5/6 - Pré-inscription en ligne', 'amapress' ),
@@ -1733,7 +1771,7 @@ jQuery(function($) {
 				'desc'        => __( 'Afficher les dates de distributions dans l\'Assistant d\'Inscription pour ce contrat', 'amapress' ),
 				'show_column' => false,
 			),
-			'pmt_user_input'     => array(
+			'pmt_user_input'        => array(
 				'name'        => __( 'Libellé règlements', 'amapress' ),
 				'type'        => 'checkbox',
 				'group'       => __( '5/6 - Pré-inscription en ligne', 'amapress' ),
@@ -1742,7 +1780,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => __( 'Permettre aux amapiens de renseigner les numéros des chèques dans l’assistant de pré-inscription en ligne', 'amapress' ),
 			),
-			'pmt_user_dates'     => array(
+			'pmt_user_dates'        => array(
 				'name'        => __( 'Dates règlements', 'amapress' ),
 				'type'        => 'checkbox',
 				'group'       => __( '5/6 - Pré-inscription en ligne', 'amapress' ),
@@ -1751,7 +1789,7 @@ jQuery(function($) {
 				'show_column' => false,
 				'desc'        => __( 'Permettre aux amapiens de choisir les dates de paiement des chèques dans l’assistant de pré-inscription en ligne', 'amapress' ),
 			),
-			'word_model'         => array(
+			'word_model'            => array(
 				'name'            => __( 'Contrat personnalisé', 'amapress' ),
 				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
@@ -1768,7 +1806,7 @@ jQuery(function($) {
 						Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ), admin_url( 'admin.php?page=amapress_help_page&tab=adhesion_contrat_placeholders' ), esc_attr( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) ) );
 				},
 			),
-			'allow_word'         => array(
+			'allow_word'            => array(
 				'name'        => __( 'Utiliser contrat DOCX?', 'amapress' ),
 				'type'        => 'checkbox',
 				'default'     => true,
@@ -1819,7 +1857,11 @@ jQuery(function($) {
 					$ret     = [];
 					$contrat = AmapressContrat_instance::getBy( $post_id );
 					if ( $contrat->isPanierVariable() ) {
-						$ret[] = __( 'Paniers modulables', 'amapress' );
+						if ( $contrat->isPanierFix() ) {
+							$ret[] = __( 'Paniers modulables (fixes)', 'amapress' );
+						} else {
+							$ret[] = __( 'Paniers modulables', 'amapress' );
+						}
 					} else {
 						$ret[] = __( 'Contrat récurrent', 'amapress' );
 					}

@@ -503,6 +503,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_commande_variable' );
 	}
 
+	public function isPanierFix() {
+		return $this->getCustomAsInt( 'amapress_contrat_instance_panier_fix' );
+	}
+
 	public function getDate_fin() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_date_fin' );
 	}
