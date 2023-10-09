@@ -770,8 +770,9 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 
 	echo $ret;
 
-	$contrat   = null;
-	$min_total = 0;
+	$contrat       = null;
+	$min_total     = 0;
+	$max_no_panier = - 1;
 	Amapress::setFilterForReferent( false );
 	if ( $admin_mode ) {
 		$subscribable_contrats = AmapressContrats::get_active_contrat_instances( null );
@@ -3725,7 +3726,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			Amapress::getOption( 'online_subscription_panier_step_message' ),
 			null, $contrat ) );
 
-		$min_total = $contrat->getMinEngagement();
+		$min_total     = $contrat->getMinEngagement();
+		$max_no_panier = $contrat->getMaxNoDistribution();
 
 		$grouped_dates = from( $dates )->groupBy( function ( $d ) {
 			return date_i18n( 'F Y', $d );
@@ -5131,6 +5133,27 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
             }, "<?php echo esc_js( __( 'Merci de ne saisir qu\'un seul nom ou prénom. Utilisez les champs de coadhérents pour vos coadhérents.', 'amapress' ) ); ?>");
 
             jQuery.validator.addMethod(
+                "max_no_panier",
+                function (value, element, params) {
+                    if (params < 0)
+                        return true;
+                    var noPaniers = 0;
+                    var paniers = 0;
+                    var parent = $(element).closest("tr");
+                    jQuery(parent).find(".quant-var").each(function () {
+                        var quant = parseFloat(jQuery(this).val());
+                        if (quant > 0.01)
+                            paniers += 1;
+                        else
+                            noPaniers += 1;
+                    });
+                    if (paniers > 0 && noPaniers > params) return false;
+                    return true;
+                },
+                "<?php echo esc_js( __( 'Seule(s) {0} distribution(s) sont/est autorisée(s) à ne pas avoir de livraison', 'amapress' ) ); ?>"
+            );
+
+            jQuery.validator.addMethod(
                 "min_sum",
                 function (value, element, params) {
                     var sumOfVals = 0;
@@ -5246,6 +5269,7 @@ LE cas écheant, une fois les quota mis à jour, appuyer sur F5 pour terminer l\
                 var $this = jQuery(this);
                 var opt = {
                     min_sum: <?php echo $min_total; ?>,
+                    max_no_panier: <?php echo $max_no_panier; ?>,
                 };
                 if ($this.data('grp-class')) {
                     opt[$this.data('grp-class')] = true;

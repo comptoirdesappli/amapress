@@ -511,6 +511,10 @@ class AmapressContrat_instance extends TitanEntity {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_date_fin' );
 	}
 
+	public function getMaxNoDistribution() {
+		return $this->getCustomAsInt( 'amapress_contrat_instance_max_nodist' );
+	}
+
 	public function getMaxContratMonths() {
 		return $this->getCustomAsInt( 'amapress_contrat_instance_max_months', - 1 );
 	}

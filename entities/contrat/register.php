@@ -828,7 +828,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'max_adherents'         => array(
+			'max_adherents'    => array(
 				'name'           => __( 'Nombre d’amapiens maximum', 'amapress' ),
 				'type'           => 'number',
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
@@ -837,7 +837,7 @@ jQuery(function($) {
 				'show_column'    => true,
 				'col_def_hidden' => true,
 			),
-			'use_equiv'             => array(
+			'use_equiv'        => array(
 				'name'        => __( 'Maximum en part', 'amapress' ),
 				'type'        => 'checkbox',
 				'default'     => false,
@@ -846,7 +846,7 @@ jQuery(function($) {
 				'group'       => __( '2/6 - Paramètres généraux', 'amapress' ),
 				'desc'        => __( 'Compter les maximums en part (Coefficient de part) en non en inscriptions', 'amapress' ),
 			),
-			'min_engagement'        => array(
+			'min_engagement'   => array(
 				'name'           => __( 'Engagement minimum', 'amapress' ),
 				'type'           => 'number',
 				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
@@ -856,7 +856,18 @@ jQuery(function($) {
 				'readonly'       => 'amapress_is_contrat_instance_readonly',
 				'desc'           => __( 'Montant minimum demandé par le producteur pour un contrat', 'amapress' ),
 			),
-			'word_paper_model'   => array(
+			'max_nodist'       => array(
+				'name'           => __( 'Maximum non distribution', 'amapress' ),
+				'type'           => 'number',
+				'group'          => __( '2/6 - Paramètres généraux', 'amapress' ),
+				'min'            => - 1,
+				'required'       => true,
+				'show_column'    => true,
+				'col_def_hidden' => true,
+				'readonly'       => 'amapress_is_contrat_instance_readonly',
+				'desc'           => __( 'Nombre maximum de distribution sans livraison (paniers modulables et paniers modulables fixes). -1 = pas de limite de non distribution', 'amapress' ),
+			),
+			'word_paper_model' => array(
 				'name'            => __( 'Contrat vierge', 'amapress' ),
 				'media-type'      => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'type'            => 'upload',
@@ -874,7 +885,7 @@ jQuery(function($) {
 						Amapress::makeLink( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ), 'un modèle global pour tous les contrats' ), admin_url( 'admin.php?page=amapress_help_page&tab=paper_contrat_placeholders' ), esc_attr( admin_url( 'admin.php?page=amapress_gest_contrat_conf_opt_page&tab=config_default_contrat_docx' ) ) );
 				},
 			),
-			'contrat_info'          => array(
+			'contrat_info'     => array(
 				'name'        => __( 'Termes du contrat', 'amapress' ),
 				'type'        => 'editor',
 				'show_column' => false,
@@ -1148,7 +1159,7 @@ jQuery(function($) {
 			),
 
 			// 4/6 Paniers
-			'quant_type'            => array(
+			'quant_type'       => array(
 				'name'              => __( 'Choix du contenu des paniers', 'amapress' ),
 				'type'              => 'custom',
 				'group'             => __( '4/6 - Paniers', 'amapress' ),
