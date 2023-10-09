@@ -1,3 +1,12 @@
+# 0.99.250 (2023-10-09)
+
+* **Assistant d'inscription/Contrats:**
+  - Paniers Modulables Fixes / possibilité d'obliger à prendre la même quantité de chaque produit chaque semaine avec
+    livraison
+  - possibilité d'interdire de ne pas prendre de produit plus de X distributions sur toute la durée du contrat
+* **HelloAsso:** pageSize max 100
+* **Users:** lien de l'amapien principal
+
 # 0.99.245 (2023-09-23)
 
 * **Assistant d'inscription:** paramètre `no_renew_deassociate` (true par défaut), pour permettre de déassocier tous les
