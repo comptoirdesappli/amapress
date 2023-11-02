@@ -1,3 +1,12 @@
+# 0.99.260 (2023-11-02)
+
+* **Assistant d'inscription:** si un contrat n'est distribué quand dans un lieu secondaire, alors le proposer à tous les
+  adhérents
+* **Evènements Amap:** affichage dans le calendrier suivant le cochage de "Publique ?"
+* **Assemblées générales:** possibilité de rendre publique (calendrier et informations)
+* **Visites à la ferme:** possibilité de rendre publique (calendrier et informations)
+* **MailQueue:** filtrage des mails en @nomail.org pour ne pas les envoyer
+
 # 0.99.250 (2023-10-09)
 
 * **Assistant d'inscription/Contrats:**
