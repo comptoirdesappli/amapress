@@ -229,7 +229,25 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 	public function get_related_events( $user_id ) {
 		$ret = array();
 		if ( empty( $user_id ) || $user_id <= 0 ) {
-
+			$date       = $this->getStartDateAndHour();
+			$date_end   = $this->getEndDateAndHour();
+			$producteur = $this->getProducteur();
+			if ( $this->isPublicEvent() ) {
+				$ret[] = new Amapress_EventEntry( array(
+					'ev_id'    => "visite-{$this->ID}",
+					'date'     => $date,
+					'date_end' => $date_end,
+					'class'    => "agenda-visite agenda-inscription-visite visit_prod_" . $producteur->ID,
+					'type'     => 'visite',
+					'category' => __( 'Visites', 'amapress' ),
+					'priority' => 95,
+					'lieu'     => $this,
+					'label'    => sprintf( __( 'Visite %s', 'amapress' ), $producteur->getTitle() ),
+					'icon'     => 'flaticon-sprout',
+					'alt'      => sprintf( __( 'Une visite est prévue à la ferme le %s', 'amapress' ), date_i18n( 'd/m/Y', $date ) ),
+					'href'     => $this->getPermalink()
+				) );
+			}
 		} else {
 			$resps      = $this->getParticipantIds();
 			$date       = $this->getStartDateAndHour();
@@ -266,7 +284,8 @@ class AmapressVisite extends Amapress_EventBase implements iAmapress_Event_Lieu 
 						'lieu'        => $this,
 						'label'       => sprintf( __( 'Visite %s', 'amapress' ), $producteur->getTitle() ),
 						'icon'        => 'flaticon-sprout',
-						'alt'         => sprintf( __( 'Vous êtes inscript pour la visite à la ferme du %s', 'amapress' ), date_i18n( 'd/m/Y', $date ) ),
+						'alt'         => sprintf( __( 'Vous êtes inscript pour la visite à la ferme du %s', 'amapress' ),
+							date_i18n( 'd/m/Y', $date ) ),
 						'href'        => $this->getPermalink()
 					) );
 				}

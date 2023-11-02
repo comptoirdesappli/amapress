@@ -12,39 +12,42 @@ function amapress_get_custom_content_visite( $content ) {
 	ob_start();
 
 //	amapress_echo_button( __('Participer', 'amapress'), amapress_action_link( $visite->ID, 'participer' ), 'fa-fa', false, "Confirmez-vous votre participation ?" );
-
-	$user_id               = amapress_current_user_id();
-	$can_subscribe         = $visite->canSubscribe();
-	$can_unsubscribe       = $visite->canUnsubscribe();
-	$is_resp               = in_array( $user_id, $visite->getParticipantIds() );
-	$slot_for_current_user = $visite->getSlotInfoForUser( $user_id );
-
+	$inscription   = '';
 	$inscr_another = '';
-	if ( ( AmapressDistributions::isCurrentUserResponsableThisWeek() || amapress_can_access_admin() ) && $can_subscribe ) {
-		$users = [ '' => '--Sélectionner un amapien--' ];
-		amapress_precache_all_users();
-		foreach ( get_users() as $user ) {
-			$users[ $user->ID ] = sprintf( __( '%s (%s)', 'amapress' ), $user->display_name, $user->user_email );
-		}
-		$inscr_another = '<form class="inscription-distrib-other-user">
+
+	if ( amapress_is_user_logged_in() ) {
+
+		$user_id               = amapress_current_user_id();
+		$can_subscribe         = $visite->canSubscribe();
+		$can_unsubscribe       = $visite->canUnsubscribe();
+		$is_resp               = in_array( $user_id, $visite->getParticipantIds() );
+		$slot_for_current_user = $visite->getSlotInfoForUser( $user_id );
+
+		if ( ( AmapressDistributions::isCurrentUserResponsableThisWeek() || amapress_can_access_admin() ) && $can_subscribe ) {
+			$users = [ '' => '--Sélectionner un amapien--' ];
+			amapress_precache_all_users();
+			foreach ( get_users() as $user ) {
+				$users[ $user->ID ] = sprintf( __( '%s (%s)', 'amapress' ), $user->display_name, $user->user_email );
+			}
+			$inscr_another = '<form class="inscription-distrib-other-user">
 <select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
 <button type="button" class="btn btn-default visite-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir inscrire cet amapien ?', 'amapress' ) . '" data-visite="' . $visite->ID . '">' . __( 'Inscrire', 'amapress' ) . '</button>
 </form>';
-	}
-	$inscription = '';
-	if ( ! $is_resp ) {
-		if ( $can_subscribe ) {
-			if ( empty( $visite->getSlotsConf() ) ) {
-				$inscription .= '<button type="button" class="btn btn-default visite-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-visite="' . $visite->ID . '">' . __( 'M\'inscrire', 'amapress' ) . '</button>';
+		}
+		if ( ! $is_resp ) {
+			if ( $can_subscribe ) {
+				if ( empty( $visite->getSlotsConf() ) ) {
+					$inscription .= '<button type="button" class="btn btn-default visite-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-visite="' . $visite->ID . '">' . __( 'M\'inscrire', 'amapress' ) . '</button>';
+				}
+			} else {
+				$inscription .= '<span class="visite-inscr-closed">' . __( 'Inscriptions closes', 'amapress' ) . '</span>';
 			}
 		} else {
-			$inscription .= '<span class="visite-inscr-closed">' . __( 'Inscriptions closes', 'amapress' ) . '</span>';
-		}
-	} else {
-		if ( $slot_for_current_user ) {
-			$inscription .= '<span>' . __( 'Vous êtes inscrit pour : ', 'amapress' ) . $slot_for_current_user['display'] . '</span>';
-		} else if ( $can_unsubscribe ) {
-			$inscription .= '<button type="button" class="btn btn-default visite-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-visite="' . $visite->ID . '">' . __( 'Me désinscrire', 'amapress' ) . '</button>';
+			if ( $slot_for_current_user ) {
+				$inscription .= '<span>' . __( 'Vous êtes inscrit pour : ', 'amapress' ) . $slot_for_current_user['display'] . '</span>';
+			} else if ( $can_unsubscribe ) {
+				$inscription .= '<button type="button" class="btn btn-default visite-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-visite="' . $visite->ID . '">' . __( 'Me désinscrire', 'amapress' ) . '</button>';
+			}
 		}
 	}
 
@@ -52,11 +55,13 @@ function amapress_get_custom_content_visite( $content ) {
 	echo $visite->getStatusDisplay();
 	amapress_echo_panel_end();
 
-	amapress_echo_panel_start( __( 'Inscription complète et partielle', 'amapress' ), null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-inscription' );
-	echo $inscription;
-	echo amapress_get_event_slot_html( $visite, 'visite', $user_id, $can_unsubscribe, $can_subscribe );
-	echo $inscr_another;
-	amapress_echo_panel_end();
+	if ( amapress_is_user_logged_in() ) {
+		amapress_echo_panel_start( __( 'Inscription complète et partielle', 'amapress' ), null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-inscription' );
+		echo $inscription;
+		echo amapress_get_event_slot_html( $visite, 'visite', $user_id, $can_unsubscribe, $can_subscribe );
+		echo $inscr_another;
+		amapress_echo_panel_end();
+	}
 
 	amapress_echo_panel_start( __( 'Au programme', 'amapress' ), null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-programme' );
 	echo '<p class="visite-au-programme">' .
@@ -119,31 +124,34 @@ function amapress_get_custom_content_visite( $content ) {
 	echo sprintf( __( '<p>de %s à %s</p>', 'amapress' ), date_i18n( 'H:i', $visite->getStartDateAndHour() ), date_i18n( 'H:i', $visite->getEndDateAndHour() ) );
 	amapress_echo_panel_end();
 
-	$responsables = array_map( function ( $u ) {
-		/** @var AmapressUser $u */
-		return $u->getUser();
-	}, $visite->getParticipants() );
+	if ( amapress_is_user_logged_in() ) {
 
-	amapress_echo_panel_start( __( 'Participants', 'amapress' ), null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-amapiens' );
-	if ( count( $responsables ) > 0 ) {
-		echo amapress_generic_gallery( $responsables, 'user_cell', [
-			'if_empty' => __( 'Pas de participants', 'amapress' )
-		] );
-	} else { ?>
-        <p><?php _e( 'Aucun participants', 'amapress' ) ?></p>
-	<?php }
+		$responsables = array_map( function ( $u ) {
+			/** @var AmapressUser $u */
+			return $u->getUser();
+		}, $visite->getParticipants() );
 
-	echo $inscription;
-	echo $inscr_another;
+		amapress_echo_panel_start( __( 'Participants', 'amapress' ), null, 'amap-panel-visite amap-panel-visite-' . $visite->getProducteur()->ID . ' amap-panel-visite-amapiens' );
+		if ( count( $responsables ) > 0 ) {
+			echo amapress_generic_gallery( $responsables, 'user_cell', [
+				'if_empty' => __( 'Pas de participants', 'amapress' )
+			] );
+		} else { ?>
+            <p><?php _e( 'Aucun participants', 'amapress' ) ?></p>
+		<?php }
 
-	if ( ! empty( $visite->getSlotsConf() ) ) {
-		echo '<h5>' . __( 'Table des inscrits', 'amapress' ) . '</h5>';
-		echo $visite->getInscritsTable( true, amapress_can_access_admin() );
-		echo '<h5>' . __( 'Table des horaires', 'amapress' ) . '</h5>';
-		echo $visite->getSlotsTable();
+		echo $inscription;
+		echo $inscr_another;
+
+		if ( ! empty( $visite->getSlotsConf() ) ) {
+			echo '<h5>' . __( 'Table des inscrits', 'amapress' ) . '</h5>';
+			echo $visite->getInscritsTable( true, amapress_can_access_admin() );
+			echo '<h5>' . __( 'Table des horaires', 'amapress' ) . '</h5>';
+			echo $visite->getSlotsTable();
+		}
+
+		amapress_echo_panel_end();
 	}
-
-	amapress_echo_panel_end();
 
 	$content = ob_get_clean();
 

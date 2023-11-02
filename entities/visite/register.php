@@ -25,6 +25,11 @@ function amapress_register_entities_visite( $entities ) {
 		'redirect_archive'        => 'amapress_redirect_agenda',
 		'menu_icon'               => 'flaticon-sprout',
 		'show_admin_bar_new'      => true,
+		'groups'                  => array(
+			__( 'Visibilité', 'amapress' ) => [
+				'context' => 'side',
+			],
+		),
 		'views'                   => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_visite_views',
@@ -40,7 +45,12 @@ function amapress_register_entities_visite( $entities ) {
 //				'group' => __('Information', 'amapress'),
 //				'desc'  => __('Photo', 'amapress'),
 //			),
-			'status'               => array(
+			'public'       => array(
+				'desc'  => __( 'Publique ?', 'amapress' ),
+				'group' => __( 'Visibilité', 'amapress' ),
+				'type'  => 'checkbox',
+			),
+			'status'       => array(
 				'name'     => __( 'Statut', 'amapress' ),
 				'type'     => 'select',
 				'group'    => __( '1/ Informations', 'amapress' ),
