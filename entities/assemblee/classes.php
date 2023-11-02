@@ -146,10 +146,6 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 
 	/** @return AmapressAssemblee_generale[] */
 	public static function get_next_assemblees( $date = null, $order = 'NONE' ) {
-		if ( ! amapress_is_user_logged_in() ) {
-			return [];
-		}
-
 		if ( ! $date ) {
 			$date = amapress_time();
 		}
@@ -170,7 +166,26 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 	public function get_related_events( $user_id ) {
 		$ret = array();
 		if ( empty( $user_id ) || $user_id <= 0 ) {
-
+			$date     = $this->getStartDateAndHour();
+			$date_end = $this->getEndDateAndHour();
+			if ( $this->isPublicEvent() ) {
+				$ret[] = new Amapress_EventEntry( array(
+					'ev_id'    => "asm-{$this->ID}",
+					'date'     => $date,
+					'date_end' => $date_end,
+					'class'    => "agenda-assemblee agenda-inscription-assemblee",
+					'type'     => 'assemblee_generale',
+					'category' => __( 'Assemblées générales', 'amapress' ),
+					'lieu'     => $this,
+					'priority' => 70,
+					'label'    => __( 'Assemblée', 'amapress' ),
+					'icon'     => 'fa fa-university',
+					'content'  => sprintf(
+						__( 'Une assemblée générale est prévue le %s', 'amapress' ),
+						date_i18n( 'd/m/Y', $date ) ),
+					'href'     => $this->getPermalink()
+				) );
+			}
 		} else {
 			$resps    = $this->getParticipantsIds();
 			$date     = $this->getStartDateAndHour();
@@ -203,7 +218,9 @@ class AmapressAssemblee_generale extends Amapress_EventBase implements iAmapress
 					'priority' => 70,
 					'label'    => __( 'Assemblée', 'amapress' ),
 					'icon'     => 'fa fa-university',
-					'content'  => __( 'Vous êtes inscript pour l\'assemblée générale du ', 'amapress' ) . date_i18n( 'd/m/Y', $date ),
+					'content'  => sprintf(
+						__( 'Une assemblée générale est prévue le %s', 'amapress' ),
+						date_i18n( 'd/m/Y', $date ) ),
 					'href'     => $this->getPermalink()
 				) );
 			}

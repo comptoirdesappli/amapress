@@ -12,37 +12,40 @@ function amapress_get_custom_content_assemblee_generale( $content ) {
 
 	ob_start();
 
-	$can_unsubscribe = $assemblee_generale->canUnsubscribe();
-	$can_subscribe   = $assemblee_generale->canSubscribe();
-	$is_resp         = in_array( amapress_current_user_id(), $assemblee_generale->getParticipantsIds() );
-
-	$users = [ '' => '--Sélectionner un amapien--' ];
-	amapress_precache_all_users();
-	foreach ( get_users() as $user ) {
-		$users[ $user->ID ] = sprintf( __( '%s (%s)', 'amapress' ), $user->display_name, $user->user_email );
-	}
+	$inscription   = '';
 	$inscr_another = '';
-	if ( amapress_can_access_admin() && $can_subscribe ) {
-		$inscr_another = '<form class="inscription-distrib-other-user">
+
+	if ( amapress_is_user_logged_in() ) {
+		$can_unsubscribe = $assemblee_generale->canUnsubscribe();
+		$can_subscribe   = $assemblee_generale->canSubscribe();
+		$is_resp         = in_array( amapress_current_user_id(), $assemblee_generale->getParticipantsIds() );
+
+		$users = [ '' => '--Sélectionner un amapien--' ];
+		amapress_precache_all_users();
+		foreach ( get_users() as $user ) {
+			$users[ $user->ID ] = sprintf( __( '%s (%s)', 'amapress' ), $user->display_name, $user->user_email );
+		}
+		if ( amapress_can_access_admin() && $can_subscribe ) {
+			$inscr_another = '<form class="inscription-distrib-other-user">
 <select name="user" class="autocomplete required">' . tf_parse_select_options( $users, null, false ) . '</select>
 <button type="button" class="btn btn-default assemblee-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir inscrire cet amapien ?', 'amapress' ) . '" data-event="' . $assemblee_generale->ID . '">' . __( 'Inscrire', 'amapress' ) . '</button>
 </form>';
-	}
-	$inscription = '';
-	if ( ! $is_resp ) {
-		if ( $can_subscribe ) {
-			$inscription .= '<button type="button" class="btn btn-default assemblee-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-event="' . $assemblee_generale->ID . '">' . __( 'M\'inscrire', 'amapress' ) . '</button>';
-		} else {
-			$inscription .= '<span class="assemblee-inscr-closed">' . __( 'Inscriptions closes', 'amapress' ) . '</span>';
 		}
-	} else if ( $can_unsubscribe ) {
-		$inscription .= '<button type="button" class="btn btn-default assemblee-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-event="' . $assemblee_generale->ID . '">' . __( 'Me désinscrire', 'amapress' ) . '</button>';
-	}
-	if ( ! empty( $inscription ) ) {
-		amapress_echo_panel_start( __( 'Inscription', 'amapress' ), null, 'amap-panel-ag amap-panel-ag-inscr' );
-		echo $inscription;
-		echo $inscr_another;
-		amapress_echo_panel_end();
+		if ( ! $is_resp ) {
+			if ( $can_subscribe ) {
+				$inscription .= '<button type="button" class="btn btn-default assemblee-inscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous inscrire ?', 'amapress' ) . '" data-event="' . $assemblee_generale->ID . '">' . __( 'M\'inscrire', 'amapress' ) . '</button>';
+			} else {
+				$inscription .= '<span class="assemblee-inscr-closed">' . __( 'Inscriptions closes', 'amapress' ) . '</span>';
+			}
+		} else if ( $can_unsubscribe ) {
+			$inscription .= '<button type="button" class="btn btn-default assemblee-desinscrire-button" data-confirm="' . esc_attr__( 'Etes-vous sûr de vouloir vous désinscrire ?', 'amapress' ) . '" data-event="' . $assemblee_generale->ID . '">' . __( 'Me désinscrire', 'amapress' ) . '</button>';
+		}
+		if ( ! empty( $inscription ) ) {
+			amapress_echo_panel_start( __( 'Inscription', 'amapress' ), null, 'amap-panel-ag amap-panel-ag-inscr' );
+			echo $inscription;
+			echo $inscr_another;
+			amapress_echo_panel_end();
+		}
 	}
 
 	amapress_echo_panel_start( __( 'Horaires', 'amapress' ) );

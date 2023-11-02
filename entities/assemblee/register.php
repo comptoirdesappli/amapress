@@ -26,14 +26,19 @@ function amapress_register_entities_assemblee( $entities ) {
 		'redirect_archive'        => 'amapress_redirect_agenda',
 		'menu_icon'               => 'fa-menu fa-university',
 		'default_orderby'         => 'amapress_assemblee_generale_date',
-		'default_order'      => 'ASC',
-		'show_admin_bar_new' => true,
-		'views'              => array(
+		'default_order'           => 'ASC',
+		'show_admin_bar_new'      => true,
+		'groups'                  => array(
+			__( 'Visibilité', 'amapress' ) => [
+				'context' => 'side',
+			],
+		),
+		'views'                   => array(
 			'remove'  => array( 'mine' ),
 			'_dyn_'   => 'amapress_assemblee_views',
 			'exp_csv' => true,
 		),
-		'edit_header'        => function ( $post ) {
+		'edit_header'             => function ( $post ) {
 			$event = AmapressAssemblee_generale::getBy( $post, true );
 			if ( $event ) {
 				if ( 'lieu_externe' == $event->getType() ) {
@@ -47,7 +52,12 @@ function amapress_register_entities_assemblee( $entities ) {
 			}
 			TitanFrameworkOption::echoFullEditLinkAndWarning();
 		},
-		'fields'           => array(
+		'fields'                  => array(
+			'public'        => array(
+				'desc'  => __( 'Publique ?', 'amapress' ),
+				'group' => __( 'Visibilité', 'amapress' ),
+				'type'  => 'checkbox',
+			),
 			'ordre_du_jour' => array(
 				'name'       => __( 'Ordre du jour', 'amapress' ),
 				'type'       => 'editor',
