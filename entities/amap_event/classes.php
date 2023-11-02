@@ -291,20 +291,22 @@ class AmapressAmap_event extends Amapress_EventBase implements iAmapress_Event_L
 		if ( empty( $user_id ) || $user_id <= 0 ) {
 			$date     = $this->getStartDateAndHour();
 			$date_end = $this->getEndDateAndHour();
-			$ret[]    = new Amapress_EventEntry( array(
-				'ev_id'    => "ev-{$this->ID}",
-				'date'     => $date,
-				'date_end' => $date_end,
-				'class'    => "agenda-amap-event agenda-inscription-amap-event $class_names",
-				'type'     => 'amap_event',
-				'category' => __( 'Évènements', 'amapress' ) . ( ! empty( $categories ) ? ' - ' . $categories : '' ),
-				'lieu'     => $this,
-				'priority' => 60,
-				'label'    => $this->getTitle(),
-				'icon'     => $icon,
-				'alt'      => sprintf( __( 'Un(e) %s est prévu(e) le %s', 'amapress' ), $this->getTitle(), date_i18n( 'd/m/Y', $date ) ),
-				'href'     => $this->getPermalink()
-			) );
+			if ( $this->isPublicEvent() ) {
+				$ret[] = new Amapress_EventEntry( array(
+					'ev_id'    => "ev-{$this->ID}",
+					'date'     => $date,
+					'date_end' => $date_end,
+					'class'    => "agenda-amap-event agenda-inscription-amap-event $class_names",
+					'type'     => 'amap_event',
+					'category' => __( 'Évènements', 'amapress' ) . ( ! empty( $categories ) ? ' - ' . $categories : '' ),
+					'lieu'     => $this,
+					'priority' => 60,
+					'label'    => $this->getTitle(),
+					'icon'     => $icon,
+					'alt'      => sprintf( __( 'Un(e) %s est prévu(e) le %s', 'amapress' ), $this->getTitle(), date_i18n( 'd/m/Y', $date ) ),
+					'href'     => $this->getPermalink()
+				) );
+			}
 		} else {
 			$resps    = $this->getParticipantsIds();
 			$date     = $this->getStartDateAndHour();

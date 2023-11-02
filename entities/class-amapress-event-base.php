@@ -64,6 +64,12 @@ class Amapress_EventBase extends TitanEntity {
 		return $ret;
 	}
 
+	public function isPublicEvent() {
+		$pt = static::POST_TYPE;
+
+		return $this->getCustomAsInt( "amapress_{$pt}_public" );
+	}
+
 	/** @return Amapress_EventEntry */
 	public function get_related_events( $user_id ) {
 		return array();
