@@ -295,6 +295,9 @@ class AmapressSMTPMailingQueueOriginal {
 				if ( in_array( $recipient, $avoid_emails ) ) {
 					continue;
 				}
+				if ( false !== strpos( $recipient, '@nomail.org' ) ) {
+					continue;
+				}
 
 				$phpmailer->AddAddress( $recipient, $recipient_name );
 			} catch ( Exception $e ) {
