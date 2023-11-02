@@ -3653,13 +3653,15 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 				$adh->getContrat_instance()->getModelTitle(), $adh->getProperty( 'nb_distributions' ), $adh->getProperty( 'total' ),
 				$adh->getProperty( 'nb_dates' ),
 				$show_distrib_dates ? $adh->getProperty( 'dates_distribution_par_mois' ) : '',
-				$show_distrib_dates && ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
+				$show_distrib_dates && ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '',
+				$distrib_dates_end_text );
 		} else {
 			$contrat_info = sprintf( __( '<p>Vous avez choisi le(s) panier(s) "%s" pour %s distribution(s) pour un montant total de %s €</p><h3>Distributions</h3><p>%s dates distributions%s%s%s</p>', 'amapress' ),
 				$adh->getProperty( 'quantites' ), $adh->getProperty( 'nb_distributions' ), $adh->getProperty( 'total' ),
 				$adh->getProperty( 'nb_dates' ),
 				$show_distrib_dates ? $adh->getProperty( 'dates_distribution_par_mois' ) : '',
-				$show_distrib_dates && ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '' );
+				$show_distrib_dates && ! empty( $rattrapage ) ? '<br/>Dates de rattrages : ' . $rattrapage : '',
+				$distrib_dates_end_text );
 		}
 
 		$contrat_info .= '<h3>' . __( 'Lieu', 'amapress' ) . '</h3><p>' . Amapress::makeLink( $adh->getLieu()->getPermalink(), $adh->getProperty( 'lieu' ), true, true ) . '</p>';
