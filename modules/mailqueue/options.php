@@ -407,7 +407,7 @@ function amapress_mailing_queue_mail_list( $id, $mlgrp_id, $type, $options = [] 
 			'subject'       => esc_html( $email['subject'] ),
 //			'message' => '<div style="word-break: break-all">' . wpautop( $email['message'] ) . '</div>',
 			'message'       => $msg,
-			'errors'        => var_export( $email['errors'], true ),
+			'errors'        => ! empty( $email['errors'] ) ? var_export( $email['errors'], true ) : '',
 			'retries_count' => isset( $email['retries_count'] ) ? $email['retries_count'] : 0,
 			'headers'       => $headers,
 		);
@@ -599,9 +599,9 @@ function admin_action_amapress_mailgroup_edit_msg() {
 		echo '<p>Date: ' . esc_html( ! empty( $m['time'] ) ? date_i18n( 'd/m/Y H:i:s', $m['time'] ) : '' ) . '</p>';
 		echo '<p>Errors: ' . esc_html( empty( $msg['errors'] ) ? '' : implode( ' ; ', $msg['errors'] ) ) . '</p>';
 		echo '<p>Retries: ' . esc_html( empty( $msg['retries_count'] ) ? '0' : count( $msg['retries_count'] ) ) . '</p>';
-		echo '<p>Attachments: ' . esc_html( empty( $msg['attachments'] ) ? '0' : count( $msg['attachments'] ) ) . '</p>';
+		echo '<p>Attachments: ' . esc_html( ( empty( $msg['attachments'] ) || ! is_array( $msg['attachments'] ) ) ? '0' : count( $msg['attachments'] ) ) . '</p>';
 		echo '<p>Subject: ' . esc_html( $msg['subject'] ) . '</p>';
-		echo '<p>Content: <pre>' . ( ! empty( $msg['message']['text'] ) ? esc_html( $msg['message']['text'] ) : wp_kses_post( $msg['message']['text'] ) ) . '</pre></p>';
+		echo '<p>Content: <pre>' . ( ! empty( $msg['message']['text'] ) ? esc_html( $msg['message']['text'] ) : wp_kses_post( $msg['message']['html'] ) ) . '</pre></p>';
 		echo '<p><input type="submit" name="save" value="Enregistrer"></p>';
 		echo '</form>';
 	}
