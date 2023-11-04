@@ -25,13 +25,18 @@ class ReadCSV {
 	public function __construct( $inputFileName, $skip = "" ) {
 		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
 
+		$pathinfo = pathinfo( $inputFileName );
+		if ( ! isset( $pathinfo['extension'] ) ) {
+			throw new Exception( __( 'Les fichiers sans extension ne sont plus supportés pour cause d\'intéropérabilité. Veuillez réenregistrer le fichier avec une extension', 'amapress' ) );
+		}
+
 		$inputFileType = PHPExcel_IOFactory::identify( $inputFileName );
 		if ( 'CSV' == $inputFileType ) {
 			throw new Exception( __( 'Les fichiers CSV ne sont plus supportés pour cause d\'intéropérabilité. Veuillez convertir en XLSX, ODS ou XLS', 'amapress' ) );
 		}
-		$objReader     = PHPExcel_IOFactory::createReader( $inputFileType );
-		$objPHPExcel   = $objReader->load( $inputFileName );
-		$this->rows    = $objPHPExcel->getActiveSheet()->toArray( null, true, true );
+		$objReader   = PHPExcel_IOFactory::createReader( $inputFileType );
+		$objPHPExcel = $objReader->load( $inputFileName );
+		$this->rows  = $objPHPExcel->getActiveSheet()->toArray( null, true, true );
 //		var_dump($this->rows);
 //		die();
 	}

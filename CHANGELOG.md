@@ -1,3 +1,7 @@
+# 0.99.265 (2023-11-04)
+
+* **Import CSV**: interdiction de fichiers sans extension
+
 # 0.99.260 (2023-11-02)
 
 * **Assistant d'inscription:** si un contrat n'est distribué quand dans un lieu secondaire, alors le proposer à tous les
