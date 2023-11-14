@@ -1,3 +1,8 @@
+# 0.99.270 (2023-11-09)
+
+* **Mes contrats**: autoriser max_coadherents, mob_phone_required, allow_remove_coadhs, notify_email
+* **Tableau inscritions/[amapien-adhesions]**: ajout colonnes Lieu et Adhérent
+
 # 0.99.265 (2023-11-04)
 
 * **Import CSV**: interdiction de fichiers sans extension

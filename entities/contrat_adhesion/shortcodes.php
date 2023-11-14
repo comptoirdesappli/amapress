@@ -404,13 +404,9 @@ function amapress_mes_contrats( $atts, $content = '', $tag = '' ) {
 	$atts['check_honeypots'] = 'false';
 	unset( $atts['edit_names'] );
 	unset( $atts['shorturl'] );
-	unset( $atts['max_coadherents'] );
-	unset( $atts['mob_phone_required'] );
-	unset( $atts['allow_remove_coadhs'] );
 	unset( $atts['track_no_renews'] );
 	unset( $atts['track_no_renews_email'] );
 	unset( $atts['send_no_renews_message'] );
-	unset( $atts['notify_email'] );
 	unset( $atts['allow_intermittents_inscription'] );
 	unset( $atts['allow_coadherents_inscription'] );
 	unset( $atts['allow_coadherents_access'] );
