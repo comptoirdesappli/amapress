@@ -2365,7 +2365,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			return [];
 		}
 
-		$key = 'AmapressAdhesion::getUserActiveAdhesionsPosts_' . implode( '_', $ids );
+		$key = "AmapressAdhesion::getUserActiveAdhesionsPosts_{$date}_{$user_id}_{$contrat_instance_id}_{$ignore_renouv_delta}_{$allow_not_logged}_{$include_futur}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			update_meta_cache( 'post', $ids );
