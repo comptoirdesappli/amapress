@@ -13,6 +13,13 @@ function amapress_display_user_adhesions_shortcode( $atts ) {
 	$adhs             = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck();
 	$adhesion_columns = array(
 		array(
+			'title' => __( 'Adhérent', 'amapress' ),
+			'data'  => array(
+				'_'    => 'adherent',
+				'sort' => 'adherent',
+			)
+		),
+		array(
 			'title' => __( 'Contrat', 'amapress' ),
 			'data'  => array(
 				'_'    => 'contrat',
@@ -38,6 +45,13 @@ function amapress_display_user_adhesions_shortcode( $atts ) {
 			'data'  => array(
 				'_'    => 'to_date.display',
 				'sort' => 'to_date.value',
+			)
+		),
+		array(
+			'title' => __( 'Lieu', 'amapress' ),
+			'data'  => array(
+				'_'    => 'lieu',
+				'sort' => 'lieu',
 			)
 		),
 		array(
@@ -68,6 +82,8 @@ function amapress_display_user_adhesions_shortcode( $atts ) {
 				'display' => date_i18n( 'd/m/Y', $date_fin ),
 				'value'   => $date_fin
 			),
+			'adherent'  => $ad->getAdherent()->getDisplayName(),
+			'lieu'      => $ad->getLieu()->getTitle(),
 			'state'     => amapress_get_html_tag( 'span', $ad->getStatusDisplay(), $ad->getStatus() ),
 		);
 	}
