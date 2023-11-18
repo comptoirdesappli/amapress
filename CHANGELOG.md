@@ -1,3 +1,8 @@
+# 0.99.275 (2023-11-04)
+
+* **Import CSV**: interdiction de fichiers sans extension (suite)
+* **Assistant d'inscription/Contrats:** maximum non distribution, -1 (pas de limite), par défaut
+
 # 0.99.270 (2023-11-09)
 
 * **Mes contrats**: autoriser max_coadherents, mob_phone_required, allow_remove_coadhs, notify_email
