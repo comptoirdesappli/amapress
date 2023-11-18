@@ -53,7 +53,7 @@ class Amapress_Import_Posts_CSV {
 				$filename     = $_FILES['posts_csv']['tmp_name'];
 				$posts_update = isset( $_POST['posts_update'] ) ? $_POST['posts_update'] : true;
 
-				$results = self::import_posts_csv( $filename, array(
+				$results = self::import_posts_csv( $filename, $_FILES['posts_csv']['name'], array(
 					'posts_update' => $posts_update,
 					'post_type'    => $post_type
 				) );
@@ -423,7 +423,7 @@ class Amapress_Import_Posts_CSV {
 	 *
 	 * @since 0.5
 	 */
-	private static function import_posts_csv( $filename, $args ) {
+	private static function import_posts_csv( $filename, $orig_name, $args ) {
 		$errors = $post_ids = $headers_names = array();
 
 		$defaults     = array(
@@ -473,7 +473,7 @@ class Amapress_Import_Posts_CSV {
 //		$file_handle = @fopen( $filename, 'r' );
 //		if($file_handle) {
 		try {
-			$csv_reader = new ReadCSV( $filename ); // Skip any UTF-8 byte order mark.
+			$csv_reader = new ReadCSV( $filename, $orig_name ); // Skip any UTF-8 byte order mark.
 
 			$first = true;
 			$rkey  = 0;

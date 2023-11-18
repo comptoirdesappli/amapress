@@ -22,10 +22,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 class ReadCSV {
 	private $rows;
 
-	public function __construct( $inputFileName, $skip = "" ) {
+	public function __construct( $inputFileName, $orig_name = null ) {
 		require_once( AMAPRESS__PLUGIN_DIR . 'vendor/autoload.php' );
 
-		$pathinfo = pathinfo( $inputFileName );
+		if ( empty( $orig_name ) ) {
+			$orig_name = $inputFileName;
+		}
+
+		$pathinfo = pathinfo( $orig_name );
 		if ( ! isset( $pathinfo['extension'] ) ) {
 			throw new Exception( __( 'Les fichiers sans extension ne sont plus supportés pour cause d\'intéropérabilité. Veuillez réenregistrer le fichier avec une extension', 'amapress' ) );
 		}

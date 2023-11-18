@@ -211,7 +211,7 @@ class Amapress_Import_Users_CSV {
 				$users_update          = isset( $_POST['users_update'] ) ? $_POST['users_update'] : false;
 				$new_user_notification = isset( $_POST['new_user_notification'] ) ? $_POST['new_user_notification'] : false;
 
-				$results = self::import_users_csv( $filename, array(
+				$results = self::import_users_csv( $filename, $_FILES['posts_csv']['name'], array(
 					'password_nag'          => $password_nag,
 					'new_user_notification' => $new_user_notification,
 					'users_update'          => $users_update
@@ -379,7 +379,7 @@ class Amapress_Import_Users_CSV {
 	 *
 	 * @since 0.5
 	 */
-	private static function import_users_csv( $filename, $args ) {
+	private static function import_users_csv( $filename, $orig_name, $args ) {
 		$errors = $user_ids = $headers_names = array();
 
 		$defaults              = array(
@@ -421,11 +421,11 @@ class Amapress_Import_Users_CSV {
 //		$file_handle = @fopen( $filename, 'r' );
 //		if($file_handle) {
 		try {
-			$csv_reader = new ReadCSV( $filename ); // Skip any UTF-8 byte order mark.
+			$csv_reader = new ReadCSV( $filename, $orig_name ); // Skip any UTF-8 byte order mark.
 
-			$first                  = true;
-			$rkey                   = 0;
-			$imported_users         = 0;
+			$first          = true;
+			$rkey           = 0;
+			$imported_users = 0;
 			$total_users    = 0;
 			while ( ( $line = $csv_reader->get_row() ) !== null ) {
 				$rkey ++;
