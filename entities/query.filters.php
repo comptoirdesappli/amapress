@@ -2076,12 +2076,24 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 			) {
 				$user_ids[] = intval( $user_id );
 			}
+			if ( ! Amapress::hasPartialCoAdhesion() ) {
+				$all_user_ids = amapress_prepare_in_sql( $user_ids );
+				foreach (
+					amapress_get_col_cached(
+						"SELECT DISTINCT $wpdb->usermeta.meta_value
+FROM $wpdb->usermeta
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3')
+AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
+				) {
+					$user_ids[] = intval( $user_id );
+				}
+			}
 			$all_user_ids = amapress_prepare_in_sql( $user_ids );
 			foreach (
 				amapress_get_col_cached(
 					"SELECT DISTINCT $wpdb->usermeta.meta_value
 FROM $wpdb->usermeta
-WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_user_co-adherent-2', 'amapress_user_co-adherent-3', 'amapress_user_co-foyer-1', 'amapress_user_co-foyer-2', 'amapress_user_co-foyer-3')
+WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-foyer-1', 'amapress_user_co-foyer-2', 'amapress_user_co-foyer-3')
 AND $wpdb->usermeta.user_id IN ($all_user_ids)" ) as $user_id
 			) {
 				$user_ids[] = intval( $user_id );

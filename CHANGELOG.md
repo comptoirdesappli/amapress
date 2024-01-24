@@ -1,3 +1,7 @@
+# 0.99.276 (2024-01-24)
+
+* **Filtre amapress_contrat**: prise en compte des coadhérents contrat uniquement si coadhésion partielles activées
+
 # 0.99.275 (2023-11-04)
 
 * **Import CSV**: interdiction de fichiers sans extension (suite)
