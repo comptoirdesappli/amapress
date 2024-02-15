@@ -1,3 +1,7 @@
+# 0.99.277 (2024-02-15)
+
+* **Placeholders [avec_contrat]/[sans_contrat]**: gestion multiligne
+
 # 0.99.276 (2024-01-24)
 
 * **Filtre amapress_contrat**: prise en compte des coadhérents contrat uniquement si coadhésion partielles activées

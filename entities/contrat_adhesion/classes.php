@@ -2680,11 +2680,11 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$doc_file    = $inscription->generateContratDoc( false );
 		if ( ! empty( $doc_file ) ) {
 			$attachments[] = $doc_file;
-			$mail_content  = preg_replace( '/\[sans_contrat\].+?\[\/sans_contrat\]/', '', $mail_content );
-			$mail_content  = preg_replace( '/\[\/?avec_contrat\]/', '', $mail_content );
+			$mail_content  = preg_replace( '/\[sans_contrat\].+?\[\/sans_contrat\]/s', '', $mail_content );
+			$mail_content  = preg_replace( '/\[\/?avec_contrat\]/s', '', $mail_content );
 		} else {
-			$mail_content = preg_replace( '/\[avec_contrat\].+?\[\/avec_contrat\]/', '', $mail_content );
-			$mail_content = preg_replace( '/\[\/?sans_contrat\]/', '', $mail_content );
+			$mail_content = preg_replace( '/\[avec_contrat\].+?\[\/avec_contrat\]/s', '', $mail_content );
+			$mail_content = preg_replace( '/\[\/?sans_contrat\]/s', '', $mail_content );
 		}
 
 		$refs_mails = $inscription->getContrat_instance()->getAllReferentsEmails( $this->getLieuId() );
