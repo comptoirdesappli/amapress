@@ -2341,11 +2341,17 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 	) {
 		$all_adhs = self::getUserActiveAdhesions( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged, $include_futur );
 
-		return array_filter( $all_adhs, function ( $adh ) use ( $user_id ) {
-			return $adh->getAdherentId() == $user_id
-			       || $adh->getAdherent2Id() == $user_id
-			       || $adh->getAdherent3Id() == $user_id
-			       || $adh->getAdherent4Id() == $user_id;
+		$user_ids = AmapressContrats::get_related_users(
+			$user_id, $allow_not_logged, $date,
+			null, true, false,
+			true
+		);
+
+		return array_filter( $all_adhs, function ( $adh ) use ( $user_ids ) {
+			return in_array( $adh->getAdherentId(), $user_ids )
+			       || in_array( $adh->getAdherent2Id(), $user_ids )
+			       || in_array( $adh->getAdherent3Id(), $user_ids )
+			       || in_array( $adh->getAdherent4Id(), $user_ids );
 		} );
 	}
 

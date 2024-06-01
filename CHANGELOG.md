@@ -1,3 +1,7 @@
+# 0.99.280 (2024-06-01)
+
+* Correction de l'affichage du calendrier des membres du foyer
+
 # 0.99.277 (2024-02-15)
 
 * **Placeholders [avec_contrat]/[sans_contrat]**: gestion multiligne
