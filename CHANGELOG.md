@@ -1,3 +1,7 @@
+# 0.99.281 (2024-06-23)
+
+* Correction de la cessation de panier pour un référent producteur
+
 # 0.99.280 (2024-06-01)
 
 * Correction de l'affichage du calendrier des membres du foyer

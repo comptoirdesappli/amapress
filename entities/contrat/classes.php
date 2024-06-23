@@ -2618,7 +2618,11 @@ class AmapressContrat_instance extends TitanEntity {
 
 	/** @return AmapressAdhesion[] */
 	public function getAdhesionsForUser( $user_id = null, $date = null, $ignore_renouv_delta = false ) {
-		return AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, $this->ID, $date, $ignore_renouv_delta );
+		Amapress::setFilterForReferent( false );
+		$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, $this->ID, $date, $ignore_renouv_delta );
+		Amapress::setFilterForReferent( true );
+
+		return $adhs;
 	}
 
 	/**
