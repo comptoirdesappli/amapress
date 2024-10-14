@@ -156,7 +156,7 @@ function amapress_get_datatable( $id, $columns, $data, $options = array(), $expo
 					$data_sort_v = isset( $data_sort_v['value'] ) ? $data_sort_v['value'] : '';
 				}
 
-				$attr = '';
+				$attr = ' title="' . esc_attr( $col['title'] ) . '" ';
 				if ( ! empty( $col['width'] ) ) {
 					$attr .= ' width="' . $col['width'] . '"';
 				}

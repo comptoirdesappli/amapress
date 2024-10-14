@@ -1,3 +1,7 @@
+# 0.99.282 (2024-10-14)
+
+* meilleure interface d'édition des paniers modulables
+
 # 0.99.281 (2024-06-23)
 
 * Correction de la cessation de panier pour un référent producteur
