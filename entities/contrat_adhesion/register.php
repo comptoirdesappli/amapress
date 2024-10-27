@@ -3784,7 +3784,7 @@ add_action( 'admin_menu', function () {
 				$grp_by_grp = isset( $_GET['grp_by_grp'] );
 				echo amapress_get_details_all_deliveries( $adh->getAdherentId(),
 					true, false,
-					$adh->getContrat_instanceId(), $grp_by_grp );
+					$adh->getContrat_instanceId(), $grp_by_grp, false, true );
 			} else {
 				wp_die( __( 'Invalid access', 'amapress' ) );
 			}

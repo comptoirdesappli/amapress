@@ -3559,7 +3559,8 @@ Vous pouvez configurer l\'email envoyé en fin de chaque inscription <a target="
 			$contrat_id = $adh->getContrat_instanceId();
 		}
 
-		echo amapress_get_details_all_deliveries( $user_id, $ignore_renouv_delta, $by_prod, $contrat_id, isset( $_GET['grp_by_grp'] ) );
+		echo amapress_get_details_all_deliveries( $user_id, $ignore_renouv_delta, $by_prod,
+			$contrat_id, isset( $_GET['grp_by_grp'] ), false, true );
 	} else if ( 'calendar_delivs' == $step ) {
 		echo amapress_get_contrats_calendar( $subscribable_contrats );
 	} else if ( 'details' == $step ) {
@@ -5407,12 +5408,9 @@ function amapress_get_details_all_deliveries(
 	$by_prod,
 	$contrats_ids = null,
 	$group_by_group = true,
-	$for_mail = false
+	$for_mail = false,
+	$from_contrat_start = false
 ) {
-	Amapress::setFilterForReferent( false );
-	$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, null, $ignore_renouv_delta, true );
-	Amapress::setFilterForReferent( true );
-
 	if ( empty( $contrats_ids ) ) {
 		$contrats_ids = [];
 	} elseif ( ! is_array( $contrats_ids ) ) {
@@ -5420,6 +5418,21 @@ function amapress_get_details_all_deliveries(
 	} else {
 		$contrats_ids = array_values( $contrats_ids );
 	}
+	$date = null;
+	if ( $from_contrat_start ) {
+		foreach ( $contrats_ids as $contrat_id ) {
+			$contrat = AmapressContrat_instance::getBy( $contrat_id );
+			if ( $contrat ) {
+				if ( $date < $contrat->getDate_debut() ) {
+					$date = $contrat->getDate_debut();
+				}
+			}
+		}
+	}
+
+	Amapress::setFilterForReferent( false );
+	$adhs = AmapressAdhesion::getUserActiveAdhesionsWithAllowPartialCheck( $user_id, null, $date, $ignore_renouv_delta, true );
+	Amapress::setFilterForReferent( true );
 
 	$is_single_producteur = 1 === count( $contrats_ids );
 	if ( ! empty( $contrats_ids ) ) {
