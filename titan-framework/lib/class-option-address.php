@@ -74,7 +74,7 @@ class TitanFrameworkOptionAddress extends TitanFrameworkOption {
 
 			$response = json_decode( wp_remote_retrieve_body( $request ), true );
 
-			if ( ! is_array( $response ) || empty( $response ) ) {
+			if ( ! is_array( $response ) || empty( $response ) || empty( $response[0] ) ) {
 				error_log( "Nominatim resolution failed: $details_url" );
 
 				return null;

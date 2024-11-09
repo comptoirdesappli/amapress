@@ -725,7 +725,7 @@ line-height: 1.1;
 			echo esc_html( sprintf( __( 'Responsables du jour - %s', 'amapress' ), $lieu->getTitle() ) );
 			echo '</h3>';
 //			echo '<br/>';
-			echo do_shortcode( '[inscription-distrib show_title=false for_emargement=true for_pdf=' . $for_pdf . ' show_past=false show_for_resp=true max_dates=1 show_adresse=false show_avatar=' . ( $for_pdf ? 0 : 1 ) . ' show_roles=false date=' . $from_date . ' lieu=' . $lieu_id . ']' );
+			echo do_shortcode( '[inscription-distrib show_title=false for_emargement=true for_pdf=' . $for_pdf . ' show_past=false show_for_resp=true max_dates=1 show_adresse=false show_avatar=' . ( $for_pdf ? 0 : 1 ) . ' show_roles=false date=' . $from_date . ' lieu=' . $lieu->ID . ']' );
 		}
 	}
 

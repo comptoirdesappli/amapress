@@ -1,3 +1,15 @@
+# 0.99.285 (2024-11-09)
+
+* contrat vierge placeholders status quand pas de contrat papier défini
+* placeholder status "total_avec/sans_don"
+* Nominatim empty response and other fix
+* wp_mail, concat "to", "cc", "bcc" avec virgule sans espace (semble perturber cette version de WordPress ou hébergeur
+  ou WordFence)
+
+# 0.99.283 (2024-10-27)
+
+* affichage des livraisons d'une adhésion passée
+
 # 0.99.282 (2024-10-14)
 
 * meilleure interface d'édition des paniers modulables
