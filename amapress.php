@@ -9,7 +9,7 @@
  * Plugin Name:         Amapress
  * Plugin URI:          https://github.com/comptoirdesappli/amapress
  * Description:         Plugin de Gestion & Communication pour les AMAP
- * Version:             0.99.283
+ * Version:             0.99.285
  * Requires             PHP: 5.6
  * Requires at least:   4.6
  * Author:              Comptoir des Applis
@@ -53,7 +53,7 @@ define( 'AMAPRESS__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AMAPRESS__PLUGIN_FILE', __FILE__ );
 define( 'AMAPRESS_DELETE_LIMIT', 100000 );
 define( 'AMAPRESS_DB_VERSION', 112 );
-define( 'AMAPRESS_VERSION', '0.99.283' );
+define( 'AMAPRESS_VERSION', '0.99.285' );
 define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_INTERVAL', 60 );
 define( 'AMAPRESS_MAIL_QUEUE_DEFAULT_LIMIT', 4 );
 
@@ -129,7 +129,7 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 		return false;
 	}
 	if ( is_array( $to ) ) {
-		$to = implode( ', ', $to );
+		$to = implode( ',', $to );
 	}
 	if ( empty( $headers ) ) {
 		$headers = array();
@@ -156,7 +156,7 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 				return 0 !== stripos( $h, 'Cc' );
 			} );
 		if ( is_array( $cc ) ) {
-			$headers[] = 'Cc:' . implode( ', ', $cc );
+			$headers[] = 'Cc:' . implode( ',', $cc );
 		} else {
 			$headers[] = 'Cc:' . $cc;
 		}
@@ -167,7 +167,7 @@ function amapress_wp_mail( $to, $subject, $message, $headers = '', $attachments 
 				return 0 !== stripos( $h, 'Bcc' );
 			} );
 		if ( is_array( $bcc ) ) {
-			$headers[] = 'Bcc:' . implode( ', ', $bcc );
+			$headers[] = 'Bcc:' . implode( ',', $bcc );
 		} else {
 			$headers[] = 'Bcc:' . $bcc;
 		}
