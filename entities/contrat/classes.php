@@ -1027,7 +1027,10 @@ class AmapressContrat_instance extends TitanEntity {
 	}
 
 	public function getContratPapierModelDocStatus() {
-		$model_file   = $this->getContratPapierModelDocFileName();
+		$model_file = $this->getContratPapierModelDocFileName();
+		if ( empty( $model_file ) ) {
+			return null;
+		}
 		$placeholders = $this->generateContratDoc( $this->getDate_debut(), false, true );
 
 		return Phptemplate_withnewline::getPlaceholderStatus( $model_file, $placeholders, __( 'Contrat vierge', 'amapress' ) );
