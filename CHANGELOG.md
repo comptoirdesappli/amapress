@@ -1,3 +1,8 @@
+# 0.99.286 (2025-01-19)
+
+* correction possibilité d'inscriptions aux contrats par les coadhérents si l'adhérent principal une inscription au même
+  contrat dans le cas des adhésions partielles
+
 # 0.99.285 (2024-11-09)
 
 * contrat vierge placeholders status quand pas de contrat papier défini

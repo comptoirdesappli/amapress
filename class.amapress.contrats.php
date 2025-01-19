@@ -1166,9 +1166,13 @@ class AmapressContrats {
 			$date = amapress_time();
 		}
 
+		if ( null == $user_id ) {
+			$user_id = amapress_current_user_id();
+		}
+
 		$date = Amapress::end_of_day( $date );
 
-		$key = "amapress_get_related_users_{$user_id}_{$date}_{$contrat_id}_{$include_cofoyers}_{$include_coadhs}";
+		$key = "amapress_get_related_users_{$user_id}_{$date}_{$contrat_id}_{$include_cofoyers}_{$include_coadhs}_{$include_principal}";
 		$res = wp_cache_get( $key );
 		if ( false === $res ) {
 			$res  = array( $user_id );

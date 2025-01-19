@@ -2321,6 +2321,9 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$allow_not_logged = false,
 		$include_futur = true
 	) {
+		if ( null == $user_id ) {
+			$user_id = amapress_current_user_id();
+		}
 		if ( Amapress::hasPartialCoAdhesion() ) {
 			return AmapressAdhesion::getUserActiveDirectAdhesions( $user_id, $contrat_instance_id, $date, $ignore_renouv_delta, $allow_not_logged, $include_futur );
 		} else {
@@ -2344,7 +2347,7 @@ WHERE  $wpdb->usermeta.meta_key IN ('amapress_user_co-adherent-1', 'amapress_use
 		$user_ids = AmapressContrats::get_related_users(
 			$user_id, $allow_not_logged, $date,
 			null, true, false,
-			true
+			false
 		);
 
 		return array_filter( $all_adhs, function ( $adh ) use ( $user_ids ) {
