@@ -1,3 +1,7 @@
+# 0.99.287 (2025-04-05)
+
+* correction génération de contrat inscription avec tableau pour contrat avec dates spécifiques de produits
+
 # 0.99.286 (2025-01-19)
 
 * correction possibilité d'inscriptions aux contrats par les coadhérents si l'adhérent principal une inscription au même

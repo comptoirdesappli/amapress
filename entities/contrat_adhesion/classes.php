@@ -1563,7 +1563,9 @@ class AmapressAdhesion extends TitanEntity {
 	 * @return AmapressAdhesionQuantite[]
 	 */
 	public function getContrat_quantites( $dist_date ) {
-		$dist_date = Amapress::start_of_day( $dist_date );
+		if ( $dist_date ) {
+			$dist_date = Amapress::start_of_day( $dist_date );
+		}
 
 		if ( $this->getContrat_instance() && $this->getContrat_instance()->isPanierVariable() ) {
 			$quants = $this->getVariables_Contrat_quantites( $dist_date );
@@ -1585,14 +1587,14 @@ class AmapressAdhesion extends TitanEntity {
 		$ret = [];
 		foreach ( $quants as $quant ) {
 			$date_factor = 1;
-			if ( $this->getContrat_instanceId() ) {
+			if ( $dist_date && $this->getContrat_instanceId() ) {
 				$date_factor = $this->getContrat_instance()->getDateFactor( $dist_date, $quant->ID );
 			}
 			$factor = 1;
 			if ( isset( $factors[ $quant->ID ] ) && $factors[ $quant->ID ] > 0 ) {
 				$factor = $factors[ $quant->ID ];
 			}
-			if ( $this->hasBeforeEndDate_fin() && $dist_date > $this->getDate_fin() ) {
+			if ( $dist_date && $this->hasBeforeEndDate_fin() && $dist_date > $this->getDate_fin() ) {
 				$date_factor = 0;
 			}
 
