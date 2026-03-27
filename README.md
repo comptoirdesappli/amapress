@@ -51,7 +51,7 @@ Première *configuration* : aller dans **Tableau de bord>État d'Amapress** : ht
 * [Yalinqo](https://github.com/Athari/YaLinqo)
 * [PHP Imap](https://github.com/barbushin/php-imap) -  : utilisé pour la gestion des Emails groupés
 * [Faker](https://github.com/fzaninotto/Faker) -  : utilisé pour l'anonymisation des sites de démonstration
-* [PHP CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer)/[WPCS]()
+* [PHP CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer)/[WPCS]()
 * [Select2](https://github.com/select2/select2) - : utilisé pour les listes déroulantes
 * [FullCalendar](https://github.com/fullcalendar/fullcalendar) - : utilisé pour l'affichage en calendrier classique
 * [Slick](https://github.com/kenwheeler/slick) - : utilisé pour l'affichage du calendrier graphique
